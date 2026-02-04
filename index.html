@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIVOT LAB â€” Golf. Analyzed.</title>
+<title>DIVOT LAB — Golf. Analyzed.</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -365,7 +365,7 @@ nav.light .nav-links a:hover { color:var(--black); }
   display:flex; align-items:center; justify-content:center;
   position:relative;
 }
-/* silhouette placeholders â€” tee, hat, tee */
+/* silhouette placeholders — tee, hat, tee */
 .app-sil {
   border-radius:6px;
   background:linear-gradient(180deg,#D8D8D6,#CCC);
@@ -510,6 +510,87 @@ footer {
 .reveal.vis { opacity:1; transform:translateY(0); }
 
 /* =============================================
+   MOBILE NAV – hamburger + drawer
+   ============================================= */
+.nav-hamburger {
+  display:none;                          /* hidden on desktop */
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:40px; height:40px;
+  margin-left:auto;
+  cursor:pointer;
+  background:none; border:none;
+  gap:5px;
+  z-index:101;
+  position:relative;
+}
+.nav-hamburger span {
+  display:block;
+  width:22px; height:2px;
+  background:var(--white);
+  border-radius:2px;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),
+             opacity .2s ease;
+}
+nav.light .nav-hamburger span { background:var(--black); }
+
+/* animated → X when open */
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* the drawer itself */
+.nav-drawer {
+  position:fixed;
+  top:68px; left:0; right:0;
+  z-index:99;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:12px 0 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  /* hide & slide */
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height .38s cubic-bezier(.22,1,.36,1),
+             opacity .28s ease,
+             background .35s,
+             border-color .35s;
+}
+.nav-drawer.open {
+  max-height:260px;
+  opacity:1;
+}
+/* light variant */
+.nav-drawer.light {
+  background:rgba(250,250,250,0.95);
+  border-bottom-color:rgba(0,0,0,0.07);
+}
+
+.nav-drawer a {
+  font-size:15px; font-weight:500; letter-spacing:.06em;
+  color:rgba(250,250,250,.75);
+  padding:10px 0;
+  width:100%; text-align:center;
+  transition:color .2s;
+}
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer.light a { color:var(--graphite); }
+.nav-drawer.light a:hover { color:var(--black); }
+
+.nav-drawer .nav-cta {
+  margin-top:8px;
+  width:auto; padding:10px 32px;
+  border-radius:5px;
+}
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media(max-width:900px){
@@ -520,7 +601,8 @@ footer {
 }
 @media(max-width:600px){
   nav { padding:0 22px; }
-  .nav-links a:not(.nav-cta){ display:none; }
+  .nav-links { display:none; }                /* hide desktop links entirely */
+  .nav-hamburger { display:flex; }            /* show hamburger */
   .hero { padding:90px 22px 70px; }
   .section { padding:68px 22px; }
   .articles-grid { grid-template-columns:1fr; }
@@ -538,7 +620,7 @@ footer {
 <!-- ========== NAV ========== -->
 <nav id="nav">
   <a href="#" class="nav-logo">
-    <!-- C2 mono â€” white strokes for dark nav, JS swaps on scroll -->
+    <!-- C2 mono — white strokes for dark nav, JS swaps on scroll -->
     <svg id="navIcon" viewBox="0 0 72 72" fill="none">
       <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
       <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
@@ -553,7 +635,22 @@ footer {
     <a href="#">About</a>
     <a href="#" class="nav-cta">Lab Notes</a>
   </div>
+
+  <!-- mobile hamburger (visible ≤600px) -->
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- mobile drawer (lives just below nav, animated by nav.menu-open) -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#">Articles</a>
+  <a href="#">Shop</a>
+  <a href="#">About</a>
+  <a href="#" class="nav-cta">Lab Notes</a>
+</div>
 
 <!-- ========== HERO ========== -->
 <section class="hero">
@@ -562,7 +659,7 @@ footer {
     <h1>Golf.<br><em>Analyzed.</em></h1>
     <p class="hero-sub">The game of golf, decoded. Stats that actually tell the story. Insights built on data, not opinion. See what drives the pros, and what drives your game.</p>
     <div class="hero-btns">
-      <a href="#" class="btn-fill">Read the Latest</a>
+      <a href="https://divotlab.printful.me/" class="btn-fill">Read the Latest</a>
       <a href="https://divotlab.printful.me/" class="btn-text">Browse Shop</a>
     </div>
   </div>
@@ -601,12 +698,13 @@ footer {
       <div class="sec-label">Latest</div>
       <h2 class="sec-title">From the Lab</h2>
     </div>
-    <a href="#">View all articles â†’</a>
+    <a href="#">View all articles →</a>
   </div>
 
   <div class="articles-grid">
     <!-- featured -->
-    <a href="blog-post-1.html" style="text-decoration:none;color:inherit;"><a href="blog-post-1.html" style="text-decoration:none;color:inherit;"><div class="a-card featured">
+    <a href="blog-post-1.html" style="text-decoration:none;color:inherit;">
+    <div class="a-card featured">
       <div class="a-img">
         <div class="a-img-bg"></div>
         <div class="a-img-mark">
@@ -616,15 +714,17 @@ footer {
             <path d="M18 64 Q50 86 82 64" stroke="white" stroke-width="1.4" fill="none"/>
           </svg>
         </div>
-      </div></a>
+      </div>
       <div class="a-body">
         <span class="a-cat pga">PGA Tour</span>
         <h3 class="a-title">Scottie Scheffler's Putting Numbers Don't Make Sense. We Looked Closer.</h3>
         <div class="a-meta">Feb 1, 2026 <span class="dot">·</span> 8 min read</div>
       </div>
     </div>
+    </a>
 
     <!-- card 2 -->
+    <a href="blog-post-2.html" style="text-decoration:none;color:inherit;">
     <div class="a-card">
       <div class="a-img">
         <div class="a-img-bg"></div>
@@ -643,8 +743,10 @@ footer {
         <div class="a-meta">Jan 28, 2026 <span class="dot">·</span> 6 min read</div>
       </div>
     </div>
+    </a>
 
     <!-- card 3 -->
+    <a href="blog-post-3.html" style="text-decoration:none;color:inherit;">
     <div class="a-card">
       <div class="a-img">
         <div class="a-img-bg"></div>
@@ -662,6 +764,7 @@ footer {
         <div class="a-meta">Jan 24, 2026 <span class="dot">·</span> 5 min read</div>
       </div>
     </div>
+    </a>
   </div>
 </section>
 
@@ -673,7 +776,7 @@ footer {
         <div class="sec-label">The Shop</div>
         <h2 class="sec-title">Wear the Lab</h2>
       </div>
-      <a href="#">Visit shop â†’</a>
+      <a href="https://divotlab.printful.me/">Visit shop →</a>
     </div>
 
     <div class="app-grid">
@@ -770,19 +873,37 @@ footer {
 <!-- ========== JS ========== -->
 <script>
 (function(){
-  // --- nav glass transition on scroll ---
   var nav = document.getElementById('nav');
+  var drawer = document.getElementById('navDrawer');
+  var hamburger = document.getElementById('navHamburger');
   var heroH = document.querySelector('.hero').offsetHeight;
   var ticking = false;
+
+  // --- nav glass transition on scroll ---
   window.addEventListener('scroll', function(){
     if(!ticking){
       requestAnimationFrame(function(){
         var scrolled = window.scrollY > heroH - 72;
         nav.classList.toggle('light', scrolled);
+        drawer.classList.toggle('light', scrolled);
         ticking = false;
       });
       ticking = true;
     }
+  });
+
+  // --- hamburger toggle ---
+  hamburger.addEventListener('click', function(){
+    nav.classList.toggle('menu-open');
+    drawer.classList.toggle('open');
+  });
+
+  // --- close drawer when a link is tapped ---
+  drawer.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      nav.classList.remove('menu-open');
+      drawer.classList.remove('open');
+    });
   });
 
   // --- scroll reveal (IntersectionObserver) ---
