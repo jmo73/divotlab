@@ -1,0 +1,31 @@
+<div class="read-next-wrap">
+  <div class="read-next-inner">
+    <div class="read-next-label">Read Next</div>
+    <div class="read-next-grid">
+      <a href="/scheffler-putting-analysis.html" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img">
+          <img src="/scheffler.jpg" alt="Scheffler putting" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="rn-body">
+          <span class="rn-cat pga">PGA Tour</span>
+          <h3 class="rn-title">Scottie Scheffler's Putting Numbers Don't Make Sense. We Looked Closer.</h3>
+          <div class="rn-meta">Feb 1, 2026 <span class="dot">·</span> 8 min read</div>
+        </div>
+      </div>
+      </a>
+      <a href="/driver-upgrade-myth.html" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img">
+          <img src="/driver.jpg" alt="Driver upgrade myth" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="rn-body">
+          <span class="rn-cat improve">Improvement</span>
+          <h3 class="rn-title">The $600 Myth: Is Upgrading Your Driver Actually Worth It?</h3>
+          <div class="rn-meta">Jan 24, 2026 <span class="dot">·</span> 5 min read</div>
+        </div>
+      </div>
+      </a>
+    </div>
+  </div>
+</div>

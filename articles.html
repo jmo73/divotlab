@@ -86,27 +86,54 @@ nav {
   box-shadow:0 4px 14px rgba(27,77,62,.3);
 }
 
-/* PAGE HEADER */
-.page-header {
+/* ARTICLES HERO - Premium dark style */
+.articles-hero {
+  min-height: 50vh;
+  background: var(--black);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 140px 56px 80px;
-  background: var(--warm-gray);
-  text-align: center;
+  overflow: hidden;
 }
-.page-header h1 {
+.articles-hero::before {
+  content:'';
+  position:absolute;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  width:500px; height:500px;
+  background:radial-gradient(ellipse at center, rgba(44,95,124,.10) 0%, transparent 65%);
+  pointer-events:none;
+}
+.articles-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 620px;
+}
+.articles-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--blue-mid);
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+.articles-hero h1 {
   font-family: var(--display);
-  font-size: clamp(42px, 6vw, 64px);
+  font-size: clamp(48px, 6.5vw, 72px);
   font-weight: 600;
   letter-spacing: -.025em;
-  line-height: 1.05;
-  color: var(--black);
-  margin-bottom: 16px;
+  line-height: 1.02;
+  color: var(--white);
+  margin-bottom: 18px;
 }
-.page-header p {
-  font-size: 17px;
-  color: var(--graphite);
+.articles-hero p {
+  font-size: 18px;
+  font-weight: 300;
+  color: rgba(250,250,250,0.5);
   line-height: 1.6;
-  max-width: 540px;
-  margin: 0 auto;
 }
 
 /* ARTICLES GRID */
@@ -228,7 +255,7 @@ footer {
 @media(max-width:600px){
   nav { padding:0 22px; }
   .nav-links a:not(.nav-cta){ display:none; }
-  .page-header { padding:100px 22px 60px; }
+  .articles-hero { min-height: 45vh; padding:120px 22px 60px; }
   .articles-section { padding:68px 22px; }
   .articles-grid { grid-template-columns:1fr; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
@@ -257,10 +284,13 @@ footer {
 </nav>
 
 <!-- HEADER -->
-<div class="page-header">
-  <h1>From the Lab</h1>
-  <p>Data-driven golf analysis. Real stats, real insights. No hot takes, no BS.</p>
-</div>
+<section class="articles-hero">
+  <div class="articles-hero-content">
+    <div class="articles-eyebrow">From the Lab</div>
+    <h1>Analysis. Data. Golf.</h1>
+    <p>What the numbers actually show.</p>
+  </div>
+</section>
 
 <!-- ARTICLES -->
 <section class="articles-section">
@@ -268,14 +298,7 @@ footer {
     
     <a href="/scheffler-putting-analysis.html" class="a-card">
       <div class="a-img">
-        <div class="a-img-bg"></div>
-        <div class="a-img-mark">
-          <svg viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="36" r="13" stroke="white" stroke-width="1.8"/>
-            <line x1="8" y1="64" x2="92" y2="64" stroke="white" stroke-width="1.4"/>
-            <path d="M18 64 Q50 86 82 64" stroke="white" stroke-width="1.4" fill="none"/>
-          </svg>
-        </div>
+        <img src="/scheffler.jpg" alt="Scottie Scheffler putting" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
       <div class="a-body">
         <span class="a-cat pga">PGA Tour</span>
@@ -286,15 +309,7 @@ footer {
 
     <a href="/strokes-gained-approach.html" class="a-card">
       <div class="a-img">
-        <div class="a-img-bg"></div>
-        <div class="a-img-mark">
-          <svg viewBox="0 0 100 100" fill="none">
-            <rect x="18" y="22" width="64" height="56" rx="3" stroke="white" stroke-width="1.5" fill="none"/>
-            <line x1="18" y1="40" x2="82" y2="40" stroke="white" stroke-width="1"/>
-            <line x1="30" y1="54" x2="72" y2="54" stroke="white" stroke-width="1" opacity=".55"/>
-            <line x1="30" y1="64" x2="58" y2="64" stroke="white" stroke-width="1" opacity=".3"/>
-          </svg>
-        </div>
+        <img src="/fleetwood.jpg" alt="Golf irons" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
       <div class="a-body">
         <span class="a-cat sg">Strokes Gained</span>
@@ -305,14 +320,7 @@ footer {
 
     <a href="/driver-upgrade-myth.html" class="a-card">
       <div class="a-img">
-        <div class="a-img-bg"></div>
-        <div class="a-img-mark">
-          <svg viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="26" stroke="white" stroke-width="1.5" fill="none"/>
-            <line x1="50" y1="24" x2="50" y2="50" stroke="white" stroke-width="1.5"/>
-            <line x1="50" y1="50" x2="67" y2="63" stroke="white" stroke-width="1.5"/>
-          </svg>
-        </div>
+        <img src="/driver.jpg" alt="Golf driver" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
       <div class="a-body">
         <span class="a-cat improve">Improvement</span>
@@ -342,14 +350,14 @@ footer {
     <div class="f-col">
       <h5>Read</h5>
       <a href="/articles.html">All Articles</a>
-      <a href="/articles.html">PGA Tour Analysis</a>
-      <a href="/articles.html">Strokes Gained</a>
-      <a href="/articles.html">Improvement</a>
+      <a href="/scheffler-putting-analysis.html">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach.html">Strokes Gained</a>
+      <a href="/driver-upgrade-myth.html">Improvement</a>
     </div>
     <div class="f-col">
       <h5>Shop</h5>
       <a href="https://divotlab.printful.me/">Tees</a>
-      <a href="https://divotlab.printful.me/">Hats</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
       <a href="https://divotlab.printful.me/">All Products</a>
     </div>
     <div class="f-col">
