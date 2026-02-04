@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — DIVOT LAB</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--body);
+  color: var(--black);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color:inherit; text-decoration:none; }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 56px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  background: rgba(250,250,250,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  transition: background .35s, border-color .35s;
+}
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--black); transition:color .35s; }
+.nav-wordmark {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--black);
+  transition: color .35s;
+}
+.nav-wordmark span { font-weight:300; opacity:.55; }
+
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a {
+  font-size:13px; font-weight:500; letter-spacing:.05em;
+  color:var(--graphite);
+  transition: color .2s;
+}
+.nav-links a:hover { color:var(--black); }
+
+.nav-cta {
+  background: var(--green);
+  color: var(--white) !important;
+  padding: 9px 22px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background .2s, transform .15s, box-shadow .2s;
+}
+.nav-cta:hover {
+  background:#236b4f;
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(27,77,62,.3);
+}
+
+/* PAGE HEADER */
+.page-header {
+  padding: 140px 56px 80px;
+  background: var(--warm-gray);
+  text-align: center;
+}
+.page-header h1 {
+  font-family: var(--display);
+  font-size: clamp(42px, 6vw, 64px);
+  font-weight: 600;
+  letter-spacing: -.025em;
+  line-height: 1.05;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+.page-header p {
+  font-size: 17px;
+  color: var(--graphite);
+  line-height: 1.6;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* CONTENT */
+.about-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 96px 56px;
+}
+.about-content h2 {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
+  margin-top: 48px;
+}
+.about-content h2:first-of-type {
+  margin-top: 0;
+}
+.about-content p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--graphite);
+  margin-bottom: 20px;
+}
+.about-content strong {
+  color: var(--black);
+  font-weight: 600;
+}
+.about-content a {
+  color: var(--green);
+  border-bottom: 1px solid var(--green);
+  transition: opacity .2s;
+}
+.about-content a:hover {
+  opacity: .6;
+}
+
+/* CTA SECTION */
+.about-cta {
+  background: var(--black);
+  padding: 80px 56px;
+  text-align: center;
+}
+.about-cta h2 {
+  font-family: var(--display);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.about-cta p {
+  font-size: 16px;
+  color: rgba(250,250,250,0.5);
+  margin-bottom: 32px;
+}
+.about-cta-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-fill {
+  background:var(--green); color:var(--white);
+  padding:13px 34px; border-radius:5px;
+  font-size:14px; font-weight:500; letter-spacing:.03em;
+  transition: background .2s, transform .15s, box-shadow .25s;
+  display: inline-block;
+}
+.btn-fill:hover { background:#236b4f; transform:translateY(-2px); box-shadow:0 8px 24px rgba(27,77,62,.28); }
+
+/* FOOTER */
+footer {
+  background:var(--black);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:64px 56px 36px;
+}
+.footer-grid {
+  max-width:1120px; margin:0 auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:44px;
+}
+.f-brand .f-logo { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.f-brand .f-logo svg { width:20px; height:20px; }
+.f-brand .f-logo-text { font-weight:600; font-size:13px; letter-spacing:.1em; color:var(--white); }
+.f-brand .f-logo-text span { font-weight:300; opacity:.5; }
+.f-brand p { font-size:13px; color:rgba(250,250,250,.36); line-height:1.65; max-width:240px; }
+
+.f-col h5 {
+  font-size:10px; font-weight:600; letter-spacing:.2em;
+  text-transform:uppercase; color:rgba(250,250,250,.28);
+  margin-bottom:18px;
+}
+.f-col a { display:block; font-size:13px; color:rgba(250,250,250,.5); margin-bottom:11px; transition:color .2s; }
+.f-col a:hover { color:var(--white); }
+
+.footer-bottom {
+  max-width:1120px; margin:44px auto 0;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex; justify-content:space-between;
+  font-size:12px; color:rgba(250,250,250,.22);
+}
+
+@media(max-width:900px){
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:600px){
+  nav { padding:0 22px; }
+  .nav-links a:not(.nav-cta){ display:none; }
+  .page-header { padding:100px 22px 60px; }
+  .about-content { padding:68px 22px; }
+  .about-cta { padding: 68px 22px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/articles.html">Articles</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="/about.html">About</a>
+    <a href="#" class="nav-cta">Lab Notes</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>About Divot Lab</h1>
+  <p>Data-driven golf analysis. No hot takes, no BS.</p>
+</div>
+
+<!-- CONTENT -->
+<div class="about-content">
+  <h2>What We Do</h2>
+  <p>Divot Lab breaks down the game of golf through data. We analyze strokes gained, tournament performance, equipment trends, and what actually moves the needle for pros and amateurs alike.</p>
+  
+  <p>No clickbait. No speculation. Just stats that tell the real story.</p>
+
+  <h2>Why We Started</h2>
+  <p>Golf media is full of hot takes and feel-good stories. We wanted something different — a place where <strong>the data speaks for itself</strong>. Where you can understand why Scottie Scheffler dominates, what separates scratch golfers from 10-handicaps, and whether that $600 driver is actually worth it.</p>
+
+  <p>We built Divot Lab for golfers who want to understand the game at a deeper level. Whether you're grinding to break 80 or just fascinated by what makes the best players in the world tick.</p>
+
+  <h2>Our Approach</h2>
+  <p>Every article starts with a question. Then we dig into the data — PGA Tour stats, strokes gained analysis, amateur performance metrics — to find the answer. We source from DataGolf, USGA research, Shot Scope, and other trusted platforms.</p>
+
+  <p>We don't cherry-pick numbers to fit a narrative. If the data says something surprising, we follow it.</p>
+
+  <h2>The Shop</h2>
+  <p>We also make apparel for golfers who appreciate the analytical side of the game. Clean designs, quality materials, subtle branding. Wear it to the range or out for coffee — it works either way.</p>
+</div>
+
+<!-- CTA -->
+<div class="about-cta">
+  <h2>Want More?</h2>
+  <p>Get our weekly email with one insight, one data point, and what's coming next. Every Tuesday.</p>
+  <div class="about-cta-btns">
+    <a href="/" class="btn-fill">Read the Latest</a>
+    <a href="https://divotlab.printful.me/" class="btn-fill">Visit the Shop</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles.html">All Articles</a>
+      <a href="/articles.html">PGA Tour Analysis</a>
+      <a href="/articles.html">Strokes Gained</a>
+      <a href="/articles.html">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/about.html">About</a>
+      <a href="#">Lab Notes</a>
+      <a href="#">Instagram</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Divot Lab</span>
+    <span>Built with data. Styled with taste.</span>
+  </div>
+</footer>
+
+</body>
+</html>
