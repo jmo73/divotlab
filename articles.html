@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Articles - DIVOT LAB</title>
+<title>Articles - Divot Lab</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,20 +88,20 @@ nav {
 
 /* ARTICLES HERO - Premium dark style */
 .articles-hero {
-  min-height: 50vh;
-  background: var(--black);
+  min-height: 65vh;
+  background: linear-gradient(165deg, #0a0a0a 0%, #0d1215 100%);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 140px 56px 80px;
+  padding: 140px 56px 100px;
   overflow: hidden;
 }
 .articles-hero::before {
   content:'';
   position:absolute;
   top:50%; left:50%; transform:translate(-50%,-50%);
-  width:500px; height:500px;
+  width:600px; height:600px;
   background:radial-gradient(ellipse at center, rgba(44,95,124,.10) 0%, transparent 65%);
   pointer-events:none;
 }
@@ -255,7 +255,7 @@ footer {
 @media(max-width:600px){
   nav { padding:0 22px; }
   .nav-links a:not(.nav-cta){ display:none; }
-  .articles-hero { min-height: 45vh; padding:120px 22px 60px; }
+  .articles-hero { min-height: 55vh; padding:120px 22px 80px; }
   .articles-section { padding:68px 22px; }
   .articles-grid { grid-template-columns:1fr; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
@@ -276,10 +276,10 @@ footer {
     <span class="nav-wordmark">DIVOT <span>LAB</span></span>
   </a>
   <div class="nav-links">
-    <a href="/articles.html">Articles</a>
+    <a href="/articles">Articles</a>
     <a href="https://divotlab.printful.me/">Shop</a>
-    <a href="/about.html">About</a>
-    <a href="javascript:void(0)" class="nav-cta">Lab Notes</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
 </nav>
 
@@ -296,7 +296,7 @@ footer {
 <section class="articles-section">
   <div class="articles-grid">
     
-    <a href="/scheffler-putting-analysis.html" class="a-card">
+    <a href="/scheffler-putting-analysis" class="a-card">
       <div class="a-img">
         <img src="/scheffler.jpg" alt="Scottie Scheffler putting" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
@@ -307,7 +307,7 @@ footer {
       </div>
     </a>
 
-    <a href="/strokes-gained-approach.html" class="a-card">
+    <a href="/strokes-gained-approach" class="a-card">
       <div class="a-img">
         <img src="/fleetwood.jpg" alt="Golf irons" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
@@ -318,7 +318,7 @@ footer {
       </div>
     </a>
 
-    <a href="/driver-upgrade-myth.html" class="a-card">
+    <a href="/driver-upgrade-myth" class="a-card">
       <div class="a-img">
         <img src="/driver.jpg" alt="Golf driver" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
       </div>
@@ -349,10 +349,10 @@ footer {
     </div>
     <div class="f-col">
       <h5>Read</h5>
-      <a href="/articles.html">All Articles</a>
-      <a href="/scheffler-putting-analysis.html">PGA Tour Analysis</a>
-      <a href="/strokes-gained-approach.html">Strokes Gained</a>
-      <a href="/driver-upgrade-myth.html">Improvement</a>
+      <a href="/articles">All Articles</a>
+      <a href="/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach">Strokes Gained</a>
+      <a href="/driver-upgrade-myth">Improvement</a>
     </div>
     <div class="f-col">
       <h5>Shop</h5>
@@ -362,15 +362,15 @@ footer {
     </div>
     <div class="f-col">
       <h5>Company</h5>
-      <a href="/about.html">About</a>
-      <a href="javascript:void(0)">Lab Notes</a>
+      <a href="/about">About</a>
+      <a href="/the-lab">The Lab</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
     </div>
   </div>
   <div class="footer-bottom">
     <span>© 2026 Divot Lab</span>
-    <span>Built with data. Styled with taste.</span>
+    <span>Built with data.</span>
   </div>
 </footer>
 
