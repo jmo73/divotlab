@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — DIVOT LAB</title>
+<title>About - DIVOT LAB</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,27 +86,54 @@ nav {
   box-shadow:0 4px 14px rgba(27,77,62,.3);
 }
 
-/* PAGE HEADER */
-.page-header {
-  padding: 140px 56px 80px;
-  background: var(--warm-gray);
-  text-align: center;
+/* ABOUT HERO - Premium dark style */
+.about-hero {
+  min-height: 65vh;
+  background: var(--black);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 140px 56px 100px;
+  overflow: hidden;
 }
-.page-header h1 {
+.about-hero::before {
+  content:'';
+  position:absolute;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  width:600px; height:600px;
+  background:radial-gradient(ellipse at center, rgba(27,77,62,.12) 0%, transparent 65%);
+  pointer-events:none;
+}
+.about-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 680px;
+}
+.about-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+.about-hero h1 {
   font-family: var(--display);
-  font-size: clamp(42px, 6vw, 64px);
+  font-size: clamp(52px, 7vw, 78px);
   font-weight: 600;
   letter-spacing: -.025em;
-  line-height: 1.05;
-  color: var(--black);
-  margin-bottom: 16px;
+  line-height: 1.02;
+  color: var(--white);
+  margin-bottom: 18px;
 }
-.page-header p {
-  font-size: 17px;
-  color: var(--graphite);
+.about-hero p {
+  font-size: 19px;
+  font-weight: 300;
+  color: rgba(250,250,250,0.5);
   line-height: 1.6;
-  max-width: 540px;
-  margin: 0 auto;
 }
 
 /* CONTENT */
@@ -218,7 +245,7 @@ footer {
 @media(max-width:600px){
   nav { padding:0 22px; }
   .nav-links a:not(.nav-cta){ display:none; }
-  .page-header { padding:100px 22px 60px; }
+  .about-hero { min-height: 55vh; padding:120px 22px 80px; }
   .about-content { padding:68px 22px; }
   .about-cta { padding: 68px 22px; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
@@ -242,35 +269,36 @@ footer {
     <a href="/articles.html">Articles</a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about.html">About</a>
-    <a href="#" class="nav-cta">Lab Notes</a>
+    <a href="javascript:void(0)" class="nav-cta">Lab Notes</a>
   </div>
 </nav>
 
 <!-- HEADER -->
-<div class="page-header">
-  <h1>About Divot Lab</h1>
-  <p>Data-driven golf analysis. No hot takes, no BS.</p>
-</div>
+<section class="about-hero">
+  <div class="about-hero-content">
+    <div class="about-eyebrow">About Divot Lab</div>
+    <h1>Golf, decoded.</h1>
+    <p>Where the data meets the game.</p>
+  </div>
+</section>
 
 <!-- CONTENT -->
 <div class="about-content">
   <h2>What We Do</h2>
-  <p>Divot Lab breaks down the game of golf through data. We analyze strokes gained, tournament performance, equipment trends, and what actually moves the needle for pros and amateurs alike.</p>
-  
-  <p>No clickbait. No speculation. Just stats that tell the real story.</p>
+  <p>Divot Lab analyzes golf through data. Strokes gained. Tournament performance. Equipment. What actually matters for players at every level.</p>
 
-  <h2>Why We Started</h2>
-  <p>Golf media is full of hot takes and feel-good stories. We wanted something different — a place where <strong>the data speaks for itself</strong>. Where you can understand why Scottie Scheffler dominates, what separates scratch golfers from 10-handicaps, and whether that $600 driver is actually worth it.</p>
+  <h2>Why It Exists</h2>
+  <p>Golf coverage tends toward hot takes or feel-good narratives. We focus on what the numbers show. Why certain players dominate. What separates skill levels. Whether equipment changes make a measurable difference.</p>
 
-  <p>We built Divot Lab for golfers who want to understand the game at a deeper level. Whether you're grinding to break 80 or just fascinated by what makes the best players in the world tick.</p>
+  <p>Built for golfers who want to understand the game beyond the surface.</p>
 
-  <h2>Our Approach</h2>
-  <p>Every article starts with a question. Then we dig into the data — PGA Tour stats, strokes gained analysis, amateur performance metrics — to find the answer. We source from DataGolf, USGA research, Shot Scope, and other trusted platforms.</p>
+  <h2>Our Process</h2>
+  <p>Start with a question. Pull the relevant data from PGA Tour stats, DataGolf, USGA research, and other sources. Follow where it leads.</p>
 
-  <p>We don't cherry-pick numbers to fit a narrative. If the data says something surprising, we follow it.</p>
+  <p>If the data contradicts conventional wisdom, we go with the data.</p>
 
   <h2>The Shop</h2>
-  <p>We also make apparel for golfers who appreciate the analytical side of the game. Clean designs, quality materials, subtle branding. Wear it to the range or out for coffee — it works either way.</p>
+  <p>Clean apparel. Quality materials. Subtle branding. For golfers who care about both the game and what they wear.</p>
 </div>
 
 <!-- CTA -->
@@ -314,9 +342,9 @@ footer {
     <div class="f-col">
       <h5>Company</h5>
       <a href="/about.html">About</a>
-      <a href="#">Lab Notes</a>
-      <a href="#">Instagram</a>
-      <a href="#">Contact</a>
+      <a href="javascript:void(0)">Lab Notes</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="javascript:void(0)">Contact</a>
     </div>
   </div>
   <div class="footer-bottom">
