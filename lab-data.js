@@ -274,28 +274,20 @@ function renderFieldStrength() {
       </div>
 
       <!-- Leaders Card -->
-      <div class="strength-card">
+      <div class="strength-card" style="max-width: none; width: 100%;">
         <div class="strength-header">
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        <!-- Invisible spacer to match strength-bar (6px + 10px margin) -->
-        <div style="height: 16px;"></div>
-        <!-- Invisible spacer to match strength-rating (text height + 16px margin) -->
-        <div style="height: 36px;"></div>
-        <!-- Match strength-details structure -->
-        <div style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
             ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
               const score = p.current_score || 0;
               const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
               const lastName = p.player_name.split(', ')[0];
               return `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                    <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                  </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
                   <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
                 </div>
               `;
@@ -308,27 +300,19 @@ function renderFieldStrength() {
       </div>
 
       <!-- Odds Card -->
-      <div class="strength-card">
+      <div class="strength-card" style="max-width: none; width: 100%;">
         <div class="strength-header">
           <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        <!-- Invisible spacer to match strength-bar (6px + 10px margin) -->
-        <div style="height: 16px;"></div>
-        <!-- Invisible spacer to match strength-rating (text height + 16px margin) -->
-        <div style="height: 36px;"></div>
-        <!-- Match strength-details structure -->
-        <div style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
             ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
               const winPct = ((p.win || 0) * 100).toFixed(1);
               const lastName = p.player_name.split(', ')[0];
               return `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                    <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                  </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
                   <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
                 </div>
               `;
