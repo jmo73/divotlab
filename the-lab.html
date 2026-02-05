@@ -533,8 +533,9 @@ canvas { max-width: 100%; }
 <!-- SECTION NAV -->
 <div class="section-nav">
   <a href="#events" class="active">Events</a>
-  <a href="#rankings">Rankings</a>
+  <a href="#leaderboard">Leaderboard</a>
   <a href="#predictions">Predictions</a>
+  <a href="#rankings">Rankings</a>
   <a href="#analytics">Analytics</a>
 </div>
 
@@ -557,18 +558,15 @@ canvas { max-width: 100%; }
   </div>
 </div>
 
-<!-- RANKINGS -->
-<section class="lab-section" id="rankings">
+<!-- LEADERBOARD -->
+<section class="lab-section" id="leaderboard">
   <div class="section-header">
-    <h2>Top 10 Rankings</h2>
+    <h2>Leaderboard</h2>
     <div class="section-toggle">▼</div>
   </div>
   <div class="section-body">
-    <div style="margin-bottom: 24px; font-size: 13px; color: rgba(250,250,250,0.45); text-align: center;">
-      2025-26 PGA Tour Season
-    </div>
-    <div class="top10-grid" id="top10-grid">
-      <div class="loading-msg" style="grid-column:1/-1;">Loading rankings...</div>
+    <div id="leaderboard-table">
+      <div class="loading-msg">Leaderboard available when tournament is live</div>
     </div>
   </div>
 </section>
@@ -582,6 +580,22 @@ canvas { max-width: 100%; }
   <div class="section-body">
     <div id="predictions-table">
       <div class="loading-msg">Loading predictions...</div>
+    </div>
+  </div>
+</section>
+
+<!-- RANKINGS -->
+<section class="lab-section" id="rankings">
+  <div class="section-header">
+    <h2>Top 10 Rankings</h2>
+    <div class="section-toggle">▼</div>
+  </div>
+  <div class="section-body">
+    <div style="margin-bottom: 24px; font-size: 13px; color: rgba(250,250,250,0.45); text-align: center;">
+      2025-26 PGA Tour Season
+    </div>
+    <div class="top10-grid" id="top10-grid">
+      <div class="loading-msg" style="grid-column:1/-1;">Loading rankings...</div>
     </div>
   </div>
 </section>

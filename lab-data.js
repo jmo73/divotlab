@@ -119,6 +119,7 @@ let globalPlayers = [];
 let globalPredictions = [];
 let globalTournamentInfo = {};
 let globalDGRankings = [];
+let globalLeaderboard = [];
 let hoveredPlayer = null;
 
 // ============================================
@@ -164,20 +165,22 @@ async function loadAllData() {
         const liveData = await liveResponse.json();
         
         if (liveData.success && liveData.data) {
-          // Handle different possible structures
-          const livePreds = liveData.data.predictions || liveData.data.baseline_history_fit || [];
-          if (livePreds.length > 0) {
-            globalPredictions = livePreds;
-            console.log('✓ Using live predictions:', livePreds.length);
+          // The in-play endpoint returns { data: [...] } directly
+          const liveArray = liveData.data.data || liveData.data || [];
+          if (liveArray.length > 0) {
+            globalLeaderboard = liveArray; // Full leaderboard data
+            globalPredictions = liveArray; // Same data for predictions
+            console.log('✓ Using live data:', liveArray.length, 'players');
           }
         }
       } catch (err) {
-        console.warn('⚠️ Could not load live predictions:', err);
+        console.warn('⚠️ Could not load live data:', err);
       }
     }
     
     renderTournamentBanner();
     renderFieldStrength();
+    renderLeaderboard();
     renderTop10();
     renderPredictions();
     renderCharts();
@@ -221,20 +224,10 @@ function renderFieldStrength() {
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
   
-  // Get field size from tournament info
-  const fieldSize = globalTournamentInfo.field_size || globalPlayers.length || 0;
-  
-  // Calculate OWGR Top 50 count
-  const top50Count = globalPlayers.filter(p => (p.owgr_rank || 999) <= 50).length;
-  
-  // Get course info
-  const courseName = globalTournamentInfo.course || 'TBD';
-  const courseShort = courseName.length > 30 ? courseName.substring(0, 27) + '...' : courseName;
-  
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
       
-      <!-- Field Strength Card -->
+      <!-- Field Strength Card 1 -->
       <div class="strength-card">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
@@ -250,42 +243,115 @@ function renderFieldStrength() {
         </div>
       </div>
 
-      <!-- Field Size Card -->
+      <!-- Field Strength Card 2 -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Field Size</span>
-          <span class="strength-value">${fieldSize}</span>
+          <span class="strength-label">Field Strength</span>
+          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
         </div>
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Players</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Total field count</div>
+        <div class="strength-bar">
+          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
+        </div>
+        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
+        <div class="strength-details">
+          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
+          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
         </div>
       </div>
 
-      <!-- OWGR Top 50 Card -->
+      <!-- Field Strength Card 3 -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">OWGR Top 50</span>
-          <span class="strength-value">${top50Count}</span>
+          <span class="strength-label">Field Strength</span>
+          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
         </div>
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Elite Players</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">World ranking top 50</div>
+        <div class="strength-bar">
+          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
+        </div>
+        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
+        <div class="strength-details">
+          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
+          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
         </div>
       </div>
 
-      <!-- Course Card -->
+      <!-- Field Strength Card 4 -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Course</span>
-          <span class="strength-value" style="font-size: 16px; font-weight: 600;">${courseShort}</span>
+          <span class="strength-label">Field Strength</span>
+          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
         </div>
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Venue</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Par 72</div>
+        <div class="strength-bar">
+          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
+        </div>
+        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
+        <div class="strength-details">
+          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
+          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
         </div>
       </div>
 
+    </div>
+  `;
+}
+
+function renderLeaderboard() {
+  const container = document.getElementById('leaderboard-table');
+  if (!container) return;
+  
+  const isLive = (globalTournamentInfo.current_round || 0) > 0;
+  
+  if (!isLive || !globalLeaderboard.length) {
+    container.innerHTML = '<div class="loading-msg">Leaderboard available when tournament is live</div>';
+    return;
+  }
+  
+  // Sort by current position
+  const sorted = [...globalLeaderboard].sort((a, b) => {
+    const posA = parseInt(a.current_pos) || 999;
+    const posB = parseInt(b.current_pos) || 999;
+    return posA - posB;
+  });
+  
+  container.innerHTML = `
+    <div class="table-wrapper">
+      <table class="pred-table">
+        <thead>
+          <tr>
+            <th class="rank-col">Pos</th>
+            <th>Player</th>
+            <th class="prob-col">Score</th>
+            <th class="prob-col">Today</th>
+            <th class="prob-col">Thru</th>
+            <th class="prob-col">R1</th>
+            <th class="prob-col">R2</th>
+            <th class="prob-col">R3</th>
+            <th class="prob-col">R4</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map((p, i) => {
+            const score = p.current_score || 0;
+            const scoreDisplay = score > 0 ? `+${score}` : score === 0 ? 'E' : score;
+            const today = p.today || 0;
+            const todayDisplay = today > 0 ? `+${today}` : today === 0 ? 'E' : today;
+            
+            return `
+              <tr>
+                <td class="rank-col">${p.current_pos || '-'}</td>
+                <td class="player-col">${p.player_name}</td>
+                <td class="prob-col win">${scoreDisplay}</td>
+                <td class="prob-col">${todayDisplay}</td>
+                <td class="prob-col">${p.thru || '-'}</td>
+                <td class="prob-col">${p.R1 || '-'}</td>
+                <td class="prob-col">${p.R2 || '-'}</td>
+                <td class="prob-col">${p.R3 || '-'}</td>
+                <td class="prob-col">${p.R4 || '-'}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
     </div>
   `;
 }
@@ -488,16 +554,18 @@ function renderSkillsRadar() {
       scales: {
         r: {
           beginAtZero: true,
+          max: 2.5,
           ticks: { 
             color: 'rgba(250,250,250,0.4)',
             backdropColor: 'transparent',
-            font: { size: 10 }
+            font: { size: 10 },
+            stepSize: 0.5
           },
           grid: { color: 'rgba(255,255,255,0.08)' },
           pointLabels: { 
             color: 'rgba(250,250,250,0.6)',
             font: { size: 11, weight: '500' },
-            padding: 8
+            padding: 6
           }
         }
       },
@@ -585,14 +653,22 @@ function renderScatterPlot() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 1.4,
+      layout: {
+        padding: {
+          top: 5,
+          right: 10,
+          bottom: 5,
+          left: 5
+        }
+      },
       scales: {
         x: {
           title: {
             display: true,
             text: 'SG: Putting',
             color: 'rgba(250,250,250,0.6)',
-            font: { size: 12, weight: '500' }
+            font: { size: 12, weight: '500' },
+            padding: { top: 8 }
           },
           ticks: { color: 'rgba(250,250,250,0.5)', font: { size: 10 } },
           grid: { color: 'rgba(255,255,255,0.06)' }
@@ -806,11 +882,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Section nav active states with Events section
   const navLinks = document.querySelectorAll('.section-nav a');
   const eventsSection = document.getElementById('events');
-  const rankingsSection = document.getElementById('rankings');
+  const leaderboardSection = document.getElementById('leaderboard');
   const predictionsSection = document.getElementById('predictions');
+  const rankingsSection = document.getElementById('rankings');
   const analyticsSection = document.getElementById('analytics');
   
-  const allSections = [eventsSection, rankingsSection, predictionsSection, analyticsSection].filter(Boolean);
+  const allSections = [eventsSection, leaderboardSection, predictionsSection, rankingsSection, analyticsSection].filter(Boolean);
   
   // Track which section is currently intersecting
   let currentSection = 'events';
@@ -844,14 +921,16 @@ async function loadLivePredictions() {
     const liveData = await liveResponse.json();
     
     if (liveData.success && liveData.data) {
-      const livePreds = liveData.data.predictions || liveData.data.baseline_history_fit || [];
-      if (livePreds.length > 0) {
-        globalPredictions = livePreds;
-        console.log('✓ Updated live predictions:', livePreds.length);
-        renderPredictions(); // Re-render predictions table
+      const liveArray = liveData.data.data || liveData.data || [];
+      if (liveArray.length > 0) {
+        globalLeaderboard = liveArray;
+        globalPredictions = liveArray;
+        console.log('✓ Updated live data:', liveArray.length, 'players');
+        renderLeaderboard();
+        renderPredictions();
       }
     }
   } catch (err) {
-    console.warn('⚠️ Could not refresh live predictions:', err);
+    console.warn('⚠️ Could not refresh live data:', err);
   }
 }

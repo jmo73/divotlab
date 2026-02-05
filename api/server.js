@@ -237,7 +237,7 @@ app.get('/api/live-tournament', async (req, res) => {
     const cacheKey = `live-tournament-${tour}`;
 
     const result = await fetchDataGolf(
-      `/preds/in-play?tour=${tour}&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `/preds/in-play?tour=${tour}&dead_heat=no&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
       300 // 5min cache
     );
