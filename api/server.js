@@ -396,8 +396,8 @@ app.get('/api/lab-data', async (req, res) => {
     ]);
 
     const compositeData = {
-      players: skillRatings.skill_ratings || [],
-      predictions: preTournament.baseline_history_fit || [],
+      players: skillRatings.players || skillRatings.skill_ratings || [],
+      predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
       tournament: {
         event_name: preTournament.event_name || fieldUpdates.event_name || 'Upcoming Tournament',
         course: fieldUpdates.course || '',
