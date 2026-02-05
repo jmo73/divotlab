@@ -146,11 +146,11 @@ async function loadAllData() {
     
     // Load DG Rankings for Top 10
     try {
-      const rankingsResponse = await fetch('https://feeds.datagolf.com/preds/get-dg-rankings?file_format=json&key=dc8cd870e0460b9fb860cf59164e');
+      const rankingsResponse = await fetch(`${API_BASE_URL}/api/rankings`);
       const rankingsData = await rankingsResponse.json();
       
-      if (rankingsData.rankings) {
-        globalDGRankings = rankingsData.rankings.slice(0, 10);
+      if (rankingsData.success && rankingsData.data && rankingsData.data.rankings) {
+        globalDGRankings = rankingsData.data.rankings.slice(0, 10);
         console.log('✓ Loaded DG Rankings top 10');
       }
     } catch (err) {
@@ -218,9 +218,18 @@ function renderFieldStrength() {
   if (!container) return;
   
   const field = calculateFieldStrength(globalPlayers);
-  const metrics = calculateFieldMetrics(globalPlayers);
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
+  
+  // Get field size from tournament info
+  const fieldSize = globalTournamentInfo.field_size || globalPlayers.length || 0;
+  
+  // Calculate OWGR Top 50 count
+  const top50Count = globalPlayers.filter(p => (p.owgr_rank || 999) <= 50).length;
+  
+  // Get course info
+  const courseName = globalTournamentInfo.course || 'TBD';
+  const courseShort = courseName.length > 30 ? courseName.substring(0, 27) + '...' : courseName;
   
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
@@ -241,39 +250,39 @@ function renderFieldStrength() {
         </div>
       </div>
 
-      <!-- Average SG Card -->
+      <!-- Field Size Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Average SG Total</span>
-          <span class="strength-value">—</span>
+          <span class="strength-label">Field Size</span>
+          <span class="strength-value">${fieldSize}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Field Average</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">${globalPlayers.length} players with ShotLink data</div>
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Players</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Total field count</div>
         </div>
       </div>
 
-      <!-- Driving Distance Card -->
+      <!-- OWGR Top 50 Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Avg Driving Dist</span>
-          <span class="strength-value">${metrics && metrics.avgDrivingDist ? metrics.avgDrivingDist : '—'}<span class="strength-max">${metrics && metrics.avgDrivingDist ? 'yds' : ''}</span></span>
+          <span class="strength-label">OWGR Top 50</span>
+          <span class="strength-value">${top50Count}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Power Metric</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Field average off the tee</div>
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Elite Players</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">World ranking top 50</div>
         </div>
       </div>
 
-      <!-- GIR Card -->
+      <!-- Course Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">GIR</span>
-          <span class="strength-value">${metrics && metrics.avgGIR ? metrics.avgGIR : '—'}<span class="strength-max">${metrics && metrics.avgGIR ? '%' : ''}</span></span>
+          <span class="strength-label">Course</span>
+          <span class="strength-value" style="font-size: 16px; font-weight: 600;">${courseShort}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Accuracy Metric</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Greens hit in regulation</div>
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Venue</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Par 72</div>
         </div>
       </div>
 
@@ -323,11 +332,12 @@ function renderTop10() {
   
   container.innerHTML = top10.map((p, i) => {
     const style = getPlayingStyle(p);
+    const flag = getFlag(p.country);
     return `
       <div class="player-card" style="animation-delay: ${i * 0.05}s">
         <div class="card-top">
           <div class="rank-badge">${i + 1}</div>
-          <span class="player-flag">${getFlag(p.country)}</span>
+          ${flag !== '🏳️' ? `<span class="player-flag">${flag}</span>` : ''}
           <span class="style-tag" style="color: ${style.color}; border-color: ${style.color};">
             ${style.name}
           </span>
@@ -513,41 +523,76 @@ function renderScatterPlot() {
   
   const ctx = canvas.getContext('2d');
   
-  const top15 = globalPlayers
+  const top20 = globalPlayers
     .filter(p => p.sg_total != null)
     .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
-    .slice(0, 15);
+    .slice(0, 20);
   
-  if (!top15.length) return;
+  if (!top20.length) return;
   
-  const scatterData = top15.map(p => ({
-    x: (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0),
-    y: p.sg_putt || 0,
-    player: p.player_name
+  // Group by rank: 1-3, 4-10, 11-20
+  const top3 = top20.slice(0, 3).map((p, i) => ({
+    x: (p.sg_putt || 0),
+    y: (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0),
+    player: p.player_name,
+    rank: i + 1
+  }));
+  
+  const ranks4to10 = top20.slice(3, 10).map((p, i) => ({
+    x: (p.sg_putt || 0),
+    y: (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0),
+    player: p.player_name,
+    rank: i + 4
+  }));
+  
+  const ranks11to20 = top20.slice(10, 20).map((p, i) => ({
+    x: (p.sg_putt || 0),
+    y: (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0),
+    player: p.player_name,
+    rank: i + 11
   }));
   
   new Chart(ctx, {
     type: 'scatter',
     data: {
-      datasets: [{
-        label: 'Top 15 Players',
-        data: scatterData,
-        backgroundColor: '#5BBF85',
-        borderColor: '#5BBF85',
-        pointRadius: 6,
-        pointHoverRadius: 8
-      }]
+      datasets: [
+        {
+          label: 'Rank 1-3',
+          data: top3,
+          backgroundColor: '#5BBF85',
+          borderColor: '#5BBF85',
+          pointRadius: 7,
+          pointHoverRadius: 9
+        },
+        {
+          label: 'Rank 4-10',
+          data: ranks4to10,
+          backgroundColor: '#5A8FA8',
+          borderColor: '#5A8FA8',
+          pointRadius: 6,
+          pointHoverRadius: 8
+        },
+        {
+          label: 'Rank 11-20',
+          data: ranks11to20,
+          backgroundColor: '#808080',
+          borderColor: '#808080',
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }
+      ]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1.4,
       scales: {
         x: {
           title: {
             display: true,
-            text: 'Tee-to-Green (SG OTT + APP + ARG)',
+            text: 'SG: Putting',
             color: 'rgba(250,250,250,0.6)',
-            font: { size: 11, weight: '500' }
+            font: { size: 12, weight: '500' }
           },
           ticks: { color: 'rgba(250,250,250,0.5)', font: { size: 10 } },
           grid: { color: 'rgba(255,255,255,0.06)' }
@@ -555,16 +600,27 @@ function renderScatterPlot() {
         y: {
           title: {
             display: true,
-            text: 'Putting (SG Putt)',
+            text: 'SG: Tee-to-Green',
             color: 'rgba(250,250,250,0.6)',
-            font: { size: 11, weight: '500' }
+            font: { size: 12, weight: '500' }
           },
           ticks: { color: 'rgba(250,250,250,0.5)', font: { size: 10 } },
           grid: { color: 'rgba(255,255,255,0.06)' }
         }
       },
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'center',
+          labels: {
+            color: 'rgba(250,250,250,0.7)',
+            font: { size: 11 },
+            padding: 10,
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
         tooltip: {
           enabled: true,
           backgroundColor: '#1B4D3E',
@@ -581,15 +637,15 @@ function renderScatterPlot() {
           },
           callbacks: {
             title: function(items) {
-              // Show last name only to keep it compact
               const fullName = items[0].raw.player;
               const parts = fullName.split(', ');
-              return parts[0]; // Returns last name
+              return parts[0];
             },
             label: function(context) {
               return [
-                `Tee-to-Green: ${context.parsed.x.toFixed(2)}`,
-                `Putting: ${context.parsed.y.toFixed(2)}`
+                `Rank: ${context.raw.rank}`,
+                `SG: Putting: ${context.parsed.x.toFixed(2)}`,
+                `SG: Tee-to-Green: ${context.parsed.y.toFixed(2)}`
               ];
             }
           }
@@ -739,22 +795,63 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAllData();
   initSectionToggles();
   
+  // Auto-refresh live predictions every hour when tournament is ongoing
+  setInterval(() => {
+    if (globalTournamentInfo.current_round > 0) {
+      console.log('🔄 Auto-refreshing live predictions...');
+      loadLivePredictions();
+    }
+  }, 3600000); // 1 hour = 3,600,000ms
+  
   // Section nav active states with Events section
   const navLinks = document.querySelectorAll('.section-nav a');
   const eventsSection = document.getElementById('events');
-  const labSections = document.querySelectorAll('.lab-section');
-  const allSections = eventsSection ? [eventsSection, ...labSections] : [...labSections];
+  const rankingsSection = document.getElementById('rankings');
+  const predictionsSection = document.getElementById('predictions');
+  const analyticsSection = document.getElementById('analytics');
+  
+  const allSections = [eventsSection, rankingsSection, predictionsSection, analyticsSection].filter(Boolean);
+  
+  // Track which section is currently intersecting
+  let currentSection = 'events';
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        currentSection = entry.target.id;
         navLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
         });
       }
     });
-  }, { threshold: 0.3, rootMargin: '-100px 0px -50% 0px' });
+  }, { 
+    threshold: [0, 0.25, 0.5, 0.75, 1],
+    rootMargin: '-80px 0px -40% 0px'
+  });
   
   allSections.forEach(section => observer.observe(section));
+  
+  // Set Events as active on load
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#events');
+  });
 });
+
+// Separate function to reload live predictions
+async function loadLivePredictions() {
+  try {
+    const liveResponse = await fetch(`${API_BASE_URL}/api/live-tournament`);
+    const liveData = await liveResponse.json();
+    
+    if (liveData.success && liveData.data) {
+      const livePreds = liveData.data.predictions || liveData.data.baseline_history_fit || [];
+      if (livePreds.length > 0) {
+        globalPredictions = livePreds;
+        console.log('✓ Updated live predictions:', livePreds.length);
+        renderPredictions(); // Re-render predictions table
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ Could not refresh live predictions:', err);
+  }
+}
