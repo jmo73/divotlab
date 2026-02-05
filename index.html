@@ -673,18 +673,18 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <!-- ========== STAT BAR ========== -->
 <div class="stat-bar">
   <div class="stat">
-    <div class="stat-val">+1.42</div>
-    <div class="stat-lbl">Strokes Gained · Leader</div>
+    <div class="stat-val" id="sgLeaderValue">--</div>
+    <div class="stat-lbl" id="sgLeaderLabel">Loading...</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val">68.1</div>
-    <div class="stat-lbl">Scoring Avg · This Week</div>
+    <div class="stat-val" id="stat2Value">--</div>
+    <div class="stat-lbl" id="stat2Label">Loading...</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val">71%</div>
-    <div class="stat-lbl">Greens in Regulation</div>
+    <div class="stat-val" id="stat3Value">--</div>
+    <div class="stat-lbl" id="stat3Label">Loading...</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
@@ -898,5 +898,6 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   reveals.forEach(function(el){ obs.observe(el); });
 })();
 </script>
+<script src="/divotlab-stats.js"></script>
 </body>
 </html>
