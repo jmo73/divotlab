@@ -279,16 +279,17 @@ function renderFieldStrength() {
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        <div class="strength-bar" style="visibility: hidden; height: 8px;"></div>
-        <div class="strength-rating" style="opacity: 0; height: 20px;"></div>
+        <div style="height: 8px;"></div>
+        <div style="height: 20px;"></div>
         <div class="strength-details">
           ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
             const score = p.current_score || 0;
             const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
             const lastName = p.player_name.split(', ')[0];
             return `
-              <div class="strength-stat" style="justify-content: space-between; width: 100%;">
-                <span class="stat-text" style="opacity: 1;">${i + 1}. ${lastName}</span>
+              <div class="strength-stat">
+                <span class="stat-num" style="min-width: 20px;">${i + 1}.</span>
+                <span class="stat-text" style="opacity: 1; flex: 1;">${lastName}</span>
                 <span class="stat-num" style="color: ${score <= 0 ? '#5BBF85' : '#E76F51'};">${scoreDisplay}</span>
               </div>
             `;
@@ -302,15 +303,16 @@ function renderFieldStrength() {
           <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        <div class="strength-bar" style="visibility: hidden; height: 8px;"></div>
-        <div class="strength-rating" style="opacity: 0; height: 20px;"></div>
+        <div style="height: 8px;"></div>
+        <div style="height: 20px;"></div>
         <div class="strength-details">
           ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
             const winPct = ((p.win || 0) * 100).toFixed(1);
             const lastName = p.player_name.split(', ')[0];
             return `
-              <div class="strength-stat" style="justify-content: space-between; width: 100%;">
-                <span class="stat-text" style="opacity: 1;">${i + 1}. ${lastName}</span>
+              <div class="strength-stat">
+                <span class="stat-num" style="min-width: 20px;">${i + 1}.</span>
+                <span class="stat-text" style="opacity: 1; flex: 1;">${lastName}</span>
                 <span class="stat-num" style="color: #5A8FA8;">${winPct}%</span>
               </div>
             `;
