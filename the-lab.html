@@ -166,7 +166,7 @@ nav {
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .strength-card {
-  max-width: 400px;
+  max-width: 100%;
   margin: 0 auto;
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
@@ -528,13 +528,14 @@ canvas { max-width: 100%; }
 
 <!-- SECTION NAV -->
 <div class="section-nav">
-  <a href="#rankings" class="active">Rankings</a>
+  <a href="#events" class="active">Events</a>
+  <a href="#rankings">Rankings</a>
   <a href="#predictions">Predictions</a>
   <a href="#analytics">Analytics</a>
 </div>
 
 <!-- HERO -->
-<section class="lab-hero">
+<section class="lab-hero" id="events">
   <h1>The Lab</h1>
   <p>Real-time golf analytics powered by DataGolf</p>
   <div class="tournament-banner" id="tournament-banner">
@@ -560,7 +561,7 @@ canvas { max-width: 100%; }
   </div>
   <div class="section-body">
     <div style="margin-bottom: 24px; font-size: 13px; color: rgba(250,250,250,0.45); text-align: center;">
-      2025-26 PGA Tour Season · Based on Strokes Gained Total
+      2025-26 PGA Tour Season
     </div>
     <div class="top10-grid" id="top10-grid">
       <div class="loading-msg" style="grid-column:1/-1;">Loading rankings...</div>
