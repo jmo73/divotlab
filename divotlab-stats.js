@@ -67,7 +67,7 @@ async function loadStats() {
     // Stat 3: Top player's SG Approach
     const sgApp = topPlayer.sg_app || 0;
     document.getElementById('stat3Value').textContent = formatSGValue(sgApp);
-    document.getElementById('stat3Label').textContent = 'SG: Approach · Leader';
+    document.getElementById('stat3Label').textContent = `SG: Approach · ${playerName}`;
     
     console.log('✓ Stats loaded successfully');
     
