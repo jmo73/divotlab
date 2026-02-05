@@ -310,12 +310,14 @@ function renderLeaderboard() {
   const sorted = [...globalLeaderboard].sort((a, b) => {
     // Convert E to 0 for sorting
     let scoreA = a.current_score;
-    if (scoreA === 'E') scoreA = 0;
-    scoreA = scoreA || 999;
+    if (scoreA === 'E' || scoreA === 0) scoreA = 0;
+    else if (typeof scoreA === 'string') scoreA = parseFloat(scoreA) || 999;
+    else scoreA = scoreA || 999;
     
     let scoreB = b.current_score;
-    if (scoreB === 'E') scoreB = 0;
-    scoreB = scoreB || 999;
+    if (scoreB === 'E' || scoreB === 0) scoreB = 0;
+    else if (typeof scoreB === 'string') scoreB = parseFloat(scoreB) || 999;
+    else scoreB = scoreB || 999;
     
     if (scoreA !== scoreB) {
       return scoreA - scoreB; // Lower score = better
