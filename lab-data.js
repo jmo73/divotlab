@@ -306,17 +306,26 @@ function renderLeaderboard() {
     return;
   }
   
-  // Sort by current position
+  // Sort by current score (lowest to highest), then by position
   const sorted = [...globalLeaderboard].sort((a, b) => {
-    const posA = parseInt(a.current_pos) || 999;
-    const posB = parseInt(b.current_pos) || 999;
-    return posA - posB;
+    const scoreA = a.current_score || 999;
+    const scoreB = b.current_score || 999;
+    
+    if (scoreA !== scoreB) {
+      return scoreA - scoreB; // Lower score = better
+    }
+    
+    // If scores are tied, sort by position string
+    const posA = String(a.current_pos || '999').replace(/[T-]/g, '');
+    const posB = String(b.current_pos || '999').replace(/[T-]/g, '');
+    return parseInt(posA) - parseInt(posB);
   });
   
+  // Show all players but let table scroll
   container.innerHTML = `
-    <div class="table-wrapper">
+    <div class="table-wrapper" style="max-height: 600px; overflow-y: auto;">
       <table class="pred-table">
-        <thead>
+        <thead style="position: sticky; top: 0; background: rgba(10,10,10,0.95); z-index: 1;">
           <tr>
             <th class="rank-col">Pos</th>
             <th>Player</th>
@@ -554,18 +563,16 @@ function renderSkillsRadar() {
       scales: {
         r: {
           beginAtZero: true,
-          max: 2.5,
           ticks: { 
             color: 'rgba(250,250,250,0.4)',
             backdropColor: 'transparent',
-            font: { size: 10 },
-            stepSize: 0.5
+            font: { size: 10 }
           },
           grid: { color: 'rgba(255,255,255,0.08)' },
           pointLabels: { 
             color: 'rgba(250,250,250,0.6)',
             font: { size: 11, weight: '500' },
-            padding: 6
+            padding: 8
           }
         }
       },
@@ -652,23 +659,14 @@ function renderScatterPlot() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: {
-          top: 5,
-          right: 10,
-          bottom: 5,
-          left: 5
-        }
-      },
+      maintainAspectRatio: true,
       scales: {
         x: {
           title: {
             display: true,
             text: 'SG: Putting',
             color: 'rgba(250,250,250,0.6)',
-            font: { size: 12, weight: '500' },
-            padding: { top: 8 }
+            font: { size: 12, weight: '500' }
           },
           ticks: { color: 'rgba(250,250,250,0.5)', font: { size: 10 } },
           grid: { color: 'rgba(255,255,255,0.06)' }
@@ -893,17 +891,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSection = 'events';
   
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-        currentSection = entry.target.id;
-        navLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
-        });
-      }
-    });
+    // Sort entries by their position on page (top to bottom)
+    const sortedEntries = entries
+      .filter(e => e.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    
+    if (sortedEntries.length > 0) {
+      // Use the topmost intersecting section
+      const topSection = sortedEntries[0];
+      currentSection = topSection.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
+      });
+    }
   }, { 
-    threshold: [0, 0.25, 0.5, 0.75, 1],
-    rootMargin: '-80px 0px -40% 0px'
+    threshold: [0, 0.1, 0.25, 0.5],
+    rootMargin: '-100px 0px -50% 0px'
   });
   
   allSections.forEach(section => observer.observe(section));
