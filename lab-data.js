@@ -1,5 +1,5 @@
-// The Lab v3 - Divot Lab Golf Analytics
-// Updated to work with new server endpoints
+// The Lab v4 - Divot Lab Golf Analytics
+// Major update with event status, additional metrics, and chart improvements
 const API_BASE_URL = 'https://divotlab-api.vercel.app/api';
 
 // ============================================
@@ -48,9 +48,45 @@ function formatSG(value) {
 function formatPercent(value) {
   if (value === null || value === undefined || isNaN(value)) return '—';
   const num = parseFloat(value);
-  // Handle both decimal (0.145) and percentage (14.5) formats
   const pct = num > 1 ? num : num * 100;
   return `${pct.toFixed(1)}%`;
+}
+
+function truncateName(name, maxLength = 10) {
+  if (!name) return '';
+  const lastName = name.split(',')[0] || name.split(' ').slice(-1)[0];
+  return lastName.length > maxLength ? lastName.substring(0, maxLength - 1) + '.' : lastName;
+}
+
+// ============================================
+// EVENT STATUS LOGIC
+// ============================================
+function getEventStatus(tournament) {
+  const status = tournament.status || 'unknown';
+  const currentRound = tournament.current_round || 0;
+  const startDate = tournament.start_date;
+  
+  // If status is "completed", check if it's been more than 24 hours
+  if (status === 'completed' && startDate) {
+    const eventDate = new Date(startDate);
+    const now = new Date();
+    const hoursSinceStart = (now - eventDate) / (1000 * 60 * 60);
+    
+    // Tournaments are typically 4 days, so ~96 hours + 24 hour buffer = 120 hours
+    if (hoursSinceStart > 120) {
+      return { label: 'Upcoming', sublabel: 'Next Event', color: '#5A8FA8' };
+    } else {
+      return { label: 'Final', sublabel: '', color: '#5BBF85' };
+    }
+  }
+  
+  // If currently playing (current_round > 0)
+  if (currentRound > 0 && currentRound <= 4) {
+    return { label: 'Live', sublabel: `R${currentRound}`, color: '#E76F51' };
+  }
+  
+  // Default to upcoming
+  return { label: 'Upcoming', sublabel: '', color: '#5A8FA8' };
 }
 
 // ============================================
@@ -100,50 +136,53 @@ function calculateFieldStrength(players) {
   return { rating: rating.toFixed(1), label, eliteCount, topTier };
 }
 
+function calculateFieldMetrics(players) {
+  if (!players || players.length === 0) return null;
+  
+  const avgSG = players.reduce((sum, p) => sum + (p.sg_total || 0), 0) / players.length;
+  const avgDrivingDist = players.reduce((sum, p) => sum + (p.driving_dist || 0), 0) / players.length;
+  const avgGIR = players.reduce((sum, p) => sum + ((p.gir || 0) * 100), 0) / players.length;
+  
+  return {
+    avgSG: avgSG.toFixed(2),
+    avgDrivingDist: Math.round(avgDrivingDist + 280), // Baseline ~280 yards
+    avgGIR: avgGIR.toFixed(1)
+  };
+}
+
 // ============================================
 // GLOBAL STATE
 // ============================================
 let globalPlayers = [];
 let globalPredictions = [];
 let globalTournamentInfo = {};
+let hoveredPlayer = null;
 
 // ============================================
-// MAIN LOADER - OPTIMIZED
+// MAIN LOADER
 // ============================================
 async function loadAllData() {
   try {
     console.log('🏌️ Loading lab data...');
     
-    // NEW: Use optimized composite endpoint for faster loading
     const labDataResponse = await fetch(`${API_BASE_URL}/lab-data`);
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
       const { players, predictions, tournament } = labData.data;
       
-      // Store data globally
       globalPlayers = players || [];
       globalPredictions = predictions || [];
-      globalTournamentInfo = {
-        event_name: tournament?.event_name || 'Upcoming Tournament',
-        course: tournament?.course || '',
-        field_size: tournament?.field_size || 0
-      };
+      globalTournamentInfo = tournament || {};
       
       console.log('✓ Loaded', globalPlayers.length, 'players');
       console.log('✓ Loaded', globalPredictions.length, 'predictions');
       console.log('✓ Tournament:', globalTournamentInfo.event_name);
       console.log('✓ From cache:', labData.fromCache);
-      
-      // Debug first player structure
-      if (globalPlayers[0]) {
-        console.log('📊 Sample player data:', globalPlayers[0]);
-      }
     } else {
       throw new Error('Failed to load lab data');
     }
     
-    // Render all sections
     renderTournamentBanner();
     renderFieldStrength();
     renderTop10();
@@ -163,24 +202,21 @@ function renderTournamentBanner() {
   const container = document.getElementById('tournament-banner');
   if (!container) return;
   
-  const hasData = globalTournamentInfo.event_name && globalTournamentInfo.event_name !== 'Upcoming Tournament';
-  
-  if (!hasData) {
-    container.innerHTML = `
-      <div class="banner-inner">
-        <div class="banner-label">Off Week</div>
-        <h2 class="banner-title">No Tournament This Week</h2>
-        <div class="banner-course">Check back soon for next week's data</div>
-      </div>
-    `;
-    return;
-  }
+  const eventStatus = getEventStatus(globalTournamentInfo);
+  const courseName = globalTournamentInfo.course || '';
+  const fieldSize = globalTournamentInfo.field_size || 0;
+  const purse = globalTournamentInfo.purse || 'TBD';
   
   container.innerHTML = `
     <div class="banner-inner">
-      <div class="banner-label">This Week</div>
-      <h2 class="banner-title">${globalTournamentInfo.event_name}</h2>
-      ${globalTournamentInfo.course ? `<div class="banner-course">${globalTournamentInfo.course}</div>` : ''}
+      <div class="banner-label" style="color: ${eventStatus.color}">
+        ${eventStatus.label}${eventStatus.sublabel ? ` · ${eventStatus.sublabel}` : ''}
+      </div>
+      <h2 class="banner-title">${globalTournamentInfo.event_name || 'Upcoming Tournament'}</h2>
+      <div class="banner-course">${courseName}${courseName && fieldSize ? ' · ' : ''}${fieldSize ? `${fieldSize} players` : ''}</div>
+      <div class="banner-course" style="opacity: 0.5; font-size: 12px; margin-top: 4px;">
+        Par 72 · Purse: ${purse}
+      </div>
     </div>
   `;
 }
@@ -190,20 +226,62 @@ function renderFieldStrength() {
   if (!container) return;
   
   const field = calculateFieldStrength(globalPlayers);
+  const metrics = calculateFieldMetrics(globalPlayers);
   const pct = (parseFloat(field.rating) / 10) * 100;
   
   container.innerHTML = `
-    <div class="strength-card">
-      <div class="strength-header">
-        <span class="strength-label">Field Strength</span>
-        <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; max-width: 1200px; margin: 0 auto;">
+      
+      <!-- Field Strength Card -->
+      <div class="strength-card">
+        <div class="strength-header">
+          <span class="strength-label">Field Strength</span>
+          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" style="width: ${pct}%"></div></div>
+        <div class="strength-rating">${field.label}</div>
+        <div class="strength-details">
+          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
+          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+        </div>
       </div>
-      <div class="strength-bar"><div class="strength-fill" style="width: ${pct}%"></div></div>
-      <div class="strength-rating">${field.label}</div>
-      <div class="strength-details">
-        <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
-        <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+
+      <!-- Average SG Card -->
+      <div class="strength-card">
+        <div class="strength-header">
+          <span class="strength-label">Average SG Total</span>
+          <span class="strength-value">${metrics ? formatSG(metrics.avgSG) : '—'}</span>
+        </div>
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Field Average</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Across all ${globalPlayers.length} players with ShotLink data</div>
+        </div>
       </div>
+
+      <!-- Driving Distance Card -->
+      <div class="strength-card">
+        <div class="strength-header">
+          <span class="strength-label">Avg Driving Distance</span>
+          <span class="strength-value">${metrics ? metrics.avgDrivingDist : '—'}<span class="strength-max">yds</span></span>
+        </div>
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Power Metric</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Field average off the tee</div>
+        </div>
+      </div>
+
+      <!-- GIR Card -->
+      <div class="strength-card">
+        <div class="strength-header">
+          <span class="strength-label">Greens in Regulation</span>
+          <span class="strength-value">${metrics ? metrics.avgGIR : '—'}<span class="strength-max">%</span></span>
+        </div>
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+          <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Accuracy Metric</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Field average hit in regulation</div>
+        </div>
+      </div>
+
     </div>
   `;
 }
@@ -232,7 +310,7 @@ function renderTop10() {
         <div class="player-name">${player.player_name || 'Unknown'}</div>
         <div class="sg-total">
           <span class="sg-number">${formatSG(player.sg_total)}</span>
-          <span class="sg-label">SG Total</span>
+          <span class="sg-label">SG Total · 2025-26 Season</span>
         </div>
         <div class="skills-list">
           <div class="skill-row">
@@ -267,7 +345,14 @@ function renderPredictions() {
     return;
   }
   
+  const eventStatus = getEventStatus(globalTournamentInfo);
+  const isLive = eventStatus.label === 'Live';
+  const eventName = globalTournamentInfo.event_name || 'Upcoming Tournament';
+  
   container.innerHTML = `
+    <div style="margin-bottom: 16px; font-size: 13px; color: rgba(250,250,250,0.5); text-align: center;">
+      ${isLive ? '🔴 Live Predictions' : 'Pre-Tournament Predictions'} · ${eventName}
+    </div>
     <div class="table-wrapper">
       <table class="pred-table">
         <thead>
@@ -314,11 +399,11 @@ function renderSkillsRadar() {
   
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = 380 * dpr; canvas.height = 360 * dpr;
-  canvas.style.width = '380px'; canvas.style.height = '360px';
+  canvas.width = 380 * dpr; canvas.height = 380 * dpr;
+  canvas.style.width = '380px'; canvas.style.height = '380px';
   ctx.scale(dpr, dpr);
   
-  const w = 380, h = 360, cx = w / 2, cy = h / 2 + 15, r = 110;
+  const w = 380, h = 380, cx = w / 2, cy = h / 2 + 10, r = 110;
   ctx.clearRect(0, 0, w, h);
   
   const cats = ['Putting', 'Approach', 'Off-Tee', 'Around Green'];
@@ -351,14 +436,22 @@ function renderSkillsRadar() {
     ctx.closePath(); ctx.fill(); ctx.stroke();
   });
   
-  // Legend
+  // Legend with more spacing and truncated names
   ctx.textAlign = 'left'; ctx.font = '10px "DM Sans"';
+  const legendSpacing = 76; // Increased from 72
   players.forEach((p, i) => {
-    const x = 25 + i * 72;
-    ctx.fillStyle = colors[i]; ctx.fillRect(x, 12, 9, 9);
+    const x = Math.max(5, (w - legendSpacing * 5) / 2) + i * legendSpacing;
+    ctx.fillStyle = colors[i]; ctx.fillRect(x, 15, 9, 9);
     ctx.fillStyle = 'rgba(250,250,250,0.65)';
-    ctx.fillText(p.player_name.split(',')[0].split(' ').slice(-1)[0], x + 13, 20);
+    const name = truncateName(p.player_name, 9);
+    ctx.fillText(name, x + 13, 23);
   });
+  
+  // Subtitle
+  ctx.font = '11px "DM Sans"';
+  ctx.fillStyle = 'rgba(250,250,250,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('2025-26 Season', w / 2, h - 8);
 }
 
 function renderScatterPlot() {
@@ -371,7 +464,7 @@ function renderScatterPlot() {
   canvas.style.width = '460px'; canvas.style.height = '340px';
   ctx.scale(dpr, dpr);
   
-  const w = 460, h = 340, pad = { t: 45, r: 25, b: 45, l: 55 };
+  const w = 460, h = 340, pad = { t: 45, r: 25, b: 55, l: 55 };
   const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
   ctx.clearRect(0, 0, w, h);
   
@@ -400,7 +493,23 @@ function renderScatterPlot() {
   if (0 >= minT && 0 <= maxT) { const y = sy(0); ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke(); }
   ctx.setLineDash([]);
   
-  // Points
+  // Points with hover detection
+  canvas.onmousemove = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    hoveredPlayer = null;
+    players.forEach((p, i) => {
+      const x = sx(p.sg_putt || 0);
+      const y = sy((p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0));
+      const dist = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+      if (dist < 10) hoveredPlayer = p;
+    });
+    
+    renderScatterPlot(); // Redraw to show tooltip
+  };
+  
   players.forEach((p, i) => {
     const x = sx(p.sg_putt || 0);
     const y = sy((p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0));
@@ -409,6 +518,16 @@ function renderScatterPlot() {
     ctx.fillStyle = '#0A0A0A'; ctx.font = 'bold 8px "DM Sans"'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(i + 1, x, y);
   });
+  
+  // Hover tooltip
+  if (hoveredPlayer) {
+    const x = sx(hoveredPlayer.sg_putt || 0);
+    const y = sy((hoveredPlayer.sg_ott || 0) + (hoveredPlayer.sg_app || 0) + (hoveredPlayer.sg_arg || 0));
+    ctx.fillStyle = 'rgba(10,10,10,0.9)';
+    ctx.fillRect(x + 10, y - 25, 120, 30);
+    ctx.fillStyle = '#5BBF85'; ctx.font = '11px "DM Sans"'; ctx.textAlign = 'left';
+    ctx.fillText(hoveredPlayer.player_name, x + 15, y - 10);
+  }
   
   // Labels
   ctx.fillStyle = 'rgba(250,250,250,0.45)'; ctx.font = '11px "DM Sans"'; ctx.textAlign = 'center';
@@ -421,6 +540,12 @@ function renderScatterPlot() {
     ctx.fillStyle = it.c; ctx.beginPath(); ctx.arc(pad.l + i * 50 + 5, pad.t - 18, 4, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = 'rgba(250,250,250,0.55)'; ctx.fillText(it.l, pad.l + i * 50 + 12, pad.t - 15);
   });
+  
+  // Subtitle
+  ctx.font = '11px "DM Sans"';
+  ctx.fillStyle = 'rgba(250,250,250,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('2025-26 Season', w / 2, h - 28);
 }
 
 function renderConsistencyChart() {
@@ -429,11 +554,11 @@ function renderConsistencyChart() {
   
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = 460 * dpr; canvas.height = 280 * dpr;
-  canvas.style.width = '460px'; canvas.style.height = '280px';
+  canvas.width = 460 * dpr; canvas.height = 300 * dpr;
+  canvas.style.width = '460px'; canvas.style.height = '300px';
   ctx.scale(dpr, dpr);
   
-  const w = 460, h = 280, pad = { t: 25, r: 15, b: 65, l: 40 };
+  const w = 460, h = 300, pad = { t: 25, r: 15, b: 80, l: 40 };
   ctx.clearRect(0, 0, w, h);
   
   const players = globalPlayers.slice(0, 10);
@@ -452,13 +577,20 @@ function renderConsistencyChart() {
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.roundRect(x, y, bw, bh, [3, 3, 0, 0]); ctx.fill();
     
-    ctx.fillStyle = 'rgba(250,250,250,0.8)'; ctx.font = 'bold 9px "DM Sans"'; ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(250,250,250,0.8)'; ctx.font = 'bold 10px "DM Sans"'; ctx.textAlign = 'center';
     ctx.fillText(formatSG(v), x + bw / 2, y - 5);
     
-    ctx.save(); ctx.translate(x + bw / 2, h - pad.b + 6); ctx.rotate(-Math.PI / 4);
-    ctx.fillStyle = 'rgba(250,250,250,0.45)'; ctx.font = '9px "DM Sans"'; ctx.textAlign = 'right';
+    // Larger, more visible names
+    ctx.save(); ctx.translate(x + bw / 2, h - pad.b + 8); ctx.rotate(-Math.PI / 4);
+    ctx.fillStyle = 'rgba(250,250,250,0.65)'; ctx.font = '11px "DM Sans"'; ctx.textAlign = 'right';
     ctx.fillText(p.player_name.split(',')[0], 0, 0); ctx.restore();
   });
+  
+  // Subtitle
+  ctx.font = '11px "DM Sans"';
+  ctx.fillStyle = 'rgba(250,250,250,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('2025-26 Season', w / 2, h - 5);
 }
 
 function renderSGBreakdown() {
@@ -471,13 +603,13 @@ function renderSGBreakdown() {
   canvas.style.width = '460px'; canvas.style.height = '280px';
   ctx.scale(dpr, dpr);
   
-  const w = 460, h = 280, pad = { t: 30, r: 100, b: 40, l: 40 };
+  const w = 460, h = 280, pad = { t: 30, r: 100, b: 50, l: 40 };
   ctx.clearRect(0, 0, w, h);
   
   const players = globalPlayers.slice(0, 10);
   if (!players.length) return;
   
-  // Calculate averages for each SG category
+  // Calculate averages
   const avgOTT = players.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / players.length;
   const avgAPP = players.reduce((sum, p) => sum + (p.sg_app || 0), 0) / players.length;
   const avgARG = players.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / players.length;
@@ -490,7 +622,7 @@ function renderSGBreakdown() {
     { label: 'Putting', value: avgPUTT, color: '#9B59B6' }
   ];
   
-  const maxVal = Math.max(...categories.map(c => Math.abs(c.value)));
+  const maxVal = Math.max(...categories.map(c => Math.abs(c.value)), 0.5); // Ensure minimum scale
   const bw = (w - pad.l - pad.r) / categories.length - 10;
   const ch = h - pad.t - pad.b;
   const zeroY = pad.t + ch / 2;
@@ -514,7 +646,7 @@ function renderSGBreakdown() {
     // Category label
     ctx.fillStyle = 'rgba(250,250,250,0.55)';
     ctx.font = '10px "DM Sans"';
-    ctx.fillText(cat.label, x + bw / 2, h - pad.b + 20);
+    ctx.fillText(cat.label, x + bw / 2, h - pad.b + 24);
   });
   
   // Zero line
@@ -525,6 +657,12 @@ function renderSGBreakdown() {
   ctx.lineTo(w - pad.r, zeroY);
   ctx.stroke();
   ctx.setLineDash([]);
+  
+  // Subtitle
+  ctx.font = '11px "DM Sans"';
+  ctx.fillStyle = 'rgba(250,250,250,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('2025-26 Season', w / 2, h - 5);
 }
 
 // ============================================

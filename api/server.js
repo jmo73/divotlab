@@ -389,19 +389,29 @@ app.get('/api/lab-data', async (req, res) => {
     console.log(`✗ Cache MISS: ${cacheKey} - Building lab data...`);
 
     // Fetch all needed data in parallel
-    const [skillRatings, preTournament, fieldUpdates] = await Promise.all([
+    const [skillRatings, preTournament, fieldUpdates, schedule] = await Promise.all([
       fetch(`${DATAGOLF_BASE_URL}/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`).then(r => r.json()),
       fetch(`${DATAGOLF_BASE_URL}/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`).then(r => r.json()),
-      fetch(`${DATAGOLF_BASE_URL}/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`).then(r => r.json())
+      fetch(`${DATAGOLF_BASE_URL}/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`).then(r => r.json()),
+      fetch(`${DATAGOLF_BASE_URL}/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`).then(r => r.json())
     ]);
+
+    // Find current/upcoming event from schedule
+    const eventName = fieldUpdates.event_name || preTournament.event_name;
+    const currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || {};
 
     const compositeData = {
       players: skillRatings.players || skillRatings.skill_ratings || [],
       predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
       tournament: {
-        event_name: preTournament.event_name || fieldUpdates.event_name || 'Upcoming Tournament',
-        course: fieldUpdates.course || '',
-        field_size: fieldUpdates.field?.length || 0
+        event_id: fieldUpdates.event_id || currentEvent.event_id,
+        event_name: eventName || 'Upcoming Tournament',
+        course: (fieldUpdates.field && fieldUpdates.field[0]?.course) || currentEvent.course || '',
+        field_size: fieldUpdates.field?.length || 0,
+        current_round: fieldUpdates.current_round || 0,
+        start_date: currentEvent.start_date || null,
+        status: currentEvent.status || 'unknown',
+        purse: null // Placeholder
       },
       timestamp: new Date().toISOString()
     };
