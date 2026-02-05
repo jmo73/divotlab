@@ -1,0 +1,15 @@
+{
+  "name": "divotlab-api",
+  "version": "1.0.0",
+  "description": "DataGolf API integration for Divot Lab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-api.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-cache": "^5.1.2"
+  }
+}
