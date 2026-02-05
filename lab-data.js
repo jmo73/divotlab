@@ -40,20 +40,20 @@ function getEventStatus(tournament) {
   return { label: 'Upcoming', sublabel: '', color: '#5BBF85' };
 }
 
-function getPlayerStyle(player) {
-  const offTee = player.sg_ott || 0;
-  const approach = player.sg_app || 0;
-  const aroundGreen = player.sg_arg || 0;
+function getPlayingStyle(player) {
   const putting = player.sg_putt || 0;
+  const approach = player.sg_app || 0;
+  const offTee = player.sg_ott || 0;
+  const aroundGreen = player.sg_arg || 0;
   
-  const skills = [
+  const categories = [
     { name: 'Power', value: offTee, color: '#E76F51' },
-    { name: 'Iron Play', value: approach, color: '#5A8FA8' },
-    { name: 'Short Game', value: aroundGreen, color: '#5BBF85' },
-    { name: 'Putting', value: putting, color: '#DDA15E' }
+    { name: 'Precision', value: approach, color: '#5A8FA8' },
+    { name: 'Touch', value: putting, color: '#9B59B6' },
+    { name: 'Scrambler', value: aroundGreen, color: '#F4A259' }
   ];
   
-  const sorted = skills.sort((a, b) => b.value - a.value);
+  const sorted = [...categories].sort((a, b) => b.value - a.value);
   const max = Math.max(offTee, approach, putting, aroundGreen);
   const min = Math.min(offTee, approach, putting, aroundGreen);
   
@@ -129,7 +129,7 @@ async function loadAllData() {
     console.log('🏌️ Loading lab data...');
     
     // Load composite lab data
-    const labDataResponse = await fetch(`${API_BASE_URL}/api/lab-data`);
+    const labDataResponse = await fetch(`${API_BASE_URL}/lab-data`);
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
@@ -160,12 +160,16 @@ async function loadAllData() {
     // Load live predictions if tournament is ongoing
     if (globalTournamentInfo.current_round > 0) {
       try {
-        const liveResponse = await fetch(`${API_BASE_URL}/live-tournament`);
+        const liveResponse = await fetch(`${API_BASE_URL}/api/live-tournament`);
         const liveData = await liveResponse.json();
         
-        if (liveData.success && liveData.data && liveData.data.predictions) {
-          globalPredictions = liveData.data.predictions;
-          console.log('✓ Using live predictions');
+        if (liveData.success && liveData.data) {
+          // Handle different possible structures
+          const livePreds = liveData.data.predictions || liveData.data.baseline_history_fit || [];
+          if (livePreds.length > 0) {
+            globalPredictions = livePreds;
+            console.log('✓ Using live predictions:', livePreds.length);
+          }
         }
       } catch (err) {
         console.warn('⚠️ Could not load live predictions:', err);
@@ -219,7 +223,7 @@ function renderFieldStrength() {
   const labelColor = getLabelColor(field.rating, field.label);
   
   container.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
       
       <!-- Field Strength Card -->
       <div class="strength-card">
@@ -241,11 +245,11 @@ function renderFieldStrength() {
       <div class="strength-card">
         <div class="strength-header">
           <span class="strength-label">Average SG Total</span>
-          <span class="strength-value">${metrics ? formatSG(metrics.avgSG) : '—'}</span>
+          <span class="strength-value">—</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Field Average</div>
-          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Participating players with ShotLink data</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.65);">${globalPlayers.length} players with ShotLink data</div>
         </div>
       </div>
 
@@ -283,21 +287,27 @@ function renderTop10() {
   
   // Use DG Rankings if available, otherwise fallback to players sorted by SG
   let top10;
-  if (globalDGRankings.length > 0) {
+  if (globalDGRankings && globalDGRankings.length > 0) {
     top10 = globalDGRankings.map(ranking => {
       // Try to find matching player data for full stats
       const playerData = globalPlayers.find(p => p.dg_id === ranking.dg_id);
       
-      return {
-        ...ranking,
-        player_name: ranking.player_name,
-        country: ranking.country,
-        sg_total: playerData?.sg_total || ranking.dg_skill_estimate,
-        sg_ott: playerData?.sg_ott || 0,
-        sg_app: playerData?.sg_app || 0,
-        sg_arg: playerData?.sg_arg || 0,
-        sg_putt: playerData?.sg_putt || 0
-      };
+      if (playerData) {
+        // Use full player data
+        return playerData;
+      } else {
+        // Use ranking data with estimates
+        return {
+          dg_id: ranking.dg_id,
+          player_name: ranking.player_name,
+          country: ranking.country,
+          sg_total: ranking.dg_skill_estimate,
+          sg_ott: 0,
+          sg_app: 0,
+          sg_arg: 0,
+          sg_putt: 0
+        };
+      }
     });
   } else {
     top10 = globalPlayers
@@ -312,7 +322,7 @@ function renderTop10() {
   }
   
   container.innerHTML = top10.map((p, i) => {
-    const style = getPlayerStyle(p);
+    const style = getPlayingStyle(p);
     return `
       <div class="player-card" style="animation-delay: ${i * 0.05}s">
         <div class="card-top">
@@ -372,11 +382,12 @@ function renderPredictions() {
       <table class="pred-table">
         <thead>
           <tr>
-            <th class="rank-col">#</th>
+            <th class="rank-col">Rank</th>
             <th>Player</th>
             <th class="prob-col">Win %</th>
             <th class="prob-col">Top 5 %</th>
             <th class="prob-col">Top 10 %</th>
+            <th class="prob-col">Top 20 %</th>
             <th class="prob-col">Make Cut %</th>
           </tr>
         </thead>
@@ -385,18 +396,17 @@ function renderPredictions() {
             const winPct = ((p.win || 0) * 100).toFixed(1);
             const top5Pct = ((p.top_5 || 0) * 100).toFixed(1);
             const top10Pct = ((p.top_10 || 0) * 100).toFixed(1);
+            const top20Pct = ((p.top_20 || 0) * 100).toFixed(1);
             const cutPct = ((p.make_cut || 0) * 100).toFixed(1);
             
             return `
               <tr>
                 <td class="rank-col">${i + 1}</td>
-                <td class="player-col">
-                  <span class="tbl-flag">${getFlag(p.country)}</span>
-                  ${p.player_name}
-                </td>
+                <td class="player-col">${p.player_name}</td>
                 <td class="prob-col win">${winPct}%</td>
                 <td class="prob-col">${top5Pct}%</td>
                 <td class="prob-col">${top10Pct}%</td>
+                <td class="prob-col">${top20Pct}%</td>
                 <td class="prob-col">${cutPct}%</td>
               </tr>
             `;
@@ -729,9 +739,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAllData();
   initSectionToggles();
   
-  // Section nav active states
+  // Section nav active states with Events section
   const navLinks = document.querySelectorAll('.section-nav a');
-  const sections = document.querySelectorAll('.lab-section');
+  const eventsSection = document.getElementById('events');
+  const labSections = document.querySelectorAll('.lab-section');
+  const allSections = eventsSection ? [eventsSection, ...labSections] : [...labSections];
   
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -742,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.3, rootMargin: '-100px 0px -50% 0px' });
   
-  sections.forEach(section => observer.observe(section));
+  allSections.forEach(section => observer.observe(section));
 });
