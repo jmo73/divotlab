@@ -224,10 +224,40 @@ function renderFieldStrength() {
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
   
+  const isLive = (globalTournamentInfo.current_round || 0) > 0;
+  
+  // Get top 3 leaders from leaderboard (live data only)
+  let top3Leaders = [];
+  if (isLive && globalLeaderboard.length > 0) {
+    const sortedByScore = [...globalLeaderboard].sort((a, b) => {
+      let scoreA = a.current_score;
+      if (scoreA === 'E' || scoreA === 0) scoreA = 0;
+      else if (typeof scoreA === 'string') scoreA = parseFloat(scoreA) || 999;
+      else scoreA = scoreA || 999;
+      
+      let scoreB = b.current_score;
+      if (scoreB === 'E' || scoreB === 0) scoreB = 0;
+      else if (typeof scoreB === 'string') scoreB = parseFloat(scoreB) || 999;
+      else scoreB = scoreB || 999;
+      
+      return scoreA - scoreB;
+    });
+    top3Leaders = sortedByScore.slice(0, 3);
+  }
+  
+  // Get top 3 win odds from predictions
+  let top3Odds = [];
+  if (globalPredictions.length > 0) {
+    const sortedByWin = [...globalPredictions]
+      .filter(p => p.win != null)
+      .sort((a, b) => (b.win || 0) - (a.win || 0));
+    top3Odds = sortedByWin.slice(0, 3);
+  }
+  
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
       
-      <!-- Field Strength Card 1 -->
+      <!-- Field Strength Card -->
       <div class="strength-card">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
@@ -243,39 +273,54 @@ function renderFieldStrength() {
         </div>
       </div>
 
-      <!-- Field Strength Card 2 -->
+      <!-- Leaders Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Field Strength</span>
-          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
+          <span class="strength-label">Leaders</span>
+          <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        <div class="strength-bar">
-          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
-        </div>
-        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
-        <div class="strength-details">
-          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
-          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+          ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
+            const score = p.current_score || 0;
+            const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
+            const lastName = p.player_name.split(', ')[0];
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
+                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
+                </div>
+                <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
+              </div>
+            `;
+          }).join('') : '<div style="text-align: center; padding: 20px 0; font-size: 12px; color: rgba(250,250,250,0.35);">Live leaders when tournament starts</div>'}
         </div>
       </div>
 
-      <!-- Field Strength Card 3 -->
+      <!-- Odds Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Field Strength</span>
-          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
+          <span class="strength-label">Win Odds</span>
+          <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        <div class="strength-bar">
-          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
-        </div>
-        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
-        <div class="strength-details">
-          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
-          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+          ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
+            const winPct = ((p.win || 0) * 100).toFixed(1);
+            const lastName = p.player_name.split(', ')[0];
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
+                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
+                </div>
+                <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
+              </div>
+            `;
+          }).join('') : '<div style="text-align: center; padding: 20px 0; font-size: 12px; color: rgba(250,250,250,0.35);">Loading odds...</div>'}
         </div>
       </div>
 
-      <!-- Field Strength Card 4 -->
+      <!-- Field Strength Card 4 (Placeholder) -->
       <div class="strength-card">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
@@ -766,6 +811,11 @@ function renderConsistencyChart() {
   
   if (!top10.length) return;
   
+  // Create gradient for bars
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, '#5A8FA8');
+  gradient.addColorStop(1, 'rgba(10,10,10,0.4)');
+  
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -776,7 +826,7 @@ function renderConsistencyChart() {
       datasets: [{
         label: 'SG Total',
         data: top10.map(p => p.sg_total || 0),
-        backgroundColor: '#5A8FA8',
+        backgroundColor: gradient,
         borderRadius: 4
       }]
     },
@@ -825,6 +875,23 @@ function renderSGBreakdown() {
   const avgARG = top10.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / top10.length;
   const avgPUTT = top10.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / top10.length;
   
+  // Create gradients for each bar
+  const gradientRed = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientRed.addColorStop(0, '#E76F51');
+  gradientRed.addColorStop(1, 'rgba(10,10,10,0.4)');
+  
+  const gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientBlue.addColorStop(0, '#5A8FA8');
+  gradientBlue.addColorStop(1, 'rgba(10,10,10,0.4)');
+  
+  const gradientGreen = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientGreen.addColorStop(0, '#5BBF85');
+  gradientGreen.addColorStop(1, 'rgba(10,10,10,0.4)');
+  
+  const gradientOrange = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientOrange.addColorStop(0, '#DDA15E');
+  gradientOrange.addColorStop(1, 'rgba(10,10,10,0.4)');
+  
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -832,7 +899,7 @@ function renderSGBreakdown() {
       datasets: [{
         label: 'Average SG',
         data: [avgOTT, avgAPP, avgARG, avgPUTT],
-        backgroundColor: ['#E76F51', '#5A8FA8', '#5BBF85', '#DDA15E'],
+        backgroundColor: [gradientRed, gradientBlue, gradientGreen, gradientOrange],
         borderRadius: 4
       }]
     },
