@@ -7,320 +7,238 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ============================================
-   TOKENS
-   ============================================ */
 :root {
-  --black:      #0A0A0A;
-  --white:      #FAFAFA;
-  --graphite:   #4A4A4A;
-  --steel:      #C4C4C4;
-  --green:      #1B4D3E;
-  --green-light:#5BBF85;
-  --blue:       #2C5F7C;
-  --blue-mid:   #5A8FA8;
-  --warm-gray:  #F3F2F0;
-  --red:        #E76F51;
-  --orange:     #F4A259;
-  --purple:     #9B59B6;
-
+  --black: #0A0A0A;
+  --white: #FAFAFA;
+  --graphite: #4A4A4A;
+  --green: #1B4D3E;
+  --green-light: #5BBF85;
+  --blue-mid: #5A8FA8;
   --display: 'Cormorant Garamond', Georgia, serif;
-  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --body: 'DM Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* ============================================
-   RESET
-   ============================================ */
-*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   font-family: var(--body);
-  color: var(--black);
   background: var(--black);
+  color: var(--white);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
   line-height: 1.5;
 }
-a { color:inherit; text-decoration:none; }
+a { color: inherit; text-decoration: none; }
 
-/* ============================================
-   NAV
-   ============================================ */
+/* NAV */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 0 56px;
-  height: 68px;
+  padding: 0 48px;
+  height: 64px;
   display: flex;
   align-items: center;
   background: rgba(10,10,10,0.92);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.nav-logo { display:flex; align-items:center; gap:11px; }
-.nav-logo svg { width:26px; height:26px; color:var(--white); }
-.nav-wordmark {
-  font-family: var(--body);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  color: var(--white);
-}
-.nav-wordmark span { font-weight:300; opacity:.55; }
-.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
-.nav-links a {
-  font-size:13px; font-weight:500; letter-spacing:.05em;
-  color:rgba(250,250,250,.65);
-  transition: color .2s;
-}
-.nav-links a:hover { color:var(--white); }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo svg { width: 24px; height: 24px; color: var(--white); }
+.nav-wordmark { font-size: 13px; font-weight: 600; letter-spacing: .1em; color: var(--white); }
+.nav-wordmark span { font-weight: 300; opacity: .5; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+.nav-links a { font-size: 13px; font-weight: 500; color: rgba(250,250,250,.6); transition: color .2s; }
+.nav-links a:hover { color: var(--white); }
 .nav-cta {
   background: var(--green);
   color: var(--white) !important;
-  padding: 9px 22px;
+  padding: 8px 20px;
   border-radius: 5px;
   font-weight: 500;
   transition: all .2s;
 }
 .nav-cta.active { background: var(--green-light); color: var(--black) !important; }
-.nav-cta:hover {
-  background:#236b4f;
-  transform:translateY(-1px);
-  box-shadow:0 4px 14px rgba(27,77,62,.3);
-}
+.nav-cta:hover { background: #236b4f; }
 
-/* ============================================
-   SECTION NAV - Sticky tabs
-   ============================================ */
+/* SECTION NAV */
 .section-nav {
   position: sticky;
-  top: 68px;
+  top: 64px;
   z-index: 90;
   background: rgba(10,10,10,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  padding: 0 56px;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 48px;
   display: flex;
   gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.section-nav::-webkit-scrollbar { display: none; }
 .section-nav a {
-  padding: 16px 24px;
+  padding: 14px 22px;
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: .03em;
-  color: rgba(250,250,250,0.5);
+  color: rgba(250,250,250,0.45);
   border-bottom: 2px solid transparent;
-  transition: all .3s cubic-bezier(.22,1,.36,1);
-  white-space: nowrap;
+  transition: all .25s;
 }
-.section-nav a:hover {
-  color: rgba(250,250,250,0.8);
-  background: rgba(255,255,255,0.03);
-}
-.section-nav a.active {
-  color: var(--green-light);
-  border-bottom-color: var(--green-light);
-  background: rgba(91,191,133,0.05);
-}
+.section-nav a:hover { color: rgba(250,250,250,0.75); background: rgba(255,255,255,0.02); }
+.section-nav a.active { color: var(--green-light); border-bottom-color: var(--green-light); }
 
-/* ============================================
-   HERO
-   ============================================ */
+/* HERO */
 .lab-hero {
-  min-height: 40vh;
-  background: linear-gradient(165deg, #0a0a0a 0%, #0d1312 100%);
-  position: relative;
+  min-height: 36vh;
+  background: linear-gradient(170deg, #0a0a0a 0%, #0e1211 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120px 56px 40px;
-  overflow: hidden;
+  padding: 110px 48px 36px;
+  text-align: center;
+  position: relative;
 }
 .lab-hero::before {
-  content:'';
-  position:absolute;
-  top:-20%; left:50%; transform:translateX(-50%);
-  width:900px; height:900px;
-  background:radial-gradient(ellipse at center, rgba(91,191,133,.06) 0%, transparent 70%);
-  pointer-events:none;
-}
-.lab-hero-content {
-  position:relative; z-index:1;
-  text-align:center;
-  max-width:720px;
+  content: '';
+  position: absolute;
+  top: -30%; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(ellipse, rgba(91,191,133,0.05) 0%, transparent 70%);
+  pointer-events: none;
 }
 .lab-hero h1 {
   font-family: var(--display);
-  font-size: clamp(42px, 5vw, 64px);
+  font-size: clamp(40px, 5vw, 60px);
   font-weight: 600;
-  color: var(--white);
   letter-spacing: -.02em;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  position: relative;
 }
 .lab-hero p {
-  font-size: 16px;
-  color: rgba(250,250,250,0.45);
-  line-height: 1.6;
+  font-size: 15px;
+  color: rgba(250,250,250,0.4);
+  position: relative;
 }
 
-/* ============================================
-   TOURNAMENT BANNER
-   ============================================ */
+/* TOURNAMENT BANNER */
 .tournament-banner {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  margin-top: 32px;
+  margin-top: 28px;
   width: 100%;
-  max-width: 800px;
-  overflow: hidden;
+  max-width: 700px;
+  position: relative;
 }
-.tournament-banner-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 28px 36px;
-  gap: 32px;
+.banner-inner {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 32px 40px;
 }
-.tournament-main { flex: 1; }
-.tournament-label {
+.banner-label {
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: .18em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--green-light);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
-.tournament-event {
+.banner-title {
   font-family: var(--display);
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(24px, 3.5vw, 34px);
   font-weight: 600;
-  color: var(--white);
   letter-spacing: -.01em;
   line-height: 1.2;
 }
-.tournament-course {
+.banner-course {
   font-size: 14px;
-  color: rgba(250,250,250,0.5);
-  margin-top: 6px;
+  color: rgba(250,250,250,0.45);
+  margin-top: 8px;
 }
-.tournament-stats {
-  display: flex;
-  gap: 28px;
-}
-.tournament-stat {
+.banner-error {
+  color: rgba(250,250,250,0.4);
+  padding: 24px;
   text-align: center;
 }
-.tournament-stat-value {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--white);
-  letter-spacing: -.02em;
-}
-.tournament-stat-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: rgba(250,250,250,0.35);
-  margin-top: 2px;
-}
 
-/* ============================================
-   TOURNAMENT INSIGHTS
-   ============================================ */
-.insights-section {
-  padding: 48px 56px;
+/* FIELD STRENGTH */
+.strength-section {
+  padding: 36px 48px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.insights-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1200px;
+.strength-card {
+  max-width: 400px;
   margin: 0 auto;
-}
-.insight-card {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 10px;
-  padding: 24px;
-  text-align: center;
-  transition: all .3s ease;
+  padding: 24px 28px;
 }
-.insight-card:hover {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.1);
-  transform: translateY(-2px);
-}
-.insight-card.featured {
-  background: linear-gradient(135deg, rgba(91,191,133,0.08), rgba(91,191,133,0.02));
-  border-color: rgba(91,191,133,0.2);
-}
-.insight-icon {
-  font-size: 24px;
+.strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   margin-bottom: 12px;
 }
-.insight-value {
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: -.02em;
-  line-height: 1;
-}
-.insight-label {
+.strength-label {
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .05em;
   color: rgba(250,250,250,0.5);
-  margin-top: 8px;
+  letter-spacing: .03em;
 }
-.insight-note {
-  font-size: 11px;
+.strength-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+}
+.strength-max {
+  font-size: 14px;
+  font-weight: 400;
   color: rgba(250,250,250,0.3);
-  margin-top: 4px;
 }
-.insight-scale {
-  margin-top: 16px;
-}
-.scale-bar {
+.strength-bar {
   height: 6px;
   background: rgba(255,255,255,0.1);
   border-radius: 3px;
   overflow: hidden;
+  margin-bottom: 10px;
 }
-.scale-fill {
+.strength-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--green-light), var(--blue-mid));
   border-radius: 3px;
-  transition: width .6s ease;
+  transition: width .5s ease;
 }
-.scale-labels {
+.strength-rating {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-light);
+  margin-bottom: 16px;
+}
+.strength-details {
   display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  font-size: 9px;
-  color: rgba(250,250,250,0.3);
-  text-transform: uppercase;
-  letter-spacing: .1em;
+  gap: 24px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.strength-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.stat-num {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+}
+.stat-text {
+  font-size: 11px;
+  color: rgba(250,250,250,0.4);
 }
 
-/* ============================================
-   SECTIONS
-   ============================================ */
+/* SECTIONS */
 .lab-section {
-  padding: 72px 56px;
+  padding: 60px 48px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  transition: all .4s cubic-bezier(.22,1,.36,1);
 }
 .lab-section.collapsed .section-body {
   max-height: 0;
@@ -333,518 +251,257 @@ nav {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  user-select: none;
 }
 .section-header h2 {
   font-family: var(--display);
-  font-size: clamp(28px, 3.5vw, 40px);
+  font-size: clamp(26px, 3vw, 36px);
   font-weight: 600;
-  color: var(--white);
-  letter-spacing: -.02em;
+  letter-spacing: -.01em;
 }
 .section-toggle {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(250,250,250,0.4);
-  font-size: 14px;
-  transition: all .3s;
+  color: rgba(250,250,250,0.35);
+  font-size: 13px;
   cursor: pointer;
+  transition: all .25s;
 }
 .section-toggle:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.07);
   color: var(--green-light);
-  transform: scale(1.05);
 }
-.lab-section.collapsed .section-toggle {
-  transform: rotate(180deg);
-}
+.lab-section.collapsed .section-toggle { transform: rotate(180deg); }
 .section-body {
   max-height: 10000px;
   opacity: 1;
-  transition: all .5s cubic-bezier(.22,1,.36,1);
-  margin-top: 48px;
+  transition: all .4s ease;
+  margin-top: 40px;
 }
 
-/* ============================================
-   TOP 10 GRID - Player Cards
-   ============================================ */
+/* TOP 10 GRID */
 .top10-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  max-width: 1300px;
   margin: 0 auto;
 }
-
 .player-card {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 24px;
-  position: relative;
-  transition: all .4s cubic-bezier(.22,1,.36,1);
-  animation: fadeInUp .5s ease backwards;
-}
-.player-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--green-light), var(--blue-mid));
-  opacity: 0;
-  transition: opacity .3s;
+  border-radius: 10px;
+  padding: 22px;
+  transition: all .3s ease;
+  animation: fadeUp .4s ease backwards;
 }
 .player-card:hover {
   background: rgba(255,255,255,0.04);
-  border-color: rgba(91,191,133,0.25);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+  border-color: rgba(91,191,133,0.2);
+  transform: translateY(-3px);
 }
-.player-card:hover::before {
-  opacity: 1;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.player-card-header {
+.card-top {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
-.player-rank {
-  width: 32px;
-  height: 32px;
+.rank-badge {
+  width: 30px;
+  height: 30px;
   background: var(--green-light);
   color: var(--black);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(91,191,133,0.3);
 }
 .player-flag {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 }
-.player-style {
+.style-tag {
   margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
   padding: 4px 10px;
   border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
+  border: 1px solid;
+  letter-spacing: .02em;
 }
-.style-icon { font-size: 12px; }
-.style-name { letter-spacing: .03em; }
-
 .player-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--white);
   margin-bottom: 12px;
 }
-
-.player-sg-main {
+.sg-total {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 18px;
 }
-.sg-value {
-  font-size: 32px;
+.sg-number {
+  font-size: 28px;
   font-weight: 700;
   color: var(--green-light);
   letter-spacing: -.02em;
-  line-height: 1;
 }
 .sg-label {
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: .1em;
-  text-transform: uppercase;
   color: rgba(250,250,250,0.4);
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
-
-.player-efficiency {
-  margin-bottom: 16px;
+.skills-list {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 14px;
 }
-.efficiency-bar {
-  display: flex;
-  height: 24px;
-  border-radius: 6px;
-  overflow: hidden;
-  font-size: 10px;
-  font-weight: 600;
-}
-.efficiency-t2g {
-  background: linear-gradient(90deg, var(--blue-mid), var(--blue));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  min-width: 0;
-}
-.efficiency-t2g span { white-space: nowrap; padding: 0 6px; }
-.efficiency-putt {
-  background: linear-gradient(90deg, var(--purple), #7D3C98);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  min-width: 0;
-}
-.efficiency-putt span { white-space: nowrap; padding: 0 6px; }
-
-.player-balance {
-  margin-bottom: 20px;
-}
-.balance-label {
+.skill-row {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
-  color: rgba(250,250,250,0.5);
-  margin-bottom: 6px;
-}
-.balance-value {
-  color: var(--white);
-  font-weight: 600;
-}
-.balance-bar {
-  height: 4px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.balance-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--orange), var(--green-light));
-  border-radius: 2px;
-  transition: width .6s ease;
-}
-
-.player-skills-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-.skill-item {
-  text-align: center;
+  padding: 6px 0;
 }
 .skill-name {
-  display: block;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  color: rgba(250,250,250,0.4);
-  margin-bottom: 4px;
+  font-size: 12px;
+  color: rgba(250,250,250,0.5);
 }
-.skill-val {
-  font-size: 14px;
+.skill-value {
+  font-size: 13px;
   font-weight: 600;
-  color: var(--white);
 }
-.skill-val.positive { color: var(--green-light); }
-.skill-val.negative { color: var(--red); }
+.skill-value.pos { color: var(--green-light); }
+.skill-value.neg { color: #E76F51; }
 
-/* ============================================
-   PREDICTIONS TABLE
-   ============================================ */
-.predictions-wrapper {
-  max-width: 1200px;
+/* PREDICTIONS TABLE */
+.table-wrapper {
+  max-width: 1100px;
   margin: 0 auto;
   overflow-x: auto;
 }
-.predictions-table {
+.pred-table {
   width: 100%;
   border-collapse: collapse;
   background: rgba(255,255,255,0.01);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
 }
-.predictions-table thead {
-  background: rgba(255,255,255,0.04);
+.pred-table thead {
+  background: rgba(255,255,255,0.03);
 }
-.predictions-table th {
-  padding: 16px 18px;
+.pred-table th {
+  padding: 14px 16px;
   text-align: left;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: .12em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: rgba(250,250,250,0.45);
+  color: rgba(250,250,250,0.4);
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.predictions-table td {
-  padding: 14px 18px;
-  font-size: 14px;
-  color: rgba(250,250,250,0.75);
+.pred-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: rgba(250,250,250,0.7);
   border-bottom: 1px solid rgba(255,255,255,0.03);
 }
-.predictions-table tbody tr {
-  transition: background .2s;
+.pred-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
 }
-.predictions-table tbody tr:hover {
-  background: rgba(255,255,255,0.03);
-}
-.predictions-table .rank-cell {
-  font-size: 12px;
+.rank-col {
+  width: 45px;
   color: rgba(250,250,250,0.35);
-  width: 50px;
+  font-size: 12px;
 }
-.predictions-table .player-cell {
+.player-col {
   font-weight: 500;
   color: var(--white);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
-.table-flag {
-  font-size: 18px;
-}
-.predictions-table .prob-cell {
+.tbl-flag { font-size: 16px; }
+.prob-col {
   font-weight: 500;
-  font-size: 13px;
+  text-align: center;
 }
-.predictions-table .prob-cell.win {
+.prob-col.win {
   color: var(--green-light);
   font-weight: 600;
 }
-.predictions-table .prob-cell.cut {
-  color: var(--blue-mid);
-}
 
-/* ============================================
-   CHARTS
-   ============================================ */
+/* CHARTS */
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-  gap: 28px;
-  max-width: 1400px;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 24px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 .chart-card {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 28px;
-  transition: all .3s;
+  border-radius: 10px;
+  padding: 24px;
 }
 .chart-card:hover {
   background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.1);
 }
 .chart-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--white);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .chart-subtitle {
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(250,250,250,0.4);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 .chart-container {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
-canvas {
-  max-width: 100%;
-  height: auto;
-}
+canvas { max-width: 100%; }
 
-/* ============================================
-   PREMIUM CTA
-   ============================================ */
-.premium-cta {
-  background: linear-gradient(135deg, rgba(91,191,133,0.06), rgba(90,143,168,0.06));
-  border: 1px solid rgba(91,191,133,0.15);
-  border-radius: 14px;
-  padding: 40px;
-  text-align: center;
-  margin: 56px auto 0;
-  max-width: 640px;
-  position: relative;
-  overflow: hidden;
-}
-.premium-cta::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-  animation: shimmer 4s infinite;
-}
-.premium-cta h3 {
-  font-family: var(--display);
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--white);
-  margin-bottom: 10px;
-}
-.premium-cta p {
-  font-size: 15px;
-  color: rgba(250,250,250,0.55);
-  margin-bottom: 24px;
-  line-height: 1.6;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.premium-btn {
-  display: inline-block;
-  padding: 14px 38px;
-  background: var(--green-light);
-  color: var(--black);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  border-radius: 6px;
-  transition: all .3s cubic-bezier(.22,1,.36,1);
-  position: relative;
-  z-index: 1;
-}
-.premium-btn:hover {
-  background: #6DD99A;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(91,191,133,0.3);
-}
-
-/* ============================================
-   FOOTER NOTE
-   ============================================ */
+/* FOOTER */
 .lab-footer {
-  padding: 48px 56px;
+  padding: 40px 48px;
   text-align: center;
 }
 .lab-footer p {
-  font-size: 13px;
-  color: rgba(250,250,250,0.3);
+  font-size: 12px;
+  color: rgba(250,250,250,0.25);
 }
-.lab-footer a {
-  color: var(--green-light);
-  text-decoration: underline;
-}
+.lab-footer a { color: var(--green-light); }
 
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-/* ============================================
-   LOADING STATE
-   ============================================ */
-.loading-state {
+/* LOADING */
+.loading-msg {
   text-align: center;
-  padding: 80px 20px;
+  padding: 50px;
   color: rgba(250,250,250,0.35);
-}
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: var(--green-light);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 16px;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
+  font-size: 14px;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 1100px) {
-  .insights-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  nav { padding: 0 24px; }
+  nav, .section-nav, .lab-section, .strength-section, .lab-hero, .lab-footer { padding-left: 20px; padding-right: 20px; }
   .nav-links a:not(.nav-cta) { display: none; }
-  
-  .section-nav { padding: 0 24px; }
-  .section-nav a { padding: 14px 18px; font-size: 12px; }
-  
-  .lab-hero { padding: 100px 24px 32px; }
-  .lab-section { padding: 56px 24px; }
-  .insights-section { padding: 36px 24px; }
-  
-  .tournament-banner-inner {
-    flex-direction: column;
-    text-align: center;
-    padding: 24px;
-  }
-  .tournament-stats {
-    margin-top: 20px;
-    justify-content: center;
-  }
-  
-  .insights-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  .insight-card { padding: 18px; }
-  .insight-value { font-size: 28px; }
-  
-  .top10-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-  .chart-card { padding: 20px; }
-  
-  .predictions-table th,
-  .predictions-table td {
-    padding: 10px 12px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .insights-grid {
-    grid-template-columns: 1fr;
-  }
-  .player-skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
+  .section-nav a { padding: 12px 16px; font-size: 12px; }
+  .top10-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .banner-inner { padding: 24px; }
 }
 </style>
 </head>
@@ -878,33 +535,24 @@ canvas {
 
 <!-- HERO -->
 <section class="lab-hero">
-  <div class="lab-hero-content">
-    <h1>The Lab</h1>
-    <p>Real-time golf analytics powered by DataGolf</p>
-    
-    <!-- Tournament Banner -->
-    <div class="tournament-banner" id="tournament-banner">
-      <div class="tournament-banner-inner">
-        <div class="tournament-main">
-          <div class="tournament-label">Loading...</div>
-          <h2 class="tournament-event">—</h2>
-        </div>
-      </div>
+  <h1>The Lab</h1>
+  <p>Real-time golf analytics powered by DataGolf</p>
+  <div class="tournament-banner" id="tournament-banner">
+    <div class="banner-inner">
+      <div class="banner-label">Loading...</div>
+      <h2 class="banner-title">—</h2>
     </div>
   </div>
 </section>
 
-<!-- TOURNAMENT INSIGHTS -->
-<div class="insights-section">
-  <div id="tournament-insights">
-    <div class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>Loading tournament insights...</p>
-    </div>
+<!-- FIELD STRENGTH -->
+<div class="strength-section">
+  <div id="field-strength">
+    <div class="loading-msg">Loading field data...</div>
   </div>
 </div>
 
-<!-- TOP 10 RANKINGS -->
+<!-- RANKINGS -->
 <section class="lab-section" id="rankings">
   <div class="section-header">
     <h2>Top 10 Rankings</h2>
@@ -912,10 +560,7 @@ canvas {
   </div>
   <div class="section-body">
     <div class="top10-grid" id="top10-grid">
-      <div class="loading-state" style="grid-column: 1/-1;">
-        <div class="loading-spinner"></div>
-        <p>Loading player rankings...</p>
-      </div>
+      <div class="loading-msg" style="grid-column:1/-1;">Loading rankings...</div>
     </div>
   </div>
 </section>
@@ -928,17 +573,7 @@ canvas {
   </div>
   <div class="section-body">
     <div id="predictions-table">
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
-        <p>Loading predictions...</p>
-      </div>
-    </div>
-    
-    <!-- Premium CTA -->
-    <div class="premium-cta">
-      <h3>See Full Field Predictions</h3>
-      <p>Unlock win probabilities, top finishes, and detailed analytics for all 156 players. Plus live leaderboards, DFS optimizer, and course fit analysis.</p>
-      <a href="#" class="premium-btn">Upgrade to Premium →</a>
+      <div class="loading-msg">Loading predictions...</div>
     </div>
   </div>
 </section>
@@ -951,48 +586,28 @@ canvas {
   </div>
   <div class="section-body">
     <div class="charts-grid">
-      
-      <!-- Skills Comparison Radar -->
       <div class="chart-card">
         <div class="chart-title">Skills Comparison</div>
-        <div class="chart-subtitle">Top 5 players · All SG categories</div>
-        <div class="chart-container">
-          <canvas id="skills-radar"></canvas>
-        </div>
+        <div class="chart-subtitle">Top 5 players across SG categories</div>
+        <div class="chart-container"><canvas id="skills-radar"></canvas></div>
       </div>
-      
-      <!-- Putting vs Tee-to-Green Scatter -->
       <div class="chart-card">
         <div class="chart-title">Putting vs Tee-to-Green</div>
-        <div class="chart-subtitle">Top 15 players · Find the winning formula</div>
-        <div class="chart-container">
-          <canvas id="scatter-plot"></canvas>
-        </div>
+        <div class="chart-subtitle">Top 15 players · Ball striking vs putting</div>
+        <div class="chart-container"><canvas id="scatter-plot"></canvas></div>
       </div>
-      
-      <!-- Consistency Chart -->
       <div class="chart-card">
-        <div class="chart-title">Player Rankings by SG Total</div>
-        <div class="chart-subtitle">Top 10 players · Season performance</div>
-        <div class="chart-container">
-          <canvas id="consistency-chart"></canvas>
-        </div>
+        <div class="chart-title">Player Rankings</div>
+        <div class="chart-subtitle">Top 10 by SG Total</div>
+        <div class="chart-container"><canvas id="consistency-chart"></canvas></div>
       </div>
-      
-    </div>
-    
-    <!-- Premium CTA -->
-    <div class="premium-cta">
-      <h3>Unlock Advanced Analytics</h3>
-      <p>Get approach skill heatmaps, historical performance trends, course fit analysis, head-to-head matchups, and export all data to CSV.</p>
-      <a href="#" class="premium-btn">Go Premium →</a>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <div class="lab-footer">
-  <p>Data provided by <a href="https://datagolf.com" target="_blank" rel="noopener">DataGolf</a> · Updated every 6 hours</p>
+  <p>Data provided by <a href="https://datagolf.com" target="_blank">DataGolf</a> · Updated every 6 hours</p>
 </div>
 
 <script src="/lab-data.js"></script>
