@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Lab - Divot Lab</title>
+<title>The Lab – Divot Lab</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+/* ============================================
+   TOKENS
+   ============================================ */
 :root {
   --black:      #0A0A0A;
   --white:      #FAFAFA;
@@ -20,12 +23,17 @@
   --blue:       #2C5F7C;
   --blue-mid:   #5A8FA8;
   --warm-gray:  #F3F2F0;
+  --red:        #E76F51;
+  --orange:     #F4A259;
+  --purple:     #9B59B6;
 
   --display: 'Cormorant Garamond', Georgia, serif;
   --body:    'DM Sans', 'Helvetica Neue', sans-serif;
-  --mono:    'JetBrains Mono', 'Courier New', monospace;
 }
 
+/* ============================================
+   RESET
+   ============================================ */
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body {
@@ -34,10 +42,13 @@ body {
   background: var(--black);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  line-height: 1.5;
 }
 a { color:inherit; text-decoration:none; }
 
-/* NAV */
+/* ============================================
+   NAV
+   ============================================ */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -76,14 +87,16 @@ nav {
   font-weight: 500;
   transition: all .2s;
 }
-.nav-cta.active { background: var(--green-light); }
+.nav-cta.active { background: var(--green-light); color: var(--black) !important; }
 .nav-cta:hover {
   background:#236b4f;
   transform:translateY(-1px);
   box-shadow:0 4px 14px rgba(27,77,62,.3);
 }
 
-/* SECTION NAV - Sticky tabs */
+/* ============================================
+   SECTION NAV - Sticky tabs
+   ============================================ */
 .section-nav {
   position: sticky;
   top: 68px;
@@ -118,23 +131,26 @@ nav {
   background: rgba(91,191,133,0.05);
 }
 
-/* HERO */
+/* ============================================
+   HERO
+   ============================================ */
 .lab-hero {
-  min-height: 50vh;
+  min-height: 40vh;
   background: linear-gradient(165deg, #0a0a0a 0%, #0d1312 100%);
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 140px 56px 80px;
+  padding: 120px 56px 40px;
   overflow: hidden;
 }
 .lab-hero::before {
   content:'';
   position:absolute;
-  top:0; left:50%; transform:translateX(-50%);
-  width:800px; height:800px;
-  background:radial-gradient(ellipse at center, rgba(91,191,133,.08) 0%, transparent 70%);
+  top:-20%; left:50%; transform:translateX(-50%);
+  width:900px; height:900px;
+  background:radial-gradient(ellipse at center, rgba(91,191,133,.06) 0%, transparent 70%);
   pointer-events:none;
 }
 .lab-hero-content {
@@ -148,30 +164,161 @@ nav {
   font-weight: 600;
   color: var(--white);
   letter-spacing: -.02em;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .lab-hero p {
-  font-size: 17px;
-  color: rgba(250,250,250,0.5);
+  font-size: 16px;
+  color: rgba(250,250,250,0.45);
   line-height: 1.6;
-  margin-bottom: 8px;
-}
-.lab-hero .tournament-name {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 8px 20px;
-  background: rgba(91,191,133,0.1);
-  border: 1px solid rgba(91,191,133,0.2);
-  border-radius: 6px;
-  color: var(--green-light);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: .05em;
 }
 
-/* SECTIONS */
+/* ============================================
+   TOURNAMENT BANNER
+   ============================================ */
+.tournament-banner {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  margin-top: 32px;
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
+}
+.tournament-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 36px;
+  gap: 32px;
+}
+.tournament-main { flex: 1; }
+.tournament-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 8px;
+}
+.tournament-event {
+  font-family: var(--display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+.tournament-course {
+  font-size: 14px;
+  color: rgba(250,250,250,0.5);
+  margin-top: 6px;
+}
+.tournament-stats {
+  display: flex;
+  gap: 28px;
+}
+.tournament-stat {
+  text-align: center;
+}
+.tournament-stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+.tournament-stat-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(250,250,250,0.35);
+  margin-top: 2px;
+}
+
+/* ============================================
+   TOURNAMENT INSIGHTS
+   ============================================ */
+.insights-section {
+  padding: 48px 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.insight-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  transition: all .3s ease;
+}
+.insight-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+.insight-card.featured {
+  background: linear-gradient(135deg, rgba(91,191,133,0.08), rgba(91,191,133,0.02));
+  border-color: rgba(91,191,133,0.2);
+}
+.insight-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.insight-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.insight-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  color: rgba(250,250,250,0.5);
+  margin-top: 8px;
+}
+.insight-note {
+  font-size: 11px;
+  color: rgba(250,250,250,0.3);
+  margin-top: 4px;
+}
+.insight-scale {
+  margin-top: 16px;
+}
+.scale-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.scale-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-light), var(--blue-mid));
+  border-radius: 3px;
+  transition: width .6s ease;
+}
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 9px;
+  color: rgba(250,250,250,0.3);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+/* ============================================
+   SECTIONS
+   ============================================ */
 .lab-section {
-  padding: 80px 56px;
+  padding: 72px 56px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   transition: all .4s cubic-bezier(.22,1,.36,1);
 }
@@ -179,18 +326,18 @@ nav {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
+  margin-top: 0;
 }
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 48px;
   cursor: pointer;
   user-select: none;
 }
 .section-header h2 {
   font-family: var(--display);
-  font-size: clamp(32px, 3.5vw, 44px);
+  font-size: clamp(28px, 3.5vw, 40px);
   font-weight: 600;
   color: var(--white);
   letter-spacing: -.02em;
@@ -205,7 +352,9 @@ nav {
   align-items: center;
   justify-content: center;
   color: rgba(250,250,250,0.4);
+  font-size: 14px;
   transition: all .3s;
+  cursor: pointer;
 }
 .section-toggle:hover {
   background: rgba(255,255,255,0.08);
@@ -219,294 +368,483 @@ nav {
   max-height: 10000px;
   opacity: 1;
   transition: all .5s cubic-bezier(.22,1,.36,1);
+  margin-top: 48px;
 }
 
-/* TOP 10 GRID */
+/* ============================================
+   TOP 10 GRID - Player Cards
+   ============================================ */
 .top10-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* PLAYER CARDS - NEW DESIGN */
-.player-card-new {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+.player-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px;
   padding: 24px;
   position: relative;
   transition: all .4s cubic-bezier(.22,1,.36,1);
-  overflow: hidden;
+  animation: fadeInUp .5s ease backwards;
 }
-.player-card-new::before {
+.player-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--green-light), var(--blue-mid));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .5s cubic-bezier(.22,1,.36,1);
+  opacity: 0;
+  transition: opacity .3s;
 }
-.player-card-new:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: rgba(91,191,133,0.3);
+.player-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(91,191,133,0.25);
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
 }
-.player-card-new:hover::before {
-  transform: scaleX(1);
+.player-card:hover::before {
+  opacity: 1;
 }
 
-.player-rank-badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+.player-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.player-rank {
+  width: 32px;
+  height: 32px;
   background: var(--green-light);
   color: var(--black);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(91,191,133,0.3);
-  animation: fadeIn .6s cubic-bezier(.22,1,.36,1) backwards;
 }
-
 .player-flag {
-  font-size: 32px;
-  margin-bottom: 12px;
+  font-size: 24px;
   line-height: 1;
-  animation: fadeIn .6s cubic-bezier(.22,1,.36,1) .1s backwards;
 }
+.player-style {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.style-icon { font-size: 12px; }
+.style-name { letter-spacing: .03em; }
 
 .player-name {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 8px;
-  animation: fadeIn .6s cubic-bezier(.22,1,.36,1) .15s backwards;
+  margin-bottom: 12px;
 }
 
-.player-sg-total {
-  font-family: var(--mono);
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--green-light);
-  margin-bottom: 4px;
-  animation: fadeIn .6s cubic-bezier(.22,1,.36,1) .2s backwards;
-}
-
-.player-sg-label {
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(250,250,250,0.4);
-  margin-bottom: 20px;
-  animation: fadeIn .6s cubic-bezier(.22,1,.36,1) .25s backwards;
-}
-
-.player-skills {
+.player-sg-main {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
   gap: 10px;
+  margin-bottom: 20px;
 }
-
-.skill-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-top: 1px solid rgba(255,255,255,0.05);
+.sg-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--green-light);
+  letter-spacing: -.02em;
+  line-height: 1;
 }
-
-.skill-label {
-  font-size: 12px;
-  color: rgba(250,250,250,0.5);
-}
-
-.skill-value {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--white);
-}
-
-/* PREDICTIONS TABLE */
-.predictions-grid {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.predictions-grid thead {
-  background: rgba(255,255,255,0.05);
-}
-
-.predictions-grid th {
-  padding: 14px 16px;
-  text-align: left;
+.sg-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: rgba(250,250,250,0.5);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.predictions-grid td {
-  padding: 12px 16px;
-  font-size: 14px;
-  color: rgba(250,250,250,0.8);
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-
-.predictions-grid tbody tr {
-  transition: background .2s;
-}
-
-.predictions-grid tbody tr:hover {
-  background: rgba(255,255,255,0.04);
-}
-
-.predictions-grid td:nth-child(1) {
-  font-family: var(--mono);
   color: rgba(250,250,250,0.4);
-  font-size: 12px;
 }
 
-.predictions-grid td:nth-child(2) {
-  font-weight: 500;
+.player-efficiency {
+  margin-bottom: 16px;
+}
+.efficiency-bar {
+  display: flex;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 600;
+}
+.efficiency-t2g {
+  background: linear-gradient(90deg, var(--blue-mid), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  min-width: 0;
+}
+.efficiency-t2g span { white-space: nowrap; padding: 0 6px; }
+.efficiency-putt {
+  background: linear-gradient(90deg, var(--purple), #7D3C98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  min-width: 0;
+}
+.efficiency-putt span { white-space: nowrap; padding: 0 6px; }
+
+.player-balance {
+  margin-bottom: 20px;
+}
+.balance-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(250,250,250,0.5);
+  margin-bottom: 6px;
+}
+.balance-value {
+  color: var(--white);
+  font-weight: 600;
+}
+.balance-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.balance-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--green-light));
+  border-radius: 2px;
+  transition: width .6s ease;
+}
+
+.player-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.skill-item {
+  text-align: center;
+}
+.skill-name {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: rgba(250,250,250,0.4);
+  margin-bottom: 4px;
+}
+.skill-val {
+  font-size: 14px;
+  font-weight: 600;
   color: var(--white);
 }
+.skill-val.positive { color: var(--green-light); }
+.skill-val.negative { color: var(--red); }
 
-/* CHARTS GRID */
+/* ============================================
+   PREDICTIONS TABLE
+   ============================================ */
+.predictions-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+.predictions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.01);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.predictions-table thead {
+  background: rgba(255,255,255,0.04);
+}
+.predictions-table th {
+  padding: 16px 18px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(250,250,250,0.45);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.predictions-table td {
+  padding: 14px 18px;
+  font-size: 14px;
+  color: rgba(250,250,250,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.predictions-table tbody tr {
+  transition: background .2s;
+}
+.predictions-table tbody tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+.predictions-table .rank-cell {
+  font-size: 12px;
+  color: rgba(250,250,250,0.35);
+  width: 50px;
+}
+.predictions-table .player-cell {
+  font-weight: 500;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.table-flag {
+  font-size: 18px;
+}
+.predictions-table .prob-cell {
+  font-weight: 500;
+  font-size: 13px;
+}
+.predictions-table .prob-cell.win {
+  color: var(--green-light);
+  font-weight: 600;
+}
+.predictions-table .prob-cell.cut {
+  color: var(--blue-mid);
+}
+
+/* ============================================
+   CHARTS
+   ============================================ */
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 28px;
   max-width: 1400px;
   margin: 0 auto;
 }
-
 .chart-card {
   background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px;
-  padding: 32px;
+  padding: 28px;
   transition: all .3s;
 }
-
 .chart-card:hover {
   background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.1);
 }
-
 .chart-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-
 .chart-subtitle {
   font-size: 13px;
   color: rgba(250,250,250,0.4);
   margin-bottom: 24px;
 }
-
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 canvas {
   max-width: 100%;
   height: auto;
 }
 
-/* PREMIUM CTA */
+/* ============================================
+   PREMIUM CTA
+   ============================================ */
 .premium-cta {
-  background: linear-gradient(135deg, rgba(91,191,133,0.08), rgba(90,143,168,0.08));
-  border: 1px solid rgba(91,191,133,0.2);
-  border-radius: 12px;
-  padding: 32px;
+  background: linear-gradient(135deg, rgba(91,191,133,0.06), rgba(90,143,168,0.06));
+  border: 1px solid rgba(91,191,133,0.15);
+  border-radius: 14px;
+  padding: 40px;
   text-align: center;
-  margin: 64px auto 0;
-  max-width: 600px;
+  margin: 56px auto 0;
+  max-width: 640px;
   position: relative;
   overflow: hidden;
 }
-
 .premium-cta::before {
   content: '';
   position: absolute;
   top: 0; left: -100%;
   width: 200%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-  animation: shimmer 3s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  animation: shimmer 4s infinite;
 }
-
 .premium-cta h3 {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
-
 .premium-cta p {
   font-size: 15px;
-  color: rgba(250,250,250,0.6);
+  color: rgba(250,250,250,0.55);
   margin-bottom: 24px;
   line-height: 1.6;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
-
 .premium-btn {
   display: inline-block;
-  padding: 14px 36px;
+  padding: 14px 38px;
   background: var(--green-light);
   color: var(--black);
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: .05em;
+  letter-spacing: .04em;
   border-radius: 6px;
   transition: all .3s cubic-bezier(.22,1,.36,1);
   position: relative;
   z-index: 1;
 }
-
 .premium-btn:hover {
   background: #6DD99A;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(91,191,133,0.3);
+  box-shadow: 0 10px 28px rgba(91,191,133,0.3);
 }
 
-/* ANIMATIONS */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ============================================
+   FOOTER NOTE
+   ============================================ */
+.lab-footer {
+  padding: 48px 56px;
+  text-align: center;
+}
+.lab-footer p {
+  font-size: 13px;
+  color: rgba(250,250,250,0.3);
+}
+.lab-footer a {
+  color: var(--green-light);
+  text-decoration: underline;
 }
 
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes shimmer {
-  to { left: 100%; }
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
-/* MOBILE */
-@media(max-width:900px){
+/* ============================================
+   LOADING STATE
+   ============================================ */
+.loading-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: rgba(250,250,250,0.35);
+}
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: var(--green-light);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1100px) {
+  .insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
   nav { padding: 0 24px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  
   .section-nav { padding: 0 24px; }
-  .lab-hero { padding: 120px 24px 60px; }
-  .lab-section { padding: 60px 24px; }
-  .top10-grid { grid-template-columns: 1fr; }
-  .charts-grid { grid-template-columns: 1fr; }
-  .predictions-grid { font-size: 12px; }
-  .predictions-grid th,
-  .predictions-grid td { padding: 10px 12px; }
+  .section-nav a { padding: 14px 18px; font-size: 12px; }
+  
+  .lab-hero { padding: 100px 24px 32px; }
+  .lab-section { padding: 56px 24px; }
+  .insights-section { padding: 36px 24px; }
+  
+  .tournament-banner-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+  .tournament-stats {
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+  .insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .insight-card { padding: 18px; }
+  .insight-value { font-size: 28px; }
+  
+  .top10-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-card { padding: 20px; }
+  
+  .predictions-table th,
+  .predictions-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  .player-skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
 }
 </style>
 </head>
@@ -543,22 +881,40 @@ canvas {
   <div class="lab-hero-content">
     <h1>The Lab</h1>
     <p>Real-time golf analytics powered by DataGolf</p>
-    <p style="font-size:14px; opacity:0.4;">Updated every 6 hours · Live tournament data</p>
-    <div class="tournament-name" id="tournament-name">Loading...</div>
+    
+    <!-- Tournament Banner -->
+    <div class="tournament-banner" id="tournament-banner">
+      <div class="tournament-banner-inner">
+        <div class="tournament-main">
+          <div class="tournament-label">Loading...</div>
+          <h2 class="tournament-event">—</h2>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
+<!-- TOURNAMENT INSIGHTS -->
+<div class="insights-section">
+  <div id="tournament-insights">
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading tournament insights...</p>
+    </div>
+  </div>
+</div>
+
 <!-- TOP 10 RANKINGS -->
 <section class="lab-section" id="rankings">
-  <div class="section-header" onclick="this.closest('.lab-section').classList.toggle('collapsed')">
+  <div class="section-header">
     <h2>Top 10 Rankings</h2>
     <div class="section-toggle">▼</div>
   </div>
   <div class="section-body">
     <div class="top10-grid" id="top10-grid">
-      <!-- Loaded by JavaScript -->
-      <div style="grid-column: 1/-1; text-align:center; padding:60px 20px; color:rgba(250,250,250,0.3);">
-        Loading rankings...
+      <div class="loading-state" style="grid-column: 1/-1;">
+        <div class="loading-spinner"></div>
+        <p>Loading player rankings...</p>
       </div>
     </div>
   </div>
@@ -566,18 +922,19 @@ canvas {
 
 <!-- PREDICTIONS -->
 <section class="lab-section" id="predictions">
-  <div class="section-header" onclick="this.closest('.lab-section').classList.toggle('collapsed')">
+  <div class="section-header">
     <h2>Tournament Predictions</h2>
     <div class="section-toggle">▼</div>
   </div>
   <div class="section-body">
     <div id="predictions-table">
-      <div style="text-align:center; padding:60px 20px; color:rgba(250,250,250,0.3);">
-        Loading predictions...
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading predictions...</p>
       </div>
     </div>
     
-    <!-- Premium CTA for full field -->
+    <!-- Premium CTA -->
     <div class="premium-cta">
       <h3>See Full Field Predictions</h3>
       <p>Unlock win probabilities, top finishes, and detailed analytics for all 156 players. Plus live leaderboards, DFS optimizer, and course fit analysis.</p>
@@ -588,7 +945,7 @@ canvas {
 
 <!-- ANALYTICS -->
 <section class="lab-section" id="analytics">
-  <div class="section-header" onclick="this.closest('.lab-section').classList.toggle('collapsed')">
+  <div class="section-header">
     <h2>Analytics Dashboard</h2>
     <div class="section-toggle">▼</div>
   </div>
@@ -599,26 +956,32 @@ canvas {
       <div class="chart-card">
         <div class="chart-title">Skills Comparison</div>
         <div class="chart-subtitle">Top 5 players · All SG categories</div>
-        <canvas id="skills-radar" width="400" height="400"></canvas>
+        <div class="chart-container">
+          <canvas id="skills-radar"></canvas>
+        </div>
       </div>
       
       <!-- Putting vs Tee-to-Green Scatter -->
       <div class="chart-card">
         <div class="chart-title">Putting vs Tee-to-Green</div>
-        <div class="chart-subtitle">Top 10 players · Find the winning formula</div>
-        <canvas id="scatter-plot" width="500" height="400"></canvas>
+        <div class="chart-subtitle">Top 15 players · Find the winning formula</div>
+        <div class="chart-container">
+          <canvas id="scatter-plot"></canvas>
+        </div>
       </div>
       
       <!-- Consistency Chart -->
       <div class="chart-card">
-        <div class="chart-title">Player Consistency</div>
-        <div class="chart-subtitle">Based on SG Total variance</div>
-        <canvas id="consistency-chart" width="500" height="300"></canvas>
+        <div class="chart-title">Player Rankings by SG Total</div>
+        <div class="chart-subtitle">Top 10 players · Season performance</div>
+        <div class="chart-container">
+          <canvas id="consistency-chart"></canvas>
+        </div>
       </div>
       
     </div>
     
-    <!-- Premium CTA for advanced analytics -->
+    <!-- Premium CTA -->
     <div class="premium-cta">
       <h3>Unlock Advanced Analytics</h3>
       <p>Get approach skill heatmaps, historical performance trends, course fit analysis, head-to-head matchups, and export all data to CSV.</p>
@@ -626,6 +989,11 @@ canvas {
     </div>
   </div>
 </section>
+
+<!-- Footer -->
+<div class="lab-footer">
+  <p>Data provided by <a href="https://datagolf.com" target="_blank" rel="noopener">DataGolf</a> · Updated every 6 hours</p>
+</div>
 
 <script src="/lab-data.js"></script>
 </body>
