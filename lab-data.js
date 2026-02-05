@@ -255,7 +255,7 @@ function renderFieldStrength() {
   }
   
   container.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto;" class="field-grid">
       
       <!-- Field Strength Card -->
       <div class="strength-card">
@@ -279,31 +279,21 @@ function renderFieldStrength() {
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        ${isLive && top3Leaders.length > 0 ? `
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              ${top3Leaders.map((p, i) => {
-                const score = p.current_score || 0;
-                const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
-                const lastName = p.player_name.split(', ')[0];
-                return `
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                      <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                    </div>
-                    <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        ` : `
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Scores</div>
-            <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Available when live</div>
-          </div>
-        `}
+        <div class="strength-bar" style="visibility: hidden; height: 8px;"></div>
+        <div class="strength-rating" style="opacity: 0; height: 20px;"></div>
+        <div class="strength-details">
+          ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
+            const score = p.current_score || 0;
+            const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
+            const lastName = p.player_name.split(', ')[0];
+            return `
+              <div class="strength-stat" style="justify-content: space-between; width: 100%;">
+                <span class="stat-text" style="opacity: 1;">${i + 1}. ${lastName}</span>
+                <span class="stat-num" style="color: ${score <= 0 ? '#5BBF85' : '#E76F51'};">${scoreDisplay}</span>
+              </div>
+            `;
+          }).join('') : `<div class="strength-stat"><span class="stat-text">Available when live</span></div>`}
+        </div>
       </div>
 
       <!-- Odds Card -->
@@ -312,45 +302,19 @@ function renderFieldStrength() {
           <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        ${top3Odds.length > 0 ? `
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              ${top3Odds.map((p, i) => {
-                const winPct = ((p.win || 0) * 100).toFixed(1);
-                const lastName = p.player_name.split(', ')[0];
-                return `
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                      <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                      <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                    </div>
-                    <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        ` : `
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Favorites</div>
-            <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Loading odds...</div>
-          </div>
-        `}
-      </div>
-
-      <!-- Field Strength Card 4 (Placeholder) -->
-      <div class="strength-card">
-        <div class="strength-header">
-          <span class="strength-label">Field Strength</span>
-          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
-        </div>
-        <div class="strength-bar">
-          <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
-        </div>
-        <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
+        <div class="strength-bar" style="visibility: hidden; height: 8px;"></div>
+        <div class="strength-rating" style="opacity: 0; height: 20px;"></div>
         <div class="strength-details">
-          <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
-          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+          ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
+            const winPct = ((p.win || 0) * 100).toFixed(1);
+            const lastName = p.player_name.split(', ')[0];
+            return `
+              <div class="strength-stat" style="justify-content: space-between; width: 100%;">
+                <span class="stat-text" style="opacity: 1;">${i + 1}. ${lastName}</span>
+                <span class="stat-num" style="color: #5A8FA8;">${winPct}%</span>
+              </div>
+            `;
+          }).join('') : `<div class="strength-stat"><span class="stat-text">Loading odds...</span></div>`}
         </div>
       </div>
 
