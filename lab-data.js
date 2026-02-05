@@ -129,7 +129,7 @@ async function loadAllData() {
     console.log('🏌️ Loading lab data...');
     
     // Load composite lab data
-    const labDataResponse = await fetch(`${API_BASE_URL}/lab-data`);
+    const labDataResponse = await fetch(`${API_BASE_URL}/api/lab-data`);
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
