@@ -276,48 +276,66 @@ function renderFieldStrength() {
       <!-- Leaders Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Leaders</span>
+          <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
-          ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
-            const score = p.current_score || 0;
-            const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
-            const lastName = p.player_name.split(', ')[0];
-            return `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                </div>
-                <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
-              </div>
-            `;
-          }).join('') : '<div style="text-align: center; padding: 20px 0; font-size: 12px; color: rgba(250,250,250,0.35);">Live leaders when tournament starts</div>'}
-        </div>
+        ${isLive && top3Leaders.length > 0 ? `
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              ${top3Leaders.map((p, i) => {
+                const score = p.current_score || 0;
+                const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
+                const lastName = p.player_name.split(', ')[0];
+                return `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
+                      <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
+                    </div>
+                    <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : `
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Scores</div>
+            <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Available when live</div>
+          </div>
+        `}
       </div>
 
       <!-- Odds Card -->
       <div class="strength-card">
         <div class="strength-header">
-          <span class="strength-label">Win Odds</span>
+          <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
-          ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
-            const winPct = ((p.win || 0) * 100).toFixed(1);
-            const lastName = p.player_name.split(', ')[0];
-            return `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
-                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
-                </div>
-                <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
-              </div>
-            `;
-          }).join('') : '<div style="text-align: center; padding: 20px 0; font-size: 12px; color: rgba(250,250,250,0.35);">Loading odds...</div>'}
-        </div>
+        ${top3Odds.length > 0 ? `
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              ${top3Odds.map((p, i) => {
+                const winPct = ((p.win || 0) * 100).toFixed(1);
+                const lastName = p.player_name.split(', ')[0];
+                return `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="font-size: 11px; color: rgba(250,250,250,0.35); min-width: 16px;">${i + 1}.</span>
+                      <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${lastName}</span>
+                    </div>
+                    <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : `
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Favorites</div>
+            <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Loading odds...</div>
+          </div>
+        `}
       </div>
 
       <!-- Field Strength Card 4 (Placeholder) -->
@@ -811,10 +829,10 @@ function renderConsistencyChart() {
   
   if (!top10.length) return;
   
-  // Create gradient for bars
+  // Create gradient for bars (more subtle)
   const gradient = ctx.createLinearGradient(0, 0, 0, 400);
   gradient.addColorStop(0, '#5A8FA8');
-  gradient.addColorStop(1, 'rgba(10,10,10,0.4)');
+  gradient.addColorStop(1, 'rgba(90,143,168,0.3)'); // More subtle - 30% opacity of same color
   
   new Chart(ctx, {
     type: 'bar',
@@ -875,22 +893,22 @@ function renderSGBreakdown() {
   const avgARG = top10.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / top10.length;
   const avgPUTT = top10.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / top10.length;
   
-  // Create gradients for each bar
+  // Create gradients for each bar (more subtle)
   const gradientRed = ctx.createLinearGradient(0, 0, 0, 400);
   gradientRed.addColorStop(0, '#E76F51');
-  gradientRed.addColorStop(1, 'rgba(10,10,10,0.4)');
+  gradientRed.addColorStop(1, 'rgba(231,111,81,0.3)');
   
   const gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
   gradientBlue.addColorStop(0, '#5A8FA8');
-  gradientBlue.addColorStop(1, 'rgba(10,10,10,0.4)');
+  gradientBlue.addColorStop(1, 'rgba(90,143,168,0.3)');
   
   const gradientGreen = ctx.createLinearGradient(0, 0, 0, 400);
   gradientGreen.addColorStop(0, '#5BBF85');
-  gradientGreen.addColorStop(1, 'rgba(10,10,10,0.4)');
+  gradientGreen.addColorStop(1, 'rgba(91,191,133,0.3)');
   
   const gradientOrange = ctx.createLinearGradient(0, 0, 0, 400);
   gradientOrange.addColorStop(0, '#DDA15E');
-  gradientOrange.addColorStop(1, 'rgba(10,10,10,0.4)');
+  gradientOrange.addColorStop(1, 'rgba(221,161,94,0.3)');
   
   new Chart(ctx, {
     type: 'bar',
