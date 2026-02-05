@@ -279,7 +279,12 @@ function renderFieldStrength() {
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
         </div>
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <!-- Invisible spacer to match strength-bar (6px + 10px margin) -->
+        <div style="height: 16px;"></div>
+        <!-- Invisible spacer to match strength-rating (text height + 16px margin) -->
+        <div style="height: 36px;"></div>
+        <!-- Match strength-details structure -->
+        <div style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
             ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
               const score = p.current_score || 0;
@@ -308,7 +313,12 @@ function renderFieldStrength() {
           <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
         </div>
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <!-- Invisible spacer to match strength-bar (6px + 10px margin) -->
+        <div style="height: 16px;"></div>
+        <!-- Invisible spacer to match strength-rating (text height + 16px margin) -->
+        <div style="height: 36px;"></div>
+        <!-- Match strength-details structure -->
+        <div style="padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
             ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
               const winPct = ((p.win || 0) * 100).toFixed(1);
