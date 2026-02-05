@@ -456,6 +456,15 @@ nav {
   border-radius: 10px;
   padding: 24px;
 }
+.chart-card-compact {
+  max-height: 400px;
+}
+.chart-card-compact .chart-container {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .chart-card:hover {
   background: rgba(255,255,255,0.03);
 }
@@ -611,14 +620,14 @@ canvas { max-width: 100%; }
       2025-26 PGA Tour Season
     </div>
     <div class="charts-grid">
-      <div class="chart-card">
+      <div class="chart-card chart-card-compact">
         <div class="chart-title">Skills Comparison</div>
         <div class="chart-subtitle">Top 5 players across SG categories</div>
         <div class="chart-container"><canvas id="skills-radar"></canvas></div>
       </div>
-      <div class="chart-card">
+      <div class="chart-card chart-card-compact">
         <div class="chart-title">Putting vs Tee-to-Green</div>
-        <div class="chart-subtitle">Top 15 players · Ball striking vs putting</div>
+        <div class="chart-subtitle">Top 20 players · Ball striking vs putting</div>
         <div class="chart-container"><canvas id="scatter-plot"></canvas></div>
       </div>
       <div class="chart-card">

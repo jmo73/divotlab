@@ -308,8 +308,14 @@ function renderLeaderboard() {
   
   // Sort by current score (lowest to highest), then by position
   const sorted = [...globalLeaderboard].sort((a, b) => {
-    const scoreA = a.current_score || 999;
-    const scoreB = b.current_score || 999;
+    // Convert E to 0 for sorting
+    let scoreA = a.current_score;
+    if (scoreA === 'E') scoreA = 0;
+    scoreA = scoreA || 999;
+    
+    let scoreB = b.current_score;
+    if (scoreB === 'E') scoreB = 0;
+    scoreB = scoreB || 999;
     
     if (scoreA !== scoreB) {
       return scoreA - scoreB; // Lower score = better
@@ -323,9 +329,25 @@ function renderLeaderboard() {
   
   // Show all players but let table scroll
   container.innerHTML = `
-    <div class="table-wrapper" style="max-height: 600px; overflow-y: auto;">
+    <style>
+      .leaderboard-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+      .leaderboard-scroll::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.03);
+        border-radius: 4px;
+      }
+      .leaderboard-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #5BBF85, #5A8FA8);
+        border-radius: 4px;
+      }
+      .leaderboard-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #6DD89A, #6BA3BD);
+      }
+    </style>
+    <div class="table-wrapper leaderboard-scroll" style="max-height: 600px; overflow-y: auto;">
       <table class="pred-table">
-        <thead style="position: sticky; top: 0; background: rgba(10,10,10,0.95); z-index: 1;">
+        <thead style="position: sticky; top: 0; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.08);">
           <tr>
             <th class="rank-col">Pos</th>
             <th>Player</th>
@@ -341,9 +363,9 @@ function renderLeaderboard() {
         <tbody>
           ${sorted.map((p, i) => {
             const score = p.current_score || 0;
-            const scoreDisplay = score > 0 ? `+${score}` : score === 0 ? 'E' : score;
+            const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
             const today = p.today || 0;
-            const todayDisplay = today > 0 ? `+${today}` : today === 0 ? 'E' : today;
+            const todayDisplay = today > 0 ? `+${today}` : today === 0 || today === 'E' ? 'E' : today;
             
             return `
               <tr>
@@ -659,7 +681,7 @@ function renderScatterPlot() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       scales: {
         x: {
           title: {
@@ -891,22 +913,27 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSection = 'events';
   
   const observer = new IntersectionObserver((entries) => {
-    // Sort entries by their position on page (top to bottom)
-    const sortedEntries = entries
-      .filter(e => e.isIntersecting)
-      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    // Find the section with the highest intersection ratio
+    let maxRatio = 0;
+    let activeSection = null;
     
-    if (sortedEntries.length > 0) {
-      // Use the topmost intersecting section
-      const topSection = sortedEntries[0];
-      currentSection = topSection.target.id;
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+        maxRatio = entry.intersectionRatio;
+        activeSection = entry.target;
+      }
+    });
+    
+    // Only switch if we have a clear winner (at least 30% visible)
+    if (activeSection && maxRatio >= 0.3) {
+      currentSection = activeSection.id;
       navLinks.forEach(link => {
         link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
       });
     }
   }, { 
-    threshold: [0, 0.1, 0.25, 0.5],
-    rootMargin: '-100px 0px -50% 0px'
+    threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+    rootMargin: '-120px 0px -30% 0px'
   });
   
   allSections.forEach(section => observer.observe(section));
