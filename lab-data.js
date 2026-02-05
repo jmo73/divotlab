@@ -31,9 +31,18 @@ function addDays(date, days) {
 
 function getTournamentState(fieldData) {
   const r = fieldData?.current_round;
-  if (!r || r === 0) return 'pre';
+  if (r == null || r === 0) return 'pre';
   if (r >= 1 && r <= 4) return 'live';
   return 'post';
+}
+
+async function safeJson(res) {
+  if (!res || !res.ok) return null;
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 // ---------- Schedule + banner logic ----------
@@ -50,10 +59,9 @@ function selectScheduleEvent(schedule, fieldEventName) {
     current = events.find(e => e.event_name === fieldEventName) || null;
   }
 
-  // If we have a current event, decide whether to stay on it or move on
   if (current) {
     const start = parseISODate(current.start_date);
-    // Assume 4‑day event: Thu–Sun
+    // Assume 4‑day event (Thu–Sun)
     const end = start ? addDays(start, 3) : null;
     const cutoff = end ? addDays(end, 1) : null; // 1 day after end
 
@@ -139,6 +147,7 @@ function calculateFieldStrength(players) {
     return { rating: '0.0', label: 'Weak', eliteCount: 0, topTier: 0 };
   }
 
+  // If SG data exists, use it; otherwise everything will gracefully fall back to 0
   const sgTotals = players.map(p => p.sg_total || 0);
   const avg = sgTotals.reduce((s, v) => s + v, 0) / sgTotals.length;
 
@@ -146,7 +155,7 @@ function calculateFieldStrength(players) {
   const topTier = players.filter(p => (p.sg_total || 0) >= 1.0).length;
 
   // Map average SG to 0–10
-  const ratingRaw = Math.max(0, Math.min(10, (avg + 1.5) * 3)); // simple mapping
+  const ratingRaw = Math.max(0, Math.min(10, (avg + 1.5) * 3));
   const rating = ratingRaw.toFixed(1);
 
   let label = 'Moderate';
@@ -231,6 +240,18 @@ function renderFieldStrength() {
 
 // ---------- Predictions (with toggle) ----------
 
+function normalizePrePredictions(json) {
+  if (!json || !json.data) return [];
+  const arr = json.data.baseline || [];
+  return Array.isArray(arr) ? arr : [];
+}
+
+function normalizeLivePredictions(json) {
+  if (!json || !json.data) return [];
+  const arr = json.data.data || [];
+  return Array.isArray(arr) ? arr : [];
+}
+
 function renderPredictionsTable(preds, label) {
   const container = document.getElementById('predictions-table');
   if (!container) return;
@@ -243,8 +264,8 @@ function renderPredictionsTable(preds, label) {
   const rows = preds
     .map((p, i) => {
       const name = p.player_name || p.name || 'Unknown';
-      const win = (p.win_prob || p.win_probability || 0) * 100;
-      const top10 = (p.top10_prob || p.top10_probability || 0) * 100;
+      const win = (p.win || 0) * 100;
+      const top10 = (p.top_10 || 0) * 100;
       return `
         <tr>
           <td>${i + 1}</td>
@@ -307,7 +328,7 @@ function attachPredictionsToggle(state) {
   };
 }
 
-async function renderPredictions() {
+function renderPredictions() {
   const container = document.getElementById('predictions-table');
   if (!container) return;
 
@@ -334,7 +355,7 @@ async function renderPredictions() {
   attachPredictionsToggle(state);
 }
 
-// ---------- Charts ----------
+// ---------- Canvas helper ----------
 
 function setupCanvas(canvas, width, height) {
   const ctx = canvas.getContext('2d');
@@ -343,9 +364,11 @@ function setupCanvas(canvas, width, height) {
   canvas.height = height * dpr;
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
-  ctx.scale(dpr, dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { ctx, dpr };
 }
+
+// ---------- Charts ----------
 
 // Skills radar (top 5 players)
 function renderSkillsRadar() {
@@ -375,7 +398,6 @@ function renderSkillsRadar() {
 
   ctx.clearRect(0, 0, w, h);
   ctx.save();
-  ctx.translate(0, 0);
 
   // Grid
   ctx.strokeStyle = 'rgba(250,250,250,0.12)';
@@ -447,7 +469,7 @@ function renderSkillsRadar() {
   ctx.textBaseline = 'middle';
   top5.forEach((p, i) => {
     const y = 22;
-    const x = 20 + i * 80; // widened from 72
+    const x = 20 + i * 80;
     ctx.fillStyle = colors[i] || 'rgba(91,191,133,0.4)';
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, Math.PI * 2);
@@ -595,7 +617,7 @@ function renderConsistencyChart() {
   ctx.stroke();
 }
 
-// SG Breakdown chart (top 10 by SG Total, raw values)
+// SG Breakdown chart (top 10 by SG Total, raw values, 4‑color palette)
 function renderSGBreakdown() {
   const canvas = document.getElementById('sg-breakdown');
   if (!canvas || !globalPlayers.length) return;
@@ -645,7 +667,7 @@ function renderSGBreakdown() {
   ctx.lineTo(pad.l + cw, yZero);
   ctx.stroke();
 
-  // Single line (neutral)
+  // Neutral line
   ctx.strokeStyle = 'rgba(250,250,250,0.35)';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -657,7 +679,7 @@ function renderSGBreakdown() {
   });
   ctx.stroke();
 
-  // Category colors
+  // Category colors (your palette)
   const colors = ['#2C5F7C', '#5A8FA8', '#88B3C5', '#8B2E2E'];
 
   // Points
@@ -691,26 +713,28 @@ function renderCharts() {
 
 async function loadAllData() {
   try {
-    const [fieldRes, predsRes, liveRes, scheduleRes] = await Promise.all([
+    const [fieldRes, preRes, liveRes, scheduleRes] = await Promise.all([
       fetch(`${API_BASE_URL}/field-updates`),
-      fetch(`${API_BASE_URL}/predictions`),
+      fetch(`${API_BASE_URL}/pre-tournament`),
       fetch(`${API_BASE_URL}/live-tournament`),
       fetch(`${API_BASE_URL}/schedule`),
     ]);
 
-    const fieldJson = await fieldRes.json();
-    const predsJson = await predsRes.json();
-    const liveJson = await liveRes.json();
-    const scheduleJson = await scheduleRes.json();
+    const fieldJson = await safeJson(fieldRes);
+    const preJson = await safeJson(preRes);
+    const liveJson = await safeJson(liveRes);
+    const scheduleJson = await safeJson(scheduleRes);
 
-    globalFieldData = fieldJson.data || {};
-    globalPlayers = globalFieldData.players || globalFieldData.field || [];
+    globalFieldData = fieldJson?.data || {};
+    globalPlayers =
+      globalFieldData.field ||
+      globalFieldData.players ||
+      [];
 
-    globalPredictionsPre = (predsJson.data && predsJson.data.predictions) || [];
-    globalPredictionsLive =
-      (liveJson.data && liveJson.data.predictions) || [];
+    globalPredictionsPre = normalizePrePredictions(preJson);
+    globalPredictionsLive = normalizeLivePredictions(liveJson);
 
-    globalSchedule = (scheduleJson.data && scheduleJson.data.schedule) || [];
+    globalSchedule = (scheduleJson?.data && scheduleJson.data.schedule) || [];
 
     const selectedEvent = selectScheduleEvent(
       globalSchedule,
