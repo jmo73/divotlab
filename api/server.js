@@ -19,12 +19,16 @@ const cache = new NodeCache({
   useClones: false
 });
 
+// Cache for PGA Tour player IDs from rankings
+let pgaTourPlayerIds = new Set();
+let lastRankingsUpdate = 0;
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // ============================================
-// PGA TOUR FILTERING SYSTEM (using primary_tour)
+// PGA TOUR FILTERING SYSTEM (using primary_tour from rankings)
 // ============================================
 
 async function fetchDataGolfDirect(endpoint) {
@@ -36,17 +40,50 @@ async function fetchDataGolfDirect(endpoint) {
   return response.json();
 }
 
-// Simple filter function using primary_tour field
+// Build PGA player ID set from rankings (has primary_tour field)
+async function updatePGATourPlayerIds() {
+  const now = Date.now();
+  // Only update if cache is older than 24 hours
+  if (now - lastRankingsUpdate < 86400000 && pgaTourPlayerIds.size > 0) {
+    return;
+  }
+  
+  try {
+    console.log('🏌️ Updating PGA Tour player IDs from rankings...');
+    const rankings = await fetchDataGolfDirect(
+      `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`
+    );
+    
+    if (rankings.rankings) {
+      pgaTourPlayerIds = new Set(
+        rankings.rankings
+          .filter(p => p.primary_tour === 'PGA')
+          .map(p => p.dg_id)
+      );
+      lastRankingsUpdate = now;
+      console.log(`✅ Updated PGA Tour player IDs: ${pgaTourPlayerIds.size} players`);
+    }
+  } catch (error) {
+    console.error('❌ Error updating PGA player IDs:', error);
+  }
+}
+
+// Filter function - uses player IDs from rankings
 function filterPGATourOnly(players) {
   if (!players || players.length === 0) return [];
+  if (pgaTourPlayerIds.size === 0) {
+    console.warn('⚠️ PGA player IDs not loaded yet, returning all players');
+    return players;
+  }
   
-  const filtered = players.filter(p => p.primary_tour === 'PGA');
+  const filtered = players.filter(p => pgaTourPlayerIds.has(p.dg_id));
   
   console.log(`  Filtered: ${players.length} → ${filtered.length} (PGA only)`);
   return filtered;
 }
 
-// No initialization needed - primary_tour comes directly from API!
+// Initialize on startup
+updatePGATourPlayerIds();
 
 // ============================================
 // HELPER: FETCH WITH CACHING
@@ -168,10 +205,13 @@ app.get('/api/rankings', async (req, res) => {
       86400 // 24hr cache
     );
 
-    // Apply PGA Tour filter
+    // Update PGA player IDs cache from this data
+    await updatePGATourPlayerIds();
+
+    // Apply PGA Tour filter using primary_tour field directly
     let rankings = result.data.rankings || [];
     if (req.query.pga_only === 'true') {
-      rankings = filterPGATourOnly(rankings);
+      rankings = rankings.filter(p => p.primary_tour === 'PGA');
     }
 
     res.json({
@@ -750,8 +790,9 @@ app.get('/api/cache-status', (req, res) => {
     keys: keys,
     stats: stats,
     pgaTourFiltering: {
-      method: 'primary_tour field',
-      description: 'Filters players where primary_tour === "PGA"'
+      method: 'primary_tour via rankings lookup',
+      playerCount: pgaTourPlayerIds.size,
+      lastUpdate: new Date(lastRankingsUpdate).toISOString()
     }
   });
 });
@@ -779,8 +820,9 @@ app.get('/health', (req, res) => {
       stats: cache.getStats()
     },
     pgaFilter: {
-      method: 'primary_tour',
-      active: true
+      method: 'primary_tour via rankings lookup',
+      active: pgaTourPlayerIds.size > 0,
+      playerCount: pgaTourPlayerIds.size
     }
   });
 });
