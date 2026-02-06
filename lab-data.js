@@ -258,7 +258,7 @@ function renderFieldStrength() {
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto; justify-items: center;" class="field-grid">
       
       <!-- Field Strength Card -->
-      <div class="strength-card">
+      <div class="strength-card" style="width: 100%; max-width: 400px;">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
           <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
