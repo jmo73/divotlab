@@ -586,6 +586,15 @@ nav.light .nav-links a:hover { color:var(--black); }
   opacity: 0.6;
   cursor: not-allowed;
 }
+@media(max-width:500px){
+  .popup-form {
+    flex-direction: column;
+  }
+  .popup-form button {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
 .popup-disclaimer {
   font-size: 11px;
   color: rgba(250,250,250,0.25);
@@ -852,18 +861,18 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <!-- ========== STAT BAR ========== -->
 <div class="stat-bar">
   <div class="stat">
-    <div class="stat-val" id="sgLeaderValue">--</div>
-    <div class="stat-lbl" id="sgLeaderLabel">Loading...</div>
+    <div class="stat-val">+1.42</div>
+    <div class="stat-lbl">SG: Off-the-Tee · Leader · 2025 Season</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat2Value">--</div>
-    <div class="stat-lbl" id="stat2Label">Loading...</div>
+    <div class="stat-val">+1.85</div>
+    <div class="stat-lbl">SG: Approach · Leader · 2025 Season</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat3Value">--</div>
-    <div class="stat-lbl" id="stat3Label">Loading...</div>
+    <div class="stat-val">+0.92</div>
+    <div class="stat-lbl">SG: Putting · Leader · 2025 Season</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
@@ -980,7 +989,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   <div class="email-inner reveal">
     <div class="email-label">Lab Notes</div>
     <h2 class="email-title">The weekly update.<br>No filler.</h2>
-    <p class="email-sub">One insight. One data point. What's coming next. Every Tuesday morning.</p>
+    <p class="email-sub">One insight. One data point. What's coming next. Right to your inbox.</p>
     <form id="emailForm" class="email-row">
       <input type="email" id="emailInput" placeholder="your@email.com" required>
       <button type="submit">Subscribe</button>
