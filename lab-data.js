@@ -263,8 +263,9 @@ function renderFieldStrength() {
           <span class="strength-label">Field Strength</span>
           <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
         </div>
-        <div class="strength-bar">
+        <div class="strength-bar" style="position: relative;">
           <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
+          <div style="position: absolute; left: ${pct}%; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background: ${labelColor}; border: 2px solid rgba(250,250,250,0.9); border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>
         </div>
         <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
         <div class="strength-details">
