@@ -19,16 +19,12 @@ const cache = new NodeCache({
   useClones: false
 });
 
-// PGA Tour player whitelist
-let pgaTourPlayerIds = new Set();
-let pgaTourWhitelistBuilt = false;
-
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // ============================================
-// PGA TOUR FILTERING SYSTEM
+// PGA TOUR FILTERING SYSTEM (using primary_tour)
 // ============================================
 
 async function fetchDataGolfDirect(endpoint) {
@@ -40,91 +36,17 @@ async function fetchDataGolfDirect(endpoint) {
   return response.json();
 }
 
-// Build PGA Tour player whitelist with confidence scoring
-async function buildPGATourWhitelist() {
-  try {
-    console.log('🏌️ Building PGA Tour player whitelist...');
-    
-    const playerConfidence = new Map();
-    
-    // Strategy 1: Current tournament field (100% confidence)
-    try {
-      const currentField = await fetchDataGolfDirect(
-        `/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`
-      );
-      
-      if (currentField.field) {
-        currentField.field.forEach(player => {
-          playerConfidence.set(player.dg_id, 100);
-        });
-        console.log(`  ✓ Current field: ${currentField.field.length} players`);
-      }
-    } catch (err) {
-      console.warn('  ⚠️ Could not fetch current field:', err.message);
-    }
-    
-    // Strategy 2: Recent PGA Tour schedule (last 15 events)
-    try {
-      const schedule = await fetchDataGolfDirect(
-        `/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`
-      );
-      
-      if (schedule.schedule) {
-        // Get completed and current events
-        const recentEvents = schedule.schedule
-          .filter(e => e.status === 'completed' || e.status === 'in_progress')
-          .slice(-15);
-        
-        console.log(`  ✓ Found ${recentEvents.length} recent PGA Tour events`);
-        
-        // For simplicity, we'll use the current field as proxy
-        // In production, you'd fetch historical field data for each event
-        // That would require additional API calls or local storage
-        
-        // For now, anyone in current field gets included
-        // This is conservative but accurate for active players
-      }
-    } catch (err) {
-      console.warn('  ⚠️ Could not fetch schedule:', err.message);
-    }
-    
-    // Build final whitelist (70%+ confidence threshold)
-    pgaTourPlayerIds = new Set();
-    playerConfidence.forEach((confidence, playerId) => {
-      if (confidence >= 70) {
-        pgaTourPlayerIds.add(playerId);
-      }
-    });
-    
-    pgaTourWhitelistBuilt = true;
-    console.log(`✅ PGA Tour whitelist built: ${pgaTourPlayerIds.size} players`);
-    
-  } catch (error) {
-    console.error('❌ Error building PGA whitelist:', error);
-    // On error, disable filtering (better to show all data than none)
-    pgaTourWhitelistBuilt = false;
-  }
-}
-
-// Filter function - only applies if whitelist is built
+// Simple filter function using primary_tour field
 function filterPGATourOnly(players) {
-  if (!pgaTourWhitelistBuilt || pgaTourPlayerIds.size === 0) {
-    console.warn('⚠️ PGA whitelist not ready, returning unfiltered data');
-    return players;
-  }
+  if (!players || players.length === 0) return [];
   
-  const filtered = players.filter(p => 
-    pgaTourPlayerIds.has(p.dg_id || p.player_id)
-  );
+  const filtered = players.filter(p => p.primary_tour === 'PGA');
   
   console.log(`  Filtered: ${players.length} → ${filtered.length} (PGA only)`);
   return filtered;
 }
 
-// Initialize whitelist on server start
-buildPGATourWhitelist();
-// Rebuild every 24 hours
-setInterval(buildPGATourWhitelist, 86400000);
+// No initialization needed - primary_tour comes directly from API!
 
 // ============================================
 // HELPER: FETCH WITH CACHING
@@ -827,9 +749,9 @@ app.get('/api/cache-status', (req, res) => {
     totalKeys: keys.length,
     keys: keys,
     stats: stats,
-    pgaTourWhitelist: {
-      built: pgaTourWhitelistBuilt,
-      playerCount: pgaTourPlayerIds.size
+    pgaTourFiltering: {
+      method: 'primary_tour field',
+      description: 'Filters players where primary_tour === "PGA"'
     }
   });
 });
@@ -847,23 +769,6 @@ app.post('/api/clear-cache', (req, res) => {
   }
 });
 
-// UTILITY: Rebuild PGA whitelist
-app.post('/api/rebuild-whitelist', async (req, res) => {
-  try {
-    await buildPGATourWhitelist();
-    res.json({
-      success: true,
-      message: 'PGA Tour whitelist rebuilt',
-      playerCount: pgaTourPlayerIds.size
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
 // Health check
 app.get('/health', (req, res) => {
   res.json({
@@ -874,8 +779,8 @@ app.get('/health', (req, res) => {
       stats: cache.getStats()
     },
     pgaFilter: {
-      active: pgaTourWhitelistBuilt,
-      players: pgaTourPlayerIds.size
+      method: 'primary_tour',
+      active: true
     }
   });
 });
@@ -884,13 +789,13 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`
 ╔═════════════════════════════════════════════╗
-║     DIVOT LAB API SERVER v2.0               ║
+║     DIVOT LAB API SERVER v2.1               ║
 ║     DataGolf Integration + PGA Tour Filter  ║
 ╚═════════════════════════════════════════════╝
 
 ✓ Server running on port ${PORT}
 ✓ Cache enabled with intelligent TTL
-✓ PGA Tour filtering ${pgaTourWhitelistBuilt ? 'ACTIVE' : 'building...'}
+✓ PGA Tour filtering via primary_tour field
 ✓ Ready to serve requests
 
 📊 GENERAL USE:
@@ -913,7 +818,7 @@ app.listen(PORT, () => {
   GET  /api/live-hole-stats        (5min)
 
 💰 BETTING TOOLS:
-  GET  /api/betting-odds           (30min) ⭐ NEW
+  GET  /api/betting-odds           (30min)
   GET  /api/matchup-odds           (30min)
   GET  /api/matchup-all-pairings   (30min)
 
@@ -928,11 +833,10 @@ app.listen(PORT, () => {
 🔧 UTILITIES:
   GET  /api/cache-status
   POST /api/clear-cache
-  POST /api/rebuild-whitelist      ⭐ NEW
   GET  /health
 
 ⚠️  API Key secured server-side
-🏌️  PGA Tour whitelist: ${pgaTourPlayerIds.size} players
+🏌️  PGA Tour filter: Uses primary_tour === "PGA"
   `);
 });
 

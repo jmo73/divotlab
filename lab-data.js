@@ -349,18 +349,18 @@ function renderFieldStrength() {
 
 function renderLeaderboard() {
   const container = document.getElementById('leaderboard-table');
-  const titleElement = document.getElementById('leaderboard-title');
+  const liveIndicator = document.getElementById('leaderboard-live-indicator');
   if (!container) return;
   
   const isLive = (globalTournamentInfo.current_round || 0) > 0;
   const tournamentName = globalTournamentInfo.event_name || 'Tournament';
   
-  // Update title dynamically
-  if (titleElement) {
+  // Update live indicator above table (centered, like in predictions)
+  if (liveIndicator) {
     if (isLive) {
-      titleElement.innerHTML = `🔴 Live Scores · ${tournamentName}`;
+      liveIndicator.innerHTML = `🔴 Live Scores · ${tournamentName}`;
     } else {
-      titleElement.textContent = 'Leaderboard';
+      liveIndicator.textContent = '';
     }
   }
   
