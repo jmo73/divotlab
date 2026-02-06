@@ -258,7 +258,7 @@ function renderFieldStrength() {
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1200px; margin: 0 auto; justify-items: center;" class="field-grid">
       
       <!-- Field Strength Card -->
-      <div class="strength-card" style="width: 100%; max-width: 400px;">
+      <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
           <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
@@ -274,7 +274,7 @@ function renderFieldStrength() {
       </div>
 
       <!-- Leaders Card -->
-      <div class="strength-card" style="width: 100%; max-width: 400px;">
+      <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
@@ -300,7 +300,7 @@ function renderFieldStrength() {
       </div>
 
       <!-- Odds Card -->
-      <div class="strength-card" style="width: 100%; max-width: 400px;">
+      <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
           <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">%</span>
