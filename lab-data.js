@@ -220,7 +220,25 @@ function renderFieldStrength() {
   const container = document.getElementById('field-strength');
   if (!container) return;
   
-  const field = calculateFieldStrength(globalPlayers);
+  // Build tournament field by matching predictions with player skill data
+  const tournamentField = globalPredictions
+    .map(pred => {
+      // Find matching player from skill ratings
+      const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
+      if (playerData) {
+        return playerData;
+      }
+      // If no match, create basic player object from prediction
+      return {
+        dg_id: pred.dg_id,
+        player_name: pred.player_name,
+        sg_total: pred.dg_skill_estimate || 0
+      };
+    })
+    .filter(p => p.sg_total != null);
+  
+  // Use tournament field for strength calculation
+  const field = calculateFieldStrength(tournamentField.length > 0 ? tournamentField : globalPlayers);
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
   
@@ -331,9 +349,20 @@ function renderFieldStrength() {
 
 function renderLeaderboard() {
   const container = document.getElementById('leaderboard-table');
+  const titleElement = document.getElementById('leaderboard-title');
   if (!container) return;
   
   const isLive = (globalTournamentInfo.current_round || 0) > 0;
+  const tournamentName = globalTournamentInfo.event_name || 'Tournament';
+  
+  // Update title dynamically
+  if (titleElement) {
+    if (isLive) {
+      titleElement.innerHTML = `🔴 Live Scores · ${tournamentName}`;
+    } else {
+      titleElement.textContent = 'Leaderboard';
+    }
+  }
   
   if (!isLive || !globalLeaderboard.length) {
     container.innerHTML = '<div class="loading-msg">Leaderboard available when tournament is live</div>';

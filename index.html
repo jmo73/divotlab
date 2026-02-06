@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Divot Lab - Golf. Analyzed.</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,13 +33,19 @@
    RESET
    ============================================= */
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+html { 
+  scroll-behavior:smooth;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 body {
   font-family: var(--body);
   color: var(--black);
   background: var(--white);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
 }
 a { color:inherit; text-decoration:none; }
 
@@ -862,17 +868,17 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <div class="stat-bar">
   <div class="stat">
     <div class="stat-val" id="stat-ott">+0.89</div>
-    <div class="stat-lbl">SG: Off-the-Tee · Leader · Last 24 Months</div>
+    <div class="stat-lbl"><span id="stat-ott-name">S. Scheffler</span> · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
     <div class="stat-val" id="stat-app">+1.25</div>
-    <div class="stat-lbl">SG: Approach · Leader · Last 24 Months</div>
+    <div class="stat-lbl"><span id="stat-app-name">S. Scheffler</span> · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
     <div class="stat-val" id="stat-putt">+0.55</div>
-    <div class="stat-lbl">SG: Putting · Leader · Last 24 Months</div>
+    <div class="stat-lbl"><span id="stat-putt-name">L. Åberg</span> · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
@@ -1278,10 +1284,26 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       if (data.success && data.data) {
         const stats = data.data;
         
-        // Update stat values
+        // Helper to format player name (Last, First → F. Last)
+        function formatPlayerName(fullName) {
+          if (!fullName) return 'Leader';
+          const parts = fullName.split(', ');
+          if (parts.length === 2) {
+            // "Scheffler, Scottie" → "S. Scheffler"
+            return parts[1].charAt(0) + '. ' + parts[0];
+          }
+          return fullName;
+        }
+        
+        // Update stat values and player names
         document.getElementById('stat-ott').textContent = stats.sgOTT.value;
+        document.getElementById('stat-ott-name').textContent = formatPlayerName(stats.sgOTT.player);
+        
         document.getElementById('stat-app').textContent = stats.sgApp.value;
+        document.getElementById('stat-app-name').textContent = formatPlayerName(stats.sgApp.player);
+        
         document.getElementById('stat-putt').textContent = stats.sgPutt.value;
+        document.getElementById('stat-putt-name').textContent = formatPlayerName(stats.sgPutt.player);
       }
     } catch (error) {
       console.warn('Could not load homepage stats:', error);
