@@ -802,11 +802,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     <div class="email-label">Lab Notes</div>
     <h2 class="email-title">The weekly update.<br>No filler.</h2>
     <p class="email-sub">One insight. One data point. What's coming next. Every Tuesday morning.</p>
-    <div class="email-row">
-      <input type="email" placeholder="your@email.com">
-      <button>Subscribe</button>
-    </div>
-    <p class="email-note">10% off your first order. Unsubscribe anytime.</p>
+    <form id="emailForm" class="email-row">
+      <input type="email" id="emailInput" placeholder="your@email.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <p id="emailMessage" class="email-note">10% off your first order. Unsubscribe anytime.</p>
   </div>
 </section>
 
@@ -896,6 +896,59 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     });
   },{ threshold:0.1 });
   reveals.forEach(function(el){ obs.observe(el); });
+
+  // --- EMAIL CAPTURE ---
+  var emailForm = document.getElementById('emailForm');
+  var emailInput = document.getElementById('emailInput');
+  var emailMessage = document.getElementById('emailMessage');
+  
+  // REPLACE THIS URL with your Google Apps Script Web App URL
+  var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
+  
+  emailForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var email = emailInput.value.trim();
+    var button = emailForm.querySelector('button');
+    var originalButtonText = button.textContent;
+    
+    // Disable button during submission
+    button.disabled = true;
+    button.textContent = 'Subscribing...';
+    
+    // Submit to Google Sheet
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Google Apps Script requires this
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'email=' + encodeURIComponent(email) + '&source=homepage'
+    })
+    .then(function() {
+      // Success (no-cors mode doesn't return response)
+      emailMessage.textContent = '✓ Thanks for subscribing! Check your inbox Tuesday morning.';
+      emailMessage.style.color = 'var(--green-light)';
+      emailInput.value = '';
+      button.textContent = 'Subscribed!';
+      
+      // Reset after 3 seconds
+      setTimeout(function() {
+        emailMessage.textContent = '10% off your first order. Unsubscribe anytime.';
+        emailMessage.style.color = 'rgba(250,250,250,.25)';
+        button.textContent = originalButtonText;
+        button.disabled = false;
+      }, 3000);
+    })
+    .catch(function(error) {
+      // Error handling
+      emailMessage.textContent = '⚠ Something went wrong. Please try again.';
+      emailMessage.style.color = '#ff6b6b';
+      button.textContent = originalButtonText;
+      button.disabled = false;
+      console.error('Email capture error:', error);
+    });
+  });
 })();
 </script>
 <script src="/divotlab-stats.js"></script>
