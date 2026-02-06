@@ -456,6 +456,185 @@ nav.light .nav-links a:hover { color:var(--black); }
 .email-note { margin-top:14px; font-size:12px; color:rgba(250,250,250,.25); }
 
 /* =============================================
+   POPUP MODAL
+   ============================================= */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.popup-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.popup-modal {
+  background: linear-gradient(165deg, #0d0d0d 0%, #0f1612 100%);
+  border: 1px solid rgba(91,191,133,0.15);
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+.popup-overlay.show .popup-modal {
+  transform: scale(1);
+}
+.popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: rgba(250,250,250,0.4);
+  font-size: 28px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  line-height: 1;
+  padding: 0;
+}
+.popup-close:hover {
+  color: rgba(250,250,250,0.8);
+}
+.popup-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 24px;
+  background: rgba(91,191,133,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green-light);
+  font-size: 28px;
+}
+.popup-title {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.popup-subtitle {
+  font-size: 15px;
+  color: rgba(250,250,250,0.5);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+.popup-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.popup-form input {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 5px;
+  padding: 14px 18px;
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.popup-form input::placeholder {
+  color: rgba(250,250,250,0.32);
+}
+.popup-form input:focus {
+  border-color: var(--green-light);
+  background: rgba(255,255,255,0.1);
+}
+.popup-form button {
+  background: var(--green);
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  padding: 14px 28px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.popup-form button:hover {
+  background: #236b4f;
+  transform: translateY(-1px);
+}
+.popup-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.popup-disclaimer {
+  font-size: 11px;
+  color: rgba(250,250,250,0.25);
+  line-height: 1.5;
+}
+.popup-success {
+  display: none;
+}
+.popup-success.show {
+  display: block;
+}
+.popup-code {
+  background: rgba(91,191,133,0.15);
+  border: 1px solid rgba(91,191,133,0.3);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 24px 0;
+}
+.popup-code-label {
+  font-size: 12px;
+  color: rgba(250,250,250,0.5);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.popup-code-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--green-light);
+  letter-spacing: 0.1em;
+}
+.popup-shop-btn {
+  display: inline-block;
+  background: var(--green);
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.popup-shop-btn:hover {
+  background: #236b4f;
+  transform: translateY(-1px);
+}
+
+/* =============================================
    FOOTER
    ============================================= */
 footer {
@@ -810,6 +989,47 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   </div>
 </section>
 
+<!-- ========== POPUP MODAL ========== -->
+<div id="popupOverlay" class="popup-overlay">
+  <div class="popup-modal">
+    <button class="popup-close" onclick="closePopup()">×</button>
+    
+    <div id="popupContent">
+      <div class="popup-icon">
+        <svg viewBox="0 0 72 72" fill="none" style="width:100%;height:100%;">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+      </div>
+      <h3 class="popup-title">Welcome to the Lab</h3>
+      <p class="popup-subtitle">Get 10% off your first order. Premium golf apparel, data-driven insights.</p>
+      
+      <form id="popupForm" class="popup-form">
+        <input type="email" id="popupEmailInput" placeholder="your@email.com" required>
+        <button type="submit">Get Code</button>
+      </form>
+      
+      <p class="popup-disclaimer">Join our weekly newsletter. Unsubscribe anytime.</p>
+    </div>
+    
+    <div id="popupSuccess" class="popup-success">
+      <div class="popup-icon">✓</div>
+      <h3 class="popup-title">You're In!</h3>
+      <p class="popup-subtitle">Here's your discount code:</p>
+      
+      <div class="popup-code">
+        <div class="popup-code-label">Your Code</div>
+        <div class="popup-code-value">DIVOT10</div>
+      </div>
+      
+      <a href="https://divotlab.printful.me/" class="popup-shop-btn">Shop Now</a>
+      <p class="popup-disclaimer" style="margin-top:16px;">Check your inbox Tuesday for your first Lab Notes.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ========== FOOTER ========== -->
 <footer>
   <div class="footer-grid">
@@ -897,58 +1117,146 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   },{ threshold:0.1 });
   reveals.forEach(function(el){ obs.observe(el); });
 
-  // --- EMAIL CAPTURE ---
-  var emailForm = document.getElementById('emailForm');
-  var emailInput = document.getElementById('emailInput');
-  var emailMessage = document.getElementById('emailMessage');
+  // ====================================
+  // EMAIL CAPTURE & POPUP
+  // ====================================
   
   // REPLACE THIS URL with your Google Apps Script Web App URL
   var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
   
-  emailForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    var email = emailInput.value.trim();
-    var button = emailForm.querySelector('button');
-    var originalButtonText = button.textContent;
-    
-    // Disable button during submission
-    button.disabled = true;
-    button.textContent = 'Subscribing...';
-    
-    // Submit to Google Sheet
+  // Helper function to submit email
+  function submitEmail(email, source, onSuccess, onError) {
     fetch(WEBHOOK_URL, {
       method: 'POST',
-      mode: 'no-cors', // Google Apps Script requires this
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: 'email=' + encodeURIComponent(email) + '&source=homepage'
+      body: 'email=' + encodeURIComponent(email) + '&source=' + encodeURIComponent(source)
     })
-    .then(function() {
-      // Success (no-cors mode doesn't return response)
-      emailMessage.textContent = '✓ Thanks for subscribing! Check your inbox Tuesday morning.';
-      emailMessage.style.color = 'var(--green-light)';
-      emailInput.value = '';
-      button.textContent = 'Subscribed!';
-      
-      // Reset after 3 seconds
-      setTimeout(function() {
-        emailMessage.textContent = '10% off your first order. Unsubscribe anytime.';
-        emailMessage.style.color = 'rgba(250,250,250,.25)';
-        button.textContent = originalButtonText;
-        button.disabled = false;
-      }, 3000);
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(data) {
+      try {
+        var result = JSON.parse(data);
+        if (result.success) {
+          onSuccess();
+        } else {
+          onError(result.message || 'Something went wrong');
+        }
+      } catch(e) {
+        // If we can't parse response, assume success (Google Apps Script sometimes returns HTML)
+        onSuccess();
+      }
     })
     .catch(function(error) {
-      // Error handling
-      emailMessage.textContent = '⚠ Something went wrong. Please try again.';
-      emailMessage.style.color = '#ff6b6b';
-      button.textContent = originalButtonText;
-      button.disabled = false;
-      console.error('Email capture error:', error);
+      onError(error.message || 'Network error');
     });
+  }
+  
+  // --- NEWSLETTER FORM (in email section) ---
+  var emailForm = document.getElementById('emailForm');
+  var emailInput = document.getElementById('emailInput');
+  var emailMessage = document.getElementById('emailMessage');
+  
+  if (emailForm) {
+    emailForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      var email = emailInput.value.trim();
+      var button = emailForm.querySelector('button');
+      var originalText = button.textContent;
+      
+      button.disabled = true;
+      button.textContent = 'Subscribing...';
+      
+      submitEmail(email, 'newsletter', 
+        function() {
+          // Success
+          emailMessage.textContent = '✓ Thanks for subscribing! Check your inbox Tuesday morning.';
+          emailMessage.style.color = 'var(--green-light)';
+          emailInput.value = '';
+          button.textContent = 'Subscribed!';
+          
+          setTimeout(function() {
+            emailMessage.textContent = '10% off your first order. Unsubscribe anytime.';
+            emailMessage.style.color = 'rgba(250,250,250,.25)';
+            button.textContent = originalText;
+            button.disabled = false;
+          }, 3000);
+        },
+        function(errorMsg) {
+          // Error
+          emailMessage.textContent = '⚠ ' + errorMsg;
+          emailMessage.style.color = '#ff6b6b';
+          button.textContent = originalText;
+          button.disabled = false;
+        }
+      );
+    });
+  }
+  
+  // --- POPUP MODAL ---
+  var popupOverlay = document.getElementById('popupOverlay');
+  var popupForm = document.getElementById('popupForm');
+  var popupEmailInput = document.getElementById('popupEmailInput');
+  var popupContent = document.getElementById('popupContent');
+  var popupSuccess = document.getElementById('popupSuccess');
+  
+  // Show popup after 3 seconds if not shown before
+  function showPopup() {
+    if (!localStorage.getItem('divotlab_popup_shown')) {
+      setTimeout(function() {
+        popupOverlay.classList.add('show');
+      }, 3000);
+    }
+  }
+  
+  // Close popup
+  window.closePopup = function() {
+    popupOverlay.classList.remove('show');
+    localStorage.setItem('divotlab_popup_shown', 'true');
+  };
+  
+  // Close on overlay click
+  popupOverlay.addEventListener('click', function(e) {
+    if (e.target === popupOverlay) {
+      closePopup();
+    }
   });
+  
+  // Handle popup form submission
+  if (popupForm) {
+    popupForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      var email = popupEmailInput.value.trim();
+      var button = popupForm.querySelector('button');
+      var originalText = button.textContent;
+      
+      button.disabled = true;
+      button.textContent = 'Processing...';
+      
+      submitEmail(email, 'popup', 
+        function() {
+          // Success - show discount code
+          popupContent.style.display = 'none';
+          popupSuccess.classList.add('show');
+          localStorage.setItem('divotlab_popup_shown', 'true');
+        },
+        function(errorMsg) {
+          // Error
+          alert('Error: ' + errorMsg);
+          button.textContent = originalText;
+          button.disabled = false;
+        }
+      );
+    });
+  }
+  
+  // Initialize popup
+  showPopup();
+  
 })();
 </script>
 <script src="/divotlab-stats.js"></script>
