@@ -861,18 +861,18 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <!-- ========== STAT BAR ========== -->
 <div class="stat-bar">
   <div class="stat">
-    <div class="stat-val">+1.42</div>
-    <div class="stat-lbl">SG: Off-the-Tee · Leader · 2025 Season</div>
+    <div class="stat-val" id="stat-ott">+0.89</div>
+    <div class="stat-lbl">SG: Off-the-Tee · Leader · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val">+1.85</div>
-    <div class="stat-lbl">SG: Approach · Leader · 2025 Season</div>
+    <div class="stat-val" id="stat-app">+1.25</div>
+    <div class="stat-lbl">SG: Approach · Leader · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val">+0.92</div>
-    <div class="stat-lbl">SG: Putting · Leader · 2025 Season</div>
+    <div class="stat-val" id="stat-putt">+0.55</div>
+    <div class="stat-lbl">SG: Putting · Leader · Last 24 Months</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
@@ -1265,6 +1265,29 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   
   // Initialize popup
   showPopup();
+  
+  // ====================================
+  // HOMEPAGE STATS POPULATION
+  // ====================================
+  
+  (async function loadHomepageStats() {
+    try {
+      const response = await fetch('https://divotlab-api.vercel.app/api/homepage-stats');
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        const stats = data.data;
+        
+        // Update stat values
+        document.getElementById('stat-ott').textContent = stats.sgOTT.value;
+        document.getElementById('stat-app').textContent = stats.sgApp.value;
+        document.getElementById('stat-putt').textContent = stats.sgPutt.value;
+      }
+    } catch (error) {
+      console.warn('Could not load homepage stats:', error);
+      // Stats fall back to placeholder values
+    }
+  })();
   
 })();
 </script>

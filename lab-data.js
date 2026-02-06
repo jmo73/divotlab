@@ -145,14 +145,14 @@ async function loadAllData() {
       console.log('✓ Tournament:', globalTournamentInfo.event_name);
     }
     
-    // Load DG Rankings for Top 10
+    // Load DG Rankings for Top 10 (PGA ONLY)
     try {
-      const rankingsResponse = await fetch(`${API_BASE_URL}/api/rankings`);
+      const rankingsResponse = await fetch(`${API_BASE_URL}/api/rankings?pga_only=true`);
       const rankingsData = await rankingsResponse.json();
       
       if (rankingsData.success && rankingsData.data && rankingsData.data.rankings) {
         globalDGRankings = rankingsData.data.rankings.slice(0, 10);
-        console.log('✓ Loaded DG Rankings top 10');
+        console.log('✓ Loaded DG Rankings top 10 (PGA Tour only)');
       }
     } catch (err) {
       console.warn('⚠️ Could not load DG rankings:', err);
@@ -465,12 +465,10 @@ function renderTop10() {
   
   container.innerHTML = top10.map((p, i) => {
     const style = getPlayingStyle(p);
-    const flag = getFlag(p.country);
     return `
       <div class="player-card" style="animation-delay: ${i * 0.05}s">
         <div class="card-top">
           <div class="rank-badge">${i + 1}</div>
-          ${flag !== '🏳️' ? `<span class="player-flag">${flag}</span>` : ''}
           <span class="style-tag" style="color: ${style.color}; border-color: ${style.color};">
             ${style.name}
           </span>
@@ -478,7 +476,7 @@ function renderTop10() {
         <div class="player-name">${p.player_name}</div>
         <div class="sg-total">
           <span class="sg-number">${formatSG(p.sg_total)}</span>
-          <span class="sg-label">SG Total · 2025-26 Season</span>
+          <span class="sg-label">SG Total · Last 24 Months</span>
         </div>
         <div class="skills-list">
           <div class="skill-row">
