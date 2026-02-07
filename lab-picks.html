@@ -317,6 +317,8 @@ body {
 }
 .edge-positive { color: var(--green-light); }
 .edge-medium { color: var(--blue-mid); }
+.edge-weak { color: var(--steel); }
+.edge-minimal { color: rgba(250,250,250,0.4); }
 .confidence-badge {
   display: inline-block;
   padding: 5px 10px;
@@ -335,6 +337,16 @@ body {
   background: rgba(90,143,168,0.15);
   color: var(--blue-mid);
   border: 1px solid rgba(90,143,168,0.3);
+}
+.confidence-badge.weak {
+  background: rgba(196,196,196,0.1);
+  color: var(--steel);
+  border: 1px solid rgba(196,196,196,0.25);
+}
+.confidence-badge.minimal {
+  background: rgba(74,74,74,0.1);
+  color: rgba(250,250,250,0.4);
+  border: 1px solid rgba(74,74,74,0.3);
 }
 
 /* STATS GRID */
@@ -709,8 +721,11 @@ function processMarket(data, market, valueBets) {
     const edgePercent = edge * 100;
     
     // Determine confidence based on edge
-    let confidence = 'moderate';
-    if (edge >= MIN_EDGE_STRONG) confidence = 'strong';
+    let confidence = 'minimal';
+    if (edge >= MIN_EDGE_STRONG) confidence = 'strong';        // 15%+
+    else if (edge >= MIN_EDGE_OUTRIGHT) confidence = 'moderate'; // 8-15%
+    else if (edge >= 0.02) confidence = 'weak';                 // 2-8%
+    // else confidence = 'minimal' for <2%
     
     valueBets.push({
       player: player.player_name,
@@ -760,17 +775,21 @@ function renderValueTable(valueBets) {
           </tr>
         </thead>
         <tbody>
-          ${valueBets.map(bet => `
+          ${valueBets.map(bet => {
+            const edgeClass = bet.confidence === 'strong' ? 'positive' : 
+                            bet.confidence === 'moderate' ? 'medium' : 
+                            bet.confidence === 'weak' ? 'weak' : 'minimal';
+            return `
             <tr class="${bet.confidence === 'strong' ? 'high-value' : ''}">
               <td class="player-name">${bet.player}</td>
               <td><span class="market-badge ${bet.market}">${bet.market.toUpperCase()}</span></td>
               <td class="odds-cell dg">${bet.dgOddsFormatted}</td>
               <td class="odds-cell">${bet.bestBook.toUpperCase()}</td>
               <td class="odds-cell best">${bet.bestOddsFormatted}</td>
-              <td class="edge-cell edge-${bet.confidence === 'strong' ? 'positive' : 'medium'}">+${bet.edgePercent}%</td>
+              <td class="edge-cell edge-${edgeClass}">+${bet.edgePercent}%</td>
               <td><span class="confidence-badge ${bet.confidence}">${bet.confidence.toUpperCase()}</span></td>
             </tr>
-          `).join('')}
+          `;}).join('')}
         </tbody>
       </table>
     </div>
@@ -781,8 +800,9 @@ function updateSummaryStats(valueBets) {
   const total = valueBets.length;
   const avgEdge = total > 0 ? valueBets.reduce((sum, bet) => sum + bet.edge, 0) / total : 0;
   const strong = valueBets.filter(bet => bet.confidence === 'strong').length;
+  const valueBetsCount = valueBets.filter(bet => bet.confidence === 'strong' || bet.confidence === 'moderate').length;
   
-  document.getElementById('totalBets').textContent = total;
+  document.getElementById('totalBets').textContent = valueBetsCount;
   document.getElementById('avgEdge').textContent = total > 0 ? `${(avgEdge * 100).toFixed(1)}%` : '--';
   document.getElementById('strongPicks').textContent = strong;
 }
