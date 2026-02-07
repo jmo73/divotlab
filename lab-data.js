@@ -279,7 +279,7 @@ function renderFieldStrength() {
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
           <span class="strength-label">Field Strength</span>
-          <span class="strength-value">${field.rating}<span class="strength-max">/10</span></span>
+          <span class="strength-value">${field.rating.toFixed(1)}<span class="strength-max">/10</span></span>
         </div>
         <div class="strength-bar" style="position: relative;">
           <div class="strength-fill" style="width: ${pct}%; background: linear-gradient(90deg, #E76F51, #5A8FA8);"></div>
@@ -1128,34 +1128,38 @@ function renderValuePlayers() {
   }
   
   container.innerHTML = valuePlayers.map((player, i) => {
-    // Find strongest skill
-    const skills = [
-      { name: 'OTT', value: player.sg_ott || 0 },
-      { name: 'APP', value: player.sg_app || 0 },
-      { name: 'ARG', value: player.sg_arg || 0 },
-      { name: 'PUTT', value: player.sg_putt || 0 }
-    ];
-    const strongest = skills.sort((a, b) => b.value - a.value)[0];
-    
-    // Try to get win probability from predictions
-    const prediction = globalPredictions.find(p => p.dg_id === player.dg_id);
-    const winProb = prediction && prediction.win_prob ? (prediction.win_prob * 100).toFixed(1) : null;
+    // Determine value indicator based on skill level
+    let valueText = 'Elite Value';
+    let valueColor = '#5BBF85';
+    if (player.sg_total < 2.5) { 
+      valueText = 'Strong Value';
+      valueColor = '#5BBF85';
+    }
+    if (player.sg_total < 2.0) { 
+      valueText = 'Good Value';
+      valueColor = '#5A8FA8';
+    }
+    if (player.sg_total < 1.5) { 
+      valueText = 'Solid';
+      valueColor = 'rgba(250,250,250,0.5)';
+    }
     
     return `
       <div class="value-player">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span class="rank">${i + 1}</span>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 32px; height: 32px; background: rgba(91,191,133,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <span style="font-size: 14px; font-weight: 700; color: #5BBF85;">${i + 1}</span>
+            </div>
             <div>
-              <div class="name" style="margin-bottom: 4px;">${player.player_name}</div>
-              <div style="font-size: 11px; color: rgba(250,250,250,0.4);">
-                Strength: ${strongest.name} (${formatSG(strongest.value)})
+              <div class="name" style="margin-bottom: 2px; font-size: 15px;">${player.player_name}</div>
+              <div style="font-size: 11px; color: ${valueColor}; font-weight: 600;">
+                ${valueText}
               </div>
             </div>
           </div>
           <div style="text-align: right;">
-            <div class="skill-badge" style="margin-bottom: 4px;">${formatSG(player.sg_total)}</div>
-            ${winProb ? `<div style="font-size: 11px; color: rgba(250,250,250,0.4);">${winProb}% win</div>` : ''}
+            <div class="skill-badge" style="margin-bottom: 0;">${formatSG(player.sg_total)}</div>
           </div>
         </div>
       </div>
@@ -1203,7 +1207,7 @@ function renderCourseProfile() {
   let difficultyColor = 'rgba(250,250,250,0.6)';
   if (field.rating >= 7.5) { 
     difficulty = 'Elite Field'; 
-    difficultyColor = '#C98FFF';
+    difficultyColor = '#5BBF85'; // Green for elite
   } else if (field.rating >= 6.5) { 
     difficulty = 'Very Strong'; 
     difficultyColor = '#5BBF85';
@@ -1238,7 +1242,7 @@ function renderCourseProfile() {
       </div>
     </div>
     <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.6;">
-      In a ${difficulty.toLowerCase()} field (${field.rating.toFixed(1)}/10), contenders will need elite ${mostPredictive.name.toLowerCase()} play to separate from the pack. ${field.players} players competing.
+      ${difficulty === 'Elite Field' ? 'An elite' : difficulty === 'Average Field' ? 'An average' : 'A ' + difficulty.toLowerCase()} field (${field.rating.toFixed(1)}/10) with ${field.eliteCount} elite players (SG 1.5+) and ${field.topTier} top-tier players (SG 1.0+). Winners will need elite ${mostPredictive.name.toLowerCase()} play to separate from the pack.
     </div>
   `;
 }
@@ -1285,24 +1289,34 @@ function renderWinningProfile() {
   const argPct = (avgARG / total) * 100;
   const puttPct = (avgPUTT / total) * 100;
   
-  // Render stats on right side
+  // Render stats on right side - larger and styled
   if (statsContainer) {
     statsContainer.innerHTML = `
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">OTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">APP</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">ARG</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">PUTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
+      <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 18px 20px; text-align: center;">
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: rgba(250,250,250,0.4); margin-bottom: 12px;">
+          Top 10 Average SG
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+          <div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Off-the-Tee</div>
+            <div style="font-size: 22px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Approach</div>
+            <div style="font-size: 22px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Around Green</div>
+            <div style="font-size: 22px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Putting</div>
+            <div style="font-size: 22px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
+          </div>
+        </div>
+        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; color: rgba(250,250,250,0.35); line-height: 1.5;">
+          Skill breakdown showing where elite players gain strokes
+        </div>
       </div>
     `;
   }
@@ -1314,28 +1328,28 @@ function renderWinningProfile() {
           <span>Off-the-Tee</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${ottPct}%; background: #5BBF85;"></div>
+        <div class="importance-bar" style="width: ${ottPct}%; background: linear-gradient(90deg, #5BBF85, rgba(91,191,133,0.6));"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Approach</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${appPct}%; background: #5A8FA8;"></div>
+        <div class="importance-bar" style="width: ${appPct}%; background: linear-gradient(90deg, #5A8FA8, rgba(90,143,168,0.6));"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Around Green</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${argPct}%; background: #5BBF85;"></div>
+        <div class="importance-bar" style="width: ${argPct}%; background: linear-gradient(90deg, #5BBF85, rgba(91,191,133,0.6));"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Putting</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${puttPct}%; background: #5A8FA8;"></div>
+        <div class="importance-bar" style="width: ${puttPct}%; background: linear-gradient(90deg, #5A8FA8, rgba(90,143,168,0.6));"></div>
       </div>
     </div>
   `;
