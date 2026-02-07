@@ -709,13 +709,19 @@ canvas { max-width: 100%; }
 /* RESPONSIVE */
 @media (max-width: 768px) {
   body { overflow-x: hidden; }
-  nav { padding: 0 20px; }
+  nav { 
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+  }
   .section-nav { 
     padding: 0 20px; 
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    position: sticky;
+    top: 64px;
   }
   .section-nav::-webkit-scrollbar { display: none; } /* Chrome/Safari */
   .section-nav a { 
@@ -730,8 +736,42 @@ canvas { max-width: 100%; }
   .charts-grid { grid-template-columns: 1fr; }
   .banner-inner { padding: 24px; }
   .field-grid { grid-template-columns: 1fr !important; }
-  .intelligence-grid { grid-template-columns: 1fr; }
+  .intelligence-grid { 
+    grid-template-columns: 1fr; 
+    gap: 16px;
+  }
+  .intel-card {
+    padding: 20px;
+    margin: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
   .fit-grid { grid-template-columns: 1fr; }
+  
+  /* Fix Winning Profile on mobile - stack stats below bars */
+  .intel-card[style*="grid-column"] > div[style*="grid-template-columns"] {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+  }
+  #winning-profile-stats {
+    margin-top: 20px;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #winning-profile-stats > div {
+    width: 100%;
+    max-width: 100%;
+  }
+  #winning-profile-stats [style*="grid-template-columns: repeat(2, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  
+  /* Prevent any horizontal overflow */
+  .value-player, .profile-bar, .fit-stat {
+    max-width: 100%;
+    overflow: hidden;
+  }
   
   /* Limit leaderboard rows on mobile */
   .leaderboard-body .lb-row:nth-child(n+21) { display: none; }
