@@ -622,37 +622,11 @@ async function loadValueBets() {
     processMarket(top10.data, 'top10', valueBets);
     processMarket(top20.data, 'top20', valueBets);
     
-    // Sort by edge (highest first)
+    // Sort by edge (highest first) and take top 20
     valueBets.sort((a, b) => b.edge - a.edge);
+    const top20Bets = valueBets.slice(0, 20);
     
-    // Smart filtering: Allow 2 extreme longshots, then filter to +5000 or better
-    let filteredBets = [];
-    let longshotCount = 0;
-    const LONGSHOT_THRESHOLD = 750; // +75000 in decimal is 751
-    const MAX_LONGSHOTS = 2;
-    const ODDS_CUTOFF = 51; // +5000 in decimal is 51
-    
-    for (const bet of valueBets) {
-      const american = decimalToAmerican(bet.bestOdds);
-      const americanValue = parseInt(american.replace('+', ''));
-      
-      // If it's a massive longshot (>+75000)
-      if (americanValue > 75000) {
-        if (longshotCount < MAX_LONGSHOTS) {
-          filteredBets.push(bet);
-          longshotCount++;
-        }
-        // Skip other massive longshots after we have 2
-      } else if (bet.bestOdds <= ODDS_CUTOFF) {
-        // Include if odds are +5000 or better
-        filteredBets.push(bet);
-      }
-    }
-    
-    // Take top 20 by edge
-    filteredBets = filteredBets.slice(0, 20);
-    
-    globalBettingData = filteredBets;
+    globalBettingData = top20Bets;
     
     if (isLiveTournament) {
       warningContainer.innerHTML = `
@@ -662,8 +636,8 @@ async function loadValueBets() {
       `;
     }
     
-    renderValueTable(filteredBets);
-    updateSummaryStats(filteredBets);
+    renderValueTable(top20Bets);
+    updateSummaryStats(top20Bets);
     
   } catch (error) {
     console.error('Error loading value bets:', error);
