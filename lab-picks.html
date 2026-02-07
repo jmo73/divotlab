@@ -370,6 +370,7 @@ body {
 .leaderboard-table {
   max-height: 600px;
   overflow-y: auto;
+  position: relative;
 }
 .leaderboard-row {
   display: grid;
@@ -383,6 +384,9 @@ body {
   background: rgba(250,250,250,0.02);
 }
 .leaderboard-row.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background: rgba(250,250,250,0.03);
   font-size: 11px;
   font-weight: 600;
@@ -624,7 +628,7 @@ async function loadValueBets() {
     
     if (isLiveTournament) {
       warningContainer.innerHTML = `
-        <div style="margin-bottom: 24px; padding: 16px; background: rgba(217,72,72,0.1); border: 1px solid rgba(217,72,72,0.3); border-radius: 8px; font-size: 13px; color: rgba(250,250,250,0.7);">
+        <div style="margin-bottom: 16px; padding: 16px; background: rgba(217,72,72,0.1); border: 1px solid rgba(217,72,72,0.3); border-radius: 8px; font-size: 13px; color: rgba(250,250,250,0.7); text-align: center;">
           <strong>⚠ Tournament is Live:</strong> These odds may be stale. DG model uses historical fit during live play.
         </div>
       `;
@@ -806,10 +810,15 @@ async function loadLiveData() {
     }
     
     container.innerHTML = `
+      <div style="margin-bottom: 16px; padding: 16px; background: rgba(91,191,133,0.1); border: 1px solid rgba(91,191,133,0.3); border-radius: 8px; font-size: 13px; color: rgba(250,250,250,0.7);">
+        <span style="color: rgba(250,250,250,0.7);">💡 How to Use:</span> "Edge" shows the difference between DataGolf's win probability and the book's implied probability. Positive edge (green) means DG thinks the player has a better chance than the betting odds/books suggest.
+        ${isLive ? '<br><br><span style="color: rgba(250,250,250,0.7);">⚠ Live Tournament:</span> Odds update slower than play. Check current standings before placing bets.' : ''}
+      </div>
+      
       <div class="leaderboard">
         <div class="leaderboard-header">
           <h3>${eventName}</h3>
-          <p>${isLive ? 'Live betting odds with DG model probabilities' : 'Pre-tournament betting odds with DG model probabilities'}</p>
+          <p>${isLive ? 'Live betting odds with Data Golf model probabilities' : 'Pre-tournament betting odds with Data Golf model probabilities'}</p>
         </div>
         <div class="leaderboard-table">
           <div class="leaderboard-row header">
@@ -834,11 +843,6 @@ async function loadLiveData() {
             `;
           }).join('')}
         </div>
-      </div>
-      
-      <div style="margin-top: 24px; padding: 16px; background: rgba(91,191,133,0.1); border: 1px solid rgba(91,191,133,0.3); border-radius: 8px; font-size: 14px;">
-        <strong style="color: var(--green-light);">💡 How to Use:</strong> "Edge" shows the difference between DataGolf's win probability and the book's implied probability. Positive edge (green) means DG thinks the player has a better chance than the odds suggest.
-        ${isLive ? '<br><br><strong style="color: rgba(217,72,72,0.9);">⚠ Live Tournament:</strong> Odds update slower than play. Check current standings before placing bets.' : ''}
       </div>
     `;
     
