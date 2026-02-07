@@ -387,7 +387,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(250,250,250,0.03);
+  background: #111;
+  border-bottom: 1px solid rgba(250,250,250,0.1);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -530,8 +531,7 @@ function decimalToAmerican(decimal) {
 }
 
 function formatOdds(decimal) {
-  const american = decimalToAmerican(decimal);
-  return `${american} (${decimal.toFixed(1)})`;
+  return decimalToAmerican(decimal);
 }
 
 // ============================================
@@ -622,9 +622,37 @@ async function loadValueBets() {
     processMarket(top10.data, 'top10', valueBets);
     processMarket(top20.data, 'top20', valueBets);
     
+    // Sort by edge (highest first)
     valueBets.sort((a, b) => b.edge - a.edge);
     
-    globalBettingData = valueBets;
+    // Smart filtering: Allow 2 extreme longshots, then filter to +5000 or better
+    let filteredBets = [];
+    let longshotCount = 0;
+    const LONGSHOT_THRESHOLD = 750; // +75000 in decimal is 751
+    const MAX_LONGSHOTS = 2;
+    const ODDS_CUTOFF = 51; // +5000 in decimal is 51
+    
+    for (const bet of valueBets) {
+      const american = decimalToAmerican(bet.bestOdds);
+      const americanValue = parseInt(american.replace('+', ''));
+      
+      // If it's a massive longshot (>+75000)
+      if (americanValue > 75000) {
+        if (longshotCount < MAX_LONGSHOTS) {
+          filteredBets.push(bet);
+          longshotCount++;
+        }
+        // Skip other massive longshots after we have 2
+      } else if (bet.bestOdds <= ODDS_CUTOFF) {
+        // Include if odds are +5000 or better
+        filteredBets.push(bet);
+      }
+    }
+    
+    // Take top 20 by edge
+    filteredBets = filteredBets.slice(0, 20);
+    
+    globalBettingData = filteredBets;
     
     if (isLiveTournament) {
       warningContainer.innerHTML = `
@@ -634,8 +662,8 @@ async function loadValueBets() {
       `;
     }
     
-    renderValueTable(valueBets);
-    updateSummaryStats(valueBets);
+    renderValueTable(filteredBets);
+    updateSummaryStats(filteredBets);
     
   } catch (error) {
     console.error('Error loading value bets:', error);
