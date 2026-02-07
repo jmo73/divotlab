@@ -772,7 +772,7 @@ app.get('/api/lab-data', async (req, res) => {
       tournament: {
         event_id: fieldUpdates.event_id || currentEvent.event_id,
         event_name: eventName || 'Upcoming Tournament',
-        course: (fieldUpdates.field && fieldUpdates.field[0]?.course) || currentEvent.course || '',
+        course: fieldUpdates.course || (fieldUpdates.field && fieldUpdates.field[0]?.course) || currentEvent.course || '',
         field_size: fieldUpdates.field?.length || 0,
         current_round: fieldUpdates.current_round || 0,
         start_date: currentEvent.start_date || null,
