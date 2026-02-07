@@ -1128,31 +1128,34 @@ function renderValuePlayers() {
   }
   
   container.innerHTML = valuePlayers.map((player, i) => {
-    // Build skill breakdown
+    // Find strongest skill
     const skills = [
       { name: 'OTT', value: player.sg_ott || 0 },
       { name: 'APP', value: player.sg_app || 0 },
       { name: 'ARG', value: player.sg_arg || 0 },
       { name: 'PUTT', value: player.sg_putt || 0 }
     ];
+    const strongest = skills.sort((a, b) => b.value - a.value)[0];
     
-    const skillsHtml = skills.map(s => 
-      `<div style="display: flex; justify-content: space-between; padding: 4px 0;">
-        <span style="font-size: 11px; color: rgba(250,250,250,0.4);">${s.name}</span>
-        <span style="font-size: 12px; font-weight: 600; color: ${s.value >= 0 ? 'var(--green-light)' : '#E76F51'};">${formatSG(s.value)}</span>
-      </div>`
-    ).join('');
+    // Try to get win probability from predictions
+    const prediction = globalPredictions.find(p => p.dg_id === player.dg_id);
+    const winProb = prediction && prediction.win_prob ? (prediction.win_prob * 100).toFixed(1) : null;
     
     return `
       <div class="value-player">
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 12px;">
             <span class="rank">${i + 1}</span>
-            <span class="name">${player.player_name}</span>
-            <span class="skill-badge">${formatSG(player.sg_total)}</span>
+            <div>
+              <div class="name" style="margin-bottom: 4px;">${player.player_name}</div>
+              <div style="font-size: 11px; color: rgba(250,250,250,0.4);">
+                Strength: ${strongest.name} (${formatSG(strongest.value)})
+              </div>
+            </div>
           </div>
-          <div style="padding-left: 36px; border-left: 2px solid rgba(255,255,255,0.05); margin-left: 12px;">
-            ${skillsHtml}
+          <div style="text-align: right;">
+            <div class="skill-badge" style="margin-bottom: 4px;">${formatSG(player.sg_total)}</div>
+            ${winProb ? `<div style="font-size: 11px; color: rgba(250,250,250,0.4);">${winProb}% win</div>` : ''}
           </div>
         </div>
       </div>
@@ -1203,10 +1206,10 @@ function renderCourseProfile() {
     difficultyColor = '#C98FFF';
   } else if (field.rating >= 6.5) { 
     difficulty = 'Very Strong'; 
-    difficultyColor = 'var(--green-light)';
+    difficultyColor = '#5BBF85';
   } else if (field.rating >= 5.5) { 
     difficulty = 'Strong Field'; 
-    difficultyColor = 'var(--blue-mid)';
+    difficultyColor = '#5A8FA8';
   } else if (field.rating < 4.5) { 
     difficulty = 'Below Average'; 
     difficultyColor = '#E76F51';
@@ -1224,7 +1227,7 @@ function renderCourseProfile() {
       </div>
     </div>
     <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin-bottom: 14px;">
-      <div style="font-size: 12px; font-weight: 600; color: var(--green-light); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em;">
+      <div style="font-size: 12px; font-weight: 600; color: #5BBF85; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em;">
         Key Winning Skill
       </div>
       <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">
@@ -1287,19 +1290,19 @@ function renderWinningProfile() {
     statsContainer.innerHTML = `
       <div style="text-align: center;">
         <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">OTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--green-light);">${formatSG(rawOTT)}</div>
+        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">APP</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--blue-mid);">${formatSG(rawAPP)}</div>
+        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">ARG</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--green-light);">${formatSG(rawARG)}</div>
+        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
       </div>
       <div style="text-align: center;">
         <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">PUTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--blue-mid);">${formatSG(rawPUTT)}</div>
+        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
       </div>
     `;
   }
@@ -1311,28 +1314,28 @@ function renderWinningProfile() {
           <span>Off-the-Tee</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${ottPct}%; background: var(--green-light);"></div>
+        <div class="importance-bar" style="width: ${ottPct}%; background: #5BBF85;"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Approach</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${appPct}%; background: var(--blue-mid);"></div>
+        <div class="importance-bar" style="width: ${appPct}%; background: #5A8FA8;"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Around Green</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${argPct}%; background: var(--green-light);"></div>
+        <div class="importance-bar" style="width: ${argPct}%; background: #5BBF85;"></div>
       </div>
       <div class="profile-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
           <span>Putting</span>
           <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${puttPct}%; background: var(--blue-mid);"></div>
+        <div class="importance-bar" style="width: ${puttPct}%; background: #5A8FA8;"></div>
       </div>
     </div>
   `;
