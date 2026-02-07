@@ -976,6 +976,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAllData();
   initSectionToggles();
   
+  // Initialize Tournament Intelligence after data loads
+  setTimeout(initTournamentIntelligence, 2000);
+  
   // Auto-refresh live predictions every hour when tournament is ongoing
   setInterval(() => {
     if (globalTournamentInfo.current_round > 0) {
@@ -988,11 +991,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.section-nav a');
   const eventsSection = document.getElementById('events');
   const leaderboardSection = document.getElementById('leaderboard');
+  const intelligenceSection = document.getElementById('intelligence');
+  const strategySection = document.getElementById('strategy');
   const predictionsSection = document.getElementById('predictions');
   const rankingsSection = document.getElementById('rankings');
   const analyticsSection = document.getElementById('analytics');
   
-  const allSections = [eventsSection, leaderboardSection, predictionsSection, rankingsSection, analyticsSection].filter(Boolean);
+  const allSections = [eventsSection, leaderboardSection, intelligenceSection, strategySection, predictionsSection, rankingsSection, analyticsSection].filter(Boolean);
   
   // Track which section is currently intersecting
   let currentSection = 'events';
@@ -1048,4 +1053,200 @@ async function loadLivePredictions() {
   } catch (err) {
     console.warn('⚠️ Could not refresh live data:', err);
   }
+}
+
+// ============================================
+// TOURNAMENT INTELLIGENCE FUNCTIONS
+// ============================================
+
+/**
+ * Render Tournament Intelligence section
+ * Shows value players, course profile, and winning profile
+ */
+async function renderTournamentIntelligence() {
+  if (!globalPlayers || !globalPredictions) {
+    console.log('Waiting for data to load tournament intelligence...');
+    return;
+  }
+  
+  renderValuePlayers();
+  renderCourseProfile();
+  renderWinningProfile();
+}
+
+/**
+ * Render Value Players list
+ * Shows top 5 players by skill rating who are in the tournament
+ */
+function renderValuePlayers() {
+  const container = document.getElementById('value-players-list');
+  if (!container) return;
+  
+  // Get players in current tournament
+  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  
+  // Filter to players in tournament and sort by skill
+  const valuePlayers = globalPlayers
+    .filter(p => tournamentPlayerIds.has(p.dg_id) && p.sg_total != null)
+    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+    .slice(0, 5);
+  
+  if (valuePlayers.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
+    return;
+  }
+  
+  container.innerHTML = valuePlayers.map((player, i) => {
+    // Determine value indicator based on skill level
+    let valueText = 'Elite Value';
+    if (player.sg_total < 2.5) valueText = 'Strong Value';
+    if (player.sg_total < 2.0) valueText = 'Good Value';
+    if (player.sg_total < 1.5) valueText = 'Solid Value';
+    
+    return `
+      <div class="value-player">
+        <div class="player-info">
+          <span class="rank">${i + 1}</span>
+          <span class="name">${player.player_name}</span>
+        </div>
+        <div class="player-edge">
+          <span class="skill-badge">${formatSG(player.sg_total)}</span>
+          <span class="value-indicator">${valueText}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Render Course Profile
+ * Shows what skills matter most based on field averages
+ */
+function renderCourseProfile() {
+  const container = document.getElementById('course-profile-content');
+  if (!container) return;
+  
+  // Get tournament players
+  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  
+  if (tournamentPlayers.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
+    return;
+  }
+  
+  // Calculate field strength
+  const field = calculateFieldStrength(tournamentPlayers);
+  
+  // Determine most predictive skill (simplified - you can enhance this)
+  const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
+  const avgAPP = tournamentPlayers.reduce((sum, p) => sum + (p.sg_app || 0), 0) / tournamentPlayers.length;
+  const avgARG = tournamentPlayers.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / tournamentPlayers.length;
+  const avgPUTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / tournamentPlayers.length;
+  
+  const skills = [
+    { name: 'Driving', avg: Math.abs(avgOTT) },
+    { name: 'Approach', avg: Math.abs(avgAPP) },
+    { name: 'Around Green', avg: Math.abs(avgARG) },
+    { name: 'Putting', avg: Math.abs(avgPUTT) }
+  ];
+  
+  const mostPredictive = skills.sort((a, b) => b.avg - a.avg)[0];
+  
+  // Determine difficulty
+  let difficulty = 'Average';
+  if (field.rating >= 7.5) difficulty = 'Elite Field';
+  else if (field.rating >= 6.5) difficulty = 'Very Strong';
+  else if (field.rating >= 5.5) difficulty = 'Strong';
+  else if (field.rating < 4.5) difficulty = 'Below Average';
+  
+  container.innerHTML = `
+    <div class="fit-grid">
+      <div class="fit-stat">
+        <span class="stat-label">Key Skill</span>
+        <span class="stat-value">${mostPredictive.name}</span>
+      </div>
+      <div class="fit-stat">
+        <span class="stat-label">Field Strength</span>
+        <span class="stat-value">${difficulty}</span>
+      </div>
+    </div>
+    <div style="font-size: 13px; color: rgba(250,250,250,0.5); margin-top: 12px;">
+      This week's winner will likely excel at ${mostPredictive.name.toLowerCase()} play, given the field composition and course characteristics.
+    </div>
+  `;
+}
+
+/**
+ * Render Winning Profile chart
+ * Shows relative importance of each skill for winning
+ */
+function renderWinningProfile() {
+  const container = document.getElementById('winning-profile-chart');
+  if (!container) return;
+  
+  // Get tournament players
+  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  
+  if (tournamentPlayers.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
+    return;
+  }
+  
+  // Calculate average skills of top 10 players (proxy for winning profile)
+  const top10 = tournamentPlayers
+    .filter(p => p.sg_total != null)
+    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+    .slice(0, 10);
+  
+  const avgOTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_ott || 0), 0) / top10.length;
+  const avgAPP = top10.reduce((sum, p) => sum + Math.abs(p.sg_app || 0), 0) / top10.length;
+  const avgARG = top10.reduce((sum, p) => sum + Math.abs(p.sg_arg || 0), 0) / top10.length;
+  const avgPUTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_putt || 0), 0) / top10.length;
+  
+  // Normalize to 100% scale
+  const total = avgOTT + avgAPP + avgARG + avgPUTT;
+  const ottPct = (avgOTT / total) * 100;
+  const appPct = (avgAPP / total) * 100;
+  const argPct = (avgARG / total) * 100;
+  const puttPct = (avgPUTT / total) * 100;
+  
+  container.innerHTML = `
+    <div class="profile-stats">
+      <div class="profile-bar">
+        <span>Driving</span>
+        <div class="importance-bar" style="width: ${ottPct}%"></div>
+      </div>
+      <div class="profile-bar">
+        <span>Approach</span>
+        <div class="importance-bar" style="width: ${appPct}%"></div>
+      </div>
+      <div class="profile-bar">
+        <span>Around Green</span>
+        <div class="importance-bar" style="width: ${argPct}%"></div>
+      </div>
+      <div class="profile-bar">
+        <span>Putting</span>
+        <div class="importance-bar" style="width: ${puttPct}%"></div>
+      </div>
+    </div>
+    <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-top: 16px; text-align: center;">
+      Based on skill profile of top 10 contenders
+    </div>
+  `;
+}
+
+/**
+ * Initialize Tournament Intelligence when data is ready
+ */
+async function initTournamentIntelligence() {
+  // Wait for global data to be available
+  if (!globalPlayers || !globalPredictions) {
+    setTimeout(initTournamentIntelligence, 500);
+    return;
+  }
+  
+  console.log('✓ Initializing Tournament Intelligence...');
+  renderTournamentIntelligence();
 }
