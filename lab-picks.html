@@ -128,10 +128,10 @@ body {
   border-bottom: 1px solid rgba(250,250,250,0.1);
 }
 .app-title {
-  font-family: var(--display);
-  font-size: clamp(48px, 6.5vw, 72px);
+  font-family: var(--body);
+  font-size: 36px;
   font-weight: 600;
-  letter-spacing: -.025em;
+  letter-spacing: -.02em;
   line-height: 1.02;
 }
 .app-title span {
@@ -237,7 +237,7 @@ body {
 }
 .value-table th {
   padding: 14px 16px;
-  text-align: left;
+  text-align: center;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -373,7 +373,7 @@ body {
 }
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 60px 1fr 80px 100px;
+  grid-template-columns: 60px 1fr 90px 100px 90px;
   padding: 14px 20px;
   border-bottom: 1px solid rgba(250,250,250,0.05);
   align-items: center;
@@ -430,7 +430,7 @@ body {
   .tabs { overflow-x: auto; }
   .value-table { overflow-x: auto; }
   .stats-grid { grid-template-columns: 1fr; }
-  .leaderboard-row { grid-template-columns: 50px 1fr 70px 90px; padding: 12px 16px; }
+  .leaderboard-row { grid-template-columns: 50px 1fr 80px 85px 70px; padding: 12px 16px; font-size: 13px; }
 }
 </style>
 </head>
@@ -624,8 +624,8 @@ async function loadValueBets() {
     
     if (isLiveTournament) {
       warningContainer.innerHTML = `
-        <div class="alert-box">
-          <strong>⚠ Tournament is Live:</strong> ${liveTournamentName} is currently in progress. DG baseline model uses historical fit during live play. Value bets work best pre-tournament.
+        <div style="margin-bottom: 24px; padding: 16px; background: rgba(217,72,72,0.1); border: 1px solid rgba(217,72,72,0.3); border-radius: 8px; font-size: 13px; color: rgba(250,250,250,0.7);">
+          <strong>⚠ Tournament is Live:</strong> These odds may be stale. DG model uses historical fit during live play.
         </div>
       `;
     }
@@ -753,60 +753,83 @@ async function loadLiveData() {
   const container = document.getElementById('liveContainer');
   
   try {
-    const response = await fetch(`${API_BASE}/api/live-tournament?tour=pga&odds_format=decimal`);
+    // Fetch current betting odds (includes DG model probabilities)
+    const response = await fetch(`${API_BASE}/api/betting-odds?tour=pga&market=win&odds_format=decimal`);
     const data = await response.json();
     
-    if (!data.success || !data.data || !data.data.event_name) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>No live tournament currently</p></div>';
+    if (!data.success || !data.data || !data.data.odds) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>No tournament data available</p></div>';
       return;
     }
     
-    const liveData = data.data;
-    const eventName = liveData.event_name;
+    const oddsData = data.data;
+    const eventName = oddsData.event_name;
+    const isLive = oddsData.notes && oddsData.notes.includes('Tournament is live');
     
-    // Get live probabilities
-    const probs = liveData.live_tournament_probs || [];
+    // Process odds to calculate implied probabilities and find value
+    const players = oddsData.odds
+      .filter(p => p.datagolf?.baseline_history_fit && p.datagolf.baseline_history_fit > 0)
+      .map(p => {
+        const dgOdds = p.datagolf.baseline_history_fit;
+        const dgProb = (1 / dgOdds) * 100; // Convert to percentage
+        
+        // Find best book odds
+        const books = ['draftkings', 'fanduel', 'betmgm', 'pinnacle', 'bet365', 'caesars'];
+        let bestOdds = 0;
+        let bestBook = '';
+        
+        books.forEach(book => {
+          if (p[book] && p[book] > bestOdds) {
+            bestOdds = p[book];
+            bestBook = book;
+          }
+        });
+        
+        const bookImpliedProb = bestOdds > 0 ? (1 / bestOdds) * 100 : 0;
+        const edgePercent = dgProb - bookImpliedProb;
+        
+        return {
+          name: p.player_name,
+          dgProb: dgProb,
+          bestOdds: bestOdds,
+          bestBook: bestBook,
+          bookImpliedProb: bookImpliedProb,
+          edge: edgePercent
+        };
+      })
+      .sort((a, b) => b.dgProb - a.dgProb) // Sort by DG probability (highest first)
+      .slice(0, 20);
     
-    if (probs.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">🏌️</div>
-          <p><strong>${eventName}</strong></p>
-          <p style="margin-top: 12px;">Tournament detected but no live probabilities available yet</p>
-        </div>
-      `;
+    if (players.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏌️</div><p>No betting data available</p></div>';
       return;
     }
-    
-    // Sort by win probability
-    probs.sort((a, b) => (b.win_prob || 0) - (a.win_prob || 0));
-    const top20 = probs.slice(0, 20);
     
     container.innerHTML = `
       <div class="leaderboard">
         <div class="leaderboard-header">
           <h3>${eventName}</h3>
-          <p>Live win probabilities from DataGolf model</p>
+          <p>${isLive ? 'Live betting odds with DG model probabilities' : 'Pre-tournament betting odds with DG model probabilities'}</p>
         </div>
         <div class="leaderboard-table">
           <div class="leaderboard-row header">
-            <div>Pos</div>
+            <div>Rank</div>
             <div>Player</div>
-            <div>Score</div>
-            <div>Win Prob</div>
+            <div>DG Win %</div>
+            <div>Book Win %</div>
+            <div>Edge</div>
           </div>
-          ${top20.map((player, i) => {
-            const score = player.total_to_par;
-            const scoreClass = score < 0 ? 'under' : score > 0 ? 'over' : '';
-            const scoreText = score === 0 ? 'E' : score > 0 ? `+${score}` : score;
-            const winProb = ((player.win_prob || 0) * 100).toFixed(1);
+          ${players.map((player, i) => {
+            const edgeClass = player.edge > 0 ? 'under' : player.edge < 0 ? 'over' : '';
+            const edgeSign = player.edge > 0 ? '+' : '';
             
             return `
-              <div class="leaderboard-row">
+              <div class="leaderboard-row ${player.edge > 2 ? 'high-value' : ''}">
                 <div class="lb-pos">${i + 1}</div>
-                <div class="lb-player">${player.player_name}</div>
-                <div class="lb-score ${scoreClass}">${scoreText}</div>
-                <div class="lb-win-prob">${winProb}%</div>
+                <div class="lb-player">${player.name}</div>
+                <div class="lb-score">${player.dgProb.toFixed(1)}%</div>
+                <div class="lb-win-prob">${player.bookImpliedProb.toFixed(1)}%</div>
+                <div class="lb-score ${edgeClass}">${edgeSign}${player.edge.toFixed(1)}%</div>
               </div>
             `;
           }).join('')}
@@ -814,13 +837,14 @@ async function loadLiveData() {
       </div>
       
       <div style="margin-top: 24px; padding: 16px; background: rgba(91,191,133,0.1); border: 1px solid rgba(91,191,133,0.3); border-radius: 8px; font-size: 14px;">
-        <strong style="color: var(--green-light);">💡 Live Betting Strategy:</strong> Compare these probabilities against live odds. Look for players whose win probability has increased significantly but whose odds haven't adjusted yet.
+        <strong style="color: var(--green-light);">💡 How to Use:</strong> "Edge" shows the difference between DataGolf's win probability and the book's implied probability. Positive edge (green) means DG thinks the player has a better chance than the odds suggest.
+        ${isLive ? '<br><br><strong style="color: rgba(217,72,72,0.9);">⚠ Live Tournament:</strong> Odds update slower than play. Check current standings before placing bets.' : ''}
       </div>
     `;
     
   } catch (error) {
     console.error('Live data error:', error);
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠</div><p>Error loading live data</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠</div><p>Error loading betting data</p></div>';
   }
 }
 
