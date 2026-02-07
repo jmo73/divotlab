@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab Picks - Divot Lab</title>
 <link rel="icon" type="image/png" href="/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --black: #0A0A0A;
@@ -18,6 +18,7 @@
   --red: #D94848;
   --body: 'DM Sans', system-ui, sans-serif;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --display: 'Cormorant Garamond', Georgia, serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,62 +29,11 @@ body {
   min-height: 100vh;
 }
 
-/* HERO SECTION */
-.lab-picks-hero {
-  min-height: 50vh;
-  background: linear-gradient(165deg, #0a0a0a 0%, #0d1612 100%);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 100px 56px 80px;
-  overflow: hidden;
-  margin-bottom: 48px;
-}
-.lab-picks-hero::before {
-  content:'';
-  position:absolute;
-  top:50%; left:50%; transform:translate(-50%,-50%);
-  width:600px; height:600px;
-  background:radial-gradient(ellipse at center, rgba(27,77,62,.12) 0%, transparent 65%);
-  pointer-events:none;
-}
-.hero-content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  max-width: 680px;
-}
-.hero-eyebrow {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .24em;
-  text-transform: uppercase;
-  color: var(--green-light);
-  margin-bottom: 24px;
-  opacity: 0.8;
-}
-.hero-title {
-  font-size: clamp(48px, 7vw, 72px);
-  font-weight: 700;
-  letter-spacing: -.025em;
-  line-height: 1.02;
-  color: var(--white);
-  margin-bottom: 18px;
-}
-.hero-subtitle {
-  font-size: 18px;
-  font-weight: 300;
-  color: rgba(250,250,250,0.5);
-  line-height: 1.6;
-}
-
 /* LOGIN WALL */
 #loginWall {
   position: fixed;
   inset: 0;
-  background: rgba(10,10,10,0.98);
-  backdrop-filter: blur(12px);
+  background: var(--black);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,15 +112,11 @@ body {
 /* MAIN APP */
 #app {
   display: none;
-}
-#app.show { display: block; }
-
-/* CONTENT SECTION */
-.content-section {
+  padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px 48px;
 }
+#app.show { display: block; }
 
 /* HEADER */
 .app-header {
@@ -182,9 +128,11 @@ body {
   border-bottom: 1px solid rgba(250,250,250,0.1);
 }
 .app-title {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--display);
+  font-size: clamp(48px, 6.5vw, 72px);
+  font-weight: 600;
+  letter-spacing: -.025em;
+  line-height: 1.02;
 }
 .app-title span {
   color: var(--green-light);
@@ -257,6 +205,21 @@ body {
   color: rgba(250,250,250,0.4);
 }
 
+/* ALERT BOX */
+.alert-box {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(217,72,72,0.1);
+  border: 1px solid rgba(217,72,72,0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgba(250,250,250,0.8);
+}
+.alert-box strong {
+  color: var(--red);
+  font-weight: 600;
+}
+
 /* VALUE TABLE */
 .value-table {
   background: #111;
@@ -281,8 +244,6 @@ body {
   letter-spacing: 0.5px;
   color: rgba(250,250,250,0.4);
 }
-.value-table th.right { text-align: right; }
-.value-table th.center { text-align: center; }
 .value-table tbody tr {
   border-bottom: 1px solid rgba(250,250,250,0.05);
   transition: background 0.15s;
@@ -321,7 +282,6 @@ body {
   font-family: var(--mono);
   font-size: 13px;
   color: rgba(250,250,250,0.6);
-  text-align: center;
 }
 .odds-cell.best {
   color: var(--green-light);
@@ -335,7 +295,6 @@ body {
   font-family: var(--mono);
   font-size: 14px;
   font-weight: 600;
-  text-align: right;
 }
 .edge-positive { color: var(--green-light); }
 .edge-medium { color: var(--blue-mid); }
@@ -387,6 +346,72 @@ body {
   color: var(--green-light);
 }
 
+/* LIVE LEADERBOARD */
+.leaderboard {
+  background: #111;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 24px;
+}
+.leaderboard-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(250,250,250,0.1);
+}
+.leaderboard-header h3 {
+  font-size: 18px;
+  color: var(--green-light);
+  margin-bottom: 4px;
+}
+.leaderboard-header p {
+  font-size: 13px;
+  color: rgba(250,250,250,0.5);
+}
+.leaderboard-table {
+  max-height: 600px;
+  overflow-y: auto;
+}
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px 100px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(250,250,250,0.05);
+  align-items: center;
+  transition: background 0.15s;
+}
+.leaderboard-row:hover {
+  background: rgba(250,250,250,0.02);
+}
+.leaderboard-row.header {
+  background: rgba(250,250,250,0.03);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(250,250,250,0.4);
+}
+.lb-pos {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--green-light);
+}
+.lb-player {
+  font-weight: 500;
+}
+.lb-score {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+}
+.lb-score.under { color: var(--green-light); }
+.lb-score.over { color: var(--red); }
+.lb-win-prob {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: rgba(250,250,250,0.6);
+}
+
 /* EMPTY STATE */
 .empty-state {
   text-align: center;
@@ -400,11 +425,12 @@ body {
 }
 
 @media (max-width: 768px) {
-  .lab-picks-hero { min-height: 40vh; padding: 80px 22px 60px; }
-  .content-section { padding: 0 16px 48px; }
+  #app { padding: 16px; }
+  .app-header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .tabs { overflow-x: auto; }
   .value-table { overflow-x: auto; }
   .stats-grid { grid-template-columns: 1fr; }
+  .leaderboard-row { grid-template-columns: 50px 1fr 70px 90px; padding: 12px 16px; }
 }
 </style>
 </head>
@@ -431,27 +457,18 @@ body {
 
 <!-- MAIN APP -->
 <div id="app">
-  <!-- HERO SECTION -->
-  <section class="lab-picks-hero">
-    <div class="hero-content">
-      <div class="hero-eyebrow">Private Tool</div>
-      <h1 class="hero-title">Lab Picks</h1>
-      <p class="hero-subtitle">Betting intelligence powered by DataGolf analytics</p>
-    </div>
-  </section>
-
-  <!-- CONTENT SECTION -->
-  <div class="content-section">
-    <div class="app-meta" style="text-align: right; margin-bottom: 24px; font-size: 13px; color: rgba(250,250,250,0.5);">
+  <div class="app-header">
+    <h1 class="app-title">Lab <span>Picks</span></h1>
+    <div class="app-meta">
       <span id="lastUpdate">Loading...</span>
-      <button class="refresh-btn" onclick="refreshData()" style="margin-left: 12px;">⟳ Refresh</button>
+      <button class="refresh-btn" onclick="refreshData()">⟳ Refresh</button>
     </div>
+  </div>
 
   <!-- TABS -->
   <div class="tabs">
     <button class="tab active" data-tab="value-finder">Value Finder</button>
     <button class="tab" data-tab="live-tracker">Live Tracker</button>
-    <button class="tab" data-tab="summary">Summary</button>
   </div>
 
   <!-- TAB 1: VALUE FINDER -->
@@ -471,6 +488,8 @@ body {
       </div>
     </div>
 
+    <div id="liveWarning"></div>
+
     <div id="valueTableContainer" class="loading">
       Finding value bets...
     </div>
@@ -482,16 +501,7 @@ body {
       Loading live data...
     </div>
   </div>
-
-  <!-- TAB 3: SUMMARY -->
-  <div id="summary" class="tab-content">
-    <div id="summaryContainer" class="loading">
-      Loading summary...
-    </div>
-  </div>
-  
-  </div> <!-- End content-section -->
-</div> <!-- End app -->
+</div>
 
 <script>
 const API_BASE = 'https://divotlab-api.vercel.app';
@@ -501,6 +511,7 @@ const MIN_EDGE_STRONG = 0.15; // 15%
 let authenticated = false;
 let globalBettingData = null;
 let isLiveTournament = false;
+let liveTournamentName = '';
 
 // ============================================
 // HELPER FUNCTIONS
@@ -515,7 +526,6 @@ function decimalToAmerican(decimal) {
 }
 
 function formatOdds(decimal) {
-  // Show both formats for clarity
   const american = decimalToAmerican(decimal);
   return `${american} (${decimal.toFixed(1)})`;
 }
@@ -562,11 +572,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     const targetTab = tab.dataset.tab;
     
-    // Update tab buttons
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     
-    // Update tab content
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById(targetTab).classList.add('active');
   });
@@ -580,8 +588,7 @@ async function loadAllData() {
   try {
     await Promise.all([
       loadValueBets(),
-      loadLiveData(),
-      loadSummary()
+      loadLiveData()
     ]);
     
     document.getElementById('lastUpdate').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
@@ -592,10 +599,11 @@ async function loadAllData() {
 
 async function loadValueBets() {
   const container = document.getElementById('valueTableContainer');
+  const warningContainer = document.getElementById('liveWarning');
   container.innerHTML = '<div class="loading">Finding value bets...</div>';
+  warningContainer.innerHTML = '';
   
   try {
-    // Fetch Win, Top 5, Top 10, Top 20 in parallel
     const [win, top5, top10, top20] = await Promise.all([
       fetch(`${API_BASE}/api/betting-odds?tour=pga&market=win&odds_format=decimal`).then(r => r.json()),
       fetch(`${API_BASE}/api/betting-odds?tour=pga&market=top_5&odds_format=decimal`).then(r => r.json()),
@@ -605,16 +613,23 @@ async function loadValueBets() {
     
     const valueBets = [];
     
-    // Process each market
     processMarket(win.data, 'win', valueBets);
     processMarket(top5.data, 'top5', valueBets);
     processMarket(top10.data, 'top10', valueBets);
     processMarket(top20.data, 'top20', valueBets);
     
-    // Sort by edge descending
     valueBets.sort((a, b) => b.edge - a.edge);
     
     globalBettingData = valueBets;
+    
+    if (isLiveTournament) {
+      warningContainer.innerHTML = `
+        <div class="alert-box">
+          <strong>⚠ Tournament is Live:</strong> ${liveTournamentName} is currently in progress. DG baseline model uses historical fit during live play. Value bets work best pre-tournament.
+        </div>
+      `;
+    }
+    
     renderValueTable(valueBets);
     updateSummaryStats(valueBets);
     
@@ -627,20 +642,17 @@ async function loadValueBets() {
 function processMarket(data, market, valueBets) {
   if (!data || !data.odds) return;
   
-  // Check if tournament is live (baseline model unavailable)
   if (data.notes && data.notes.includes('Tournament is live')) {
     isLiveTournament = true;
+    liveTournamentName = data.event_name || 'Current tournament';
   }
   
   data.odds.forEach(player => {
     const dgOdds = player.datagolf?.baseline_history_fit;
-    
-    // Skip players without DG model data
     if (!dgOdds || dgOdds === null) return;
     
     const dgProb = 1 / dgOdds;
     
-    // Find best book odds
     const books = ['draftkings', 'fanduel', 'betmgm', 'pinnacle', 'bet365', 'caesars'];
     let bestOdds = 0;
     let bestBook = '';
@@ -654,14 +666,11 @@ function processMarket(data, market, valueBets) {
     
     if (bestOdds === 0) return;
     
-    // Calculate edge
     const edge = (dgProb * bestOdds) - 1;
     const edgePercent = edge * 100;
     
-    // Filter by minimum edge
     if (edge < MIN_EDGE_OUTRIGHT) return;
     
-    // Determine confidence
     let confidence = 'moderate';
     if (edge >= MIN_EDGE_STRONG) confidence = 'strong';
     
@@ -705,11 +714,11 @@ function renderValueTable(valueBets) {
           <tr>
             <th>Player</th>
             <th>Market</th>
-            <th class="center">DG Model Odds</th>
-            <th class="center">Best Book</th>
-            <th class="center">Book Odds</th>
-            <th class="right">Edge</th>
-            <th class="right">Confidence</th>
+            <th>DG Model Odds</th>
+            <th>Best Book</th>
+            <th>Book Odds</th>
+            <th>Edge</th>
+            <th>Confidence</th>
           </tr>
         </thead>
         <tbody>
@@ -721,23 +730,22 @@ function renderValueTable(valueBets) {
               <td class="odds-cell">${bet.bestBook.toUpperCase()}</td>
               <td class="odds-cell best">${bet.bestOddsFormatted}</td>
               <td class="edge-cell edge-${bet.confidence === 'strong' ? 'positive' : 'medium'}">+${bet.edgePercent}%</td>
-              <td class="right"><span class="confidence-badge ${bet.confidence}">${bet.confidence.toUpperCase()}</span></td>
+              <td><span class="confidence-badge ${bet.confidence}">${bet.confidence.toUpperCase()}</span></td>
             </tr>
           `).join('')}
         </tbody>
       </table>
     </div>
-    ${isLiveTournament ? '<div style="margin-top: 16px; padding: 16px; background: rgba(217,72,72,0.1); border: 1px solid rgba(217,72,72,0.3); border-radius: 8px; font-size: 13px; color: rgba(250,250,250,0.7);"><strong>⚠ Tournament is Live:</strong> These odds may be stale. DG model uses historical fit during live play.</div>' : ''}
   `;
 }
 
 function updateSummaryStats(valueBets) {
   const total = valueBets.length;
-  const avgEdge = valueBets.reduce((sum, bet) => sum + bet.edge, 0) / total;
+  const avgEdge = total > 0 ? valueBets.reduce((sum, bet) => sum + bet.edge, 0) / total : 0;
   const strong = valueBets.filter(bet => bet.confidence === 'strong').length;
   
   document.getElementById('totalBets').textContent = total;
-  document.getElementById('avgEdge').textContent = `${(avgEdge * 100).toFixed(1)}%`;
+  document.getElementById('avgEdge').textContent = total > 0 ? `${(avgEdge * 100).toFixed(1)}%` : '--';
   document.getElementById('strongPicks').textContent = strong;
 }
 
@@ -748,95 +756,78 @@ async function loadLiveData() {
     const response = await fetch(`${API_BASE}/api/live-tournament?tour=pga&odds_format=decimal`);
     const data = await response.json();
     
-    if (data.success && data.data && data.data.event_name) {
-      // Tournament exists and is live
+    if (!data.success || !data.data || !data.data.event_name) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>No live tournament currently</p></div>';
+      return;
+    }
+    
+    const liveData = data.data;
+    const eventName = liveData.event_name;
+    
+    // Get live probabilities
+    const probs = liveData.live_tournament_probs || [];
+    
+    if (probs.length === 0) {
       container.innerHTML = `
-        <div class="stat-card" style="max-width: 600px; margin: 0 auto;">
-          <div class="stat-label">Live Tournament</div>
-          <h2 style="font-size: 24px; margin: 16px 0; color: var(--white);">${data.data.event_name}</h2>
-          <p style="font-size: 14px; color: rgba(250,250,250,0.6);">Live predictions and tracking coming soon</p>
+        <div class="empty-state">
+          <div class="empty-icon">🏌️</div>
+          <p><strong>${eventName}</strong></p>
+          <p style="margin-top: 12px;">Tournament detected but no live probabilities available yet</p>
         </div>
       `;
-    } else {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>No live tournament currently</p></div>';
+      return;
     }
+    
+    // Sort by win probability
+    probs.sort((a, b) => (b.win_prob || 0) - (a.win_prob || 0));
+    const top20 = probs.slice(0, 20);
+    
+    container.innerHTML = `
+      <div class="leaderboard">
+        <div class="leaderboard-header">
+          <h3>${eventName}</h3>
+          <p>Live win probabilities from DataGolf model</p>
+        </div>
+        <div class="leaderboard-table">
+          <div class="leaderboard-row header">
+            <div>Pos</div>
+            <div>Player</div>
+            <div>Score</div>
+            <div>Win Prob</div>
+          </div>
+          ${top20.map((player, i) => {
+            const score = player.total_to_par;
+            const scoreClass = score < 0 ? 'under' : score > 0 ? 'over' : '';
+            const scoreText = score === 0 ? 'E' : score > 0 ? `+${score}` : score;
+            const winProb = ((player.win_prob || 0) * 100).toFixed(1);
+            
+            return `
+              <div class="leaderboard-row">
+                <div class="lb-pos">${i + 1}</div>
+                <div class="lb-player">${player.player_name}</div>
+                <div class="lb-score ${scoreClass}">${scoreText}</div>
+                <div class="lb-win-prob">${winProb}%</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      
+      <div style="margin-top: 24px; padding: 16px; background: rgba(91,191,133,0.1); border: 1px solid rgba(91,191,133,0.3); border-radius: 8px; font-size: 14px;">
+        <strong style="color: var(--green-light);">💡 Live Betting Strategy:</strong> Compare these probabilities against live odds. Look for players whose win probability has increased significantly but whose odds haven't adjusted yet.
+      </div>
+    `;
+    
   } catch (error) {
     console.error('Live data error:', error);
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠</div><p>Error loading live data</p></div>';
   }
 }
 
-async function loadSummary() {
-  const container = document.getElementById('summaryContainer');
-  
-  // Wait for betting data to load first
-  if (!globalBettingData) {
-    setTimeout(loadSummary, 1000);
-    return;
-  }
-  
-  if (globalBettingData.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>No value bets to summarize</p></div>';
-    return;
-  }
-  
-  const byMarket = globalBettingData.reduce((acc, bet) => {
-    if (!acc[bet.market]) acc[bet.market] = [];
-    acc[bet.market].push(bet);
-    return acc;
-  }, {});
-  
-  const marketNames = {
-    'win': 'Win',
-    'top5': 'Top 5',
-    'top10': 'Top 10',
-    'top20': 'Top 20'
-  };
-  
-  container.innerHTML = `
-    <div class="stats-grid">
-      ${Object.keys(byMarket).map(market => {
-        const avgEdge = byMarket[market].reduce((sum, bet) => sum + bet.edge, 0) / byMarket[market].length;
-        return `
-          <div class="stat-card">
-            <div class="stat-label">${marketNames[market] || market.toUpperCase()}</div>
-            <div class="stat-value">${byMarket[market].length}</div>
-            <div style="font-size: 13px; color: rgba(250,250,250,0.5); margin-top: 8px;">
-              Avg Edge: ${(avgEdge * 100).toFixed(1)}%
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-    
-    <div style="margin-top: 32px;">
-      <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--green-light);">Top 5 Value Bets</h3>
-      <div class="value-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Player</th>
-              <th>Market</th>
-              <th class="right">Edge</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${globalBettingData.slice(0, 5).map(bet => `
-              <tr>
-                <td class="player-name">${bet.player}</td>
-                <td><span class="market-badge ${bet.market}">${bet.market.toUpperCase()}</span></td>
-                <td class="edge-cell edge-positive">+${bet.edgePercent}%</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
 function refreshData() {
   if (!authenticated) return;
+  isLiveTournament = false;
+  liveTournamentName = '';
   loadAllData();
 }
 </script>
