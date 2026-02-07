@@ -1169,78 +1169,94 @@ function renderValuePlayers() {
  */
 function renderCourseProfile() {
   const container = document.getElementById('course-profile-content');
-  if (!container) return;
+  if (!container) {
+    console.log('❌ Course profile container not found');
+    return;
+  }
+  
+  console.log('✓ Course profile container found');
   
   // Get tournament players
   const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
   const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  
+  console.log('✓ Tournament players:', tournamentPlayers.length);
   
   if (tournamentPlayers.length === 0) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
     return;
   }
   
-  // Calculate field strength
-  const field = calculateFieldStrength(tournamentPlayers);
-  
-  // Determine most predictive skill
-  const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
-  const avgAPP = tournamentPlayers.reduce((sum, p) => sum + (p.sg_app || 0), 0) / tournamentPlayers.length;
-  const avgARG = tournamentPlayers.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / tournamentPlayers.length;
-  const avgPUTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / tournamentPlayers.length;
-  
-  const skills = [
-    { name: 'Driving', avg: Math.abs(avgOTT), raw: avgOTT },
-    { name: 'Approach', avg: Math.abs(avgAPP), raw: avgAPP },
-    { name: 'Around Green', avg: Math.abs(avgARG), raw: avgARG },
-    { name: 'Putting', avg: Math.abs(avgPUTT), raw: avgPUTT }
-  ];
-  
-  const mostPredictive = skills.sort((a, b) => b.avg - a.avg)[0];
-  
-  // Determine difficulty with proper ranges
-  let difficulty = 'Average Field';
-  let difficultyColor = 'rgba(250,250,250,0.6)';
-  if (field.rating >= 7.5) { 
-    difficulty = 'Elite Field'; 
-    difficultyColor = '#C98FFF';
-  } else if (field.rating >= 6.5) { 
-    difficulty = 'Very Strong'; 
-    difficultyColor = '#5BBF85';
-  } else if (field.rating >= 5.5) { 
-    difficulty = 'Strong Field'; 
-    difficultyColor = '#5A8FA8';
-  } else if (field.rating < 4.5) { 
-    difficulty = 'Below Average'; 
-    difficultyColor = '#E76F51';
+  try {
+    // Calculate field strength
+    const field = calculateFieldStrength(tournamentPlayers);
+    console.log('✓ Field strength calculated:', field);
+    
+    // Determine most predictive skill
+    const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
+    const avgAPP = tournamentPlayers.reduce((sum, p) => sum + (p.sg_app || 0), 0) / tournamentPlayers.length;
+    const avgARG = tournamentPlayers.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / tournamentPlayers.length;
+    const avgPUTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / tournamentPlayers.length;
+    
+    const skills = [
+      { name: 'Driving', avg: Math.abs(avgOTT), raw: avgOTT },
+      { name: 'Approach', avg: Math.abs(avgAPP), raw: avgAPP },
+      { name: 'Around Green', avg: Math.abs(avgARG), raw: avgARG },
+      { name: 'Putting', avg: Math.abs(avgPUTT), raw: avgPUTT }
+    ];
+    
+    const mostPredictive = skills.sort((a, b) => b.avg - a.avg)[0];
+    console.log('✓ Most predictive skill:', mostPredictive);
+    
+    // Determine difficulty with proper ranges
+    let difficulty = 'Average Field';
+    let difficultyColor = 'rgba(250,250,250,0.6)';
+    if (field.rating >= 7.5) { 
+      difficulty = 'Elite Field'; 
+      difficultyColor = '#C98FFF';
+    } else if (field.rating >= 6.5) { 
+      difficulty = 'Very Strong'; 
+      difficultyColor = '#5BBF85';
+    } else if (field.rating >= 5.5) { 
+      difficulty = 'Strong Field'; 
+      difficultyColor = '#5A8FA8';
+    } else if (field.rating < 4.5) { 
+      difficulty = 'Below Average'; 
+      difficultyColor = '#E76F51';
+    }
+    
+    container.innerHTML = `
+      <div class="fit-grid">
+        <div class="fit-stat">
+          <span class="stat-label">Field Rating</span>
+          <span class="stat-value" style="color: ${difficultyColor};">${field.rating.toFixed(1)}</span>
+        </div>
+        <div class="fit-stat">
+          <span class="stat-label">Strength</span>
+          <span class="stat-value" style="color: ${difficultyColor};">${difficulty}</span>
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin-bottom: 14px;">
+        <div style="font-size: 12px; font-weight: 600; color: #5BBF85; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em;">
+          Key Winning Skill
+        </div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">
+          ${mostPredictive.name}
+        </div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5);">
+          Field average: ${formatSG(mostPredictive.raw)}
+        </div>
+      </div>
+      <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.6;">
+        In a ${difficulty.toLowerCase()} field (${field.rating.toFixed(1)}/10), contenders will need elite ${mostPredictive.name.toLowerCase()} play to separate from the pack. ${field.players} players competing.
+      </div>
+    `;
+    
+    console.log('✓ Course profile rendered successfully');
+  } catch (error) {
+    console.error('❌ Error in renderCourseProfile:', error);
+    container.innerHTML = `<div style="padding: 20px; color: #E76F51;">Error: ${error.message}</div>`;
   }
-  
-  container.innerHTML = `
-    <div class="fit-grid">
-      <div class="fit-stat">
-        <span class="stat-label">Field Rating</span>
-        <span class="stat-value" style="color: ${difficultyColor};">${field.rating.toFixed(1)}</span>
-      </div>
-      <div class="fit-stat">
-        <span class="stat-label">Strength</span>
-        <span class="stat-value" style="color: ${difficultyColor};">${difficulty}</span>
-      </div>
-    </div>
-    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin-bottom: 14px;">
-      <div style="font-size: 12px; font-weight: 600; color: #5BBF85; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em;">
-        Key Winning Skill
-      </div>
-      <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">
-        ${mostPredictive.name}
-      </div>
-      <div style="font-size: 13px; color: rgba(250,250,250,0.5);">
-        Field average: ${formatSG(mostPredictive.raw)}
-      </div>
-    </div>
-    <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.6;">
-      In a ${difficulty.toLowerCase()} field (${field.rating.toFixed(1)}/10), contenders will need elite ${mostPredictive.name.toLowerCase()} play to separate from the pack. ${field.players} players competing.
-    </div>
-  `;
 }
 
 /**
@@ -1250,95 +1266,114 @@ function renderCourseProfile() {
 function renderWinningProfile() {
   const container = document.getElementById('winning-profile-chart');
   const statsContainer = document.getElementById('winning-profile-stats');
-  if (!container) return;
+  
+  if (!container) {
+    console.log('❌ Winning profile container not found');
+    return;
+  }
+  
+  console.log('✓ Winning profile container found');
   
   // Get tournament players
   const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
   const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  
+  console.log('✓ Tournament players for winning profile:', tournamentPlayers.length);
   
   if (tournamentPlayers.length === 0) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
     return;
   }
   
-  // Calculate average skills of top 10 players
-  const top10 = tournamentPlayers
-    .filter(p => p.sg_total != null)
-    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
-    .slice(0, 10);
-  
-  const avgOTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_ott || 0), 0) / top10.length;
-  const avgAPP = top10.reduce((sum, p) => sum + Math.abs(p.sg_app || 0), 0) / top10.length;
-  const avgARG = top10.reduce((sum, p) => sum + Math.abs(p.sg_arg || 0), 0) / top10.length;
-  const avgPUTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_putt || 0), 0) / top10.length;
-  
-  // Calculate raw averages for stats
-  const rawOTT = top10.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / top10.length;
-  const rawAPP = top10.reduce((sum, p) => sum + (p.sg_app || 0), 0) / top10.length;
-  const rawARG = top10.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / top10.length;
-  const rawPUTT = top10.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / top10.length;
-  
-  // Normalize to 100% scale for bars
-  const total = avgOTT + avgAPP + avgARG + avgPUTT;
-  const ottPct = (avgOTT / total) * 100;
-  const appPct = (avgAPP / total) * 100;
-  const argPct = (avgARG / total) * 100;
-  const puttPct = (avgPUTT / total) * 100;
-  
-  // Render stats on right side
-  if (statsContainer) {
-    statsContainer.innerHTML = `
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">OTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">APP</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">ARG</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">PUTT</div>
-        <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
+  try {
+    // Calculate average skills of top 10 players
+    const top10 = tournamentPlayers
+      .filter(p => p.sg_total != null)
+      .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+      .slice(0, 10);
+    
+    console.log('✓ Top 10 players:', top10.length);
+    
+    const avgOTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_ott || 0), 0) / top10.length;
+    const avgAPP = top10.reduce((sum, p) => sum + Math.abs(p.sg_app || 0), 0) / top10.length;
+    const avgARG = top10.reduce((sum, p) => sum + Math.abs(p.sg_arg || 0), 0) / top10.length;
+    const avgPUTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_putt || 0), 0) / top10.length;
+    
+    // Calculate raw averages for stats
+    const rawOTT = top10.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / top10.length;
+    const rawAPP = top10.reduce((sum, p) => sum + (p.sg_app || 0), 0) / top10.length;
+    const rawARG = top10.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / top10.length;
+    const rawPUTT = top10.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / top10.length;
+    
+    console.log('✓ Averages - OTT:', rawOTT, 'APP:', rawAPP, 'ARG:', rawARG, 'PUTT:', rawPUTT);
+    
+    // Normalize to 100% scale for bars
+    const total = avgOTT + avgAPP + avgARG + avgPUTT;
+    const ottPct = (avgOTT / total) * 100;
+    const appPct = (avgAPP / total) * 100;
+    const argPct = (avgARG / total) * 100;
+    const puttPct = (avgPUTT / total) * 100;
+    
+    // Render stats on right side
+    if (statsContainer) {
+      statsContainer.innerHTML = `
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">OTT</div>
+          <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">APP</div>
+          <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">ARG</div>
+          <div style="font-size: 16px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">PUTT</div>
+          <div style="font-size: 16px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = `
+      <div class="profile-stats">
+        <div class="profile-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span>Off-the-Tee</span>
+            <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
+          </div>
+          <div class="importance-bar" style="width: ${ottPct}%; background: #5BBF85;"></div>
+        </div>
+        <div class="profile-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span>Approach</span>
+            <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
+          </div>
+          <div class="importance-bar" style="width: ${appPct}%; background: #5A8FA8;"></div>
+        </div>
+        <div class="profile-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span>Around Green</span>
+            <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
+          </div>
+          <div class="importance-bar" style="width: ${argPct}%; background: #5BBF85;"></div>
+        </div>
+        <div class="profile-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span>Putting</span>
+            <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
+          </div>
+          <div class="importance-bar" style="width: ${puttPct}%; background: #5A8FA8;"></div>
+        </div>
       </div>
     `;
+    
+    console.log('✓ Winning profile rendered successfully');
+  } catch (error) {
+    console.error('❌ Error in renderWinningProfile:', error);
+    container.innerHTML = `<div style="padding: 20px; color: #E76F51;">Error: ${error.message}</div>`;
   }
-  
-  container.innerHTML = `
-    <div class="profile-stats">
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Off-the-Tee</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
-        </div>
-        <div class="importance-bar" style="width: ${ottPct}%; background: #5BBF85;"></div>
-      </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Approach</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
-        </div>
-        <div class="importance-bar" style="width: ${appPct}%; background: #5A8FA8;"></div>
-      </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Around Green</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
-        </div>
-        <div class="importance-bar" style="width: ${argPct}%; background: #5BBF85;"></div>
-      </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Putting</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
-        </div>
-        <div class="importance-bar" style="width: ${puttPct}%; background: #5A8FA8;"></div>
-      </div>
-    </div>
-  `;
 }
 
 /**
