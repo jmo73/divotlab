@@ -689,21 +689,21 @@ canvas { max-width: 100%; }
 }
 .preview-cta {
   display: inline-block;
-  background: var(--green);
-  color: var(--white);
-  padding: 14px 32px;
+  background: rgba(91,191,133,0.08);
+  color: var(--green-light);
+  padding: 13px 28px;
   border-radius: 6px;
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: .02em;
+  font-weight: 500;
+  letter-spacing: .01em;
   transition: all .25s;
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(91,191,133,0.2);
 }
 .preview-cta:hover {
-  background: #236b4f;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(27,77,62,.3);
+  background: rgba(91,191,133,0.15);
+  border-color: rgba(91,191,133,0.4);
+  transform: translateY(-1px);
 }
 
 /* RESPONSIVE */
@@ -778,10 +778,10 @@ canvas { max-width: 100%; }
   <a href="#events" class="active">Events</a>
   <a href="#leaderboard">Leaderboard</a>
   <a href="#intelligence">Intelligence</a>
-  <a href="#strategy">Strategy</a>
   <a href="#predictions">Predictions</a>
   <a href="#rankings">Rankings</a>
   <a href="#analytics">Analytics</a>
+  <a href="#strategy">Strategy</a>
 </div>
 
 <!-- HERO -->
@@ -824,10 +824,26 @@ canvas { max-width: 100%; }
     <div class="section-toggle">▼</div>
   </div>
   <div class="section-body">
+    <!-- Tournament Context Header -->
+    <div id="tournament-context" style="margin-bottom: 28px; text-align: center; padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--green-light); margin-bottom: 8px;">
+        ANALYZING
+      </div>
+      <div id="tournament-name" style="font-family: var(--display); font-size: 24px; font-weight: 600; margin-bottom: 4px;">
+        Loading tournament...
+      </div>
+      <div id="tournament-dates" style="font-size: 13px; color: rgba(250,250,250,0.4);">
+        —
+      </div>
+    </div>
+
     <div class="intelligence-grid">
       <!-- Value Players -->
       <div class="intel-card">
-        <h3>Value Players</h3>
+        <h3>Top Contenders</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Ranked by predictive skill rating (SG Total)
+        </div>
         <div id="value-players-list">
           <div class="loading-msg" style="padding: 20px;">Loading...</div>
         </div>
@@ -835,7 +851,10 @@ canvas { max-width: 100%; }
       
       <!-- Course Profile -->
       <div class="intel-card">
-        <h3>Course Profile</h3>
+        <h3>Field Analysis</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Competitive dynamics and winning requirements
+        </div>
         <div id="course-profile-content">
           <div class="loading-msg" style="padding: 20px;">Loading...</div>
         </div>
@@ -843,7 +862,17 @@ canvas { max-width: 100%; }
       
       <!-- Winning Profile - Full Width -->
       <div class="intel-card" style="grid-column: 1 / -1;">
-        <h3>Winning Profile</h3>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+          <div>
+            <h3 style="margin-bottom: 6px;">Winning Profile</h3>
+            <div style="font-size: 12px; color: rgba(250,250,250,0.4);">
+              Skill distribution of top 10 contenders
+            </div>
+          </div>
+          <div id="winning-profile-stats" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
         <div id="winning-profile-chart">
           <div class="loading-msg" style="padding: 20px;">Loading...</div>
         </div>
@@ -853,36 +882,6 @@ canvas { max-width: 100%; }
 </section>
 
 <!-- COURSE STRATEGY TOOL PREVIEW -->
-<section class="lab-section" id="strategy">
-  <div class="section-header">
-    <h2>Course Strategy Tool</h2>
-    <div class="section-toggle">▼</div>
-  </div>
-  <div class="section-body">
-    <div class="strategy-preview">
-      <div class="preview-badge">Coming Q2 2026</div>
-      <h3 class="preview-title">Premium Course Breakdowns<br>Built for Your Game</h3>
-      <p class="preview-desc">
-        Hole-by-hole strategy guides for the world's most iconic courses. Learn how the pros play them, and how you should too.
-      </p>
-      
-      <div class="feature-list">
-        <ul>
-          <li>Detailed breakdowns for Pebble Beach, Augusta National, St Andrews, and more</li>
-          <li>Personalized recommendations based on your skill profile</li>
-          <li>Tour pro approach vs. optimal amateur strategy for each hole</li>
-          <li>Risk/reward analysis and hidden trouble spots</li>
-          <li>Downloadable guides to take on the course</li>
-        </ul>
-      </div>
-      
-      <button class="preview-cta" onclick="alert('We\'ll notify you when Course Strategy launches in Q2 2026!')">
-        Notify Me When Available
-      </button>
-    </div>
-  </div>
-</section>
-
 <!-- PREDICTIONS -->
 <section class="lab-section" id="predictions">
   <div class="section-header">
@@ -947,6 +946,57 @@ canvas { max-width: 100%; }
   </div>
 </section>
 
+<!-- COURSE STRATEGY TOOL PREVIEW -->
+<section class="lab-section" id="strategy">
+  <div class="section-header">
+    <h2>Course Strategy Tool</h2>
+    <div class="section-toggle">▼</div>
+  </div>
+  <div class="section-body">
+    <div class="strategy-preview">
+      <div class="preview-badge">Coming Q2 2026</div>
+      <h3 class="preview-title">Premium Course Breakdowns<br>Built for Your Game</h3>
+      <p class="preview-desc">
+        Hole-by-hole strategy guides for the world's most iconic courses. Learn how the pros play them, and how you should too.
+      </p>
+      
+      <div class="feature-list">
+        <ul>
+          <li>Detailed breakdowns for Pebble Beach, Augusta National, St Andrews, and more</li>
+          <li>Personalized recommendations based on your skill profile</li>
+          <li>Tour pro approach vs. optimal amateur strategy for each hole</li>
+          <li>Risk/reward analysis and hidden trouble spots</li>
+          <li>Downloadable guides to take on the course</li>
+        </ul>
+      </div>
+      
+      <button class="preview-cta" id="strategy-cta-btn">
+        Notify Me When Available
+      </button>
+      
+      <!-- Email modal (hidden by default) -->
+      <div id="email-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: var(--black); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 40px; max-width: 500px; width: 90%;">
+          <h3 style="font-family: var(--display); font-size: 28px; margin-bottom: 12px;">Get Notified</h3>
+          <p style="font-size: 14px; color: rgba(250,250,250,0.5); margin-bottom: 24px;">
+            We'll email you when Course Strategy launches in Q2 2026.
+          </p>
+          <input type="email" id="strategy-email" placeholder="your@email.com" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 14px 18px; font-family: var(--body); font-size: 14px; color: var(--white); margin-bottom: 16px;">
+          <div style="display: flex; gap: 12px;">
+            <button id="submit-email-btn" style="flex: 1; background: var(--green); color: var(--white); border: none; border-radius: 6px; padding: 14px; font-family: var(--body); font-size: 14px; font-weight: 500; cursor: pointer;">
+              Submit
+            </button>
+            <button id="cancel-email-btn" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--white); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 14px; font-family: var(--body); font-size: 14px; font-weight: 500; cursor: pointer;">
+              Cancel
+            </button>
+          </div>
+          <div id="email-status" style="margin-top: 12px; font-size: 13px; text-align: center;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <div class="lab-footer">
   <p>Data provided by <a href="https://datagolf.com" target="_blank">DataGolf</a> · Updated every 6 hours</p>
@@ -956,6 +1006,96 @@ canvas { max-width: 100%; }
 <script src="/lab-data.js"></script>
 
 <script>
+// Email modal for Course Strategy Tool
+(function() {
+  const ctaBtn = document.getElementById('strategy-cta-btn');
+  const modal = document.getElementById('email-modal');
+  const emailInput = document.getElementById('strategy-email');
+  const submitBtn = document.getElementById('submit-email-btn');
+  const cancelBtn = document.getElementById('cancel-email-btn');
+  const statusDiv = document.getElementById('email-status');
+  
+  // TODO: Replace with your actual Google Apps Script deployment URL
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
+  
+  // Open modal
+  ctaBtn.addEventListener('click', function() {
+    modal.style.display = 'flex';
+    emailInput.value = '';
+    statusDiv.textContent = '';
+    emailInput.focus();
+  });
+  
+  // Close modal
+  cancelBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
+  
+  // Close on background click
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+  
+  // Submit email
+  submitBtn.addEventListener('click', async function() {
+    const email = emailInput.value.trim();
+    
+    // Validate email
+    if (!email || !email.includes('@')) {
+      statusDiv.style.color = '#E76F51';
+      statusDiv.textContent = 'Please enter a valid email address';
+      return;
+    }
+    
+    // Disable button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    statusDiv.textContent = '';
+    
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}&source=course-strategy-tool`
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        statusDiv.style.color = '#5BBF85';
+        statusDiv.textContent = '✓ Thanks! We\'ll notify you when it launches.';
+        emailInput.value = '';
+        
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 2000);
+      } else {
+        statusDiv.style.color = '#E76F51';
+        statusDiv.textContent = data.message || 'Something went wrong. Please try again.';
+      }
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      statusDiv.style.color = '#E76F51';
+      statusDiv.textContent = 'Error submitting. Please try again later.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit';
+    }
+  });
+  
+  // Allow Enter key to submit
+  emailInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      submitBtn.click();
+    }
+  });
+})();
+
 // Section nav active state on scroll
 (function() {
   const sections = ['tournament', 'field-strength', 'top-10', 'leaderboard', 'odds', 'predictions', 'analytics'];

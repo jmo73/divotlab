@@ -931,11 +931,14 @@ function renderSGBreakdown() {
           grid: { display: false }
         },
         y: {
-          min: -0.2,
-          max: Math.max(avgOTT, avgAPP, avgARG, avgPUTT) * 1.2,
+          beginAtZero: true,
           ticks: { 
+            stepSize: 0.2,
             color: 'rgba(250,250,250,0.5)',
-            font: { size: 10 }
+            font: { size: 10 },
+            callback: function(value) {
+              return value.toFixed(1);
+            }
           },
           grid: { color: 'rgba(255,255,255,0.06)' }
         }
@@ -1069,9 +1072,37 @@ async function renderTournamentIntelligence() {
     return;
   }
   
+  renderTournamentContext();
   renderValuePlayers();
   renderCourseProfile();
   renderWinningProfile();
+}
+
+/**
+ * Render Tournament Context
+ * Shows which tournament is being analyzed
+ */
+function renderTournamentContext() {
+  const nameEl = document.getElementById('tournament-name');
+  const datesEl = document.getElementById('tournament-dates');
+  
+  if (!nameEl || !datesEl) return;
+  
+  if (globalTournamentInfo && globalTournamentInfo.event_name) {
+    nameEl.textContent = globalTournamentInfo.event_name;
+    
+    // Format dates if available
+    if (globalTournamentInfo.event_completed) {
+      datesEl.textContent = 'Tournament Complete';
+    } else if (globalTournamentInfo.current_round > 0) {
+      datesEl.textContent = `Round ${globalTournamentInfo.current_round} In Progress`;
+    } else {
+      datesEl.textContent = 'Pre-Tournament Analysis';
+    }
+  } else {
+    nameEl.textContent = 'Current PGA Tour Event';
+    datesEl.textContent = 'Loading details...';
+  }
 }
 
 /**
@@ -1097,21 +1128,32 @@ function renderValuePlayers() {
   }
   
   container.innerHTML = valuePlayers.map((player, i) => {
-    // Determine value indicator based on skill level
-    let valueText = 'Elite Value';
-    if (player.sg_total < 2.5) valueText = 'Strong Value';
-    if (player.sg_total < 2.0) valueText = 'Good Value';
-    if (player.sg_total < 1.5) valueText = 'Solid Value';
+    // Build skill breakdown
+    const skills = [
+      { name: 'OTT', value: player.sg_ott || 0 },
+      { name: 'APP', value: player.sg_app || 0 },
+      { name: 'ARG', value: player.sg_arg || 0 },
+      { name: 'PUTT', value: player.sg_putt || 0 }
+    ];
+    
+    const skillsHtml = skills.map(s => 
+      `<div style="display: flex; justify-content: space-between; padding: 4px 0;">
+        <span style="font-size: 11px; color: rgba(250,250,250,0.4);">${s.name}</span>
+        <span style="font-size: 12px; font-weight: 600; color: ${s.value >= 0 ? 'var(--green-light)' : '#E76F51'};">${formatSG(s.value)}</span>
+      </div>`
+    ).join('');
     
     return `
       <div class="value-player">
-        <div class="player-info">
-          <span class="rank">${i + 1}</span>
-          <span class="name">${player.player_name}</span>
-        </div>
-        <div class="player-edge">
-          <span class="skill-badge">${formatSG(player.sg_total)}</span>
-          <span class="value-indicator">${valueText}</span>
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+            <span class="rank">${i + 1}</span>
+            <span class="name">${player.player_name}</span>
+            <span class="skill-badge">${formatSG(player.sg_total)}</span>
+          </div>
+          <div style="padding-left: 36px; border-left: 2px solid rgba(255,255,255,0.05); margin-left: 12px;">
+            ${skillsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -1138,41 +1180,62 @@ function renderCourseProfile() {
   // Calculate field strength
   const field = calculateFieldStrength(tournamentPlayers);
   
-  // Determine most predictive skill (simplified - you can enhance this)
+  // Determine most predictive skill
   const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
   const avgAPP = tournamentPlayers.reduce((sum, p) => sum + (p.sg_app || 0), 0) / tournamentPlayers.length;
   const avgARG = tournamentPlayers.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / tournamentPlayers.length;
   const avgPUTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / tournamentPlayers.length;
   
   const skills = [
-    { name: 'Driving', avg: Math.abs(avgOTT) },
-    { name: 'Approach', avg: Math.abs(avgAPP) },
-    { name: 'Around Green', avg: Math.abs(avgARG) },
-    { name: 'Putting', avg: Math.abs(avgPUTT) }
+    { name: 'Driving', avg: Math.abs(avgOTT), raw: avgOTT },
+    { name: 'Approach', avg: Math.abs(avgAPP), raw: avgAPP },
+    { name: 'Around Green', avg: Math.abs(avgARG), raw: avgARG },
+    { name: 'Putting', avg: Math.abs(avgPUTT), raw: avgPUTT }
   ];
   
   const mostPredictive = skills.sort((a, b) => b.avg - a.avg)[0];
   
-  // Determine difficulty
-  let difficulty = 'Average';
-  if (field.rating >= 7.5) difficulty = 'Elite Field';
-  else if (field.rating >= 6.5) difficulty = 'Very Strong';
-  else if (field.rating >= 5.5) difficulty = 'Strong';
-  else if (field.rating < 4.5) difficulty = 'Below Average';
+  // Determine difficulty with proper ranges
+  let difficulty = 'Average Field';
+  let difficultyColor = 'rgba(250,250,250,0.6)';
+  if (field.rating >= 7.5) { 
+    difficulty = 'Elite Field'; 
+    difficultyColor = '#C98FFF';
+  } else if (field.rating >= 6.5) { 
+    difficulty = 'Very Strong'; 
+    difficultyColor = 'var(--green-light)';
+  } else if (field.rating >= 5.5) { 
+    difficulty = 'Strong Field'; 
+    difficultyColor = 'var(--blue-mid)';
+  } else if (field.rating < 4.5) { 
+    difficulty = 'Below Average'; 
+    difficultyColor = '#E76F51';
+  }
   
   container.innerHTML = `
     <div class="fit-grid">
       <div class="fit-stat">
-        <span class="stat-label">Key Skill</span>
-        <span class="stat-value">${mostPredictive.name}</span>
+        <span class="stat-label">Field Rating</span>
+        <span class="stat-value" style="color: ${difficultyColor};">${field.rating.toFixed(1)}</span>
       </div>
       <div class="fit-stat">
-        <span class="stat-label">Field Strength</span>
-        <span class="stat-value">${difficulty}</span>
+        <span class="stat-label">Strength</span>
+        <span class="stat-value" style="color: ${difficultyColor};">${difficulty}</span>
       </div>
     </div>
-    <div style="font-size: 13px; color: rgba(250,250,250,0.5); margin-top: 12px;">
-      This week's winner will likely excel at ${mostPredictive.name.toLowerCase()} play, given the field composition and course characteristics.
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin-bottom: 14px;">
+      <div style="font-size: 12px; font-weight: 600; color: var(--green-light); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em;">
+        Key Winning Skill
+      </div>
+      <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">
+        ${mostPredictive.name}
+      </div>
+      <div style="font-size: 13px; color: rgba(250,250,250,0.5);">
+        Field average: ${formatSG(mostPredictive.raw)}
+      </div>
+    </div>
+    <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.6;">
+      In a ${difficulty.toLowerCase()} field (${field.rating.toFixed(1)}/10), contenders will need elite ${mostPredictive.name.toLowerCase()} play to separate from the pack. ${field.players} players competing.
     </div>
   `;
 }
@@ -1183,6 +1246,7 @@ function renderCourseProfile() {
  */
 function renderWinningProfile() {
   const container = document.getElementById('winning-profile-chart');
+  const statsContainer = document.getElementById('winning-profile-stats');
   if (!container) return;
   
   // Get tournament players
@@ -1194,7 +1258,7 @@ function renderWinningProfile() {
     return;
   }
   
-  // Calculate average skills of top 10 players (proxy for winning profile)
+  // Calculate average skills of top 10 players
   const top10 = tournamentPlayers
     .filter(p => p.sg_total != null)
     .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
@@ -1205,34 +1269,71 @@ function renderWinningProfile() {
   const avgARG = top10.reduce((sum, p) => sum + Math.abs(p.sg_arg || 0), 0) / top10.length;
   const avgPUTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_putt || 0), 0) / top10.length;
   
-  // Normalize to 100% scale
+  // Calculate raw averages for stats
+  const rawOTT = top10.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / top10.length;
+  const rawAPP = top10.reduce((sum, p) => sum + (p.sg_app || 0), 0) / top10.length;
+  const rawARG = top10.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / top10.length;
+  const rawPUTT = top10.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / top10.length;
+  
+  // Normalize to 100% scale for bars
   const total = avgOTT + avgAPP + avgARG + avgPUTT;
   const ottPct = (avgOTT / total) * 100;
   const appPct = (avgAPP / total) * 100;
   const argPct = (avgARG / total) * 100;
   const puttPct = (avgPUTT / total) * 100;
   
+  // Render stats on right side
+  if (statsContainer) {
+    statsContainer.innerHTML = `
+      <div style="text-align: center;">
+        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">OTT</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--green-light);">${formatSG(rawOTT)}</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">APP</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--blue-mid);">${formatSG(rawAPP)}</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">ARG</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--green-light);">${formatSG(rawARG)}</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 4px;">PUTT</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--blue-mid);">${formatSG(rawPUTT)}</div>
+      </div>
+    `;
+  }
+  
   container.innerHTML = `
     <div class="profile-stats">
       <div class="profile-bar">
-        <span>Driving</span>
-        <div class="importance-bar" style="width: ${ottPct}%"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span>Off-the-Tee</span>
+          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
+        </div>
+        <div class="importance-bar" style="width: ${ottPct}%; background: var(--green-light);"></div>
       </div>
       <div class="profile-bar">
-        <span>Approach</span>
-        <div class="importance-bar" style="width: ${appPct}%"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span>Approach</span>
+          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
+        </div>
+        <div class="importance-bar" style="width: ${appPct}%; background: var(--blue-mid);"></div>
       </div>
       <div class="profile-bar">
-        <span>Around Green</span>
-        <div class="importance-bar" style="width: ${argPct}%"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span>Around Green</span>
+          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
+        </div>
+        <div class="importance-bar" style="width: ${argPct}%; background: var(--green-light);"></div>
       </div>
       <div class="profile-bar">
-        <span>Putting</span>
-        <div class="importance-bar" style="width: ${puttPct}%"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span>Putting</span>
+          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
+        </div>
+        <div class="importance-bar" style="width: ${puttPct}%; background: var(--blue-mid);"></div>
       </div>
-    </div>
-    <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-top: 16px; text-align: center;">
-      Based on skill profile of top 10 contenders
     </div>
   `;
 }
