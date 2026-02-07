@@ -12,6 +12,9 @@ const PORT = process.env.PORT || 3001;
 const DATAGOLF_API_KEY = 'dc8cd870e0460b9fb860cf59164e';
 const DATAGOLF_BASE_URL = 'https://feeds.datagolf.com';
 
+// Lab Picks password (server-side only)
+const LAB_PICKS_PASSWORD = 'lab2026picks';
+
 // Caching with intelligent TTL
 const cache = new NodeCache({
   stdTTL: 3600,
@@ -26,6 +29,26 @@ let lastRankingsUpdate = 0;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// ============================================
+// AUTHENTICATION ENDPOINT
+// ============================================
+
+app.post('/api/auth/lab-picks', (req, res) => {
+  const { password } = req.body;
+  
+  if (password === LAB_PICKS_PASSWORD) {
+    res.json({ 
+      success: true, 
+      message: 'Authentication successful'
+    });
+  } else {
+    res.status(401).json({ 
+      success: false, 
+      message: 'Invalid password'
+    });
+  }
+});
 
 // ============================================
 // PGA TOUR FILTERING SYSTEM (using primary_tour from rankings)
@@ -100,56 +123,35 @@ async function fetchDataGolf(endpoint, cacheKey, cacheDuration) {
 
   const url = `${DATAGOLF_BASE_URL}${endpoint}`;
   const response = await fetch(url);
-
+  
   if (!response.ok) {
     throw new Error(`DataGolf API error: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
-  cache.set(cacheKey, data, cacheDuration);
+  
+  if (cacheDuration) {
+    cache.set(cacheKey, data, cacheDuration);
+    console.log(`✓ Cached: ${cacheKey} for ${cacheDuration}s`);
+  }
 
   return { data, fromCache: false };
 }
 
 // ============================================
-// GENERAL USE ENDPOINTS
+// TOURNAMENT SCHEDULE & FIELD ENDPOINTS
 // ============================================
 
-// ENDPOINT: Player List & IDs
-app.get('/api/players', async (req, res) => {
-  try {
-    const result = await fetchDataGolf(
-      `/get-player-list?file_format=json&key=${DATAGOLF_API_KEY}`,
-      'player-list',
-      604800 // 7 day cache
-    );
-
-    res.json({
-      success: true,
-      fromCache: result.fromCache,
-      data: result.data
-    });
-  } catch (error) {
-    console.error('Player list error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-// ENDPOINT: Tour Schedule
+// ENDPOINT: Current Tournament Schedule
 app.get('/api/schedule', async (req, res) => {
   try {
     const tour = req.query.tour || 'pga';
-    const season = req.query.season || '2026';
-    const upcomingOnly = req.query.upcoming_only || 'no';
-    const cacheKey = `schedule-${tour}-${season}-${upcomingOnly}`;
+    const cacheKey = `schedule-${tour}`;
 
     const result = await fetchDataGolf(
-      `/get-schedule?tour=${tour}&season=${season}&upcoming_only=${upcomingOnly}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `/get-schedule?tour=${tour}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      604800 // 7 day cache
+      21600 // 6hr cache
     );
 
     res.json({
@@ -193,32 +195,24 @@ app.get('/api/field-updates', async (req, res) => {
 });
 
 // ============================================
-// MODEL PREDICTIONS ENDPOINTS
+// RANKING ENDPOINTS
 // ============================================
 
-// ENDPOINT: Data Golf Rankings (WITH PGA FILTER)
+// ENDPOINT: DataGolf Rankings
 app.get('/api/rankings', async (req, res) => {
   try {
+    const cacheKey = 'rankings';
+    
     const result = await fetchDataGolf(
       `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`,
-      'rankings',
+      cacheKey,
       86400 // 24hr cache
     );
-
-    // Update PGA player IDs cache from this data
-    await updatePGATourPlayerIds();
-
-    // Apply PGA Tour filter using primary_tour field directly
-    let rankings = result.data.rankings || [];
-    if (req.query.pga_only === 'true') {
-      rankings = rankings.filter(p => p.primary_tour === 'PGA');
-    }
 
     res.json({
       success: true,
       fromCache: result.fromCache,
-      pga_filtered: req.query.pga_only === 'true',
-      data: { ...result.data, rankings }
+      data: result.data
     });
   } catch (error) {
     console.error('Rankings error:', error);
@@ -229,10 +223,39 @@ app.get('/api/rankings', async (req, res) => {
   }
 });
 
-// ENDPOINT: Skill Ratings (WITH PGA FILTER)
+// ENDPOINT: OWGR Rankings
+app.get('/api/owgr', async (req, res) => {
+  try {
+    const cacheKey = 'owgr';
+    
+    const result = await fetchDataGolf(
+      `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`,
+      cacheKey,
+      86400 // 24hr cache
+    );
+
+    res.json({
+      success: true,
+      fromCache: result.fromCache,
+      data: result.data
+    });
+  } catch (error) {
+    console.error('OWGR error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// ============================================
+// PREDICTION MODEL ENDPOINTS
+// ============================================
+
+// ENDPOINT: Skill Ratings (PGA FILTERED)
 app.get('/api/skill-ratings', async (req, res) => {
   try {
-    const display = req.query.display || 'value'; // 'value' or 'rank'
+    const display = req.query.display || 'value';
     const cacheKey = `skill-ratings-${display}`;
 
     const result = await fetchDataGolf(
@@ -241,17 +264,16 @@ app.get('/api/skill-ratings', async (req, res) => {
       86400 // 24hr cache
     );
 
-    // Apply PGA Tour filter
-    let players = result.data.skill_ratings || result.data.players || [];
-    if (req.query.pga_only === 'true') {
-      players = filterPGATourOnly(players);
+    // Filter to PGA Tour players only
+    if (result.data && Array.isArray(result.data)) {
+      const filtered = filterPGATourOnly(result.data);
+      result.data = filtered;
     }
 
     res.json({
       success: true,
       fromCache: result.fromCache,
-      pga_filtered: req.query.pga_only === 'true',
-      data: { ...result.data, skill_ratings: players, players }
+      data: result.data
     });
   } catch (error) {
     console.error('Skill ratings error:', error);
@@ -266,17 +288,15 @@ app.get('/api/skill-ratings', async (req, res) => {
 app.get('/api/pre-tournament', async (req, res) => {
   try {
     const tour = req.query.tour || 'pga';
-    const addPosition = req.query.add_position || '';
-    const deadHeat = req.query.dead_heat || 'yes';
+    const addEventInfo = req.query.add_event_info || 'yes';
     const oddsFormat = req.query.odds_format || 'percent';
-    const cacheKey = `pre-tournament-${tour}-${deadHeat}-${oddsFormat}`;
+    const cacheKey = `pre-tournament-${tour}`;
 
-    let endpoint = `/preds/pre-tournament?tour=${tour}&dead_heat=${deadHeat}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`;
-    if (addPosition) {
-      endpoint += `&add_position=${addPosition}`;
-    }
-
-    const result = await fetchDataGolf(endpoint, cacheKey, 21600); // 6hr cache
+    const result = await fetchDataGolf(
+      `/preds/pre-tournament?tour=${tour}&add_event_info=${addEventInfo}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      cacheKey,
+      21600 // 6hr cache
+    );
 
     res.json({
       success: true,
@@ -292,20 +312,28 @@ app.get('/api/pre-tournament', async (req, res) => {
   }
 });
 
-// ENDPOINT: Pre-Tournament Archive
+// ENDPOINT: Pre-Tournament Archive (Historical)
 app.get('/api/pre-tournament-archive', async (req, res) => {
   try {
-    const eventId = req.query.event_id || '';
-    const year = req.query.year || '2025';
+    const tour = req.query.tour || 'pga';
+    const eventId = req.query.event_id;
+    const year = req.query.year;
     const oddsFormat = req.query.odds_format || 'percent';
-    const cacheKey = `pre-tournament-archive-${eventId}-${year}`;
-
-    let endpoint = `/preds/pre-tournament-archive?year=${year}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`;
-    if (eventId) {
-      endpoint += `&event_id=${eventId}`;
+    
+    if (!eventId || !year) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: event_id and year'
+      });
     }
 
-    const result = await fetchDataGolf(endpoint, cacheKey, 604800); // 7 day cache
+    const cacheKey = `pre-tournament-archive-${tour}-${eventId}-${year}`;
+
+    const result = await fetchDataGolf(
+      `/preds/pre-tournament-archive?tour=${tour}&event_id=${eventId}&year=${year}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      cacheKey,
+      604800 // 7 day cache
+    );
 
     res.json({
       success: true,
@@ -350,7 +378,7 @@ app.get('/api/player-decompositions', async (req, res) => {
 // ENDPOINT: Detailed Approach Skill
 app.get('/api/approach-skill', async (req, res) => {
   try {
-    const period = req.query.period || 'l24'; // l24, l12, ytd
+    const period = req.query.period || 'l24';
     const cacheKey = `approach-skill-${period}`;
 
     const result = await fetchDataGolf(
@@ -373,16 +401,15 @@ app.get('/api/approach-skill', async (req, res) => {
   }
 });
 
-// ENDPOINT: Fantasy Projection Defaults
+// ENDPOINT: Fantasy Projections
 app.get('/api/fantasy-projections', async (req, res) => {
   try {
     const tour = req.query.tour || 'pga';
-    const site = req.query.site || 'draftkings';
-    const slate = req.query.slate || 'main';
-    const cacheKey = `fantasy-${tour}-${site}-${slate}`;
+    const site = req.query.site || 'draftkings'; // draftkings, fanduel, yahoo
+    const cacheKey = `fantasy-${tour}-${site}`;
 
     const result = await fetchDataGolf(
-      `/preds/fantasy-projection-defaults?tour=${tour}&site=${site}&slate=${slate}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `/preds/fantasy-projection-defaults?tour=${tour}&site=${site}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
       21600 // 6hr cache
     );
@@ -604,17 +631,17 @@ app.get('/api/historical-events', async (req, res) => {
   }
 });
 
-// ENDPOINT: Round Scoring & Stats
+// ENDPOINT: Historical Rounds
 app.get('/api/historical-rounds', async (req, res) => {
   try {
-    const tour = req.query.tour; // required
-    const eventId = req.query.event_id; // required
-    const year = req.query.year; // required
-    
-    if (!tour || !eventId || !year) {
+    const tour = req.query.tour || 'pga';
+    const eventId = req.query.event_id;
+    const year = req.query.year;
+
+    if (!eventId || !year) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required parameters: tour, event_id, year'
+        error: 'Missing required parameters: event_id and year'
       });
     }
 
@@ -641,65 +668,56 @@ app.get('/api/historical-rounds', async (req, res) => {
 });
 
 // ============================================
-// OPTIMIZED COMPOSITE ENDPOINTS
+// OPTIMIZED COMPOSITE ENDPOINTS (for specific pages)
 // ============================================
 
-// ENDPOINT: Homepage Stats (optimized composite with PGA filter)
+// ENDPOINT: Homepage Stats (PGA FILTERED)
 app.get('/api/homepage-stats', async (req, res) => {
   try {
-    const cacheKey = 'homepage-stats-pga';
-    const cached = cache.get(cacheKey);
+    const cacheKey = 'homepage-stats';
     
-    if (cached) {
-      console.log(`✓ Cache HIT: ${cacheKey}`);
-      return res.json({
-        success: true,
-        fromCache: true,
-        data: cached
-      });
-    }
-
-    console.log(`✗ Cache MISS: ${cacheKey} - Building homepage stats...`);
-
-    // Fetch skill ratings
-    const skillRatings = await fetchDataGolfDirect(
-      `/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`
+    const result = await fetchDataGolf(
+      `/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`,
+      cacheKey,
+      21600 // 6hr cache
     );
 
-    // Filter to PGA Tour only
-    const pgaPlayers = filterPGATourOnly(skillRatings.skill_ratings || skillRatings.players || []);
+    // Filter to PGA Tour players only
+    let players = result.data;
+    if (Array.isArray(players)) {
+      players = filterPGATourOnly(players);
+    }
 
-    // Find leaders in each category
-    const ottLeader = [...pgaPlayers].sort((a,b) => (b.sg_ott || 0) - (a.sg_ott || 0))[0] || {};
-    const appLeader = [...pgaPlayers].sort((a,b) => (b.sg_app || 0) - (a.sg_app || 0))[0] || {};
-    const puttLeader = [...pgaPlayers].sort((a,b) => (b.sg_putt || 0) - (a.sg_putt || 0))[0] || {};
-
-    const stats = {
-      sgOTT: {
-        value: ottLeader.sg_ott ? (ottLeader.sg_ott >= 0 ? `+${ottLeader.sg_ott.toFixed(2)}` : ottLeader.sg_ott.toFixed(2)) : '--',
-        player: ottLeader.player_name || 'N/A',
-        label: 'SG: Off-the-Tee · Leader · Last 24 Months'
-      },
-      sgApp: {
-        value: appLeader.sg_app ? (appLeader.sg_app >= 0 ? `+${appLeader.sg_app.toFixed(2)}` : appLeader.sg_app.toFixed(2)) : '--',
-        player: appLeader.player_name || 'N/A',
-        label: 'SG: Approach · Leader · Last 24 Months'
-      },
-      sgPutt: {
-        value: puttLeader.sg_putt ? (puttLeader.sg_putt >= 0 ? `+${puttLeader.sg_putt.toFixed(2)}` : puttLeader.sg_putt.toFixed(2)) : '--',
-        player: puttLeader.player_name || 'N/A',
-        label: 'SG: Putting · Leader · Last 24 Months'
-      },
-      timestamp: new Date().toISOString(),
-      pga_filtered: true
-    };
-
-    cache.set(cacheKey, stats, 21600); // 6hr cache
+    // Extract top performers for each category
+    const sgOTT = players
+      .filter(p => p.sg_ott != null)
+      .sort((a, b) => (b.sg_ott || 0) - (a.sg_ott || 0))[0];
+    
+    const sgApp = players
+      .filter(p => p.sg_app != null)
+      .sort((a, b) => (b.sg_app || 0) - (a.sg_app || 0))[0];
+    
+    const sgPutt = players
+      .filter(p => p.sg_putt != null)
+      .sort((a, b) => (b.sg_putt || 0) - (a.sg_putt || 0))[0];
 
     res.json({
       success: true,
-      fromCache: false,
-      data: stats
+      fromCache: result.fromCache,
+      data: {
+        sgOTT: {
+          value: sgOTT?.sg_ott ? `+${sgOTT.sg_ott.toFixed(2)}` : '+0.00',
+          player: sgOTT?.player_name || 'Leader'
+        },
+        sgApp: {
+          value: sgApp?.sg_app ? `+${sgApp.sg_app.toFixed(2)}` : '+0.00',
+          player: sgApp?.player_name || 'Leader'
+        },
+        sgPutt: {
+          value: sgPutt?.sg_putt ? `+${sgPutt.sg_putt.toFixed(2)}` : '+0.00',
+          player: sgPutt?.player_name || 'Leader'
+        }
+      }
     });
   } catch (error) {
     console.error('Homepage stats error:', error);
@@ -710,61 +728,42 @@ app.get('/api/homepage-stats', async (req, res) => {
   }
 });
 
-// ENDPOINT: Lab Page Data (optimized composite with PGA filter)
+// ENDPOINT: Lab Data (All data for The Lab page - PGA FILTERED)
 app.get('/api/lab-data', async (req, res) => {
   try {
-    const cacheKey = 'lab-data-composite-pga';
-    const cached = cache.get(cacheKey);
-    
-    if (cached) {
-      console.log(`✓ Cache HIT: ${cacheKey}`);
-      return res.json({
-        success: true,
-        fromCache: true,
-        data: cached
-      });
-    }
+    const cacheKey = 'lab-data-composite';
 
-    console.log(`✗ Cache MISS: ${cacheKey} - Building lab data...`);
-
-    // Fetch all needed data in parallel
-    const [skillRatings, preTournament, fieldUpdates, schedule] = await Promise.all([
-      fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+    // Fetch multiple endpoints in parallel
+    const [skillRatings, predictions, rankings] = await Promise.all([
+      fetchDataGolf(
+        `/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`,
+        'lab-skill-ratings',
+        21600
+      ),
+      fetchDataGolf(
+        `/preds/pre-tournament?tour=pga&add_event_info=yes&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`,
+        'lab-predictions',
+        21600
+      ),
+      fetchDataGolf(
+        `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`,
+        'lab-rankings',
+        86400
+      )
     ]);
 
-    // Filter players to PGA Tour only
-    const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
-    const pgaPlayers = filterPGATourOnly(allPlayers);
-
-    // Find current/upcoming event from schedule
-    const eventName = fieldUpdates.event_name || preTournament.event_name;
-    const currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || {};
-
-    const compositeData = {
-      players: pgaPlayers, // NOW PGA ONLY ✅
-      predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
-      tournament: {
-        event_id: fieldUpdates.event_id || currentEvent.event_id,
-        event_name: eventName || 'Upcoming Tournament',
-        course: (fieldUpdates.field && fieldUpdates.field[0]?.course) || currentEvent.course || '',
-        field_size: fieldUpdates.field?.length || 0,
-        current_round: fieldUpdates.current_round || 0,
-        start_date: currentEvent.start_date || null,
-        status: currentEvent.status || 'unknown'
-      },
-      timestamp: new Date().toISOString(),
-      pga_filtered: true
-    };
-
-    cache.set(cacheKey, compositeData, 21600); // 6hr cache
+    // Filter all datasets to PGA only
+    const filteredSkills = filterPGATourOnly(skillRatings.data || []);
+    const filteredRankings = (rankings.data?.rankings || []).filter(p => p.primary_tour === 'PGA');
 
     res.json({
       success: true,
-      fromCache: false,
-      data: compositeData
+      data: {
+        skillRatings: filteredSkills,
+        predictions: predictions.data,
+        rankings: filteredRankings
+      },
+      fromCache: skillRatings.fromCache && predictions.fromCache && rankings.fromCache
     });
   } catch (error) {
     console.error('Lab data error:', error);
@@ -779,74 +778,63 @@ app.get('/api/lab-data', async (req, res) => {
 // UTILITY ENDPOINTS
 // ============================================
 
-// UTILITY: Cache status
+// ENDPOINT: Cache Status
 app.get('/api/cache-status', (req, res) => {
   const keys = cache.keys();
   const stats = cache.getStats();
   
   res.json({
-    success: true,
-    totalKeys: keys.length,
-    keys: keys,
-    stats: stats,
-    pgaTourFiltering: {
-      method: 'primary_tour via rankings lookup',
-      playerCount: pgaTourPlayerIds.size,
-      lastUpdate: new Date(lastRankingsUpdate).toISOString()
-    }
+    cacheKeys: keys,
+    cacheStats: stats,
+    pgaTourPlayersLoaded: pgaTourPlayerIds.size,
+    lastRankingsUpdate: lastRankingsUpdate > 0 
+      ? new Date(lastRankingsUpdate).toISOString()
+      : 'Never'
   });
 });
 
-// UTILITY: Clear cache
+// ENDPOINT: Clear Cache
 app.post('/api/clear-cache', (req, res) => {
-  const keysToClear = req.body.keys;
-  
-  if (keysToClear && Array.isArray(keysToClear)) {
-    keysToClear.forEach(key => cache.del(key));
-    res.json({ success: true, message: `Cleared ${keysToClear.length} keys` });
-  } else {
-    cache.flushAll();
-    res.json({ success: true, message: 'Cleared entire cache' });
-  }
+  cache.flushAll();
+  res.json({ 
+    success: true, 
+    message: 'Cache cleared',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Health check
+// ENDPOINT: Health Check
 app.get('/health', (req, res) => {
-  res.json({
+  res.json({ 
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    cache: {
-      keys: cache.keys().length,
-      stats: cache.getStats()
-    },
-    pgaFilter: {
-      method: 'primary_tour via rankings lookup',
-      active: pgaTourPlayerIds.size > 0,
-      playerCount: pgaTourPlayerIds.size
-    }
+    uptime: process.uptime()
   });
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`
-╔═════════════════════════════════════════════╗
-║     DIVOT LAB API SERVER v2.1               ║
-║     DataGolf Integration + PGA Tour Filter  ║
-╚═════════════════════════════════════════════╝
+🏌️  DataGolf API Server Running
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✓ Server running on port ${PORT}
-✓ Cache enabled with intelligent TTL
-✓ PGA Tour filtering via primary_tour field
-✓ Ready to serve requests
+📡 Server: http://localhost:${PORT}
+🔑 API Key: Secured server-side
+📊 Cache: Active (NodeCache)
+🏌️  PGA Filter: ${pgaTourPlayerIds.size} players loaded
 
-📊 GENERAL USE:
-  GET  /api/players                (7day)
-  GET  /api/schedule               (7day)
-  GET  /api/field-updates          (1hr)
+🔐 AUTHENTICATION:
+  POST /api/auth/lab-picks      (Lab Picks password validation)
 
-🎯 MODEL PREDICTIONS:
-  GET  /api/rankings               (24hr) ⭐ PGA FILTERED
+📅 SCHEDULE & FIELD:
+  GET  /api/schedule             (6hr)
+  GET  /api/field-updates        (1hr)
+
+🏆 RANKINGS:
+  GET  /api/rankings             (24hr)
+  GET  /api/owgr                 (24hr)
+
+🎯 PREDICTIONS & MODELS:
   GET  /api/skill-ratings          (24hr) ⭐ PGA FILTERED
   GET  /api/pre-tournament         (6hr)
   GET  /api/pre-tournament-archive (7day)
