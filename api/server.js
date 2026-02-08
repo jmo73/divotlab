@@ -697,6 +697,10 @@ app.get('/api/generate-blog/:round', async (req, res) => {
     const currentEvent = preTournament.schedule.find(e => e.event_completed === false) || preTournament.schedule[0];
     const pgaPlayers = filterPGATourOnly(skillRatings.skill_ratings || []);
     
+    console.log('📊 Current event:', currentEvent?.event_name);
+    console.log('📊 Field updates structure:', Object.keys(fieldUpdates));
+    console.log('📊 PGA players count:', pgaPlayers.length);
+    
     // Get leaderboard
     const playersWithScores = fieldUpdates.field || [];
     const leaderboard = playersWithScores
@@ -711,15 +715,21 @@ app.get('/api/generate-blog/:round', async (req, res) => {
     // Fetch live SG stats
     let liveStats = [];
     try {
-      liveStats = await fetchDataGolfDirect(
+      const statsResponse = await fetchDataGolfDirect(
         `/preds/live-tournament-stats?stats=sg_putt,sg_arg,sg_app,sg_ott,sg_total&round=event_avg&display=value&file_format=json&key=${DATAGOLF_API_KEY}`
       );
+      // Handle both array and object response formats
+      liveStats = Array.isArray(statsResponse) ? statsResponse : (statsResponse.stats || statsResponse.players || []);
+      console.log('📊 Live stats type:', Array.isArray(liveStats) ? 'array' : typeof liveStats);
+      console.log('📊 Live stats count:', Array.isArray(liveStats) ? liveStats.length : 'not an array');
     } catch (error) {
       console.warn('Live stats not available:', error.message);
     }
     
     const leader = leaderboard[0];
-    const leaderStats = liveStats.find(p => p.player_name === leader.player_name) || {};
+    const leaderStats = Array.isArray(liveStats) 
+      ? (liveStats.find(p => p.player_name === leader.player_name) || {})
+      : {};
     
     // Determine mode
     let selectedMode = mode;
