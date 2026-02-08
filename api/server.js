@@ -1031,29 +1031,35 @@ function generateNewsContent(data, roundText, newsContext) {
   const isCloseRace = leadSize <= 2;
   const isBigLead = leadSize >= 5;
   
-  let intro, analysis, conclusion;
+  let intro, analysis, conclusion, deeper;
   
   if (isBigLead) {
-    intro = `${leader.name} has built a commanding ${leadSize}-stroke lead at ${course}, turning the ${tournament} into what looks increasingly like a coronation. Through ${currentRound} rounds at ${formatScore(leader.score)}, the leader has separated from a field that's now playing for second place.`;
+    intro = `${leader.name} has built a commanding ${leadSize}-stroke lead at ${course}, turning the ${tournament} into what looks increasingly like a coronation. Through ${currentRound} rounds at ${formatScore(leader.score)}, the leader has separated from a field that's now playing for second place. The margin isn't luck. It's systematic execution compounded over 54 holes, and the data shows exactly how it happened.`;
     
-    analysis = `This isn't a lucky hot streak—it's systematic domination. The Strokes Gained data shows ${leader.name} is outperforming the field by multiple strokes per round across the board. When you're hitting quality shots this consistently, leads don't evaporate. They compound.`;
+    analysis = `This isn't a lucky hot streak—it's systematic domination. The Strokes Gained data shows ${leader.name} is outperforming the field by multiple strokes per round across the board. When you're hitting quality shots this consistently, leads don't evaporate. They compound. What started as a small advantage on Thursday has become an insurmountable gap by Saturday evening. The field average is hovering around even strokes gained. ${leader.name} is beating that baseline by a margin that would be impressive over one round. Over three, it's suffocating.`;
     
-    conclusion = `${leaderboard[1].player_name} would need both a career round and a leader collapse. That's not a strategy. It's hope. The numbers say this one's over—Sunday is about the margin, not the outcome.`;
+    conclusion = `${leaderboard[1].player_name} would need both a career round and a leader collapse. That's not a strategy. It's hope. The numbers say this one's over—Sunday is about the margin, not the outcome. A five-stroke lead with 18 holes to play is large enough that even a mediocre Sunday holds. ${leader.name} doesn't need to be brilliant. Just competent. And competent has been the floor all week.`;
+    
+    deeper = `The real question now is whether this becomes a wire-to-wire win or if we see any drama at all. History suggests leads this size hold 87% of the time. ${leader.name} is already playing the percentages, and the percentages are overwhelmingly in favor of the leader. What looked like a competitive tournament on Thursday morning is now a procession. All that's left is to see how it ends.`;
   } else if (isCloseRace) {
-    intro = `After ${currentRound} rounds at ${course}, the ${tournament} has three live contenders separated by two strokes. ${leader.name} leads at ${formatScore(leader.score)}, but ${leaderboard[1].player_name} and ${leaderboard[2].player_name} are close enough that one good run Sunday changes everything.`;
+    intro = `After ${currentRound} rounds at ${course}, the ${tournament} has three live contenders separated by two strokes. ${leader.name} leads at ${formatScore(leader.score)}, but ${leaderboard[1].player_name} and ${leaderboard[2].player_name} are close enough that one good run Sunday changes everything. This is the kind of leaderboard that produces drama—multiple realistic winners, a course that rewards aggressive play, and enough strokes on the table to flip the board multiple times before it's over.`;
     
-    analysis = `What makes tight leaderboards fascinating is seeing HOW each player got there. Different strengths, different paths, same destination. When the lead is this thin, whoever finds their best stuff early on Sunday likely takes it.`;
+    analysis = `What makes tight leaderboards fascinating is seeing HOW each player got there. Different strengths, different paths, same destination. ${leader.name} has been the steadiest performer across all categories, never spectacular but never making critical mistakes. ${leaderboard[1].player_name} has relied more heavily on one area of the game, which creates both opportunity and risk. When the lead is this thin, whoever finds their best stuff early on Sunday likely takes it. The margin for error is nonexistent. One three-putt from the wrong player at the wrong time, and the entire dynamic shifts.`;
     
-    conclusion = `This is the kind of Sunday setup golf fans live for: multiple realistic winners, a course that rewards aggressive play, and enough strokes on the table to flip the board multiple times. Buckle up.`;
+    conclusion = `This is the kind of Sunday setup golf fans live for: multiple realistic winners, a course that rewards aggressive play, and enough strokes on the table to flip the board multiple times. Buckle up. The final round here isn't going to be cautious. It can't be. Protect mode doesn't work when you're trailing by one and need birdies. Someone is going to have to step on the gas, and when they do, the whole thing opens up.`;
+    
+    deeper = `Sunday's winning score probably comes in somewhere around ${formatScore(leader.score - 3)} to ${formatScore(leader.score - 5)}. That means the leaders need to shoot in the mid-to-low 60s just to keep pace with each other. This isn't a grind-it-out Sunday. This is a shootout. And shootouts produce moments.`;
   } else {
-    intro = `${leader.name} owns a ${leadSize}-stroke lead heading into Sunday at ${course}. It's not insurmountable—but it's substantial enough that ${leaderboard[1].player_name} and ${leaderboard[2].player_name} are now chasing rather than competing.`;
+    intro = `${leader.name} owns a ${leadSize}-stroke lead heading into Sunday at ${course}. It's not insurmountable—but it's substantial enough that ${leaderboard[1].player_name} and ${leaderboard[2].player_name} are now chasing rather than competing. The difference matters. Chasers have to be aggressive. Leaders get to be conservative. That psychological dynamic alone is worth a stroke or two before anyone even tees off Sunday morning.`;
     
-    analysis = `The lead was built on consistent ball-striking, the kind that tends to hold up under pressure. While ${leaderboard[1].player_name} has shown flashes, making up ${leadSize} strokes requires sustained excellence over 18 holes. Possible? Yes. Probable? The data says no.`;
+    analysis = `The lead was built on consistent ball-striking, the kind that tends to hold up under pressure. While ${leaderboard[1].player_name} has shown flashes of brilliance, making up ${leadSize} strokes requires sustained excellence over 18 holes. It's possible—golf has seen comebacks from worse positions—but the probabilities lean heavily toward ${leader.name}. Statistically, leads of this size hold up about 73% of the time. ${leader.name} doesn't need to be perfect. Just steady. And steady has been the calling card all week.`;
     
-    conclusion = `Sunday will answer one question: does the leader protect par and cruise, or do we get fireworks? Either way, ${leader.name} controls the tournament now.`;
+    conclusion = `Sunday will answer one question: does the leader protect par and cruise, or do we get fireworks? Either way, ${leader.name} controls the tournament now. The chasers need help. ${leader.name} just needs to avoid mistakes. One of those positions is far easier to play from than the other, and it's not the one trying to make up ground.`;
+    
+    deeper = `The path to victory for ${leaderboard[1].player_name} requires multiple things to break right simultaneously: a hot start, some wobbles from the leader, and enough momentum to actually close the gap before it's too late. Golf tournaments aren't won on what-ifs, though. They're won on execution. And right now, ${leader.name} is the one executing.`;
   }
   
-  return { intro, analysis, conclusion };
+  return { intro, analysis, conclusion, deeper };
 }
 
 function generateDeepStatsContent(data, roundText, historicalContext) {
@@ -1111,6 +1117,665 @@ function generateErrorHTML(error) {
 }
 
 function wrapInHTMLTemplate(data, roundText, content, mode) {
+  const { tournament, course, currentRound, leaderboard, leader, publishDate } = data;
+  
+  const formatScore = (score) => {
+    if (!score) return 'E';
+    return score > 0 ? `+${score}` : `${score}`;
+  };
+  
+  const formatSG = (val) => {
+    if (!val) return '+0.00';
+    return val >= 0 ? `+${val.toFixed(2)}` : val.toFixed(2);
+  };
+  
+  const escapeHtml = (str) => String(str || '').replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+  
+  // Format date as "Feb 8, 2026" instead of "2026-02-08"
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr + 'T00:00:00');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  };
+  
+  const leaderboardHTML = leaderboard.slice(0, 10).map((p, i) => {
+    const pos = i === 0 ? 'T1' : `T${i + 1}`;
+    const scoreClass = p.total < 0 ? 'under' : p.total > 0 ? 'over' : 'even';
+    return `<tr><td class="lb-pos">${pos}</td><td class="lb-player">${escapeHtml(p.player_name)}</td><td class="lb-score ${scoreClass}">${formatScore(p.total)}</td></tr>`;
+  }).join('');
+  
+  const sgCategories = [
+    { value: leader.sgApp, label: 'SG: Approach' },
+    { value: leader.sgOTT, label: 'SG: Off-the-Tee' },
+    { value: leader.sgArg, label: 'SG: Around-the-Green' },
+    { value: leader.sgPutt, label: 'SG: Putting' }
+  ];
+  const strongestSG = sgCategories.sort((a, b) => b.value - a.value)[0];
+  
+  const titleMap = {
+    'news': 'Breaking Down the Leaderboard',
+    'deep': 'The Numbers Behind the Lead',
+    'ai': 'What the Data Really Says'
+  };
+  const titleSuffix = titleMap[mode] || 'What the Numbers Say';
+  
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>${escapeHtml(tournament)} ${escapeHtml(roundText)}: ${titleSuffix} - Divot Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--body);
+  color: var(--black);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color:inherit; text-decoration:none; }
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 56px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  background: rgba(10,10,10,1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: background .35s, border-color .35s;
+}
+nav.scrolled { background: rgba(10,10,10,0.55); }
+nav.light { background: rgba(250,250,250,0.88); border-bottom-color: rgba(0,0,0,0.07); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--white); transition:color .35s; }
+nav.light .nav-logo svg { color:var(--black); }
+.nav-wordmark {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--white);
+  transition: color .35s;
+}
+.nav-wordmark span { font-weight:300; opacity:.55; }
+nav.light .nav-wordmark { color: var(--black); }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a {
+  font-size:13px; font-weight:500; letter-spacing:.05em;
+  color:rgba(250,250,250,.65);
+  transition: color .2s;
+}
+.nav-links a:hover { color:var(--white); }
+nav.light .nav-links a { color:var(--graphite); }
+nav.light .nav-links a:hover { color:var(--black); }
+.nav-cta {
+  background: var(--green);
+  color: var(--white) !important;
+  padding: 9px 22px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background .2s, transform .15s, box-shadow .2s;
+}
+.nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
+.nav-hamburger { display:none; flex-direction:column; gap:4px; cursor:pointer; background:transparent; border:none; }
+.nav-hamburger span { width:22px; height:2px; background:var(--white); transition:all .3s; }
+.nav-drawer {
+  position:fixed; top:68px; right:-100%; width:260px; height:calc(100vh - 68px);
+  background:var(--black); padding:28px 24px; transition:right .3s;
+  display:flex; flex-direction:column; gap:20px; z-index:99;
+}
+.nav-drawer.open { right:0; }
+.nav-drawer a { font-size:15px; color:rgba(250,250,250,.7); }
+.post-hero {
+  position: relative;
+  height: 480px;
+  background: linear-gradient(165deg,#0a0a0a 0%,#0d1612 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.post-hero::before {
+  content:'';
+  position:absolute;
+  top:30%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;
+  height:700px;
+  background:radial-gradient(ellipse at center,rgba(27,77,62,.12) 0%,transparent 65%);
+  pointer-events:none;
+}
+.post-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 56px 52px;
+  width: 100%;
+}
+.post-cat {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-bottom: 16px;
+  background: rgba(44,95,124,.22);
+  color: #7ab8d4;
+}
+.post-hero h1 {
+  font-family: var(--display);
+  font-size: 46px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.post-hero-meta {
+  font-size: 13px;
+  color: rgba(250,250,250,.5);
+}
+.post-hero-meta .dot { margin: 0 7px; opacity: .4; }
+.post-body-wrap {
+  background: var(--white);
+  padding: 72px 56px 96px;
+}
+.post-body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.post-body p {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--graphite);
+  margin-bottom: 24px;
+}
+.post-body p:first-of-type::first-letter {
+  font-family: var(--display);
+  font-size: 62px;
+  font-weight: 700;
+  float: left;
+  line-height: .82;
+  margin-right: 12px;
+  margin-top: 6px;
+  color: var(--black);
+}
+.post-body h2 {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--black);
+  letter-spacing: -.01em;
+  line-height: 1.2;
+  margin-top: 52px;
+  margin-bottom: 20px;
+}
+.stat-callout {
+  background: var(--black);
+  border-radius: 9px;
+  padding: 32px 36px;
+  margin: 48px 0;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.stat-callout-val {
+  font-family: var(--mono);
+  font-size: 46px;
+  font-weight: 500;
+  color: var(--blue-mid);
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.stat-callout-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stat-callout-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(250,250,250,.35);
+}
+.stat-callout-note {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(250,250,250,.55);
+  line-height: 1.5;
+}
+.leaderboard-section {
+  background: var(--warm-gray);
+  border-radius: 12px;
+  padding: 36px;
+  margin: 52px 0;
+}
+.leaderboard-section h3 {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--black);
+  margin: 0 0 28px 0;
+}
+.lb-table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+.lb-table thead {
+  background: var(--black);
+}
+.lb-table th {
+  color: var(--white);
+  padding: 13px 18px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.lb-table tbody tr {
+  border-bottom: 1px solid #ECECEC;
+}
+.lb-table tbody tr:last-child {
+  border-bottom: none;
+}
+.lb-table td {
+  padding: 15px 18px;
+  font-size: 15px;
+  color: var(--graphite);
+}
+.lb-pos {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--green);
+  width: 70px;
+}
+.lb-player {
+  font-weight: 600;
+  color: var(--black);
+}
+.lb-score {
+  font-family: var(--mono);
+  font-weight: 600;
+  text-align: right;
+  width: 90px;
+}
+.lb-score.under { color: var(--green-light); }
+.lb-score.even { color: var(--graphite); }
+.lb-score.over { color: #D94848; }
+.post-source {
+  font-size: 13px;
+  color: var(--graphite);
+  opacity: .6;
+  margin-top: 56px;
+}
+.post-source a {
+  color: var(--green);
+  border-bottom: 1px solid var(--green);
+  padding-bottom: 1px;
+}
+.post-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--blue-mid));
+  margin: 48px 0;
+  border-radius: 2px;
+}
+.read-next-wrap {
+  background: var(--warm-gray);
+  padding: 72px 56px;
+}
+.read-next-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.read-next-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 28px;
+}
+.read-next-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.rn-card {
+  background: var(--white);
+  border: 1px solid #E6E6E4;
+  border-radius: 9px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s cubic-bezier(.22,1,.36,1), border-color .28s;
+  position: relative;
+}
+.rn-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,.08); border-color: transparent; }
+.rn-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--blue-mid));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.rn-card:hover::after { transform: scaleX(1); }
+.rn-img {
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+}
+.rn-body { padding: 18px 20px 20px; }
+.rn-cat {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+.rn-cat.sg { background: rgba(44,95,124,.1); color: var(--blue); }
+.rn-cat.improve { background: rgba(27,77,62,.1); color: var(--green); }
+.rn-title {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+.rn-meta { font-size: 11px; color: var(--graphite); opacity: .6; }
+.rn-meta .dot { margin: 0 6px; opacity: .45; }
+footer {
+  background: var(--black);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 64px 56px 36px;
+}
+.footer-grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 44px;
+}
+.f-brand .f-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.f-brand .f-logo svg { width: 20px; height: 20px; }
+.f-brand .f-logo-text { font-weight: 600; font-size: 13px; letter-spacing: .1em; color: var(--white); }
+.f-brand .f-logo-text span { font-weight: 300; opacity: .5; }
+.f-brand p { font-size: 13px; color: rgba(250,250,250,.36); line-height: 1.65; max-width: 240px; }
+.f-col h5 {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(250,250,250,.28);
+  margin-bottom: 18px;
+}
+.f-col a { display: block; font-size: 13px; color: rgba(250,250,250,.5); margin-bottom: 11px; transition: color .2s; }
+.f-col a:hover { color: var(--white); }
+.footer-bottom {
+  max-width: 1120px;
+  margin: 44px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(250,250,250,.22);
+}
+@media(max-width:768px){
+  nav { padding: 0 22px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .post-hero { height: 400px; }
+  .post-hero-content { padding: 0 24px 40px; }
+  .post-hero h1 { font-size: 36px; }
+  .post-body-wrap { padding: 52px 24px 72px; }
+  .stat-callout { flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; }
+  .stat-callout-val { font-size: 38px; }
+  .leaderboard-section { padding: 24px 18px; }
+  .lb-table td { padding: 12px 10px; font-size: 14px; }
+  .read-next-wrap { padding: 52px 24px; }
+  .read-next-grid { grid-template-columns: 1fr; }
+  footer { padding: 48px 24px 28px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media(max-width:600px){
+  .post-hero { height: 340px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav id="nav">
+  <a href="https://divotlab.com/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="https://divotlab.com/articles">Articles</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="https://divotlab.com/about">About</a>
+    <a href="https://divotlab.com/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="https://divotlab.com/articles">Articles</a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="https://divotlab.com/about">About</a>
+  <a href="https://divotlab.com/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="post-hero">
+  <div class="post-hero-content">
+    <span class="post-cat">PGA Tour</span>
+    <h1>${escapeHtml(tournament)} ${escapeHtml(roundText)}: ${titleSuffix}</h1>
+    <div class="post-hero-meta">
+      ${formatDate(publishDate)} <span class="dot">·</span> 6 min read <span class="dot">·</span> Tournament Analysis
+    </div>
+  </div>
+</section>
+
+<!-- ========== BODY ========== -->
+<div class="post-body-wrap">
+  <article class="post-body">
+
+    <p>${content.intro}</p>
+
+    <div class="leaderboard-section">
+      <h3>Top 10 After ${escapeHtml(roundText)}</h3>
+      <table class="lb-table">
+        <thead><tr><th>Pos</th><th>Player</th><th>Score</th></tr></thead>
+        <tbody>${leaderboardHTML}</tbody>
+      </table>
+    </div>
+
+    <h2>The Numbers Tell the Story</h2>
+
+    <p>${content.analysis}</p>
+
+    <div class="stat-callout">
+      <div class="stat-callout-val">${formatSG(strongestSG.value)}</div>
+      <div class="stat-callout-right">
+        <div class="stat-callout-label">${escapeHtml(strongestSG.label)} · Leader</div>
+        <div class="stat-callout-note">Through ${currentRound} rounds at ${escapeHtml(course)}</div>
+      </div>
+    </div>
+
+    <h2>Looking Ahead to Sunday</h2>
+
+    <p>${content.conclusion}</p>
+
+    <div class="post-divider"></div>
+
+    <p>${content.deeper || ''}</p>
+
+    <p class="post-source">Stats via <a href="https://datagolf.com" target="_blank">DataGolf</a> · ${escapeHtml(tournament)} · Live tournament data</p>
+
+  </article>
+</div>
+
+<!-- ========== READ NEXT ========== -->
+<div class="read-next-wrap">
+  <div class="read-next-inner">
+    <div class="read-next-label">Read Next</div>
+    <div class="read-next-grid">
+      <a href="https://divotlab.com/strokes-gained-approach" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img">
+          <img src="https://divotlab.com/fleetwood.jpg" alt="Strokes gained approach" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="rn-body">
+          <span class="rn-cat sg">Strokes Gained</span>
+          <h3 class="rn-title">The Stat No One Talks About: Why SG: Approach Wins More Tournaments Than Driving</h3>
+          <div class="rn-meta">Jan 28, 2026 <span class="dot">·</span> 6 min read</div>
+        </div>
+      </div>
+      </a>
+      <a href="https://divotlab.com/driver-upgrade-myth" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img">
+          <img src="https://divotlab.com/driver.jpg" alt="Driver upgrade myth" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="rn-body">
+          <span class="rn-cat improve">Improvement</span>
+          <h3 class="rn-title">The $600 Myth: Is Upgrading Your Driver Actually Worth It?</h3>
+          <div class="rn-meta">Jan 24, 2026 <span class="dot">·</span> 5 min read</div>
+        </div>
+      </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="https://divotlab.com/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="https://divotlab.com/strokes-gained-approach">Strokes Gained</a>
+      <a href="https://divotlab.com/driver-upgrade-myth">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="https://divotlab.com/about">About</a>
+      <a href="https://divotlab.com/the-lab">The Lab</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="mailto:hello@divotlab.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Divot Lab</span>
+    <span>Built with data.</span>
+  </div>
+</footer>
+
+<!-- ========== JS ========== -->
+<script>
+(function(){
+  var nav = document.getElementById('nav');
+  var drawer = document.getElementById('navDrawer');
+  var hamburger = document.getElementById('navHamburger');
+
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        var scrolled = window.scrollY > 200;
+        nav.classList.toggle('scrolled', scrolled);
+        nav.classList.toggle('light', scrolled);
+        drawer.classList.toggle('light', scrolled);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  hamburger.addEventListener('click', function(){
+    nav.classList.toggle('menu-open');
+    drawer.classList.toggle('open');
+  });
+  drawer.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      nav.classList.remove('menu-open');
+      drawer.classList.remove('open');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>`;
+}
   const { tournament, course, currentRound, leaderboard, leader, publishDate } = data;
   
   const formatScore = (score) => {
