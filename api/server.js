@@ -2414,7 +2414,6 @@ footer {
 
 </body>
 </html>`;
-}
 
 // ============================================
 // OPTIMIZED COMPOSITE ENDPOINTS
