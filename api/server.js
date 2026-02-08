@@ -688,34 +688,76 @@ app.get('/api/generate-blog/:round', async (req, res) => {
     console.log(`📝 Generating ${mode} blog for ${round}...`);
     
     // Fetch core data - use live-stats for leaderboard since it has scores + SG data
-    const [preTournament, liveStatsData, skillRatings] = await Promise.all([
-      fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/preds/live-tournament-stats?stats=sg_putt,sg_arg,sg_app,sg_ott,sg_total&round=event_avg&display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`)
-    ]);
+    let preTournament, liveStatsData, skillRatings;
     
-    const currentEvent = preTournament.schedule.find(e => e.event_completed === false) || preTournament.schedule[0];
-    const pgaPlayers = filterPGATourOnly(skillRatings.skill_ratings || []);
+    try {
+      console.log('Fetching pre-tournament data...');
+      preTournament = await fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`);
+      console.log('✓ Got pre-tournament data');
+    } catch (e) {
+      console.error('❌ Pre-tournament fetch failed:', e.message);
+      return res.status(500).send(generateErrorHTML(new Error('Failed to fetch tournament schedule')));
+    }
     
-    console.log('📊 Current event:', currentEvent?.event_name);
-    console.log('📊 Live stats structure:', liveStatsData ? Object.keys(liveStatsData) : 'null');
+    try {
+      console.log('Fetching live stats...');
+      liveStatsData = await fetchDataGolfDirect(`/preds/live-tournament-stats?stats=sg_putt,sg_arg,sg_app,sg_ott,sg_total&round=event_avg&display=value&file_format=json&key=${DATAGOLF_API_KEY}`);
+      console.log('✓ Got live stats, keys:', Object.keys(liveStatsData || {}));
+    } catch (e) {
+      console.error('❌ Live stats fetch failed:', e.message);
+      return res.status(500).send(generateErrorHTML(new Error('Failed to fetch live tournament stats')));
+    }
+    
+    try {
+      console.log('Fetching skill ratings...');
+      skillRatings = await fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`);
+      console.log('✓ Got skill ratings');
+    } catch (e) {
+      console.error('❌ Skill ratings fetch failed:', e.message);
+      return res.status(500).send(generateErrorHTML(new Error('Failed to fetch player skill ratings')));
+    }
+    
+    let currentEvent;
+    try {
+      currentEvent = preTournament.schedule.find(e => e.event_completed === false) || preTournament.schedule[0];
+      console.log('📊 Current event:', currentEvent?.event_name);
+    } catch (e) {
+      console.error('❌ Error finding current event:', e.message);
+      currentEvent = { event_name: 'PGA Tour Event' };
+    }
+    
+    let pgaPlayers;
+    try {
+      pgaPlayers = filterPGATourOnly(skillRatings.skill_ratings || []);
+      console.log('📊 PGA players count:', pgaPlayers.length);
+    } catch (e) {
+      console.error('❌ Error filtering PGA players:', e.message);
+      pgaPlayers = [];
+    }
     
     // Extract live stats array
     const liveStats = liveStatsData.live_stats || [];
+    console.log('📊 Live stats is array?', Array.isArray(liveStats));
+    console.log('📊 Live stats count:', liveStats.length);
     
     if (!Array.isArray(liveStats) || liveStats.length === 0) {
       console.error('❌ No live stats available');
       return res.status(400).send(generateNoDataHTML());
     }
     
-    // Build leaderboard from live stats (they already have position + scores)
-    const leaderboard = [...liveStats]
-      .filter(p => p.total !== null && p.total !== undefined)
-      .sort((a, b) => a.total - b.total)
-      .slice(0, 15);
-    
-    console.log('📊 Leaderboard count:', leaderboard.length);
-    console.log('📊 Leader:', leaderboard[0]?.player_name, leaderboard[0]?.total);
+    // Build leaderboard from live stats
+    let leaderboard;
+    try {
+      leaderboard = [...liveStats]
+        .filter(p => p.total !== null && p.total !== undefined)
+        .sort((a, b) => a.total - b.total)
+        .slice(0, 15);
+      console.log('📊 Leaderboard count:', leaderboard.length);
+      console.log('📊 Leader:', leaderboard[0]?.player_name, leaderboard[0]?.total);
+    } catch (e) {
+      console.error('❌ Error building leaderboard:', e.message, e.stack);
+      return res.status(500).send(generateErrorHTML(e));
+    }
     
     if (leaderboard.length === 0) {
       return res.status(400).send(generateNoDataHTML());
@@ -725,54 +767,72 @@ app.get('/api/generate-blog/:round', async (req, res) => {
     
     // Determine mode
     let selectedMode = mode;
-    if (mode === 'auto') {
-      selectedMode = determineAutoMode(leaderboard, leader);
+    try {
+      if (mode === 'auto') {
+        selectedMode = determineAutoMode(leaderboard, leader);
+      }
+      console.log('🎯 Selected mode:', selectedMode);
+    } catch (e) {
+      console.error('❌ Error determining mode:', e.message);
+      selectedMode = 'ai'; // fallback
     }
     
-    console.log('🎯 Selected mode:', selectedMode);
-    
     // Base data structure
-    const baseData = {
-      tournament: currentEvent.event_name || liveStatsData.event_name,
-      course: liveStatsData.course_name || 'TPC Scottsdale',
-      currentRound: 4, // We know it's round 4
-      round: round,
-      leaderboard: leaderboard,
-      leader: {
-        name: leader.player_name,
-        score: leader.total,
-        sgTotal: leader.sg_total || 0,
-        sgOTT: leader.sg_ott || 0,
-        sgApp: leader.sg_app || 0,
-        sgArg: leader.sg_arg || 0,
-        sgPutt: leader.sg_putt || 0
-      },
-      liveStats: liveStats,
-      allPlayers: pgaPlayers,
-      publishDate: new Date().toISOString().split('T')[0]
-    };
+    let baseData;
+    try {
+      baseData = {
+        tournament: currentEvent.event_name || liveStatsData.event_name || 'PGA Tour',
+        course: liveStatsData.course_name || 'TPC Scottsdale',
+        currentRound: 4,
+        round: round,
+        leaderboard: leaderboard,
+        leader: {
+          name: leader.player_name,
+          score: leader.total,
+          sgTotal: leader.sg_total || 0,
+          sgOTT: leader.sg_ott || 0,
+          sgApp: leader.sg_app || 0,
+          sgArg: leader.sg_arg || 0,
+          sgPutt: leader.sg_putt || 0
+        },
+        liveStats: liveStats,
+        allPlayers: pgaPlayers,
+        publishDate: new Date().toISOString().split('T')[0]
+      };
+      console.log('✓ Base data structure created');
+    } catch (e) {
+      console.error('❌ Error creating base data:', e.message, e.stack);
+      return res.status(500).send(generateErrorHTML(e));
+    }
     
     // Generate blog based on mode
     let html;
-    switch(selectedMode) {
-      case 'news':
-        html = await generateNewsBlogEnhanced(baseData);
-        break;
-      case 'deep':
-        html = await generateDeepStatsBlogEnhanced(baseData);
-        break;
-      case 'ai':
-        html = await generateAIBlogEnhanced(baseData);
-        break;
-      default:
-        html = await generateAIBlogEnhanced(baseData);
+    try {
+      console.log('Generating blog content for mode:', selectedMode);
+      switch(selectedMode) {
+        case 'news':
+          html = await generateNewsBlogEnhanced(baseData);
+          break;
+        case 'deep':
+          html = await generateDeepStatsBlogEnhanced(baseData);
+          break;
+        case 'ai':
+          html = await generateAIBlogEnhanced(baseData);
+          break;
+        default:
+          html = await generateAIBlogEnhanced(baseData);
+      }
+      console.log('✓ Blog HTML generated, length:', html?.length);
+    } catch (e) {
+      console.error('❌ Error generating blog HTML:', e.message, e.stack);
+      return res.status(500).send(generateErrorHTML(e));
     }
     
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(html);
     
   } catch (error) {
-    console.error('Blog generation error:', error);
+    console.error('❌ Top-level blog generation error:', error.message);
     console.error('Stack:', error.stack);
     res.status(500).send(generateErrorHTML(error));
   }
