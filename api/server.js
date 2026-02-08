@@ -972,7 +972,9 @@ Target searches: "${context.leader.name} ${context.tournament}", "${context.cour
     });
     
     if (!response.ok) {
-      throw new Error(`Claude API error: ${response.statusText}`);
+      const errorBody = await response.text();
+      console.error('Claude API error response:', errorBody);
+      throw new Error(`Claude API error: ${response.statusText} - ${errorBody}`);
     }
     
     const result = await response.json();
@@ -993,7 +995,8 @@ Target searches: "${context.leader.name} ${context.tournament}", "${context.cour
 
 function generateFallbackAIContent(context) {
   const leader = context.leader;
-  const chasePack = context.chasePack;
+  const chasePack = context.chasePack || [];
+  const chaser = chasePack[0] || { name: 'the field', behind: 'multiple strokes' };
   
   let intro, analysis, conclusion;
   
@@ -1002,13 +1005,13 @@ function generateFallbackAIContent(context) {
     
     analysis = `Putting gains of this magnitude rarely sustain over 72 holes. Tour data shows that players who rely heavily on putting typically see regression to the mean in final rounds. Meanwhile, ${leader.name}'s approach play (${leader.sgApp}) is merely competent. The lead is real, but fragile.`;
     
-    conclusion = `${chasePack[0].name} sits ${chasePack[0].behind} back with steadier ball-striking fundamentals. If ${leader.name}'s putter cools even slightly on Sunday, this tournament reopens. The data suggests we're watching borrowed strokes, not owned ones.`;
+    conclusion = `${chaser.name} sits ${chaser.behind} back with steadier ball-striking fundamentals. If ${leader.name}'s putter cools even slightly on Sunday, this tournament reopens. The data suggests we're watching borrowed strokes, not owned ones.`;
   } else {
     intro = `Ball-striking is dictating the ${context.tournament} leaderboard. ${leader.name} leads at ${leader.score}, but the real story is how: ${leader.sgApp} strokes gained on approach through ${context.currentRound} rounds puts the leader in a different class than the field.`;
     
     analysis = `Iron play gains stick. Unlike putting, which swings wildly round-to-round, approach play tends to persist. ${leader.name} is hitting quality shots into greens, creating birdie opportunities through skill, not luck. Career numbers (${leader.careerSGApp} SG:Approach) confirm this isn't a fluke week.`;
     
-    conclusion = `${chasePack[0].name} needs to make up ${chasePack[0].behind} strokes on someone who's gaining ground with the most predictable stat in golf. The math favors ${leader.name}. Barring a collapse, this one's decided by execution, not drama.`;
+    conclusion = `${chaser.name} needs to make up ${chaser.behind} strokes on someone who's gaining ground with the most predictable stat in golf. The math favors ${leader.name}. Barring a collapse, this one's decided by execution, not drama.`;
   }
   
   return { intro, analysis, conclusion };
