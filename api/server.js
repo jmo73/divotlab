@@ -766,9 +766,22 @@ app.get('/api/lab-data', async (req, res) => {
     const eventName = fieldUpdates.event_name || preTournament.event_name;
     const currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || {};
 
+    // Extract the event name that predictions are actually FOR (may differ from field-updates event)
+    const predictionEventName = preTournament.event_name || null;
+
+    // Build field list for upcoming state (names + dg_ids from field-updates)
+    const fieldList = (fieldUpdates.field || []).map(p => ({
+      dg_id: p.dg_id,
+      player_name: p.player_name,
+      country: p.country || '',
+      am: p.am || 0
+    }));
+
     const compositeData = {
-      players: pgaPlayers, // NOW PGA ONLY ✅
+      players: pgaPlayers, // NOW PGA ONLY
       predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
+      prediction_event_name: predictionEventName, // Which event the predictions are actually for
+      field_list: fieldList, // Full field for upcoming state display
       tournament: {
         event_id: fieldUpdates.event_id || currentEvent.event_id,
         event_name: eventName || 'Upcoming Tournament',
@@ -776,7 +789,9 @@ app.get('/api/lab-data', async (req, res) => {
         field_size: fieldUpdates.field?.length || 0,
         current_round: fieldUpdates.current_round || 0,
         start_date: currentEvent.start_date || null,
-        status: currentEvent.status || 'unknown'
+        end_date: currentEvent.end_date || null,
+        status: currentEvent.status || 'unknown',
+        event_completed: fieldUpdates.event_completed || false
       },
       timestamp: new Date().toISOString(),
       pga_filtered: true

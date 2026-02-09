@@ -26,18 +26,108 @@ function formatSG(val) {
 }
 
 function getEventStatus(tournament) {
-  const currentRound = tournament.current_round || 0;
-  const status = tournament.status || 'upcoming';
+  const state = getTournamentState(tournament);
   
-  if (status === 'completed') {
+  if (state === 'completed') {
     return { label: 'Final', sublabel: '', color: '#5A8FA8' };
   }
   
-  if (currentRound > 0) {
+  if (state === 'live') {
+    const currentRound = tournament.current_round || 0;
     return { label: 'Live', sublabel: `R${currentRound}`, color: '#E76F51' };
   }
   
   return { label: 'Upcoming', sublabel: '', color: '#5BBF85' };
+}
+
+/**
+ * Tournament State Engine
+ * Single source of truth for tournament lifecycle state.
+ * Uses BOTH current_round AND start_date to prevent false "Live" status.
+ * Returns: 'upcoming' | 'live' | 'completed'
+ */
+function getTournamentState(tournament) {
+  if (!tournament) return 'upcoming';
+  
+  // Check completed first
+  if (tournament.event_completed || tournament.status === 'completed') {
+    return 'completed';
+  }
+  
+  // Date-based guard: if we have a start_date and today is before it, always upcoming
+  if (tournament.start_date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDate = new Date(tournament.start_date);
+    startDate.setHours(0, 0, 0, 0);
+    
+    if (today < startDate) {
+      return 'upcoming';
+    }
+  }
+  
+  // If we're past the start date and have an active round, it's live
+  if ((tournament.current_round || 0) > 0) {
+    return 'live';
+  }
+  
+  return 'upcoming';
+}
+
+/**
+ * Check if predictions data is stale (from a different event than the one displayed)
+ */
+function predictionsAreStale() {
+  if (!globalPredictionEventName || !globalTournamentInfo.event_name) return false;
+  // Normalize both names for comparison (trim, lowercase)
+  const predName = globalPredictionEventName.trim().toLowerCase();
+  const tournName = globalTournamentInfo.event_name.trim().toLowerCase();
+  return predName !== tournName;
+}
+
+/**
+ * Format a date string for display
+ * Input: "2026-02-12" or ISO string
+ * Output: "Feb 12" or "Feb 12–15"
+ */
+function formatTournamentDate(startStr, endStr) {
+  if (!startStr) return '';
+  
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const start = new Date(startStr + 'T12:00:00'); // Noon to avoid timezone issues
+  const startFormatted = `${months[start.getMonth()]} ${start.getDate()}`;
+  
+  if (endStr) {
+    const end = new Date(endStr + 'T12:00:00');
+    if (start.getMonth() === end.getMonth()) {
+      return `${startFormatted}–${end.getDate()}`;
+    }
+    return `${startFormatted} – ${months[end.getMonth()]} ${end.getDate()}`;
+  }
+  
+  return startFormatted;
+}
+
+/**
+ * Get a human-readable countdown or date label for upcoming tournaments
+ */
+function getUpcomingDateLabel(tournament) {
+  if (!tournament.start_date) return 'Date TBD';
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(tournament.start_date + 'T12:00:00');
+  start.setHours(0, 0, 0, 0);
+  
+  const diffMs = start - today;
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  
+  const dateRange = formatTournamentDate(tournament.start_date, tournament.end_date);
+  
+  if (diffDays <= 0) return `Starts today · ${dateRange}`;
+  if (diffDays === 1) return `Starts tomorrow · ${dateRange}`;
+  if (diffDays <= 7) return `Starts in ${diffDays} days · ${dateRange}`;
+  return dateRange;
 }
 
 function getPlayingStyle(player) {
@@ -120,6 +210,8 @@ let globalPredictions = [];
 let globalTournamentInfo = {};
 let globalDGRankings = [];
 let globalLeaderboard = [];
+let globalFieldList = [];           // Full field from field-updates (for upcoming state)
+let globalPredictionEventName = ''; // Which event the predictions are for (staleness check)
 let hoveredPlayer = null;
 
 // ============================================
@@ -134,15 +226,24 @@ async function loadAllData() {
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
-      const { players, predictions, tournament } = labData.data;
+      const { players, predictions, tournament, field_list, prediction_event_name } = labData.data;
       
       globalPlayers = players || [];
       globalPredictions = predictions || [];
       globalTournamentInfo = tournament || {};
+      globalFieldList = field_list || [];
+      globalPredictionEventName = prediction_event_name || '';
       
       console.log('✓ Loaded', globalPlayers.length, 'players');
       console.log('✓ Loaded', globalPredictions.length, 'predictions');
       console.log('✓ Tournament:', globalTournamentInfo.event_name);
+      console.log('✓ Predictions for:', globalPredictionEventName);
+      console.log('✓ Field list:', globalFieldList.length, 'players');
+      console.log('✓ Tournament state:', getTournamentState(globalTournamentInfo));
+      
+      if (predictionsAreStale()) {
+        console.warn('⚠️ Predictions are STALE — predictions for', globalPredictionEventName, 'but displaying', globalTournamentInfo.event_name);
+      }
     }
     
     // Load DG Rankings for Top 10 (PGA ONLY)
@@ -158,8 +259,9 @@ async function loadAllData() {
       console.warn('⚠️ Could not load DG rankings:', err);
     }
     
-    // Load live predictions if tournament is ongoing
-    if (globalTournamentInfo.current_round > 0) {
+    // Load live data ONLY if tournament state is actually live
+    const tournamentState = getTournamentState(globalTournamentInfo);
+    if (tournamentState === 'live') {
       try {
         const liveResponse = await fetch(`${API_BASE_URL}/api/live-tournament`);
         const liveData = await liveResponse.json();
@@ -198,9 +300,21 @@ function renderTournamentBanner() {
   const container = document.getElementById('tournament-banner');
   if (!container) return;
   
+  const state = getTournamentState(globalTournamentInfo);
   const eventStatus = getEventStatus(globalTournamentInfo);
   const courseName = globalTournamentInfo.course || '';
   const fieldSize = globalTournamentInfo.field_size || 0;
+  const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
+  const dateRange = formatTournamentDate(globalTournamentInfo.start_date, globalTournamentInfo.end_date);
+  
+  let dateDisplay = '';
+  if (state === 'upcoming') {
+    dateDisplay = dateLabel;
+  } else if (state === 'live') {
+    dateDisplay = dateRange;
+  } else if (state === 'completed') {
+    dateDisplay = dateRange ? `${dateRange} · Complete` : 'Complete';
+  }
   
   container.innerHTML = `
     <div class="banner-inner">
@@ -209,9 +323,7 @@ function renderTournamentBanner() {
       </div>
       <h2 class="banner-title">${globalTournamentInfo.event_name || 'Upcoming Tournament'}</h2>
       <div class="banner-course">${courseName}${courseName && fieldSize ? ' · ' : ''}${fieldSize ? `${fieldSize} players` : ''}</div>
-      <div class="banner-course" style="opacity: 0.5; font-size: 12px; margin-top: 4px;">
-        Par 72
-      </div>
+      ${dateDisplay ? `<div class="banner-course" style="opacity: 0.5; font-size: 12px; margin-top: 4px;">${dateDisplay}</div>` : ''}
     </div>
   `;
 }
@@ -220,8 +332,15 @@ function renderFieldStrength() {
   const container = document.getElementById('field-strength');
   if (!container) return;
   
+  const state = getTournamentState(globalTournamentInfo);
+  const isLive = state === 'live';
+  const isUpcoming = state === 'upcoming';
+  const stale = predictionsAreStale();
+  const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
+  
   // Build tournament field by matching predictions with player skill data
-  const tournamentField = globalPredictions
+  // Only use predictions if they match the current event
+  const tournamentField = (stale ? [] : globalPredictions)
     .map(pred => {
       // Find matching player from skill ratings
       const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
@@ -237,12 +356,22 @@ function renderFieldStrength() {
     })
     .filter(p => p.sg_total != null);
   
-  // Use tournament field for strength calculation
-  const field = calculateFieldStrength(tournamentField.length > 0 ? tournamentField : globalPlayers);
+  // If predictions are stale, build field from globalFieldList + skill ratings
+  let fieldForStrength = tournamentField;
+  if ((stale || tournamentField.length === 0) && globalFieldList.length > 0) {
+    fieldForStrength = globalFieldList
+      .map(fp => {
+        const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
+        if (playerData) return playerData;
+        return { dg_id: fp.dg_id, player_name: fp.player_name, sg_total: 0 };
+      })
+      .filter(p => p.sg_total != null && p.sg_total !== 0);
+  }
+  
+  // Use field for strength calculation
+  const field = calculateFieldStrength(fieldForStrength.length > 0 ? fieldForStrength : globalPlayers);
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
-  
-  const isLive = (globalTournamentInfo.current_round || 0) > 0;
   
   // Get top 3 leaders from leaderboard (live data only)
   let top3Leaders = [];
@@ -263,13 +392,60 @@ function renderFieldStrength() {
     top3Leaders = sortedByScore.slice(0, 3);
   }
   
-  // Get top 3 win odds from predictions
+  // Get top 3 win odds from predictions (only if not stale)
   let top3Odds = [];
-  if (globalPredictions.length > 0) {
+  if (!stale && globalPredictions.length > 0) {
     const sortedByWin = [...globalPredictions]
       .filter(p => p.win != null)
       .sort((a, b) => (b.win || 0) - (a.win || 0));
     top3Odds = sortedByWin.slice(0, 3);
+  }
+  
+  // Leaders card content
+  let leadersContent = '';
+  if (isLive && top3Leaders.length > 0) {
+    leadersContent = top3Leaders.map((p, i) => {
+      const score = p.current_score || 0;
+      const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
+      const lastName = p.player_name.split(', ')[0];
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
+          <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
+        </div>
+      `;
+    }).join('');
+  } else {
+    // Upcoming state
+    leadersContent = `
+      <div style="text-align: center; padding: 8px 0;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 10px;">Upcoming</div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.5;">${dateLabel || 'Check back when the tournament begins'}</div>
+      </div>
+    `;
+  }
+  
+  // Odds card content
+  let oddsContent = '';
+  if (top3Odds.length > 0) {
+    oddsContent = top3Odds.map((p, i) => {
+      const winPct = ((p.win || 0) * 100).toFixed(1);
+      const lastName = p.player_name.split(', ')[0];
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
+          <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
+        </div>
+      `;
+    }).join('');
+  } else {
+    // Upcoming / stale state
+    oddsContent = `
+      <div style="text-align: center; padding: 8px 0;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 10px;">Upcoming</div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.5;">Predictions publish Tuesday/Wednesday of event week</div>
+      </div>
+    `;
   }
   
   container.innerHTML = `
@@ -296,24 +472,11 @@ function renderFieldStrength() {
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
           <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
-          <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : '—'}</span>
+          <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
-            ${isLive && top3Leaders.length > 0 ? top3Leaders.map((p, i) => {
-              const score = p.current_score || 0;
-              const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
-              const lastName = p.player_name.split(', ')[0];
-              return `
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
-                  <span style="font-size: 15px; color: ${score <= 0 ? '#5BBF85' : '#E76F51'}; font-weight: 600;">${scoreDisplay}</span>
-                </div>
-              `;
-            }).join('') : `
-              <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Scores</div>
-              <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Available when live</div>
-            `}
+            ${leadersContent}
           </div>
         </div>
       </div>
@@ -321,24 +484,12 @@ function renderFieldStrength() {
       <!-- Odds Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">Win Odds${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
-          <span class="strength-value" style="font-size: 18px;">%</span>
+          <span class="strength-label">Win Odds${isLive && !stale ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-value" style="font-size: 18px;">${top3Odds.length > 0 ? '%' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
-            ${top3Odds.length > 0 ? top3Odds.map((p, i) => {
-              const winPct = ((p.win || 0) * 100).toFixed(1);
-              const lastName = p.player_name.split(', ')[0];
-              return `
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                  <span style="font-size: 13px; color: rgba(250,250,250,0.75); font-weight: 500;">${i + 1}. ${lastName}</span>
-                  <span style="font-size: 15px; color: #5A8FA8; font-weight: 600;">${winPct}%</span>
-                </div>
-              `;
-            }).join('') : `
-              <div style="font-size: 12px; color: rgba(250,250,250,0.45); margin-bottom: 8px;">Top 3 Favorites</div>
-              <div style="font-size: 13px; color: rgba(250,250,250,0.65);">Loading odds...</div>
-            `}
+            ${oddsContent}
           </div>
         </div>
       </div>
@@ -352,104 +503,180 @@ function renderLeaderboard() {
   const liveIndicator = document.getElementById('leaderboard-live-indicator');
   if (!container) return;
   
-  const isLive = (globalTournamentInfo.current_round || 0) > 0;
+  const state = getTournamentState(globalTournamentInfo);
+  const isLive = state === 'live';
   const tournamentName = globalTournamentInfo.event_name || 'Tournament';
+  const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   
-  // Update live indicator above table (centered, like in predictions)
+  // Update live indicator above table
   if (liveIndicator) {
     if (isLive) {
       liveIndicator.innerHTML = `🔴 Live Scores · ${tournamentName}`;
+    } else if (state === 'upcoming') {
+      liveIndicator.innerHTML = `Upcoming · ${tournamentName}`;
     } else {
       liveIndicator.textContent = '';
     }
   }
   
-  if (!isLive || !globalLeaderboard.length) {
-    container.innerHTML = '<div class="loading-msg">Leaderboard available when tournament is live</div>';
+  // LIVE: show full leaderboard with scores
+  if (isLive && globalLeaderboard.length > 0) {
+    // Sort by current score (lowest to highest), then by position
+    const sorted = [...globalLeaderboard].sort((a, b) => {
+      let scoreA = a.current_score;
+      if (scoreA === 'E' || scoreA === 0) scoreA = 0;
+      else if (typeof scoreA === 'string') scoreA = parseFloat(scoreA) || 999;
+      else scoreA = scoreA || 999;
+      
+      let scoreB = b.current_score;
+      if (scoreB === 'E' || scoreB === 0) scoreB = 0;
+      else if (typeof scoreB === 'string') scoreB = parseFloat(scoreB) || 999;
+      else scoreB = scoreB || 999;
+      
+      if (scoreA !== scoreB) return scoreA - scoreB;
+      
+      const posA = String(a.current_pos || '999').replace(/[T-]/g, '');
+      const posB = String(b.current_pos || '999').replace(/[T-]/g, '');
+      return parseInt(posA) - parseInt(posB);
+    });
+    
+    container.innerHTML = `
+      <style>
+        .leaderboard-scroll::-webkit-scrollbar { width: 8px; }
+        .leaderboard-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 4px; }
+        .leaderboard-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #5BBF85, #5A8FA8); border-radius: 4px; }
+        .leaderboard-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #6DD89A, #6BA3BD); }
+      </style>
+      <div class="table-wrapper leaderboard-scroll" style="max-height: 600px; overflow-y: auto;">
+        <table class="pred-table">
+          <thead style="position: sticky; top: 0; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <tr>
+              <th class="rank-col">Pos</th>
+              <th>Player</th>
+              <th class="prob-col">Score</th>
+              <th class="prob-col">Today</th>
+              <th class="prob-col">Thru</th>
+              <th class="prob-col">R1</th>
+              <th class="prob-col">R2</th>
+              <th class="prob-col">R3</th>
+              <th class="prob-col">R4</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sorted.map((p, i) => {
+              const score = p.current_score || 0;
+              const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
+              const today = p.today || 0;
+              const todayDisplay = today > 0 ? `+${today}` : today === 0 || today === 'E' ? 'E' : today;
+              
+              return `
+                <tr>
+                  <td class="rank-col">${p.current_pos || '-'}</td>
+                  <td class="player-col">${p.player_name}</td>
+                  <td class="prob-col win">${scoreDisplay}</td>
+                  <td class="prob-col">${todayDisplay}</td>
+                  <td class="prob-col">${p.thru || '-'}</td>
+                  <td class="prob-col">${p.R1 || '-'}</td>
+                  <td class="prob-col">${p.R2 || '-'}</td>
+                  <td class="prob-col">${p.R3 || '-'}</td>
+                  <td class="prob-col">${p.R4 || '-'}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
     return;
   }
   
-  // Sort by current score (lowest to highest), then by position
-  const sorted = [...globalLeaderboard].sort((a, b) => {
-    // Convert E to 0 for sorting
-    let scoreA = a.current_score;
-    if (scoreA === 'E' || scoreA === 0) scoreA = 0;
-    else if (typeof scoreA === 'string') scoreA = parseFloat(scoreA) || 999;
-    else scoreA = scoreA || 999;
+  // UPCOMING: show the field list with skill ratings
+  if (state === 'upcoming' || state === 'completed') {
+    // Build a displayable field — use field list matched with skill data
+    let fieldDisplay = [];
     
-    let scoreB = b.current_score;
-    if (scoreB === 'E' || scoreB === 0) scoreB = 0;
-    else if (typeof scoreB === 'string') scoreB = parseFloat(scoreB) || 999;
-    else scoreB = scoreB || 999;
-    
-    if (scoreA !== scoreB) {
-      return scoreA - scoreB; // Lower score = better
+    // Try matching field list players with skill data
+    if (globalFieldList.length > 0) {
+      fieldDisplay = globalFieldList.map(fp => {
+        const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
+        return {
+          player_name: fp.player_name,
+          country: fp.country || (playerData ? playerData.country : ''),
+          sg_total: playerData ? playerData.sg_total : null,
+          am: fp.am || 0
+        };
+      });
+    } else if (!predictionsAreStale() && globalPredictions.length > 0) {
+      // Fallback: use predictions list
+      fieldDisplay = globalPredictions.map(pred => {
+        const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id);
+        return {
+          player_name: pred.player_name,
+          country: playerData ? playerData.country : '',
+          sg_total: playerData ? playerData.sg_total : (pred.dg_skill_estimate || null),
+          am: 0
+        };
+      });
     }
     
-    // If scores are tied, sort by position string
-    const posA = String(a.current_pos || '999').replace(/[T-]/g, '');
-    const posB = String(b.current_pos || '999').replace(/[T-]/g, '');
-    return parseInt(posA) - parseInt(posB);
-  });
+    // Sort by SG (highest first), players without SG at the bottom
+    fieldDisplay.sort((a, b) => {
+      if (a.sg_total == null && b.sg_total == null) return 0;
+      if (a.sg_total == null) return 1;
+      if (b.sg_total == null) return -1;
+      return (b.sg_total || 0) - (a.sg_total || 0);
+    });
+    
+    if (fieldDisplay.length === 0) {
+      container.innerHTML = '<div class="loading-msg">Field not yet available</div>';
+      return;
+    }
+    
+    container.innerHTML = `
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 6px;">
+          ${state === 'upcoming' ? 'Upcoming' : 'Final'}
+        </div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.45);">
+          ${state === 'upcoming' ? dateLabel : formatTournamentDate(globalTournamentInfo.start_date, globalTournamentInfo.end_date)}
+        </div>
+      </div>
+      <style>
+        .leaderboard-scroll::-webkit-scrollbar { width: 8px; }
+        .leaderboard-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 4px; }
+        .leaderboard-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #5BBF85, #5A8FA8); border-radius: 4px; }
+      </style>
+      <div class="table-wrapper leaderboard-scroll" style="max-height: 600px; overflow-y: auto;">
+        <table class="pred-table">
+          <thead style="position: sticky; top: 0; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <tr>
+              <th class="rank-col">#</th>
+              <th>Player</th>
+              <th class="prob-col">DG Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${fieldDisplay.map((p, i) => {
+              const flag = getFlag(p.country);
+              const sgDisplay = p.sg_total != null ? formatSG(p.sg_total) : '—';
+              const sgClass = p.sg_total != null && p.sg_total >= 0 ? 'win' : '';
+              return `
+                <tr>
+                  <td class="rank-col">${i + 1}</td>
+                  <td class="player-col">${flag ? `<span class="tbl-flag">${flag}</span>` : ''}${p.player_name}${p.am ? ' <span style="font-size:10px;color:rgba(250,250,250,0.3);">(a)</span>' : ''}</td>
+                  <td class="prob-col ${sgClass}">${sgDisplay}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+    return;
+  }
   
-  // Show all players but let table scroll
-  container.innerHTML = `
-    <style>
-      .leaderboard-scroll::-webkit-scrollbar {
-        width: 8px;
-      }
-      .leaderboard-scroll::-webkit-scrollbar-track {
-        background: rgba(255,255,255,0.03);
-        border-radius: 4px;
-      }
-      .leaderboard-scroll::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #5BBF85, #5A8FA8);
-        border-radius: 4px;
-      }
-      .leaderboard-scroll::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #6DD89A, #6BA3BD);
-      }
-    </style>
-    <div class="table-wrapper leaderboard-scroll" style="max-height: 600px; overflow-y: auto;">
-      <table class="pred-table">
-        <thead style="position: sticky; top: 0; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.08);">
-          <tr>
-            <th class="rank-col">Pos</th>
-            <th>Player</th>
-            <th class="prob-col">Score</th>
-            <th class="prob-col">Today</th>
-            <th class="prob-col">Thru</th>
-            <th class="prob-col">R1</th>
-            <th class="prob-col">R2</th>
-            <th class="prob-col">R3</th>
-            <th class="prob-col">R4</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sorted.map((p, i) => {
-            const score = p.current_score || 0;
-            const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
-            const today = p.today || 0;
-            const todayDisplay = today > 0 ? `+${today}` : today === 0 || today === 'E' ? 'E' : today;
-            
-            return `
-              <tr>
-                <td class="rank-col">${p.current_pos || '-'}</td>
-                <td class="player-col">${p.player_name}</td>
-                <td class="prob-col win">${scoreDisplay}</td>
-                <td class="prob-col">${todayDisplay}</td>
-                <td class="prob-col">${p.thru || '-'}</td>
-                <td class="prob-col">${p.R1 || '-'}</td>
-                <td class="prob-col">${p.R2 || '-'}</td>
-                <td class="prob-col">${p.R3 || '-'}</td>
-                <td class="prob-col">${p.R4 || '-'}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
+  // Fallback
+  container.innerHTML = '<div class="loading-msg">Leaderboard data not available</div>';
 }
 
 function renderTop10() {
@@ -535,7 +762,23 @@ function renderPredictions() {
   if (!container) return;
   
   const eventName = globalTournamentInfo.event_name || 'Current Tournament';
-  const isLive = (globalTournamentInfo.current_round || 0) > 0;
+  const state = getTournamentState(globalTournamentInfo);
+  const isLive = state === 'live';
+  const stale = predictionsAreStale();
+  const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
+  
+  // If predictions are stale or tournament is upcoming without fresh predictions, show upcoming state
+  if (stale || (state === 'upcoming' && globalPredictions.length === 0)) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 12px;">Upcoming</div>
+        <div style="font-family: var(--display); font-size: 22px; font-weight: 600; margin-bottom: 10px;">${eventName}</div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.45); margin-bottom: 6px;">${dateLabel}</div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.35);">Predictions will be available Tuesday/Wednesday of event week</div>
+      </div>
+    `;
+    return;
+  }
   
   const preds = globalPredictions.slice(0, 20);
   if (!preds.length) {
@@ -982,9 +1225,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Tournament Intelligence after data loads
   setTimeout(initTournamentIntelligence, 2000);
   
-  // Auto-refresh live predictions every hour when tournament is ongoing
+  // Auto-refresh live predictions every hour when tournament is live
   setInterval(() => {
-    if (globalTournamentInfo.current_round > 0) {
+    if (getTournamentState(globalTournamentInfo) === 'live') {
       console.log('🔄 Auto-refreshing live predictions...');
       loadLivePredictions();
     }
@@ -1091,13 +1334,17 @@ function renderTournamentContext() {
   if (globalTournamentInfo && globalTournamentInfo.event_name) {
     nameEl.textContent = globalTournamentInfo.event_name;
     
-    // Format dates if available
-    if (globalTournamentInfo.event_completed) {
-      datesEl.textContent = 'Tournament Complete';
-    } else if (globalTournamentInfo.current_round > 0) {
-      datesEl.textContent = `Round ${globalTournamentInfo.current_round} In Progress`;
+    const state = getTournamentState(globalTournamentInfo);
+    const dateRange = formatTournamentDate(globalTournamentInfo.start_date, globalTournamentInfo.end_date);
+    
+    if (state === 'completed') {
+      datesEl.textContent = dateRange ? `${dateRange} · Tournament Complete` : 'Tournament Complete';
+    } else if (state === 'live') {
+      const round = globalTournamentInfo.current_round || 0;
+      datesEl.textContent = `Round ${round} In Progress${dateRange ? ` · ${dateRange}` : ''}`;
     } else {
-      datesEl.textContent = 'Pre-Tournament Analysis';
+      const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
+      datesEl.textContent = `Upcoming · ${dateLabel}`;
     }
   } else {
     nameEl.textContent = 'Current PGA Tour Event';
@@ -1113,8 +1360,17 @@ function renderValuePlayers() {
   const container = document.getElementById('value-players-list');
   if (!container) return;
   
-  // Get players in current tournament
-  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  const stale = predictionsAreStale();
+  
+  // Get players in current tournament — use field list if predictions are stale
+  let tournamentPlayerIds;
+  if (!stale && globalPredictions.length > 0) {
+    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  } else if (globalFieldList.length > 0) {
+    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
+  } else {
+    tournamentPlayerIds = new Set();
+  }
   
   // Filter to players in tournament and sort by skill
   const valuePlayers = globalPlayers
@@ -1175,8 +1431,17 @@ function renderCourseProfile() {
   const container = document.getElementById('course-profile-content');
   if (!container) return;
   
-  // Get tournament players
-  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  const stale = predictionsAreStale();
+  
+  // Get tournament players — use field list if predictions are stale
+  let tournamentPlayerIds;
+  if (!stale && globalPredictions.length > 0) {
+    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  } else if (globalFieldList.length > 0) {
+    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
+  } else {
+    tournamentPlayerIds = new Set();
+  }
   const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
   
   if (tournamentPlayers.length === 0) {
@@ -1256,8 +1521,17 @@ function renderWinningProfile() {
   const statsContainer = document.getElementById('winning-profile-stats');
   if (!container) return;
   
-  // Get tournament players
-  const tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  const stale = predictionsAreStale();
+  
+  // Get tournament players — use field list if predictions are stale
+  let tournamentPlayerIds;
+  if (!stale && globalPredictions.length > 0) {
+    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
+  } else if (globalFieldList.length > 0) {
+    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
+  } else {
+    tournamentPlayerIds = new Set();
+  }
   const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
   
   if (tournamentPlayers.length === 0) {
