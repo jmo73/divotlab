@@ -19,6 +19,38 @@ function getFlag(country) {
   return flags[country] || '🏳️';
 }
 
+/**
+ * Get an <img> flag element using flagcdn.com for consistent cross-platform rendering.
+ * Maps DataGolf 3-letter country codes to ISO 3166-1 alpha-2 codes.
+ * Returns an HTML string like: <img src="..." class="flag-img" alt="USA">
+ */
+function getFlagImg(country) {
+  const countryToISO = {
+    'USA': 'us', 'CAN': 'ca', 'MEX': 'mx', 'ENG': 'gb-eng', 'SCO': 'gb-sct', 'IRL': 'ie',
+    'NIR': 'gb-nir', 'WAL': 'gb-wls', 'ESP': 'es', 'FRA': 'fr', 'GER': 'de', 'ITA': 'it',
+    'SWE': 'se', 'NOR': 'no', 'DEN': 'dk', 'NED': 'nl', 'BEL': 'be', 'AUT': 'at',
+    'SUI': 'ch', 'JPN': 'jp', 'KOR': 'kr', 'CHN': 'cn', 'AUS': 'au', 'NZL': 'nz',
+    'RSA': 'za', 'ARG': 'ar', 'BRA': 'br', 'CHI': 'cl', 'COL': 'co', 'VEN': 've',
+    'IND': 'in', 'THA': 'th', 'PHI': 'ph', 'TWN': 'tw', 'ZIM': 'zw', 'FIJ': 'fj',
+    'PER': 'pe', 'CRC': 'cr', 'PAN': 'pa', 'PUR': 'pr', 'DOM': 'do',
+    'FIN': 'fi', 'CZE': 'cz', 'POL': 'pl', 'HUN': 'hu', 'GRE': 'gr', 'POR': 'pt',
+    'TUR': 'tr', 'ISR': 'il', 'SGP': 'sg', 'MAS': 'my', 'HKG': 'hk', 'IDN': 'id',
+    'PAR': 'py', 'URU': 'uy', 'ECU': 'ec', 'BOL': 'bo', 'GUA': 'gt', 'HON': 'hn',
+    'JAM': 'jm', 'TRI': 'tt', 'BAH': 'bs', 'BER': 'bm', 'BAR': 'bb',
+    'NAM': 'na', 'KEN': 'ke', 'NGA': 'ng', 'GHA': 'gh', 'BOT': 'bw',
+    'PAK': 'pk', 'SRI': 'lk', 'BAN': 'bd', 'NEP': 'np', 'MYA': 'mm',
+    'CAM': 'kh', 'VIE': 'vn', 'LAO': 'la'
+  };
+  
+  const iso = countryToISO[country];
+  if (!iso) return '';
+  
+  // flagcdn.com supports both ISO alpha-2 and subdivision codes (gb-eng, gb-sct, etc.)
+  const url = `https://flagcdn.com/24x18/${iso}.png`;
+  const url2x = `https://flagcdn.com/48x36/${iso}.png`;
+  return `<img src="${url}" srcset="${url2x} 2x" width="24" height="18" alt="${country}" class="flag-img" style="border-radius: 2px; vertical-align: middle; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">`;
+}
+
 function formatSG(val) {
   const num = parseFloat(val);
   if (isNaN(num)) return '—';
@@ -657,13 +689,13 @@ function renderLeaderboard() {
           </thead>
           <tbody>
             ${fieldDisplay.map((p, i) => {
-              const flag = getFlag(p.country);
+              const flagHtml = getFlagImg(p.country);
               const sgDisplay = p.sg_total != null ? formatSG(p.sg_total) : '—';
               const sgClass = p.sg_total != null && p.sg_total >= 0 ? 'win' : '';
               return `
                 <tr>
                   <td class="rank-col">${i + 1}</td>
-                  <td class="player-col">${flag ? `<span class="tbl-flag">${flag}</span>` : ''}${p.player_name}${p.am ? ' <span style="font-size:10px;color:rgba(250,250,250,0.3);">(a)</span>' : ''}</td>
+                  <td class="player-col">${flagHtml ? `<span style="margin-right: 6px;">${flagHtml}</span>` : ''}${p.player_name}${p.am ? ' <span style="font-size:10px;color:rgba(250,250,250,0.3);">(a)</span>' : ''}</td>
                   <td class="prob-col ${sgClass}">${sgDisplay}</td>
                 </tr>
               `;
@@ -691,19 +723,20 @@ function renderTop10() {
       const playerData = globalPlayers.find(p => p.dg_id === ranking.dg_id);
       
       if (playerData) {
-        // Use full player data
-        return playerData;
+        // Use full player data — mark as having real breakdown
+        return { ...playerData, _hasBreakdown: true };
       } else {
-        // Use ranking data with estimates
+        // Use ranking data — no real breakdown available
         return {
           dg_id: ranking.dg_id,
           player_name: ranking.player_name,
           country: ranking.country,
           sg_total: ranking.dg_skill_estimate,
-          sg_ott: 0,
-          sg_app: 0,
-          sg_arg: 0,
-          sg_putt: 0
+          sg_ott: null,
+          sg_app: null,
+          sg_arg: null,
+          sg_putt: null,
+          _hasBreakdown: false
         };
       }
     });
@@ -711,7 +744,8 @@ function renderTop10() {
     top10 = globalPlayers
       .filter(p => p.sg_total != null)
       .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
-      .slice(0, 10);
+      .slice(0, 10)
+      .map(p => ({ ...p, _hasBreakdown: true }));
   }
   
   if (!top10.length) {
@@ -721,10 +755,23 @@ function renderTop10() {
   
   container.innerHTML = top10.map((p, i) => {
     const style = getPlayingStyle(p);
+    const flagHtml = getFlagImg(p.country);
+    
+    // Show dash for SG breakdown if we don't have real data
+    const formatSkill = (val) => {
+      if (val == null) return '—';
+      return formatSG(val);
+    };
+    const skillClass = (val) => {
+      if (val == null) return '';
+      return val >= 0 ? 'pos' : 'neg';
+    };
+    
     return `
       <div class="player-card" style="animation-delay: ${i * 0.05}s">
         <div class="card-top">
           <div class="rank-badge">${i + 1}</div>
+          ${flagHtml}
           <span class="style-tag" style="color: ${style.color}; border-color: ${style.color};">
             ${style.name}
           </span>
@@ -732,24 +779,24 @@ function renderTop10() {
         <div class="player-name">${p.player_name}</div>
         <div class="sg-total">
           <span class="sg-number">${formatSG(p.sg_total)}</span>
-          <span class="sg-label">SG Total · Last 24 Months</span>
+          <span class="sg-label">DataGolf Skill Rating</span>
         </div>
         <div class="skills-list">
           <div class="skill-row">
             <span class="skill-name">Off-the-Tee</span>
-            <span class="skill-value ${(p.sg_ott || 0) >= 0 ? 'pos' : 'neg'}">${formatSG(p.sg_ott || 0)}</span>
+            <span class="skill-value ${skillClass(p.sg_ott)}">${formatSkill(p.sg_ott)}</span>
           </div>
           <div class="skill-row">
             <span class="skill-name">Approach</span>
-            <span class="skill-value ${(p.sg_app || 0) >= 0 ? 'pos' : 'neg'}">${formatSG(p.sg_app || 0)}</span>
+            <span class="skill-value ${skillClass(p.sg_app)}">${formatSkill(p.sg_app)}</span>
           </div>
           <div class="skill-row">
             <span class="skill-name">Around Green</span>
-            <span class="skill-value ${(p.sg_arg || 0) >= 0 ? 'pos' : 'neg'}">${formatSG(p.sg_arg || 0)}</span>
+            <span class="skill-value ${skillClass(p.sg_arg)}">${formatSkill(p.sg_arg)}</span>
           </div>
           <div class="skill-row">
             <span class="skill-name">Putting</span>
-            <span class="skill-value ${(p.sg_putt || 0) >= 0 ? 'pos' : 'neg'}">${formatSG(p.sg_putt || 0)}</span>
+            <span class="skill-value ${skillClass(p.sg_putt)}">${formatSkill(p.sg_putt)}</span>
           </div>
         </div>
       </div>
@@ -1563,7 +1610,8 @@ function renderWinningProfile() {
   const argPct = (avgARG / total) * 100;
   const puttPct = (avgPUTT / total) * 100;
   
-  // Render stats on right side - larger and styled
+  // Render stats on right side — all values in the same blue
+  const statBlue = '#5A8FA8';
   if (statsContainer) {
     statsContainer.innerHTML = `
       <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 18px 20px; text-align: center;">
@@ -1573,57 +1621,86 @@ function renderWinningProfile() {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Off-the-Tee</div>
-            <div style="font-size: 22px; font-weight: 700; color: #5BBF85;">${formatSG(rawOTT)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawOTT)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Approach</div>
-            <div style="font-size: 22px; font-weight: 700; color: #5A8FA8;">${formatSG(rawAPP)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawAPP)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Around Green</div>
-            <div style="font-size: 22px; font-weight: 700; color: #5BBF85;">${formatSG(rawARG)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawARG)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Putting</div>
-            <div style="font-size: 22px; font-weight: 700; color: #5A8FA8;">${formatSG(rawPUTT)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawPUTT)}</div>
           </div>
         </div>
         <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; color: rgba(250,250,250,0.35); line-height: 1.5;">
-          Skill breakdown showing where elite players gain strokes
+          DataGolf skill model · Top 10 contenders in field
         </div>
       </div>
     `;
   }
   
+  // Build CSS conic-gradient donut chart
+  // Colors from the analytics dashboard palette
+  const ottColor = '#E76F51';  // Red/coral — Off-the-Tee (matches Power)
+  const appColor = '#5A8FA8';  // Blue — Approach (matches Precision)
+  const argColor = '#5BBF85';  // Green — Around Green (matches Scrambler)
+  const puttColor = '#DDA15E'; // Orange/amber — Putting (matches Touch)
+  
+  // Build conic-gradient stops
+  const stop1 = ottPct;
+  const stop2 = stop1 + appPct;
+  const stop3 = stop2 + argPct;
+  // stop4 = 100 (remainder is putting)
+  
   container.innerHTML = `
-    <div class="profile-stats">
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Off-the-Tee</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${ottPct.toFixed(1)}%</span>
+    <div style="display: flex; align-items: center; gap: 32px; flex-wrap: wrap; justify-content: center;">
+      <!-- Donut Chart -->
+      <div style="position: relative; width: 180px; height: 180px; flex-shrink: 0;">
+        <div style="
+          width: 180px; height: 180px; border-radius: 50%;
+          background: conic-gradient(
+            ${ottColor} 0% ${stop1.toFixed(1)}%,
+            ${appColor} ${stop1.toFixed(1)}% ${stop2.toFixed(1)}%,
+            ${argColor} ${stop2.toFixed(1)}% ${stop3.toFixed(1)}%,
+            ${puttColor} ${stop3.toFixed(1)}% 100%
+          );
+        "></div>
+        <div style="
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          width: 100px; height: 100px; border-radius: 50%;
+          background: var(--black);
+          display: flex; align-items: center; justify-content: center; flex-direction: column;
+        ">
+          <div style="font-size: 10px; color: rgba(250,250,250,0.4); text-transform: uppercase; letter-spacing: .08em;">Skill</div>
+          <div style="font-size: 12px; color: rgba(250,250,250,0.6); font-weight: 500;">Profile</div>
         </div>
-        <div class="importance-bar" style="width: ${ottPct}%; background: linear-gradient(90deg, #5BBF85, rgba(91,191,133,0.6));"></div>
       </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Approach</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${appPct.toFixed(1)}%</span>
+      <!-- Legend -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 12px; height: 12px; border-radius: 3px; background: ${ottColor}; flex-shrink: 0;"></div>
+          <span style="font-size: 13px; color: rgba(250,250,250,0.7); min-width: 100px;">Off-the-Tee</span>
+          <span style="font-size: 13px; font-weight: 600; color: rgba(250,250,250,0.9);">${ottPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${appPct}%; background: linear-gradient(90deg, #5A8FA8, rgba(90,143,168,0.6));"></div>
-      </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Around Green</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${argPct.toFixed(1)}%</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 12px; height: 12px; border-radius: 3px; background: ${appColor}; flex-shrink: 0;"></div>
+          <span style="font-size: 13px; color: rgba(250,250,250,0.7); min-width: 100px;">Approach</span>
+          <span style="font-size: 13px; font-weight: 600; color: rgba(250,250,250,0.9);">${appPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${argPct}%; background: linear-gradient(90deg, #5BBF85, rgba(91,191,133,0.6));"></div>
-      </div>
-      <div class="profile-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span>Putting</span>
-          <span style="font-size: 12px; color: rgba(250,250,250,0.4);">${puttPct.toFixed(1)}%</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 12px; height: 12px; border-radius: 3px; background: ${argColor}; flex-shrink: 0;"></div>
+          <span style="font-size: 13px; color: rgba(250,250,250,0.7); min-width: 100px;">Around Green</span>
+          <span style="font-size: 13px; font-weight: 600; color: rgba(250,250,250,0.9);">${argPct.toFixed(1)}%</span>
         </div>
-        <div class="importance-bar" style="width: ${puttPct}%; background: linear-gradient(90deg, #5A8FA8, rgba(90,143,168,0.6));"></div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 12px; height: 12px; border-radius: 3px; background: ${puttColor}; flex-shrink: 0;"></div>
+          <span style="font-size: 13px; color: rgba(250,250,250,0.7); min-width: 100px;">Putting</span>
+          <span style="font-size: 13px; font-weight: 600; color: rgba(250,250,250,0.9);">${puttPct.toFixed(1)}%</span>
+        </div>
       </div>
     </div>
   `;
