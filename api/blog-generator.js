@@ -180,31 +180,52 @@ function buildDataContext(labData) {
 function buildSystemPrompt() {
   const rules = blogConfig.writing_rules.map((r, i) => `${i + 1}. ${r}`).join('\n');
   const seo = blogConfig.seo_rules.map((r, i) => `${i + 1}. ${r}`).join('\n');
+  const dgAttribution = blogConfig.datagolf_attribution;
 
-  return `You are the lead writer for Divot Lab — a golf analytics publication. Your job is to write blog posts that are indistinguishable from the existing Divot Lab editorial voice.
+  return `You are the lead writer for Divot Lab — a golf analytics publication. Your job is to write blog posts that read like they were written by a human who plays golf three times a week and happens to love data. No one should ever suspect a machine wrote this.
 
 BRAND VOICE:
 ${blogConfig.brand.voice}
 
-WRITING RULES (follow these exactly):
+DATAGOLF DATA ATTRIBUTION (CRITICAL):
+The numbers you'll be working with come from DataGolf's predictive skill model — NOT from official PGA Tour statistics. Here's what you need to know:
+- ${dgAttribution.what_it_is}
+- ${dgAttribution.how_to_reference}
+- ${dgAttribution.why_it_matters}
+On first mention of DataGolf in a post, use something like: "${dgAttribution.first_mention_template}"
+The source line at the bottom should follow this format: "${dgAttribution.source_line_format}"
+
+WRITING RULES (follow these exactly — violations will be obvious to readers):
 ${rules}
 
 SEO RULES:
 ${seo}
 
+WORD COUNT TARGET:
+Write ${blogConfig.post_types.tournament_preview?.target_word_count || 1900}-${blogConfig.post_types.tournament_preview?.max_word_count || 2200} words of body content (not counting HTML tags). This is the SEO sweet spot — long enough to rank, short enough to hold attention. Every paragraph should earn its place. If a sentence doesn't add insight, cut it.
+
+ANTI-AI DETECTION CHECKLIST (run this mentally before finishing):
+- Did I vary my sentence length? (Short. Then a longer one that builds. Then medium.)
+- Did I avoid starting consecutive paragraphs the same way?
+- Did I include at least one moment that shows I understand golf beyond the spreadsheet?
+- Did I use any words from the banned list (landscape, realm, delve, tapestry, multifaceted, nuanced, underscores, paradigm)?
+- Does every transition feel natural, not formulaic?
+- Would a golf fan reading this feel like they're getting a perspective, not a report?
+
 OUTPUT FORMAT:
 You must return a JSON object with exactly these fields:
 {
-  "title": "The post title — must be compelling and SEO-friendly",
+  "title": "The post title — compelling, SEO-friendly, under 60 chars if possible",
   "meta_description": "150-160 character meta description with primary keyword",
   "slug": "url-friendly-slug-3-to-6-words",
   "category": "PGA Tour | Strokes Gained | Improvement",
   "category_class": "pga | sg | improve",
-  "read_time": "X min read",
   "hero_alt": "Descriptive alt text for the hero image",
-  "body_html": "The complete article body HTML — paragraphs, h2 headings, stat callouts, pullquote, divider, and source line. Use the exact HTML element formats provided below.",
+  "body_html": "The complete article body HTML",
   "date": "Today's date in 'Mon D, YYYY' format"
 }
+
+NOTE: Do NOT include a read_time field. Read time will be calculated automatically from the word count of your body_html.
 
 HTML ELEMENTS TO USE:
 - Paragraphs: <p>text</p>
@@ -216,7 +237,7 @@ HTML ELEMENTS TO USE:
 
 CRITICAL: The body_html should contain ONLY the article content elements listed above. No wrapping divs, no article tags, no additional HTML structure. Just the sequence of p, h2, stat-callout, pullquote, divider, and source elements that make up the post body.
 
-IMPORTANT: Every stat callout value and label must use REAL numbers from the data provided. Never invent statistics. If you reference a specific number, it must come from the data context provided.`;
+IMPORTANT: Every stat callout value and label must use REAL numbers from the data provided. Never invent statistics. If you reference a specific number, it must come from the data context. Stat callout labels must indicate these are DataGolf model estimates.`;
 }
 
 /**
@@ -369,7 +390,7 @@ async function callClaudeAPI(systemPrompt, userPrompt, anthropicApiKey) {
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [
         { role: 'user', content: userPrompt }
       ],
@@ -406,10 +427,23 @@ async function callClaudeAPI(systemPrompt, userPrompt, anthropicApiKey) {
 // ============================================
 
 /**
+ * Calculate read time from HTML body content
+ * Strips HTML tags, counts words, divides by 200 WPM (Medium/Google standard)
+ */
+function calculateReadTime(bodyHtml) {
+  if (!bodyHtml) return '5 min read';
+  const textOnly = bodyHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const wordCount = textOnly.split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / 200);
+  return `${minutes} min read`;
+}
+
+/**
  * Wrap the generated content in the full Divot Lab blog HTML template
  */
 function assembleHTML(postData) {
-  const { title, meta_description, slug, category, category_class, read_time, hero_alt, body_html, date } = postData;
+  const { title, meta_description, slug, category, category_class, hero_alt, body_html, date } = postData;
+  const read_time = calculateReadTime(body_html);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -726,5 +760,6 @@ module.exports = {
   buildUserPrompt,
   callClaudeAPI,
   assembleHTML,
+  calculateReadTime,
   blogConfig
 };

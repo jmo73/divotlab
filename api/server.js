@@ -953,8 +953,10 @@ app.post('/api/generate-blog', async (req, res) => {
 
     // 6. Store as draft
     const draftId = postData.slug || `draft-${Date.now()}`;
+    const calculatedReadTime = blogGenerator.calculateReadTime(postData.body_html);
     blogDrafts.set(draftId, {
       ...postData,
+      read_time: calculatedReadTime,
       html: fullHTML,
       type: type,
       generated_at: new Date().toISOString(),
@@ -973,7 +975,7 @@ app.post('/api/generate-blog', async (req, res) => {
         slug: postData.slug,
         category: postData.category,
         date: postData.date,
-        read_time: postData.read_time,
+        read_time: calculatedReadTime,
         meta_description: postData.meta_description,
         preview_url: `/api/blog-drafts/${draftId}`,
         generated_at: new Date().toISOString()

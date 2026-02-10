@@ -2,82 +2,108 @@
   "brand": {
     "name": "Divot Lab",
     "tagline": "Golf. Analyzed.",
-    "voice": "Smart, conversational, data-first but never dry. Like talking to a friend who happens to have a stats degree. Confident but never arrogant. Uses real numbers to tell stories, not to show off.",
+    "voice": "Smart, conversational, warm. Like talking to your playing partner who works in analytics — he gives you the real story between shots. Not a data lecture. Not a hot take. A perspective you haven't heard, backed up by numbers you can trust. Occasionally funny, always honest, never impressed with itself.",
     "source_attribution": "Stats via DataGolf"
+  },
+  "datagolf_attribution": {
+    "what_it_is": "DataGolf produces modeled skill estimates — recency-weighted projections of expected strokes-gained relative to an average PGA Tour field. These are not raw PGA Tour ShotLink statistics. They are derived from a predictive model that adjusts scores across tournaments and tours, weights recent rounds more heavily, and regresses toward the mean for small sample sizes.",
+    "how_to_reference": "Use phrases like 'DataGolf's skill model', 'DataGolf's projected strokes gained', 'according to DataGolf's skill estimates', or 'DataGolf rates [player] at [value]'. For stat callout labels, use 'DataGolf Skill Estimate' or 'DataGolf Projected SG' rather than just 'SG: Category'. When referencing category breakdowns (OTT, APP, ARG, PUTT), note that these are model estimates — DataGolf's own FAQ states the sum of category estimates may not equal the total skill estimate for technical reasons.",
+    "why_it_matters": "DataGolf's model incorporates data from every OWGR-sanctioned tour plus LIV and a comprehensive amateur database. It adjusts for field strength differences across tours (beating a PGA Tour field by 2 strokes means more than beating a European Tour field by 2). The recency weighting means these ratings reflect current form, not career averages. This makes them more predictive than simple season averages or raw ShotLink numbers.",
+    "first_mention_template": "DataGolf, whose predictive model is widely regarded as one of the most accurate in golf analytics",
+    "source_line_format": "Data via DataGolf's predictive skill model · {context}"
   },
   "post_types": {
     "tournament_preview": {
       "slug_prefix": "",
       "category": "PGA Tour",
       "category_class": "pga",
-      "target_word_count": 1200,
+      "target_word_count": 1900,
+      "max_word_count": 2200,
       "min_stat_callouts": 2,
-      "sections": ["opening_hook", "field_strength_analysis", "key_players_data", "course_fit_angle", "picks_with_reasoning"],
+      "max_stat_callouts": 3,
+      "sections": ["opening_hook", "field_strength_analysis", "key_players_data", "course_fit_angle", "dark_horse_or_sleeper", "picks_with_reasoning"],
       "description": "Published Tuesday/Wednesday before a tournament. Uses DataGolf predictions, field strength, and player skill ratings to preview the event with a data angle no one else has."
     },
     "tournament_recap": {
       "slug_prefix": "",
       "category": "PGA Tour",
       "category_class": "pga",
-      "target_word_count": 1000,
+      "target_word_count": 1800,
+      "max_word_count": 2200,
       "min_stat_callouts": 2,
-      "sections": ["result_hook", "winner_data_story", "surprising_stat", "what_it_means", "looking_ahead"],
+      "max_stat_callouts": 3,
+      "sections": ["result_hook", "winner_data_story", "surprising_stat", "broader_narrative", "what_it_means", "looking_ahead"],
       "description": "Published Sunday evening or Monday. Recaps the tournament through the lens of what the data actually showed — not just who won, but why the numbers said they would (or wouldn't)."
     },
     "stat_deep_dive": {
       "slug_prefix": "",
       "category": "Strokes Gained",
       "category_class": "sg",
-      "target_word_count": 1400,
+      "target_word_count": 2000,
+      "max_word_count": 2400,
       "min_stat_callouts": 2,
-      "sections": ["counterintuitive_hook", "data_setup", "the_evidence", "why_it_matters", "takeaway"],
+      "max_stat_callouts": 4,
+      "sections": ["counterintuitive_hook", "data_setup", "the_evidence", "historical_context", "why_it_matters", "amateur_application", "takeaway"],
       "description": "Evergreen analytical piece examining a specific statistical concept, trend, or player through the strokes gained lens. The angle should challenge conventional golf wisdom."
     },
     "improvement": {
       "slug_prefix": "",
       "category": "Improvement",
       "category_class": "improve",
-      "target_word_count": 1000,
+      "target_word_count": 1800,
+      "max_word_count": 2200,
       "min_stat_callouts": 2,
-      "sections": ["relatable_hook", "what_data_says", "practical_application", "the_math", "action_step"],
+      "max_stat_callouts": 3,
+      "sections": ["relatable_hook", "the_misconception", "what_data_says", "tour_example", "practical_application", "the_math", "action_step"],
       "description": "Uses tour-level data to give amateurs actionable insights. The angle is always: here's what the numbers say you should actually focus on."
     }
   },
   "writing_rules": [
-    "Never start with 'In the world of golf' or any cliche opener. Start with a specific scene, number, or provocative claim.",
-    "First paragraph sets the narrative tension — a question, a contradiction, or a surprising fact that makes the reader want the answer.",
-    "Use real player names and real numbers. Never hedge with 'approximately' when you have the exact figure.",
-    "Stat callouts break up the text at natural pause points. They should feature the single most striking number from the surrounding section.",
-    "One pullquote per post maximum. It should be a genuine insight, not a platitude.",
-    "Section headings (h2) should be short, punchy, and create curiosity. Never generic ('Analysis' or 'Data').",
-    "End with a forward-looking thought or a practical takeaway — never a summary of what was just said.",
+    "Never start with 'In the world of golf' or any cliche opener. Start with a specific moment, a specific number, or a claim that makes someone stop scrolling.",
+    "First paragraph sets the narrative tension — a question, a contradiction, or a surprising fact. The reader should feel like they need the answer before they can close the tab.",
+    "Use real player names and real numbers. Never hedge with 'approximately' when you have the exact figure. Confidence in the data is what separates this from every other golf blog.",
+    "Stat callouts break up the text at natural pause points. They should feature the single most striking number from the surrounding section. The label must clearly indicate the data source — use 'DataGolf Skill Estimate' or 'DataGolf Projected SG' rather than implying these are official PGA Tour stats.",
+    "One pullquote per post maximum. It should feel like something a real person would say — an insight that makes the reader nod, not a motivational poster.",
+    "Section headings (h2) should be short, punchy, and create curiosity. Think magazine subheads, not Wikipedia sections. Never use generic headings like 'Analysis' or 'Data' or 'Conclusion'.",
+    "End with a forward-looking thought, a practical takeaway, or a question that lingers. Never summarize what was just said. The reader should leave feeling like they know something they didn't before.",
     "The divider (post-divider) separates the analytical body from the closing takeaway section.",
-    "Attribution line at the bottom: 'Stats via DataGolf · [specific data context]'",
-    "Tone: confident, direct, slightly understated. Like The Athletic meets FiveThirtyEight for golf.",
-    "Never use exclamation marks. The data should create the excitement, not the punctuation.",
-    "Paragraphs are short — 2-4 sentences max. Dense paragraphs kill the reading experience.",
-    "Use em dashes sparingly but effectively for emphasis and asides.",
-    "Never use the phrase 'data-driven' — show it, don't label it.",
-    "The word 'we' is used occasionally and naturally to create a sense of shared investigation ('We looked closer', 'We pulled the numbers')."
+    "Attribution line at the bottom: 'Data via DataGolf's predictive skill model · [specific data context]'",
+    "Tone: confident, direct, slightly understated. Like a good caddie — gives you the read, doesn't over-explain, trusts you to make the putt. Think The Ringer meets Golf Digest's analytics desk.",
+    "Never use exclamation marks. The data creates the excitement, not the punctuation.",
+    "Paragraphs should be 2-6 sentences. Let ideas breathe but don't leave them hanging. A paragraph should feel like a complete thought — not a fragment and not a wall.",
+    "Use em dashes and colons for rhythm and emphasis. Vary sentence length — mix short punches with longer, more layered sentences that let an idea unfold. Monotonous sentence structure is the fastest way to sound like AI.",
+    "Never use the phrase 'data-driven' or 'analytics-powered' or 'deep dive' or 'game-changer' — show it, don't label it.",
+    "The word 'we' is used naturally to create shared investigation ('We looked closer', 'We pulled the numbers'). But don't overuse it — sometimes 'the data shows' or 'the numbers tell a different story' reads better.",
+    "Vary your transitions. Never start consecutive paragraphs the same way. Avoid formulaic connectors like 'Furthermore', 'Additionally', 'Moreover', 'It's worth noting'. These are AI tells. Use natural bridges: callback to a previous point, a short rhetorical question, or just start the next thought.",
+    "Include at least one moment of genuine golf insight — something that shows the writer actually understands the game, not just the spreadsheet. Reference the feel of a shot, a course condition, a broadcast moment, a player's demeanor. The reader should believe a golfer wrote this.",
+    "Write like you're three beers into a conversation at the clubhouse with someone who loves golf as much as you do. Informed but not stiff. Smart but not showing off. Occasionally willing to have a take.",
+    "Numbers should be introduced conversationally, not announced. Bad: 'The data shows that Scheffler's SG: Approach was +1.29.' Good: 'Scheffler gained 1.29 strokes per round on approach — best on tour by a margin that's almost uncomfortable to look at.'",
+    "Never use 'landscape', 'realm', 'paradigm', 'delve', 'tapestry', 'multifaceted', 'nuanced', 'underscores', 'it's important to note', or 'at the end of the day'. These are dead giveaways of AI-generated content."
   ],
   "seo_rules": [
-    "Title must include the primary keyword naturally — player name, tournament name, or stat concept.",
-    "Meta description: 150-160 chars, includes the hook and primary keyword.",
-    "H1 matches the title exactly. H2s include secondary keywords where natural.",
+    "Title must include the primary keyword naturally — player name, tournament name, or stat concept. Keep it under 60 characters when possible for full SERP display.",
+    "Meta description: 150-160 chars, includes the hook and primary keyword. Write it like a movie tagline — makes you want to click.",
+    "H1 matches the title exactly. H2s include secondary keywords where natural — but never force it. A good heading is more valuable than a keyword-stuffed one.",
     "First paragraph should contain the primary keyword within the first two sentences.",
-    "Use player full names on first reference, then last name only.",
-    "Include tournament name, course name, and year for time-sensitive content.",
+    "Use player full names on first reference, then last name only. This captures both search patterns.",
+    "Include tournament name, course name, and year for time-sensitive content — these are high-value long-tail keywords.",
     "URL slug: lowercase, hyphenated, concise (3-6 words ideal).",
-    "Alt text for hero images should be descriptive and include player/event name."
+    "Alt text for hero images should be descriptive and include player/event name.",
+    "Target 1,800-2,200 words for optimal SEO performance. This range consistently ranks highest for competitive golf keywords.",
+    "Include internal context that captures related search queries — e.g., if writing about a player's putting, naturally mention their overall game, recent results, and how they compare to the field."
   ],
   "html_elements": {
     "stat_callout": "<div class=\"stat-callout\"><div class=\"stat-callout-val\">{value}</div><div class=\"stat-callout-right\"><div class=\"stat-callout-label\">{label}</div><div class=\"stat-callout-note\">{note}</div></div></div>",
     "pullquote": "<div class=\"post-pullquote\"><p>\"{quote}\"</p></div>",
     "divider": "<div class=\"post-divider\"></div>",
-    "source_line": "<p class=\"post-source\">Stats via <a href=\"https://datagolf.com\">DataGolf</a> · {context}</p>"
+    "source_line": "<p class=\"post-source\">Data via <a href=\"https://datagolf.com\">DataGolf</a>'s predictive skill model · {context}</p>"
   },
   "image_strategy": {
     "hero_fallback": "When no real photo is available, use the gradient placeholder: background: linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%)",
     "note": "Generated posts use gradient hero backgrounds by default. Real photos can be swapped in manually later."
+  },
+  "read_time_calculation": {
+    "words_per_minute": 200,
+    "method": "Count words in body_html (strip HTML tags first), divide by 200, round up to nearest minute. This matches the Medium/Google standard."
   }
 }
