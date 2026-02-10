@@ -1,0 +1,83 @@
+{
+  "brand": {
+    "name": "Divot Lab",
+    "tagline": "Golf. Analyzed.",
+    "voice": "Smart, conversational, data-first but never dry. Like talking to a friend who happens to have a stats degree. Confident but never arrogant. Uses real numbers to tell stories, not to show off.",
+    "source_attribution": "Stats via DataGolf"
+  },
+  "post_types": {
+    "tournament_preview": {
+      "slug_prefix": "",
+      "category": "PGA Tour",
+      "category_class": "pga",
+      "target_word_count": 1200,
+      "min_stat_callouts": 2,
+      "sections": ["opening_hook", "field_strength_analysis", "key_players_data", "course_fit_angle", "picks_with_reasoning"],
+      "description": "Published Tuesday/Wednesday before a tournament. Uses DataGolf predictions, field strength, and player skill ratings to preview the event with a data angle no one else has."
+    },
+    "tournament_recap": {
+      "slug_prefix": "",
+      "category": "PGA Tour",
+      "category_class": "pga",
+      "target_word_count": 1000,
+      "min_stat_callouts": 2,
+      "sections": ["result_hook", "winner_data_story", "surprising_stat", "what_it_means", "looking_ahead"],
+      "description": "Published Sunday evening or Monday. Recaps the tournament through the lens of what the data actually showed — not just who won, but why the numbers said they would (or wouldn't)."
+    },
+    "stat_deep_dive": {
+      "slug_prefix": "",
+      "category": "Strokes Gained",
+      "category_class": "sg",
+      "target_word_count": 1400,
+      "min_stat_callouts": 2,
+      "sections": ["counterintuitive_hook", "data_setup", "the_evidence", "why_it_matters", "takeaway"],
+      "description": "Evergreen analytical piece examining a specific statistical concept, trend, or player through the strokes gained lens. The angle should challenge conventional golf wisdom."
+    },
+    "improvement": {
+      "slug_prefix": "",
+      "category": "Improvement",
+      "category_class": "improve",
+      "target_word_count": 1000,
+      "min_stat_callouts": 2,
+      "sections": ["relatable_hook", "what_data_says", "practical_application", "the_math", "action_step"],
+      "description": "Uses tour-level data to give amateurs actionable insights. The angle is always: here's what the numbers say you should actually focus on."
+    }
+  },
+  "writing_rules": [
+    "Never start with 'In the world of golf' or any cliche opener. Start with a specific scene, number, or provocative claim.",
+    "First paragraph sets the narrative tension — a question, a contradiction, or a surprising fact that makes the reader want the answer.",
+    "Use real player names and real numbers. Never hedge with 'approximately' when you have the exact figure.",
+    "Stat callouts break up the text at natural pause points. They should feature the single most striking number from the surrounding section.",
+    "One pullquote per post maximum. It should be a genuine insight, not a platitude.",
+    "Section headings (h2) should be short, punchy, and create curiosity. Never generic ('Analysis' or 'Data').",
+    "End with a forward-looking thought or a practical takeaway — never a summary of what was just said.",
+    "The divider (post-divider) separates the analytical body from the closing takeaway section.",
+    "Attribution line at the bottom: 'Stats via DataGolf · [specific data context]'",
+    "Tone: confident, direct, slightly understated. Like The Athletic meets FiveThirtyEight for golf.",
+    "Never use exclamation marks. The data should create the excitement, not the punctuation.",
+    "Paragraphs are short — 2-4 sentences max. Dense paragraphs kill the reading experience.",
+    "Use em dashes sparingly but effectively for emphasis and asides.",
+    "Never use the phrase 'data-driven' — show it, don't label it.",
+    "The word 'we' is used occasionally and naturally to create a sense of shared investigation ('We looked closer', 'We pulled the numbers')."
+  ],
+  "seo_rules": [
+    "Title must include the primary keyword naturally — player name, tournament name, or stat concept.",
+    "Meta description: 150-160 chars, includes the hook and primary keyword.",
+    "H1 matches the title exactly. H2s include secondary keywords where natural.",
+    "First paragraph should contain the primary keyword within the first two sentences.",
+    "Use player full names on first reference, then last name only.",
+    "Include tournament name, course name, and year for time-sensitive content.",
+    "URL slug: lowercase, hyphenated, concise (3-6 words ideal).",
+    "Alt text for hero images should be descriptive and include player/event name."
+  ],
+  "html_elements": {
+    "stat_callout": "<div class=\"stat-callout\"><div class=\"stat-callout-val\">{value}</div><div class=\"stat-callout-right\"><div class=\"stat-callout-label\">{label}</div><div class=\"stat-callout-note\">{note}</div></div></div>",
+    "pullquote": "<div class=\"post-pullquote\"><p>\"{quote}\"</p></div>",
+    "divider": "<div class=\"post-divider\"></div>",
+    "source_line": "<p class=\"post-source\">Stats via <a href=\"https://datagolf.com\">DataGolf</a> · {context}</p>"
+  },
+  "image_strategy": {
+    "hero_fallback": "When no real photo is available, use the gradient placeholder: background: linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%)",
+    "note": "Generated posts use gradient hero backgrounds by default. Real photos can be swapped in manually later."
+  }
+}

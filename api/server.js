@@ -865,6 +865,150 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ============================================
+// BLOG GENERATOR ENDPOINTS
+// ============================================
+const blogGenerator = require('./blog-generator');
+
+// In-memory store for draft posts (persists during server lifecycle)
+const blogDrafts = new Map();
+
+// ENDPOINT: Generate a blog post
+app.post('/api/generate-blog', async (req, res) => {
+  try {
+    const { type = 'tournament_preview', topic } = req.body || {};
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    
+    if (!anthropicKey) {
+      return res.status(500).json({ success: false, error: 'ANTHROPIC_API_KEY not configured' });
+    }
+    
+    if (!blogGenerator.blogConfig.post_types[type]) {
+      return res.status(400).json({ 
+        success: false, 
+        error: `Invalid post type: ${type}. Valid types: ${Object.keys(blogGenerator.blogConfig.post_types).join(', ')}` 
+      });
+    }
+
+    console.log(`📝 Generating blog post: type=${type}, topic=${topic || 'auto'}`);
+
+    // 1. Fetch fresh DataGolf data
+    const rawData = await blogGenerator.fetchTournamentData(null, DATAGOLF_API_KEY);
+    
+    // 2. Build structured data context
+    const dataContext = blogGenerator.buildDataContext(rawData);
+    console.log(`✓ Data context built: ${dataContext.tournament.name}, ${dataContext.field_strength.total_players} players`);
+
+    // 3. Build prompts
+    const systemPrompt = blogGenerator.buildSystemPrompt();
+    const userPrompt = blogGenerator.buildUserPrompt(type, dataContext, topic);
+
+    // 4. Call Claude API
+    console.log('🤖 Calling Claude API...');
+    const postData = await blogGenerator.callClaudeAPI(systemPrompt, userPrompt, anthropicKey);
+    console.log(`✓ Generated: "${postData.title}" (${postData.slug})`);
+
+    // 5. Assemble full HTML
+    const fullHTML = blogGenerator.assembleHTML(postData);
+
+    // 6. Store as draft
+    const draftId = postData.slug || `draft-${Date.now()}`;
+    blogDrafts.set(draftId, {
+      ...postData,
+      html: fullHTML,
+      type: type,
+      generated_at: new Date().toISOString(),
+      status: 'draft',
+      data_context: {
+        tournament: dataContext.tournament.name,
+        field_size: dataContext.tournament.field_size
+      }
+    });
+
+    res.json({
+      success: true,
+      draft: {
+        id: draftId,
+        title: postData.title,
+        slug: postData.slug,
+        category: postData.category,
+        date: postData.date,
+        read_time: postData.read_time,
+        meta_description: postData.meta_description,
+        preview_url: `/api/blog-drafts/${draftId}`,
+        generated_at: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Blog generation error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ENDPOINT: List all drafts
+app.get('/api/blog-drafts', (req, res) => {
+  const drafts = [];
+  for (const [id, draft] of blogDrafts) {
+    drafts.push({
+      id,
+      title: draft.title,
+      slug: draft.slug,
+      category: draft.category,
+      date: draft.date,
+      type: draft.type,
+      status: draft.status,
+      generated_at: draft.generated_at,
+      preview_url: `/api/blog-drafts/${id}`
+    });
+  }
+  // Newest first
+  drafts.sort((a, b) => new Date(b.generated_at) - new Date(a.generated_at));
+  res.json({ success: true, drafts });
+});
+
+// ENDPOINT: Preview a specific draft (returns full HTML page)
+app.get('/api/blog-drafts/:slug', (req, res) => {
+  const draft = blogDrafts.get(req.params.slug);
+  if (!draft) {
+    return res.status(404).json({ success: false, error: 'Draft not found' });
+  }
+  
+  // If ?json=true, return metadata; otherwise return the full HTML for preview
+  if (req.query.json === 'true') {
+    return res.json({
+      success: true,
+      draft: {
+        id: req.params.slug,
+        title: draft.title,
+        slug: draft.slug,
+        category: draft.category,
+        date: draft.date,
+        meta_description: draft.meta_description,
+        body_html: draft.body_html,
+        status: draft.status,
+        generated_at: draft.generated_at
+      }
+    });
+  }
+  
+  // Return full HTML for browser preview
+  res.setHeader('Content-Type', 'text/html');
+  res.send(draft.html);
+});
+
+// ENDPOINT: Download draft as HTML file
+app.get('/api/blog-drafts/:slug/download', (req, res) => {
+  const draft = blogDrafts.get(req.params.slug);
+  if (!draft) {
+    return res.status(404).json({ success: false, error: 'Draft not found' });
+  }
+  
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Disposition', `attachment; filename="${draft.slug}.html"`);
+  res.send(draft.html);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`
@@ -914,6 +1058,12 @@ app.listen(PORT, () => {
   GET  /api/cache-status
   POST /api/clear-cache
   GET  /health
+
+📝 BLOG GENERATOR:
+  POST /api/generate-blog           (Claude API)
+  GET  /api/blog-drafts             (list drafts)
+  GET  /api/blog-drafts/:slug       (preview draft)
+  GET  /api/blog-drafts/:slug/download (download HTML)
 
 ⚠️  API Key secured server-side
 🏌️  PGA Tour filter: Uses primary_tour === "PGA"
