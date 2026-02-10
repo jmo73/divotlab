@@ -24,92 +24,101 @@ const blogConfig = require('./blog-config.json');
 // ============================================
 
 /**
- * Fetch current tournament context from DataGolf via our existing API proxy
+ * Fetch current tournament context by reusing the internal /api/lab-data endpoint.
+ * This ensures we get the same PGA-filtered, properly-matched data that The Lab page uses.
+ * 
+ * When called from within server.js, we pass the labDataFetcher function directly
+ * to avoid an HTTP round-trip to ourselves.
  */
-async function fetchTournamentData(apiBaseUrl, dgApiKey) {
-  const endpoints = {
-    skillRatings: `/preds/skill-ratings?display=value&file_format=json&key=${dgApiKey}`,
-    preTournament: `/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${dgApiKey}`,
-    fieldUpdates: `/field-updates?tour=pga&file_format=json&key=${dgApiKey}`,
-    schedule: `/get-schedule?tour=pga&season=2026&file_format=json&key=${dgApiKey}`
-  };
-
-  const DG_BASE = 'https://feeds.datagolf.com';
-  
-  const results = {};
-  for (const [key, endpoint] of Object.entries(endpoints)) {
-    try {
-      const response = await fetch(`${DG_BASE}${endpoint}`);
-      if (response.ok) {
-        results[key] = await response.json();
-      } else {
-        console.warn(`⚠️ Failed to fetch ${key}: ${response.status}`);
-        results[key] = null;
-      }
-    } catch (err) {
-      console.warn(`⚠️ Error fetching ${key}:`, err.message);
-      results[key] = null;
-    }
+async function fetchTournamentData(labDataFetcher) {
+  try {
+    const data = await labDataFetcher();
+    return data;
+  } catch (err) {
+    console.error('❌ Failed to fetch lab data for blog generator:', err.message);
+    return null;
   }
-
-  return results;
 }
 
 /**
- * Process raw DataGolf data into a structured context object for the prompt
+ * Process lab-data composite into a structured context object for the prompt.
+ * Input is the already-processed data from /api/lab-data (PGA-filtered, field-matched).
  */
-function buildDataContext(rawData) {
-  const { skillRatings, preTournament, fieldUpdates, schedule } = rawData;
+function buildDataContext(labData) {
+  if (!labData) {
+    return {
+      tournament: { name: 'Unknown', course: '', field_size: 0 },
+      field_strength: { elite_count: 0, top_tier_count: 0, avg_sg: '0', total_players: 0 },
+      top10_by_skill: [],
+      top10_by_odds: [],
+      category_leaders: {},
+      global_top10: [],
+      predictions_event: null
+    };
+  }
 
-  // Current tournament info
-  const eventName = fieldUpdates?.event_name || preTournament?.event_name || 'Unknown Event';
-  const currentEvent = schedule?.schedule?.find(e => e.event_name === eventName) || {};
-  const field = fieldUpdates?.field || [];
+  const players = labData.players || [];
+  const predictions = labData.predictions || [];
+  const tournament = labData.tournament || {};
+  const fieldList = labData.field_list || [];
+  const predictionEventName = labData.prediction_event_name || null;
 
-  // Top players by skill rating (PGA Tour filtered)
-  const allPlayers = skillRatings?.players || skillRatings?.skill_ratings || [];
-  const pgaPlayers = allPlayers
-    .filter(p => p.primary_tour === 'pga' || p.skill_estimate > 0)
-    .sort((a, b) => (b.sg_total || b.skill_estimate || 0) - (a.sg_total || a.skill_estimate || 0));
-
-  // Predictions sorted by win probability
-  const predictions = (preTournament?.baseline_history_fit || preTournament?.predictions || [])
-    .sort((a, b) => (b.win || 0) - (a.win || 0));
-
-  // Match field players to skill data
-  const fieldWithSkills = field.map(fp => {
-    const skillData = pgaPlayers.find(p => p.dg_id === fp.dg_id);
+  // Build field with skills by matching field_list players to skill data
+  const fieldWithSkills = fieldList.map(fp => {
+    const skillData = players.find(p => p.dg_id === fp.dg_id);
     const predData = predictions.find(p => p.dg_id === fp.dg_id);
     return {
       name: fp.player_name,
-      country: fp.country,
+      country: fp.country || (skillData ? skillData.country : ''),
       dg_id: fp.dg_id,
-      sg_total: skillData?.sg_total || null,
-      sg_ott: skillData?.sg_ott || null,
-      sg_app: skillData?.sg_app || null,
-      sg_arg: skillData?.sg_arg || null,
-      sg_putt: skillData?.sg_putt || null,
-      win_prob: predData?.win || null,
-      top5_prob: predData?.top_5 || null,
-      top10_prob: predData?.top_10 || null,
-      make_cut: predData?.make_cut || null
+      sg_total: skillData?.sg_total ?? null,
+      sg_ott: skillData?.sg_ott ?? null,
+      sg_app: skillData?.sg_app ?? null,
+      sg_arg: skillData?.sg_arg ?? null,
+      sg_putt: skillData?.sg_putt ?? null,
+      win_prob: predData?.win ?? null,
+      top5_prob: predData?.top_5 ?? null,
+      top10_prob: predData?.top_10 ?? null,
+      make_cut: predData?.make_cut ?? null
     };
   }).filter(p => p.sg_total !== null);
 
+  // If field_list is empty, fall back to matching predictions to players
+  let effectiveField = fieldWithSkills;
+  if (effectiveField.length === 0 && predictions.length > 0) {
+    effectiveField = predictions.map(pred => {
+      const skillData = players.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
+      return {
+        name: pred.player_name,
+        country: skillData?.country || '',
+        dg_id: pred.dg_id,
+        sg_total: skillData?.sg_total ?? null,
+        sg_ott: skillData?.sg_ott ?? null,
+        sg_app: skillData?.sg_app ?? null,
+        sg_arg: skillData?.sg_arg ?? null,
+        sg_putt: skillData?.sg_putt ?? null,
+        win_prob: pred.win ?? null,
+        top5_prob: pred.top_5 ?? null,
+        top10_prob: pred.top_10 ?? null,
+        make_cut: pred.make_cut ?? null
+      };
+    }).filter(p => p.sg_total !== null);
+  }
+
   // Calculate field strength
-  const eliteCount = fieldWithSkills.filter(p => p.sg_total >= 1.5).length;
-  const topTierCount = fieldWithSkills.filter(p => p.sg_total >= 1.0).length;
-  const avgSG = fieldWithSkills.length > 0
-    ? fieldWithSkills.reduce((sum, p) => sum + p.sg_total, 0) / fieldWithSkills.length
+  const eliteCount = effectiveField.filter(p => p.sg_total >= 1.5).length;
+  const topTierCount = effectiveField.filter(p => p.sg_total >= 1.0).length;
+  const avgSG = effectiveField.length > 0
+    ? effectiveField.reduce((sum, p) => sum + p.sg_total, 0) / effectiveField.length
     : 0;
 
   // Top 10 by skill
-  const top10bySkill = fieldWithSkills
+  const top10bySkill = [...effectiveField]
     .sort((a, b) => b.sg_total - a.sg_total)
     .slice(0, 10);
 
   // Top 10 favorites by win probability  
-  const top10byOdds = fieldWithSkills
+  const top10byOdds = [...effectiveField]
     .filter(p => p.win_prob != null)
     .sort((a, b) => b.win_prob - a.win_prob)
     .slice(0, 10);
@@ -118,41 +127,45 @@ function buildDataContext(rawData) {
   const sgCategories = ['sg_ott', 'sg_app', 'sg_arg', 'sg_putt'];
   const categoryLeaders = {};
   for (const cat of sgCategories) {
-    const sorted = [...fieldWithSkills].filter(p => p[cat] != null).sort((a, b) => b[cat] - a[cat]);
+    const sorted = [...effectiveField].filter(p => p[cat] != null).sort((a, b) => b[cat] - a[cat]);
     categoryLeaders[cat] = sorted.slice(0, 5).map(p => ({ name: p.name, value: p[cat] }));
   }
 
   // Top 10 overall PGA Tour (not field-specific)
-  const globalTop10 = pgaPlayers.slice(0, 10).map(p => ({
-    name: p.player_name,
-    sg_total: p.sg_total,
-    sg_ott: p.sg_ott,
-    sg_app: p.sg_app,
-    sg_arg: p.sg_arg,
-    sg_putt: p.sg_putt
-  }));
+  const globalTop10 = [...players]
+    .filter(p => p.sg_total != null)
+    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+    .slice(0, 10)
+    .map(p => ({
+      name: p.player_name,
+      sg_total: p.sg_total,
+      sg_ott: p.sg_ott,
+      sg_app: p.sg_app,
+      sg_arg: p.sg_arg,
+      sg_putt: p.sg_putt
+    }));
 
   return {
     tournament: {
-      name: eventName,
-      course: currentEvent.course || fieldUpdates?.course || '',
-      start_date: currentEvent.start_date || null,
-      end_date: currentEvent.end_date || null,
-      field_size: field.length,
-      current_round: fieldUpdates?.current_round || 0,
-      purse: currentEvent.purse || null
+      name: tournament.event_name || 'Unknown Event',
+      course: tournament.course || '',
+      start_date: tournament.start_date || null,
+      end_date: tournament.end_date || null,
+      field_size: tournament.field_size || effectiveField.length,
+      current_round: tournament.current_round || 0,
+      purse: null
     },
     field_strength: {
       elite_count: eliteCount,
       top_tier_count: topTierCount,
       avg_sg: avgSG.toFixed(3),
-      total_players: fieldWithSkills.length
+      total_players: effectiveField.length
     },
     top10_by_skill: top10bySkill,
     top10_by_odds: top10byOdds,
     category_leaders: categoryLeaders,
     global_top10: globalTop10,
-    predictions_event: preTournament?.event_name || null
+    predictions_event: predictionEventName
   };
 }
 

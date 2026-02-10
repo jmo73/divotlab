@@ -892,8 +892,48 @@ app.post('/api/generate-blog', async (req, res) => {
 
     console.log(`📝 Generating blog post: type=${type}, topic=${topic || 'auto'}`);
 
-    // 1. Fetch fresh DataGolf data
-    const rawData = await blogGenerator.fetchTournamentData(null, DATAGOLF_API_KEY);
+    // 1. Fetch data using the same pipeline as /api/lab-data
+    //    This ensures PGA filtering, field matching, and data structure are identical
+    const labDataFetcher = async () => {
+      const [skillRatings, preTournament, fieldUpdates, schedule] = await Promise.all([
+        fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
+        fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`),
+        fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
+        fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+      ]);
+
+      const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
+      const pgaPlayers = filterPGATourOnly(allPlayers);
+      const eventName = fieldUpdates.event_name || preTournament.event_name;
+      const currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || {};
+      const predictionEventName = preTournament.event_name || null;
+      const fieldList = (fieldUpdates.field || []).map(p => ({
+        dg_id: p.dg_id,
+        player_name: p.player_name,
+        country: p.country || '',
+        am: p.am || 0
+      }));
+
+      return {
+        players: pgaPlayers,
+        predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
+        prediction_event_name: predictionEventName,
+        field_list: fieldList,
+        tournament: {
+          event_id: fieldUpdates.event_id || currentEvent.event_id,
+          event_name: eventName || 'Upcoming Tournament',
+          course: currentEvent.course || fieldUpdates.course || '',
+          field_size: fieldUpdates.field?.length || 0,
+          current_round: fieldUpdates.current_round || 0,
+          start_date: currentEvent.start_date || null,
+          end_date: currentEvent.end_date || null,
+          status: currentEvent.status || 'unknown',
+          event_completed: fieldUpdates.event_completed || false
+        }
+      };
+    };
+
+    const rawData = await blogGenerator.fetchTournamentData(labDataFetcher);
     
     // 2. Build structured data context
     const dataContext = blogGenerator.buildDataContext(rawData);
