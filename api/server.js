@@ -1118,18 +1118,21 @@ app.get('/api/blog-posts/:slug/read-next', (req, res) => {
   const current = blogRegistry.posts.find(p => p.slug === currentSlug);
   const limit = parseInt(req.query.limit) || 2;
   
-  // Strategy: prioritize different category, then most recent
+  // Always exclude current slug, even if it's not in the registry yet
   let candidates = blogRegistry.posts
     .filter(p => p.slug !== currentSlug)
     .sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso));
   
-  // Try to get at least one from a different category
-  const diffCategory = candidates.filter(p => current && p.category_class !== current.category_class);
-  const sameCategory = candidates.filter(p => current && p.category_class === current.category_class);
-  
+  // If we know the current post's category, diversify picks
   let picks = [];
-  if (diffCategory.length > 0) picks.push(diffCategory[0]);
-  if (sameCategory.length > 0) picks.push(sameCategory[0]);
+  if (current) {
+    const diffCategory = candidates.filter(p => p.category_class !== current.category_class);
+    const sameCategory = candidates.filter(p => p.category_class === current.category_class);
+    if (diffCategory.length > 0) picks.push(diffCategory[0]);
+    if (sameCategory.length > 0) picks.push(sameCategory[0]);
+  }
+  
+  // Fill remaining slots with most recent candidates not already picked
   if (picks.length < limit) {
     const remaining = candidates.filter(p => !picks.find(pk => pk.slug === p.slug));
     picks.push(...remaining.slice(0, limit - picks.length));

@@ -612,6 +612,15 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .rn-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1); }
 .rn-card:hover::after { transform:scaleX(1); }
 .rn-img { height:150px; position:relative; overflow:hidden; }
+.rn-img-fallback {
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+  background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%);
+}
+.rn-img-fallback svg { width:44px; height:44px; opacity:.3; }
+.rn-fallback-cat {
+  font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(250,250,250,.28);
+}
 .rn-img-bg { position:absolute; inset:0; }
 .rn-card:nth-child(1) .rn-img-bg { background:linear-gradient(140deg, #0f1520 0%, #162028 60%, #0a0a0a 100%); }
 .rn-card:nth-child(2) .rn-img-bg { background:linear-gradient(140deg, #1a140f 0%, #241a15 60%, #0a0a0a 100%); }
@@ -814,7 +823,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
             if (p.hero_image) {
               imgHTML = '<div class="rn-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>';
             } else {
-              imgHTML = '<div class="rn-img" style="background:linear-gradient(140deg,#0f1a16 0%,#162420 50%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;"><div style="opacity:.3;">' + logoSVG + '</div></div>';
+              imgHTML = '<div class="rn-img"><div class="rn-img-fallback">' + logoSVG + '<span class="rn-fallback-cat">' + esc(p.category) + '</span></div></div>';
             }
             return '<a href="/' + p.slug + '" style="text-decoration:none;color:inherit;"><div class="rn-card">' +
               imgHTML +
