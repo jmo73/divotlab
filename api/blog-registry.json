@@ -58,7 +58,7 @@
     },
     {
       "slug": "scheffler-pebble-beach-field-power-advantage",
-      "title": "Scottie Scheffler Owns Pebble Beach: Why This Field Setup Favors Power",
+      "title": "Tournament Preview: Scottie Scheffler and Pebble Beach - Why This Field Setup Favors Power",
       "category": "PGA Tour",
       "category_class": "pga",
       "date": "Feb 11, 2026",
@@ -68,7 +68,7 @@
       "hero_image": "/pebble_beach.jpg",
       "hero_alt": "Pebble Beach Holes 5-6",
       "hero_credit": "krh006",
-      "featured": false
+      "featured": true
     }
   ]
 }
