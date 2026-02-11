@@ -41,6 +41,29 @@ async function fetchTournamentData(labDataFetcher) {
 }
 
 /**
+ * Find the most recently completed event from the schedule
+ */
+function findLastCompletedEvent(schedule) {
+  if (!schedule || schedule.length === 0) return null;
+  
+  const today = new Date();
+  const completed = schedule
+    .filter(e => {
+      if (!e.end_date) return false;
+      const endDate = new Date(e.end_date);
+      return endDate < today;
+    })
+    .sort((a, b) => new Date(b.end_date) - new Date(a.end_date));
+  
+  return completed.length > 0 ? {
+    event_name: completed[0].event_name,
+    course: completed[0].course || '',
+    start_date: completed[0].start_date,
+    end_date: completed[0].end_date
+  } : null;
+}
+
+/**
  * Process lab-data composite into a structured context object for the prompt.
  * Input is the already-processed data from /api/lab-data (PGA-filtered, field-matched).
  */
@@ -153,8 +176,10 @@ function buildDataContext(labData) {
       end_date: tournament.end_date || null,
       field_size: tournament.field_size || effectiveField.length,
       current_round: tournament.current_round || 0,
-      purse: null
+      purse: null,
+      event_completed: tournament.event_completed || false
     },
+    last_completed_event: findLastCompletedEvent(labData.schedule || []),
     field_strength: {
       elite_count: eliteCount,
       top_tier_count: topTierCount,
@@ -282,45 +307,53 @@ Putting: ${dataContext.category_leaders.sg_putt?.map(p => `${p.name} (${p.value?
       instructions = `Write a tournament preview for ${dataContext.tournament.name} at ${dataContext.tournament.course}.
 
 The post should:
-1. Open with something specific and compelling about this particular event — a storyline, a stat anomaly, or a question about the field.
-2. Analyze the field strength with specific numbers (elite count, top tier count).
-3. Highlight 3-4 key players with their actual skill ratings and what makes them interesting THIS week.
-4. Include a course-fit angle — which skills matter most and who in the field profiles well for it.
-5. End with 2-3 data-backed picks with reasoning. Not betting picks — analytical picks. "The data says watch for X because Y."
+1. Open with something specific and compelling about this particular event — a storyline, a stat anomaly, or a question about the field. Make the reader care about THIS week.
+2. Analyze the field strength with specific numbers, but weave them into the narrative — don't dump a stats table into prose.
+3. Highlight 3-4 key players with their actual skill ratings and what makes them interesting THIS week. Give each player a sentence or two of real golf context beyond the numbers.
+4. Include a course-fit angle — which skills matter most at this course and who in the field profiles well for it.
+5. One dark horse pick with reasoning — someone outside the top favorites whose numbers suggest they could surprise.
+6. End with 2-3 data-backed picks with reasoning. Not betting picks — analytical picks. "The data says watch for X because Y."
 
-Use at least 2 stat callouts with real numbers from the data above. Include one pullquote.
+Use 2 stat callouts (no more than 3) with real numbers from the data above. Include one pullquote. Let the storytelling carry the post — stats should support the narrative, not dominate it.
+
+VOCABULARY NOTE: Write at a smart-but-accessible level. Avoid words like 'contrarian', 'prognosticate', 'efficacy', 'precipitous', 'nomenclature', or any word that would make a reader pause. If a simpler word works just as well, use it. The audience is golf fans, not academics.
+
 Today's date: ${dateStr}`;
       break;
 
     case 'tournament_recap':
+      // Use last completed event for recaps, not the current/upcoming one
+      const recapEvent = dataContext.last_completed_event || dataContext.tournament;
+      const recapEventName = recapEvent.event_name || recapEvent.name || 'Recent Tournament';
+      const recapCourse = recapEvent.course || dataContext.tournament.course || '';
+
       dataSection = `
-TOURNAMENT DATA:
-- Event: ${dataContext.tournament.name}
-- Course: ${dataContext.tournament.course}
-- Field size: ${dataContext.tournament.field_size} players
+RECAP TARGET — LAST COMPLETED TOURNAMENT:
+- Event: ${recapEventName}
+- Course: ${recapCourse}
+- Dates: ${recapEvent.start_date || 'N/A'} to ${recapEvent.end_date || 'N/A'}
 
-FIELD STRENGTH:
-- Elite players (SG 1.5+): ${dataContext.field_strength.elite_count}
-- Top tier (SG 1.0+): ${dataContext.field_strength.top_tier_count}
+IMPORTANT: This tournament has ALREADY FINISHED. Write about it in past tense. Do NOT write about it as if it is upcoming or ongoing.
 
-TOP FINISHERS BY SKILL RATING:
-${dataContext.top10_by_skill.map((p, i) => `${i+1}. ${p.name} — SG Total: ${p.sg_total?.toFixed(2)}, OTT: ${p.sg_ott?.toFixed(2)}, APP: ${p.sg_app?.toFixed(2)}, ARG: ${p.sg_arg?.toFixed(2)}, Putt: ${p.sg_putt?.toFixed(2)}`).join('\n')}
+NOTE: We do not have final leaderboard results from this specific API call. Focus your recap on the field composition, what the skill data suggested going in, and broader storylines. Frame your analysis around what the data told us about this event — who was expected to contend, whose form was trending, and what the field strength said about the quality of the winner (whoever it was). You can reference the field data below, which reflects current skill ratings of players who were likely in the field.
 
-WIN PROBABILITIES (pre-tournament):
-${dataContext.top10_by_odds.map((p, i) => `${i+1}. ${p.name} — Win: ${(p.win_prob * 100).toFixed(1)}%`).join('\n')}
+TOP PLAYERS BY DATAGOLF SKILL RATING (for context — these are current ratings, not event-specific results):
+${dataContext.top10_by_skill.slice(0, 8).map((p, i) => `${i+1}. ${p.name} — SG Total: ${p.sg_total?.toFixed(2)}, OTT: ${p.sg_ott?.toFixed(2)}, APP: ${p.sg_app?.toFixed(2)}, Putt: ${p.sg_putt?.toFixed(2)}`).join('\n')}
 
-GLOBAL TOP 10 (for context):
-${dataContext.global_top10.map((p, i) => `${i+1}. ${p.name} — SG: ${p.sg_total?.toFixed(2)}`).join('\n')}`;
+GLOBAL TOP 10 PGA TOUR (for broader context):
+${dataContext.global_top10.slice(0, 6).map((p, i) => `${i+1}. ${p.name} — SG: ${p.sg_total?.toFixed(2)}`).join('\n')}`;
 
-      instructions = `Write a tournament recap for ${dataContext.tournament.name}.
+      instructions = `Write a tournament recap for ${recapEventName} at ${recapCourse}.
 
-NOTE: Since we may not have final results yet, frame this as a field/performance analysis rather than a specific results recap. Focus on:
-1. The most interesting statistical storyline from the field.
-2. Which players' skill profiles matched (or didn't match) expectations.
-3. A surprising data point — something the casual viewer wouldn't notice.
-4. What the numbers suggest about form going forward.
+This event has ALREADY BEEN COMPLETED. Write in past tense throughout.
 
-Use at least 2 stat callouts with real numbers. Include one pullquote.
+Since we don't have the final leaderboard, write a field/form analysis recap that focuses on:
+1. The storyline going into the event — what made this week interesting from a data perspective.
+2. Which players' skill profiles made them strong fits for the course and conditions.
+3. A broader observation about the state of the tour, form trends, or a player arc worth tracking.
+4. A forward-looking thought about what this event's field strength means for the rest of the season.
+
+Keep the stat references purposeful — use 2 stat callouts max, and let the narrative carry the post. Don't overwhelm the reader with numbers. Use stats to punctuate points, not make them.
 Today's date: ${dateStr}`;
       break;
 
@@ -342,10 +375,14 @@ Use the real player data above to ground every claim. The post should:
 1. Open with a counterintuitive hook — challenge a common golf assumption with data.
 2. Set up the analytical framework clearly for a non-expert audience.
 3. Present the evidence with real numbers and specific player examples.
-4. Explain why it matters — both for understanding the tour and for amateur golfers.
-5. End with a practical insight the reader can take away.
+4. Add some historical context or tour-level perspective that enriches the analysis.
+5. Explain why it matters — both for understanding the tour and for amateur golfers.
+6. End with a practical insight the reader can take away.
 
-Use at least 2 stat callouts with real numbers. Include one pullquote.
+Use 2-3 stat callouts with real numbers (no more than 4). Include one pullquote. Let the story carry the weight — stats should land like punchlines, not pile up like homework.
+
+VOCABULARY NOTE: Write at a smart-but-accessible level. Avoid words like 'contrarian', 'prognosticate', 'efficacy', 'precipitous', 'nomenclature', or any word that would make a reader pause. If a simpler word works just as well, use it.
+
 Today's date: ${dateStr}`;
       break;
 
@@ -359,12 +396,17 @@ ${dataContext.global_top10.slice(0, 5).map((p, i) => `${i+1}. ${p.name} — SG T
 
 The post should:
 1. Start with something relatable — a frustration or assumption every golfer has.
-2. Introduce what the tour-level data actually shows about this topic.
-3. Give practical application — what should the reader actually do differently.
-4. Include specific numbers that make the case undeniable.
-5. End with a clear, actionable step.
+2. Introduce a common misconception and why it persists.
+3. Show what the tour-level data actually reveals about this topic.
+4. Use a specific tour player as an example to make the data tangible.
+5. Give practical application — what should the reader actually do differently.
+6. Include specific numbers that make the case undeniable.
+7. End with a clear, actionable step.
 
-Use at least 2 stat callouts. Include one pullquote. Keep it grounded and useful — never condescending.
+Use 2 stat callouts (no more than 3). Include one pullquote. Keep it grounded and useful — never condescending, never preachy.
+
+VOCABULARY NOTE: Write at a smart-but-accessible level. Avoid words like 'contrarian', 'prognosticate', 'efficacy', 'precipitous', 'nomenclature', or any word that would make a reader pause. If a simpler word works just as well, use it.
+
 Today's date: ${dateStr}`;
       break;
   }

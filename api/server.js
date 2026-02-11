@@ -914,6 +914,9 @@ app.post('/api/generate-blog', async (req, res) => {
         am: p.am || 0
       }));
 
+      // Also include schedule for recap logic (finding last completed event)
+      const fullSchedule = schedule.schedule || [];
+      
       return {
         players: pgaPlayers,
         predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
@@ -929,7 +932,8 @@ app.post('/api/generate-blog', async (req, res) => {
           end_date: currentEvent.end_date || null,
           status: currentEvent.status || 'unknown',
           event_completed: fieldUpdates.event_completed || false
-        }
+        },
+        schedule: fullSchedule
       };
     };
 
