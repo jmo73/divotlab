@@ -47,8 +47,8 @@
         "title":"Why Your Short Game Focus Is Backwards (Tour Data Explains)",
         "category":"Improvement",
         "category_class":"improve",
-        "date":"Feb 11, 2026",
-        "date_iso":"2026-02-11",
+        "date":"Feb 10, 2026",
+        "date_iso":"2026-02-10",
         "read_time":"5 min read",
         "meta_description":"Tour pros reveal the real short game priority that weekend golfers get wrong. DataGolf's skill model shows what matters most inside 100 yards.",
         "hero_image":null,
@@ -68,7 +68,7 @@
       "hero_image": "/pebble_beach.jpg",
       "hero_alt": "Pebble Beach Holes 5-6",
       "hero_credit": "krh006",
-      "featured": true
+      "featured": false
     }
   ]
 }
