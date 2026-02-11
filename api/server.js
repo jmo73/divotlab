@@ -1055,6 +1055,125 @@ app.get('/api/blog-drafts/:slug/download', (req, res) => {
   res.send(draft.html);
 });
 
+// ============================================
+// BLOG REGISTRY ENDPOINTS
+// ============================================
+const blogRegistry = require('./blog-registry.json');
+
+// GET all published posts (for articles page and homepage)
+app.get('/api/blog-posts', (req, res) => {
+  const { category, limit, offset } = req.query;
+  let posts = [...blogRegistry.posts];
+  
+  // Sort by date descending (newest first)
+  posts.sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso));
+  
+  // Filter by category if specified
+  if (category && category !== 'all') {
+    posts = posts.filter(p => p.category_class === category);
+  }
+  
+  const total = posts.length;
+  
+  // Pagination
+  const off = parseInt(offset) || 0;
+  const lim = parseInt(limit) || 50;
+  posts = posts.slice(off, off + lim);
+  
+  res.json({ success: true, total, posts });
+});
+
+// GET the 3 most recent posts (for homepage "From the Lab" section)
+app.get('/api/blog-posts/latest', (req, res) => {
+  const limit = parseInt(req.query.limit) || 3;
+  const posts = [...blogRegistry.posts]
+    .sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso))
+    .slice(0, limit);
+  res.json({ success: true, posts });
+});
+
+// GET "Read Next" recommendations for a given post
+app.get('/api/blog-posts/:slug/read-next', (req, res) => {
+  const currentSlug = req.params.slug;
+  const current = blogRegistry.posts.find(p => p.slug === currentSlug);
+  const limit = parseInt(req.query.limit) || 2;
+  
+  // Strategy: prioritize different category, then most recent
+  let candidates = blogRegistry.posts
+    .filter(p => p.slug !== currentSlug)
+    .sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso));
+  
+  // Try to get at least one from a different category
+  const diffCategory = candidates.filter(p => current && p.category_class !== current.category_class);
+  const sameCategory = candidates.filter(p => current && p.category_class === current.category_class);
+  
+  let picks = [];
+  if (diffCategory.length > 0) picks.push(diffCategory[0]);
+  if (sameCategory.length > 0) picks.push(sameCategory[0]);
+  if (picks.length < limit) {
+    const remaining = candidates.filter(p => !picks.find(pk => pk.slug === p.slug));
+    picks.push(...remaining.slice(0, limit - picks.length));
+  }
+  picks = picks.slice(0, limit);
+  
+  res.json({ success: true, posts: picks });
+});
+
+// POST a new blog post to the registry (called after reviewing a draft)
+app.post('/api/blog-posts', (req, res) => {
+  const { slug, title, category, category_class, date, date_iso, read_time, meta_description, hero_image, hero_alt, hero_credit, featured } = req.body || {};
+  
+  if (!slug || !title) {
+    return res.status(400).json({ success: false, error: 'slug and title are required' });
+  }
+  
+  // Check for duplicate
+  if (blogRegistry.posts.find(p => p.slug === slug)) {
+    return res.status(409).json({ success: false, error: `Post with slug "${slug}" already exists` });
+  }
+  
+  const newPost = {
+    slug,
+    title,
+    category: category || 'PGA Tour',
+    category_class: category_class || 'pga',
+    date: date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    date_iso: date_iso || new Date().toISOString().split('T')[0],
+    read_time: read_time || '8 min read',
+    meta_description: meta_description || '',
+    hero_image: hero_image || null,
+    hero_alt: hero_alt || '',
+    hero_credit: hero_credit || '',
+    featured: featured || false
+  };
+  
+  blogRegistry.posts.unshift(newPost);
+  
+  res.json({ success: true, post: newPost, total: blogRegistry.posts.length });
+});
+
+// PUT — update a registry entry (e.g., add a hero image later)
+app.put('/api/blog-posts/:slug', (req, res) => {
+  const idx = blogRegistry.posts.findIndex(p => p.slug === req.params.slug);
+  if (idx === -1) {
+    return res.status(404).json({ success: false, error: 'Post not found' });
+  }
+  
+  const updates = req.body || {};
+  // Only allow updating safe fields
+  const allowed = ['title', 'category', 'category_class', 'date', 'date_iso', 'read_time', 'meta_description', 'hero_image', 'hero_alt', 'hero_credit', 'featured'];
+  for (const key of allowed) {
+    if (updates[key] !== undefined) {
+      blogRegistry.posts[idx][key] = updates[key];
+    }
+  }
+  
+  res.json({ success: true, post: blogRegistry.posts[idx] });
+});
+
+// Also enhance generate-blog: auto-register draft when published
+// (The POST /api/blog-posts endpoint above handles manual registration)
+
 // Start server
 app.listen(PORT, () => {
   console.log(`
@@ -1110,6 +1229,13 @@ app.listen(PORT, () => {
   GET  /api/blog-drafts             (list drafts)
   GET  /api/blog-drafts/:slug       (preview draft)
   GET  /api/blog-drafts/:slug/download (download HTML)
+
+📰 BLOG REGISTRY:
+  GET  /api/blog-posts              (all posts, ?category=pga&limit=10)
+  GET  /api/blog-posts/latest       (homepage cards, ?limit=3)
+  GET  /api/blog-posts/:slug/read-next (read next recs)
+  POST /api/blog-posts              (register new post)
+  PUT  /api/blog-posts/:slug        (update post metadata)
 
 ⚠️  API Key secured server-side
 🏌️  PGA Tour filter: Uses primary_tour === "PGA"

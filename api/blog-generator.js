@@ -561,6 +561,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 /* HERO */
 .post-hero { position:relative; height:480px; overflow:hidden; margin-top:68px; }
 .post-hero-bg { position:absolute; inset:0; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.post-hero-brand {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-65%);
+  z-index:0; display:flex; flex-direction:column; align-items:center; gap:16px; opacity:.12;
+}
+.post-hero-brand svg { width:80px; height:80px; }
 .post-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.25) 40%, rgba(10,10,10,0.75) 80%, rgba(10,10,10,0.92) 100%); }
 .post-hero-content { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 48px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:56px; }
 .post-cat { display:inline-block; width:fit-content; font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:4px 10px; border-radius:3px; margin-bottom:18px; }
@@ -689,6 +694,14 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 <!-- HERO -->
 <section class="post-hero">
   <div class="post-hero-bg"></div>
+  <div class="post-hero-brand">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="white"/>
+    </svg>
+  </div>
   <div class="post-hero-overlay"></div>
   <div class="post-hero-content">
     <span class="post-cat ${category_class}">${escapeHTML(category)}</span>
@@ -711,7 +724,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="read-next-inner">
     <div class="read-next-label">Read Next</div>
     <div class="read-next-grid" id="readNextGrid">
-      <!-- Populated dynamically or with latest posts -->
+      <!-- Loaded dynamically -->
     </div>
   </div>
 </div>
@@ -780,6 +793,41 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
       drawer.classList.remove('open');
     });
   });
+
+  // --- Read Next dynamic loading ---
+  (function loadReadNext(){
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+    var slug = '${slug}';
+    var grid = document.getElementById('readNextGrid');
+    if (!grid) return;
+
+    var logoSVG = '<svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".12"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="white"/></svg>';
+
+    function esc(s){if(!s)return'';var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+    fetch(API + '/api/blog-posts/' + slug + '/read-next?limit=2')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.success && data.posts && data.posts.length > 0) {
+          grid.innerHTML = data.posts.map(function(p){
+            var imgHTML;
+            if (p.hero_image) {
+              imgHTML = '<div class="rn-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>';
+            } else {
+              imgHTML = '<div class="rn-img" style="background:linear-gradient(140deg,#0f1a16 0%,#162420 50%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;"><div style="opacity:.3;">' + logoSVG + '</div></div>';
+            }
+            return '<a href="/' + p.slug + '" style="text-decoration:none;color:inherit;"><div class="rn-card">' +
+              imgHTML +
+              '<div class="rn-body">' +
+                '<span class="rn-cat ' + p.category_class + '">' + esc(p.category) + '</span>' +
+                '<h3 class="rn-title">' + esc(p.title) + '</h3>' +
+                '<div class="rn-meta">' + esc(p.date) + ' <span class="dot">&middot;</span> ' + esc(p.read_time) + '</div>' +
+              '</div></div></a>';
+          }).join('');
+        }
+      })
+      .catch(function(){ /* silent fail — Read Next is non-critical */ });
+  })();
 })();
 </script>
 </body>

@@ -1,0 +1,46 @@
+{
+  "posts": [
+    {
+      "slug": "scheffler-putting-analysis",
+      "title": "Scottie Scheffler's Putting Numbers Don't Make Sense. We Looked Closer.",
+      "category": "PGA Tour",
+      "category_class": "pga",
+      "date": "Feb 1, 2026",
+      "date_iso": "2026-02-01",
+      "read_time": "8 min read",
+      "meta_description": "Scheffler went from 162nd in SG putting to 22nd in one season. We dug into the data behind the most dramatic improvement on tour.",
+      "hero_image": "/scheffler.jpg",
+      "hero_alt": "Scottie Scheffler with BMW Championship trophy",
+      "hero_credit": "Photo: Kevin C. Cox/Getty Images",
+      "featured": true
+    },
+    {
+      "slug": "strokes-gained-approach",
+      "title": "The Stat No One Talks About: Why SG: Approach Wins More Tournaments Than Driving",
+      "category": "Strokes Gained",
+      "category_class": "sg",
+      "date": "Jan 28, 2026",
+      "date_iso": "2026-01-28",
+      "read_time": "6 min read",
+      "meta_description": "Drive for show, putt for dough? The strokes gained data says otherwise. Approach play is the real separator.",
+      "hero_image": "/fleetwood.jpg",
+      "hero_alt": "Tommy Fleetwood hitting approach shot",
+      "hero_credit": "Photo: Getty Images",
+      "featured": false
+    },
+    {
+      "slug": "driver-upgrade-myth",
+      "title": "Why Your $600 Driver Isn't The Problem",
+      "category": "Improvement",
+      "category_class": "improve",
+      "date": "Jan 24, 2026",
+      "date_iso": "2026-01-24",
+      "read_time": "5 min read",
+      "meta_description": "A new driver adds maybe 10 yards. The strokes gained math says that's worth 0.3 shots per round. Here's where to spend your money instead.",
+      "hero_image": "/driver.jpg",
+      "hero_alt": "Golf driver close-up",
+      "hero_credit": "",
+      "featured": false
+    }
+  ]
+}
