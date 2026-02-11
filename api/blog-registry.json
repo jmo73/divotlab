@@ -41,6 +41,20 @@
       "hero_alt": "Golf driver close-up",
       "hero_credit": "",
       "featured": false
+    },
+    {
+        "slug":"tour-players-miss-putts-expectations",
+        "title":"Tour Players Miss More Putts Than You Think",
+        "category":"Strokes Gained",
+        "category_class":"sg",
+        "date":"Feb 11, 2026",
+        "date_iso":"2026-02-11",
+        "read_time":"10 min read",
+        "meta_description":"The putting stats from DataGolf tell a different story than the broadcast.",
+        "hero_image":null,
+        "hero_alt":"",
+        "hero_credit":"",
+        "featured":false
     }
   ]
 }
