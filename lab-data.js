@@ -76,6 +76,8 @@ function getEventStatus(tournament) {
  * Tournament State Engine
  * Single source of truth for tournament lifecycle state.
  * Uses BOTH current_round AND start_date to prevent false "Live" status.
+ * DataGolf can report current_round > 0 before the tournament actually starts
+ * (pre-loading data), so we MUST check the date before trusting current_round.
  * Returns: 'upcoming' | 'live' | 'completed'
  */
 function getTournamentState(tournament) {
@@ -86,21 +88,43 @@ function getTournamentState(tournament) {
     return 'completed';
   }
   
-  // Date-based guard: if we have a start_date and today is before it, always upcoming
+  // Date-based guard: if we have a start_date, use it as the authority
   if (tournament.start_date) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const startDate = new Date(tournament.start_date);
+    const startDate = new Date(tournament.start_date + 'T00:00:00');
     startDate.setHours(0, 0, 0, 0);
     
+    // Before start date = always upcoming, regardless of current_round
     if (today < startDate) {
       return 'upcoming';
     }
+    
+    // On or after start date: check if we're past the end date
+    if (tournament.end_date) {
+      const endDate = new Date(tournament.end_date + 'T23:59:59');
+      if (today > endDate) {
+        return 'completed';
+      }
+    }
+    
+    // We're within the tournament date range — check for active play
+    if ((tournament.current_round || 0) > 0) {
+      return 'live';
+    }
+    
+    // Start date has arrived but no round data yet — could be early morning
+    // Default to upcoming to avoid false live state
+    return 'upcoming';
   }
   
-  // If we're past the start date and have an active round, it's live
+  // No start_date available — be conservative, default to upcoming
+  // Only show live if current_round is explicitly > 0 AND event_completed is false
   if ((tournament.current_round || 0) > 0) {
-    return 'live';
+    // Without a start_date we can't verify, but current_round > 0 is a signal
+    // Log a warning so we know the date guard isn't working
+    console.warn('⚠️ Tournament state: current_round > 0 but no start_date — defaulting to upcoming. Event:', tournament.event_name);
+    return 'upcoming';
   }
   
   return 'upcoming';
@@ -370,27 +394,13 @@ function renderFieldStrength() {
   const stale = predictionsAreStale();
   const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   
-  // Build tournament field by matching predictions with player skill data
-  // Only use predictions if they match the current event
-  const tournamentField = (stale ? [] : globalPredictions)
-    .map(pred => {
-      // Find matching player from skill ratings
-      const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
-      if (playerData) {
-        return playerData;
-      }
-      // If no match, create basic player object from prediction
-      return {
-        dg_id: pred.dg_id,
-        player_name: pred.player_name,
-        sg_total: pred.dg_skill_estimate || 0
-      };
-    })
-    .filter(p => p.sg_total != null);
+  // Build tournament field consistently:
+  // Primary: field-updates list matched with skill ratings (most stable)
+  // Fallback: predictions matched with skill ratings (only if same event)
+  let fieldForStrength = [];
   
-  // If predictions are stale, build field from globalFieldList + skill ratings
-  let fieldForStrength = tournamentField;
-  if ((stale || tournamentField.length === 0) && globalFieldList.length > 0) {
+  if (globalFieldList.length > 0) {
+    // Best source: field-updates gives us the definitive field list
     fieldForStrength = globalFieldList
       .map(fp => {
         const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
@@ -398,9 +408,17 @@ function renderFieldStrength() {
         return { dg_id: fp.dg_id, player_name: fp.player_name, sg_total: 0 };
       })
       .filter(p => p.sg_total != null && p.sg_total !== 0);
+  } else if (!stale && globalPredictions.length > 0) {
+    // Fallback: predictions list (only if not stale)
+    fieldForStrength = globalPredictions
+      .map(pred => {
+        const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
+        return playerData || null;
+      })
+      .filter(p => p && p.sg_total != null);
   }
   
-  // Use field for strength calculation
+  // If we still have nothing, use all PGA players as a last resort
   const field = calculateFieldStrength(fieldForStrength.length > 0 ? fieldForStrength : globalPlayers);
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);

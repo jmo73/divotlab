@@ -762,9 +762,29 @@ app.get('/api/lab-data', async (req, res) => {
     const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
     const pgaPlayers = filterPGATourOnly(allPlayers);
 
-    // Find current/upcoming event from schedule
+    // Find current/upcoming event from schedule (fuzzy match for robustness)
     const eventName = fieldUpdates.event_name || preTournament.event_name;
-    const currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || {};
+    let currentEvent = schedule.schedule?.find(e => e.event_name === eventName) || null;
+    
+    // Fuzzy fallback: try partial match if exact match fails
+    if (!currentEvent && eventName && schedule.schedule) {
+      const normalizedName = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      currentEvent = schedule.schedule.find(e => {
+        const scheduleName = (e.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        return scheduleName === normalizedName || scheduleName.includes(normalizedName) || normalizedName.includes(scheduleName);
+      });
+    }
+    
+    // Last resort: find the next upcoming event from schedule by date
+    if (!currentEvent && schedule.schedule) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      currentEvent = schedule.schedule
+        .filter(e => e.end_date && new Date(e.end_date) >= today)
+        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))[0] || null;
+    }
+    
+    currentEvent = currentEvent || {};
 
     // Extract the event name that predictions are actually FOR (may differ from field-updates event)
     const predictionEventName = preTournament.event_name || null;
