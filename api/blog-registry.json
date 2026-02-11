@@ -55,6 +55,20 @@
         "hero_alt":"",
         "hero_credit":"",
         "featured":false
+    },
+    {
+      "slug": "scheffler-pebble-beach-field-power-advantage",
+      "title": "Scottie Scheffler Owns Pebble Beach: Why This Field Setup Favors Power",
+      "category": "PGA Tour",
+      "category_class": "pga",
+      "date": "Feb 11, 2026",
+      "date_iso": "2026-02-11",
+      "read_time": "5 min read",
+      "meta_description": "Scheffler's 21% win probability at Pebble Beach towers over the field. DataGolf's numbers reveal why this course setup creates unusual advantages for bombers.",
+      "hero_image": "/pebble_beach.jpg",
+      "hero_alt": "Pebble Beach Holes 5-6",
+      "hero_credit": "krh006",
+      "featured": false
     }
   ]
 }
