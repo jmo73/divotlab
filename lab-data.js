@@ -219,18 +219,21 @@ function calculateFieldStrength(players) {
   const top20 = sorted.slice(0, Math.min(20, sorted.length));
   const top20Avg = top20.reduce((sum, p) => sum + (p.sg_total || 0), 0) / top20.length;
   
-  // Refined formula:
-  // Base 3.0 (not 5.0) — forces the components to earn the rating
-  // Elite players (SG 1.5+): 0.3 each, diminishing after 8
-  // Top tier (SG 1.0+): 0.06 each
-  // Top 20 average: scaled by 1.8 (rewards depth)
-  // This means: a signature event with 10+ elites, 20+ top tier, avg 1.5+ → ~9.0+
-  // A mid-tier event with 3-5 elites, 10-12 top tier, avg 0.9 → ~6.0-7.0
-  const eliteContrib = Math.min(eliteCount, 8) * 0.3 + Math.max(0, eliteCount - 8) * 0.15;
-  const topTierContrib = topTier * 0.08;
-  const depthContrib = top20Avg * 1.8;
+  // Calibrated formula (v3):
+  // Target benchmarks:
+  //   Major/Signature (15 elite, 20 top tier, avg 1.8) → ~9.5+
+  //   Strong event like Pebble Beach (5 elite, 19 top tier, avg 1.4) → ~7.3
+  //   Opposite-field event (2 elite, 8 top tier, avg 0.7) → ~4.7
+  //
+  // Base 2.5
+  // Elite (SG 1.5+): 0.3 each, diminishing after 6
+  // Top tier (SG 1.0–1.5): 0.06 each
+  // Top 20 average: scaled by 1.6
+  const eliteContrib = Math.min(eliteCount, 6) * 0.3 + Math.max(0, eliteCount - 6) * 0.15;
+  const topTierContrib = topTier * 0.06;
+  const depthContrib = top20Avg * 1.6;
   
-  let rating = 3.0 + eliteContrib + topTierContrib + depthContrib;
+  let rating = 2.5 + eliteContrib + topTierContrib + depthContrib;
   rating = Math.min(10, Math.max(1, rating));
   
   let label = 'Average';
@@ -432,7 +435,7 @@ function renderTournamentBanner() {
   
   const state = getTournamentState(globalTournamentInfo);
   const eventStatus = getEventStatus(globalTournamentInfo);
-  const courseName = globalTournamentInfo.course || '';
+  const courseName = (globalTournamentInfo.course || '').replace(/;/g, '; ');
   const fieldSize = globalTournamentInfo.field_size || 0;
   const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   const dateRange = formatTournamentDate(globalTournamentInfo.start_date, globalTournamentInfo.end_date);
@@ -694,18 +697,32 @@ function renderLeaderboard() {
           </thead>
           <tbody>
             ${sorted.map((p, i) => {
-              const score = p.current_score || 0;
-              const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
-              const today = p.today || 0;
-              const todayDisplay = today > 0 ? `+${today}` : today === 0 || today === 'E' ? 'E' : today;
+              const score = p.current_score;
+              const hasNotStarted = (p.thru == null || p.thru === '-' || p.thru === '' || p.thru === 0 || p.thru === '0');
+              
+              // Players who haven't started: show E for score and today
+              let scoreDisplay, todayDisplay;
+              if (hasNotStarted && (score == null || score === 0 || score === 'E' || score === '-')) {
+                scoreDisplay = 'E';
+                todayDisplay = '-';
+              } else {
+                const s = score || 0;
+                scoreDisplay = s > 0 ? `+${s}` : (s === 0 || s === 'E') ? 'E' : s;
+                const today = p.today || 0;
+                todayDisplay = today > 0 ? `+${today}` : (today === 0 || today === 'E') ? 'E' : today;
+              }
+              
+              // Position: if null/empty and hasn't started, show '-' (they'll sort to bottom)
+              const pos = p.current_pos || (hasNotStarted ? '-' : '-');
+              const thruDisplay = hasNotStarted ? '-' : (p.thru || '-');
               
               return `
                 <tr>
-                  <td class="rank-col">${p.current_pos || '-'}</td>
+                  <td class="rank-col">${pos}</td>
                   <td class="player-col">${p.player_name}</td>
                   <td class="prob-col win">${scoreDisplay}</td>
                   <td class="prob-col">${todayDisplay}</td>
-                  <td class="prob-col">${p.thru || '-'}</td>
+                  <td class="prob-col">${thruDisplay}</td>
                   <td class="prob-col">${p.R1 || '-'}</td>
                   <td class="prob-col">${p.R2 || '-'}</td>
                   <td class="prob-col">${p.R3 || '-'}</td>
@@ -1578,11 +1595,11 @@ function renderFieldComposition() {
   const styleLabels = Object.keys(styleCounts).filter(k => styleCounts[k] > 0);
   const styleData = styleLabels.map(k => styleCounts[k]);
   const styleColors = {
-    Power: '#E76F51',
-    Precision: '#5A8FA8',
-    Touch: '#9B59B6',
-    Scrambler: '#F4A259',
-    Complete: '#5BBF85'
+    Power: 'rgba(231,111,81,0.65)',
+    Precision: 'rgba(90,143,168,0.65)',
+    Touch: 'rgba(155,89,182,0.65)',
+    Scrambler: 'rgba(244,162,89,0.65)',
+    Complete: 'rgba(91,191,133,0.65)'
   };
   const colors = styleLabels.map(k => styleColors[k]);
   
