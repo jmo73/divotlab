@@ -211,12 +211,26 @@ function getPlayingStyle(player) {
 function calculateFieldStrength(players) {
   if (!players || players.length === 0) return { rating: 5, label: 'Average', eliteCount: 0, topTier: 0 };
   
-  const eliteCount = players.filter(p => (p.sg_total || 0) > 1.5).length;
-  const topTier = players.filter(p => (p.sg_total || 0) > 1.0).length;
-  const top20 = players.slice(0, Math.min(20, players.length));
+  // Sort by sg_total descending for proper top-N slicing
+  const sorted = [...players].sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
+  
+  const eliteCount = sorted.filter(p => (p.sg_total || 0) > 1.5).length;
+  const topTier = sorted.filter(p => (p.sg_total || 0) > 1.0).length;
+  const top20 = sorted.slice(0, Math.min(20, sorted.length));
   const top20Avg = top20.reduce((sum, p) => sum + (p.sg_total || 0), 0) / top20.length;
   
-  let rating = 5 + eliteCount * 0.25 + topTier * 0.08 + top20Avg * 0.4;
+  // Refined formula:
+  // Base 3.0 (not 5.0) — forces the components to earn the rating
+  // Elite players (SG 1.5+): 0.3 each, diminishing after 8
+  // Top tier (SG 1.0+): 0.06 each
+  // Top 20 average: scaled by 1.8 (rewards depth)
+  // This means: a signature event with 10+ elites, 20+ top tier, avg 1.5+ → ~9.0+
+  // A mid-tier event with 3-5 elites, 10-12 top tier, avg 0.9 → ~6.0-7.0
+  const eliteContrib = Math.min(eliteCount, 8) * 0.3 + Math.max(0, eliteCount - 8) * 0.15;
+  const topTierContrib = topTier * 0.06;
+  const depthContrib = top20Avg * 1.8;
+  
+  let rating = 3.0 + eliteContrib + topTierContrib + depthContrib;
   rating = Math.min(10, Math.max(1, rating));
   
   let label = 'Average';
@@ -267,6 +281,8 @@ let globalDGRankings = [];
 let globalLeaderboard = [];
 let globalFieldList = [];           // Full field from field-updates (for upcoming state)
 let globalPredictionEventName = ''; // Which event the predictions are for (staleness check)
+let globalFieldStrengthResult = null; // Cached field strength calculation (shared across card + intelligence)
+let globalFieldForStrength = [];      // The actual player list used for field strength
 let hoveredPlayer = null;
 
 // ============================================
@@ -477,7 +493,13 @@ function renderFieldStrength() {
   }
   
   // If we still have nothing, use all PGA players as a last resort
-  const field = calculateFieldStrength(fieldForStrength.length > 0 ? fieldForStrength : globalPlayers);
+  const fieldPlayersToUse = fieldForStrength.length > 0 ? fieldForStrength : globalPlayers;
+  const field = calculateFieldStrength(fieldPlayersToUse);
+  
+  // Store globally so Field Analysis and other sections use the SAME calculation
+  globalFieldStrengthResult = field;
+  globalFieldForStrength = fieldPlayersToUse;
+  
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
   
@@ -958,6 +980,8 @@ function renderCharts() {
   renderScatterPlot();
   renderConsistencyChart();
   renderSGBreakdown();
+  renderSGDistribution();
+  renderSkillBalance();
 }
 
 // ============================================
@@ -1317,6 +1341,213 @@ function renderSGBreakdown() {
 }
 
 // ============================================
+// NEW CHART: SG Distribution Histogram
+// ============================================
+function renderSGDistribution() {
+  const canvas = document.getElementById('sg-distribution');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Use the tournament field if available, otherwise all PGA players
+  const fieldPlayers = globalFieldForStrength.length > 0 ? globalFieldForStrength : globalPlayers;
+  const sgValues = fieldPlayers
+    .filter(p => p.sg_total != null)
+    .map(p => p.sg_total || 0);
+  
+  if (sgValues.length === 0) return;
+  
+  // Create bins from -1.0 to 3.0 in 0.5 increments
+  const bins = [];
+  const binLabels = [];
+  for (let edge = -1.0; edge < 3.0; edge += 0.5) {
+    const lo = edge;
+    const hi = edge + 0.5;
+    const count = sgValues.filter(v => v >= lo && v < hi).length;
+    bins.push(count);
+    binLabels.push(`${lo.toFixed(1)}`);
+  }
+  // Catch overflow
+  const overflowCount = sgValues.filter(v => v >= 3.0).length;
+  bins.push(overflowCount);
+  binLabels.push('3.0+');
+  
+  // Color each bin — green for positive, red-ish for negative
+  const barColors = binLabels.map(label => {
+    const val = parseFloat(label);
+    if (isNaN(val)) return '#5BBF85';
+    if (val >= 1.5) return '#5BBF85';
+    if (val >= 1.0) return 'rgba(91,191,133,0.7)';
+    if (val >= 0.5) return '#5A8FA8';
+    if (val >= 0) return 'rgba(90,143,168,0.6)';
+    return 'rgba(231,111,81,0.5)';
+  });
+  
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: binLabels,
+      datasets: [{
+        label: 'Players',
+        data: bins,
+        backgroundColor: barColors,
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'SG Total',
+            color: 'rgba(250,250,250,0.5)',
+            font: { size: 11 }
+          },
+          ticks: { 
+            color: 'rgba(250,250,250,0.5)',
+            font: { size: 10 }
+          },
+          grid: { display: false }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Players',
+            color: 'rgba(250,250,250,0.5)',
+            font: { size: 11 }
+          },
+          beginAtZero: true,
+          ticks: { 
+            stepSize: 5,
+            color: 'rgba(250,250,250,0.5)',
+            font: { size: 10 }
+          },
+          grid: { color: 'rgba(255,255,255,0.06)' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1B4D3E',
+          titleColor: '#FAFAFA',
+          bodyColor: '#FAFAFA',
+          borderColor: '#5BBF85',
+          borderWidth: 1,
+          callbacks: {
+            title: function(items) {
+              const idx = items[0].dataIndex;
+              const lo = binLabels[idx];
+              const hi = idx < binLabels.length - 1 ? binLabels[idx + 1] : '';
+              return hi ? `SG ${lo} to ${hi}` : `SG ${lo}`;
+            },
+            label: function(context) {
+              return `${context.parsed.y} player${context.parsed.y !== 1 ? 's' : ''}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ============================================
+// NEW CHART: Skill Balance (T2G vs Putting)
+// ============================================
+function renderSkillBalance() {
+  const canvas = document.getElementById('skill-balance');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  const top10 = globalPlayers
+    .filter(p => p.sg_total != null)
+    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+    .slice(0, 10);
+  
+  if (!top10.length) return;
+  
+  const labels = top10.map(p => {
+    const parts = p.player_name.split(', ');
+    return parts[0];
+  });
+  
+  const t2gData = top10.map(p => (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0));
+  const puttData = top10.map(p => p.sg_putt || 0);
+  
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'SG: Tee-to-Green',
+          data: t2gData,
+          backgroundColor: '#5A8FA8',
+          borderRadius: 3
+        },
+        {
+          label: 'SG: Putting',
+          data: puttData,
+          backgroundColor: '#DDA15E',
+          borderRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { 
+            color: 'rgba(250,250,250,0.6)',
+            font: { size: 11, weight: '500' }
+          },
+          grid: { display: false }
+        },
+        y: {
+          stacked: true,
+          ticks: { 
+            color: 'rgba(250,250,250,0.5)',
+            font: { size: 10 },
+            callback: function(value) {
+              return value >= 0 ? '+' + value.toFixed(1) : value.toFixed(1);
+            }
+          },
+          grid: { color: 'rgba(255,255,255,0.06)' }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            color: 'rgba(250,250,250,0.7)',
+            font: { size: 11 },
+            padding: 12,
+            usePointStyle: true
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1B4D3E',
+          titleColor: '#FAFAFA',
+          bodyColor: '#FAFAFA',
+          borderColor: '#5BBF85',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(2)}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ============================================
 // ERROR HANDLING
 // ============================================
 function showError(message) {
@@ -1508,14 +1739,14 @@ function renderValuePlayers() {
   
   container.innerHTML = valuePlayers.map((player, i) => {
     // Determine value indicator based on skill level
-    let valueText = 'Elite Value';
+    let valueText = 'Elite Pick';
     let valueColor = '#5BBF85';
     if (player.sg_total < 2.5) { 
-      valueText = 'Strong Value';
+      valueText = 'Strong Pick';
       valueColor = '#5BBF85';
     }
     if (player.sg_total < 2.0) { 
-      valueText = 'Good Value';
+      valueText = 'Good Pick';
       valueColor = '#5A8FA8';
     }
     if (player.sg_total < 1.5) { 
@@ -1572,8 +1803,9 @@ function renderCourseProfile() {
     return;
   }
   
-  // Calculate field strength
-  const field = calculateFieldStrength(tournamentPlayers);
+  // Use the globally cached field strength (same as the Field Strength card)
+  // Fall back to recalculating only if the global hasn't been set yet
+  const field = globalFieldStrengthResult || calculateFieldStrength(tournamentPlayers);
   
   // Determine most predictive skill
   const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
@@ -1686,8 +1918,11 @@ function renderWinningProfile() {
   const argPct = (avgARG / total) * 100;
   const puttPct = (avgPUTT / total) * 100;
   
-  // Render stats on right side — all values in the same blue
-  const statBlue = '#5A8FA8';
+  // Render stats on right side — colors match the pie chart segments
+  const ottStatColor = '#E76F51';  // Red/coral — matches pie
+  const appStatColor = '#5A8FA8';  // Blue — matches pie
+  const argStatColor = '#5BBF85';  // Green — matches pie
+  const puttStatColor = '#DDA15E'; // Orange/amber — matches pie
   if (statsContainer) {
     statsContainer.innerHTML = `
       <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 18px 20px; text-align: center;">
@@ -1697,19 +1932,19 @@ function renderWinningProfile() {
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Off-the-Tee</div>
-            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawOTT)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${ottStatColor};">${formatSG(rawOTT)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Approach</div>
-            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawAPP)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${appStatColor};">${formatSG(rawAPP)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Around Green</div>
-            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawARG)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${argStatColor};">${formatSG(rawARG)}</div>
           </div>
           <div>
             <div style="font-size: 11px; color: rgba(250,250,250,0.4); margin-bottom: 6px;">Putting</div>
-            <div style="font-size: 22px; font-weight: 700; color: ${statBlue};">${formatSG(rawPUTT)}</div>
+            <div style="font-size: 22px; font-weight: 700; color: ${puttStatColor};">${formatSG(rawPUTT)}</div>
           </div>
         </div>
         <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 11px; color: rgba(250,250,250,0.35); line-height: 1.5;">
