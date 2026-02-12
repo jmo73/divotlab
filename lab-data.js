@@ -838,6 +838,8 @@ function renderTop10() {
         };
       }
     });
+    // Sort by displayed SG Total so cards descend visually
+    top10.sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
   } else {
     top10 = globalPlayers
       .filter(p => p.sg_total != null)
@@ -982,6 +984,8 @@ function renderCharts() {
   renderSGBreakdown();
   renderSGDistribution();
   renderSkillBalance();
+  renderFieldComposition();
+  renderEliteSkillPolar();
 }
 
 // ============================================
@@ -1539,6 +1543,202 @@ function renderSkillBalance() {
           callbacks: {
             label: function(context) {
               return `${context.dataset.label}: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(2)}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ============================================
+// NEW CHART: Field Composition by Playing Style
+// ============================================
+function renderFieldComposition() {
+  const canvas = document.getElementById('field-composition');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Use tournament field if available, otherwise all PGA players
+  const fieldPlayers = globalFieldForStrength.length > 0 ? globalFieldForStrength : globalPlayers;
+  const withSkills = fieldPlayers.filter(p => p.sg_total != null && (p.sg_ott != null || p.sg_app != null));
+  
+  if (withSkills.length === 0) return;
+  
+  // Categorize each player by playing style
+  const styleCounts = { Power: 0, Precision: 0, Touch: 0, Scrambler: 0, Complete: 0 };
+  withSkills.forEach(p => {
+    const style = getPlayingStyle(p);
+    if (styleCounts[style.name] !== undefined) {
+      styleCounts[style.name]++;
+    }
+  });
+  
+  const styleLabels = Object.keys(styleCounts).filter(k => styleCounts[k] > 0);
+  const styleData = styleLabels.map(k => styleCounts[k]);
+  const styleColors = {
+    Power: '#E76F51',
+    Precision: '#5A8FA8',
+    Touch: '#9B59B6',
+    Scrambler: '#F4A259',
+    Complete: '#5BBF85'
+  };
+  const colors = styleLabels.map(k => styleColors[k]);
+  
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: styleLabels,
+      datasets: [{
+        data: styleData,
+        backgroundColor: colors,
+        borderColor: '#0A0A0A',
+        borderWidth: 2,
+        hoverBorderColor: '#FAFAFA',
+        hoverBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '55%',
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            color: 'rgba(250,250,250,0.7)',
+            font: { size: 11 },
+            padding: 14,
+            usePointStyle: true,
+            pointStyle: 'rectRounded'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1B4D3E',
+          titleColor: '#FAFAFA',
+          bodyColor: '#FAFAFA',
+          borderColor: '#5BBF85',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = ((context.parsed / total) * 100).toFixed(1);
+              return ` ${context.label}: ${context.parsed} players (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ============================================
+// NEW CHART: Elite Player Skill Polar Area
+// ============================================
+function renderEliteSkillPolar() {
+  const canvas = document.getElementById('elite-skill-polar');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Get the top 3 players and average their skills
+  const top3 = globalPlayers
+    .filter(p => p.sg_total != null && p.sg_ott != null)
+    .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
+    .slice(0, 3);
+  
+  if (top3.length === 0) return;
+  
+  // Build datasets — one polar area per player, overlaid
+  const categories = ['Off-the-Tee', 'Approach', 'Around Green', 'Putting'];
+  const catColors = ['#E76F51', '#5A8FA8', '#5BBF85', '#DDA15E'];
+  
+  // Average the top 3 skill values (use raw, shifted positive for polar area which needs > 0)
+  const avgOTT = top3.reduce((s, p) => s + (p.sg_ott || 0), 0) / top3.length;
+  const avgAPP = top3.reduce((s, p) => s + (p.sg_app || 0), 0) / top3.length;
+  const avgARG = top3.reduce((s, p) => s + (p.sg_arg || 0), 0) / top3.length;
+  const avgPUTT = top3.reduce((s, p) => s + (p.sg_putt || 0), 0) / top3.length;
+  
+  // Polar area needs positive values — shift by adding a baseline
+  // Use 0.5 as baseline shift so small positives still show meaningful area
+  const shift = 0.5;
+  const data = [avgOTT + shift, avgAPP + shift, avgARG + shift, avgPUTT + shift].map(v => Math.max(0.05, v));
+  
+  new Chart(ctx, {
+    type: 'polarArea',
+    data: {
+      labels: categories,
+      datasets: [{
+        data: data,
+        backgroundColor: catColors.map(c => c + '55'),
+        borderColor: catColors,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        r: {
+          beginAtZero: true,
+          ticks: {
+            color: 'rgba(250,250,250,0.35)',
+            backdropColor: 'transparent',
+            font: { size: 9 },
+            callback: function(value) {
+              const actual = value - shift;
+              return actual >= 0 ? '+' + actual.toFixed(1) : actual.toFixed(1);
+            }
+          },
+          grid: { color: 'rgba(255,255,255,0.08)' },
+          pointLabels: {
+            color: 'rgba(250,250,250,0.6)',
+            font: { size: 11, weight: '500' }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            color: 'rgba(250,250,250,0.7)',
+            font: { size: 11 },
+            padding: 14,
+            usePointStyle: true,
+            pointStyle: 'rectRounded',
+            generateLabels: function(chart) {
+              const dataset = chart.data.datasets[0];
+              return chart.data.labels.map((label, i) => ({
+                text: label,
+                fillStyle: catColors[i] + '55',
+                strokeStyle: catColors[i],
+                lineWidth: 2,
+                pointStyle: 'rectRounded',
+                hidden: false,
+                index: i
+              }));
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1B4D3E',
+          titleColor: '#FAFAFA',
+          bodyColor: '#FAFAFA',
+          borderColor: '#5BBF85',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            title: function(items) {
+              return items[0].label;
+            },
+            label: function(context) {
+              const rawValues = [avgOTT, avgAPP, avgARG, avgPUTT];
+              const actual = rawValues[context.dataIndex];
+              return ` Avg SG: ${actual >= 0 ? '+' : ''}${actual.toFixed(2)}`;
             }
           }
         }
