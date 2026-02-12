@@ -215,7 +215,7 @@ function calculateFieldStrength(players) {
   const sorted = [...players].sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
   
   const eliteCount = sorted.filter(p => (p.sg_total || 0) > 1.5).length;
-  const topTier = sorted.filter(p => (p.sg_total || 0) > 1.0).length;
+  const topTier = sorted.filter(p => (p.sg_total || 0) > 1.0 && (p.sg_total || 0) <= 1.5).length;
   const top20 = sorted.slice(0, Math.min(20, sorted.length));
   const top20Avg = top20.reduce((sum, p) => sum + (p.sg_total || 0), 0) / top20.length;
   
@@ -227,7 +227,7 @@ function calculateFieldStrength(players) {
   // This means: a signature event with 10+ elites, 20+ top tier, avg 1.5+ → ~9.0+
   // A mid-tier event with 3-5 elites, 10-12 top tier, avg 0.9 → ~6.0-7.0
   const eliteContrib = Math.min(eliteCount, 8) * 0.3 + Math.max(0, eliteCount - 8) * 0.15;
-  const topTierContrib = topTier * 0.06;
+  const topTierContrib = topTier * 0.08;
   const depthContrib = top20Avg * 1.8;
   
   let rating = 3.0 + eliteContrib + topTierContrib + depthContrib;
@@ -594,7 +594,7 @@ function renderFieldStrength() {
         <div class="strength-rating" style="color: ${labelColor};">${field.label}</div>
         <div class="strength-details">
           <div class="strength-stat"><span class="stat-num">${field.eliteCount}</span><span class="stat-text">Elite (SG 1.5+)</span></div>
-          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0+)</span></div>
+          <div class="strength-stat"><span class="stat-num">${field.topTier}</span><span class="stat-text">Top Tier (SG 1.0–1.5)</span></div>
         </div>
       </div>
 
