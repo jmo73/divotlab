@@ -442,9 +442,13 @@ app.get('/api/live-tournament', async (req, res) => {
       300 // 5min cache
     );
 
+    // Include event_name from the response so client can verify it matches
+    const eventName = result.data?.event_name || result.data?.info?.event_name || null;
+
     res.json({
       success: true,
       fromCache: result.fromCache,
+      event_name: eventName,
       data: result.data
     });
   } catch (error) {
@@ -737,6 +741,13 @@ app.get('/api/homepage-stats', async (req, res) => {
 app.get('/api/lab-data', async (req, res) => {
   try {
     const cacheKey = 'lab-data-composite-pga';
+    const bustCache = req.query.bust === 'true';
+    
+    if (bustCache) {
+      cache.del(cacheKey);
+      console.log(`🔄 Cache BUSTED: ${cacheKey}`);
+    }
+    
     const cached = cache.get(cacheKey);
     
     if (cached) {
@@ -817,7 +828,15 @@ app.get('/api/lab-data', async (req, res) => {
       pga_filtered: true
     };
 
-    cache.set(cacheKey, compositeData, 21600); // 6hr cache
+    // Shorter cache during tournament week (1hr vs 6hr)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDate = currentEvent.start_date ? new Date(currentEvent.start_date) : null;
+    const endDate = currentEvent.end_date ? new Date(currentEvent.end_date) : null;
+    const isDuringTournament = startDate && endDate && today >= startDate && today <= endDate;
+    const cacheTTL = isDuringTournament ? 3600 : 21600; // 1hr during tournament, 6hr otherwise
+    
+    cache.set(cacheKey, compositeData, cacheTTL);
 
     res.json({
       success: true,

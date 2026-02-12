@@ -350,17 +350,39 @@ async function loadAllData() {
         
         if (liveData.success && liveData.data) {
           const liveArray = liveData.data.data || liveData.data || [];
-          // Only use live data if players actually have scoring data
-          // (DataGolf may return player list without scores before play starts)
-          const hasScores = liveArray.some(p => 
-            p.current_score != null || p.thru != null || p.R1 != null
+          
+          // CRITICAL: Verify the live data is for the CURRENT tournament, not last week's.
+          // DataGolf's in-play endpoint can return stale data from the last completed event.
+          const liveEventName = liveData.event_name || liveData.data?.event_name || liveData.data?.info?.event_name || '';
+          const currentEventName = globalTournamentInfo.event_name || '';
+          
+          // Normalize for comparison
+          const liveNorm = liveEventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const currentNorm = currentEventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          
+          const eventMatches = liveNorm && currentNorm && (
+            liveNorm === currentNorm || 
+            liveNorm.includes(currentNorm) || 
+            currentNorm.includes(liveNorm)
           );
-          if (liveArray.length > 0 && hasScores) {
-            globalLeaderboard = liveArray;
-            globalPredictions = liveArray;
-            console.log('✓ Live scoring data confirmed:', liveArray.length, 'players');
+          
+          if (!eventMatches && liveEventName) {
+            console.log('⚠️ Live data is for "' + liveEventName + '" but current event is "' + currentEventName + '" — ignoring stale live data');
+          } else if (liveArray.length > 0 && eventMatches) {
+            // Event matches — now check for actual scores (not just a player list)
+            const hasScores = liveArray.some(p => 
+              (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
+              (p.today != null && p.today !== 0 && p.today !== 'E' && p.today !== '-')
+            );
+            if (hasScores) {
+              globalLeaderboard = liveArray;
+              globalPredictions = liveArray;
+              console.log('✓ Live scoring data confirmed for', liveEventName + ':', liveArray.length, 'players');
+            } else {
+              console.log('ℹ️ Live data found for correct event but no scores yet — play hasn\'t started');
+            }
           } else {
-            console.log('ℹ️ Live endpoint returned data but no scores yet — tournament hasn\'t started');
+            console.log('ℹ️ No usable live data available');
           }
         }
       } catch (err) {
