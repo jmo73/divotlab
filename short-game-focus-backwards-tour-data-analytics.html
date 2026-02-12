@@ -9,11 +9,11 @@
 <meta property="og:title" content="Why Your Short Game Focus Is Backwards (Tour Data Explains) - Divot Lab">
 <meta property="og:description" content="Tour pros reveal the real short game priority that weekend golfers get wrong. DataGolf's skill model shows what matters most inside 100 yards.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://divotlab.com/short-game-focus-backwards-tour-data">
+<meta property="og:url" content="https://divotlab.com/short-game-focus-backwards-tour-data-analytics">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Why Your Short Game Focus Is Backwards (Tour Data Explains) - Divot Lab">
 <meta name="twitter:description" content="Tour pros reveal the real short game priority that weekend golfers get wrong. DataGolf's skill model shows what matters most inside 100 yards.">
-<link rel="canonical" href="https://divotlab.com/short-game-focus-backwards-tour-data">
+<link rel="canonical" href="https://divotlab.com/short-game-focus-backwards-tour-data-analytics">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -123,6 +123,15 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .rn-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1); }
 .rn-card:hover::after { transform:scaleX(1); }
 .rn-img { height:150px; position:relative; overflow:hidden; }
+.rn-img-fallback {
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+  background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%);
+}
+.rn-img-fallback svg { width:44px; height:44px; opacity:.3; }
+.rn-fallback-cat {
+  font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(250,250,250,.28);
+}
 .rn-img-bg { position:absolute; inset:0; }
 .rn-card:nth-child(1) .rn-img-bg { background:linear-gradient(140deg, #0f1520 0%, #162028 60%, #0a0a0a 100%); }
 .rn-card:nth-child(2) .rn-img-bg { background:linear-gradient(140deg, #1a140f 0%, #241a15 60%, #0a0a0a 100%); }
@@ -203,9 +212,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 </div>
 
 <!-- HERO -->
-<section class="post-hero">
+<section class="post-hero" id="postHero">
   <div class="post-hero-bg"></div>
-  <div class="post-hero-brand">
+  <div class="post-hero-brand" id="heroBrand">
     <svg viewBox="0 0 72 72" fill="none">
       <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/>
       <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".15"/>
@@ -218,7 +227,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <span class="post-cat improve">Improvement</span>
     <h1>Why Your Short Game Focus Is Backwards (Tour Data Explains)</h1>
     <div class="post-hero-meta">
-      Feb 10, 2026 <span class="dot">·</span> 5 min read <span class="dot">·</span> Improvement
+      Feb 11, 2026 <span class="dot">·</span> 5 min read <span class="dot">·</span> Improvement
     </div>
   </div>
 </section>
@@ -305,10 +314,36 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     });
   });
 
+  // --- Hero image dynamic loading from registry ---
+  (function loadHeroImage(){
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+    var slug = 'short-game-focus-backwards-tour-data-analytics';
+    
+    fetch(API + '/api/blog-posts')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.success || !data.posts) return;
+        var post = data.posts.find(function(p){ return p.slug === slug; });
+        if (!post || !post.hero_image) return;
+        
+        var hero = document.getElementById('postHero');
+        if (!hero) return;
+        var img = document.createElement('img');
+        img.src = post.hero_image;
+        img.alt = post.hero_alt || '';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;';
+        hero.insertBefore(img, hero.firstChild);
+        
+        var brand = document.getElementById('heroBrand');
+        if (brand) brand.style.display = 'none';
+      })
+      .catch(function(){});
+  })();
+
   // --- Read Next dynamic loading ---
   (function loadReadNext(){
     var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
-    var slug = 'short-game-focus-backwards-tour-data';
+    var slug = 'short-game-focus-backwards-tour-data-analytics';
     var grid = document.getElementById('readNextGrid');
     if (!grid) return;
 
@@ -325,7 +360,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
             if (p.hero_image) {
               imgHTML = '<div class="rn-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>';
             } else {
-              imgHTML = '<div class="rn-img" style="background:linear-gradient(140deg,#0f1a16 0%,#162420 50%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;"><div style="opacity:.3;">' + logoSVG + '</div></div>';
+              imgHTML = '<div class="rn-img"><div class="rn-img-fallback">' + logoSVG + '<span class="rn-fallback-cat">' + esc(p.category) + '</span></div></div>';
             }
             return '<a href="/' + p.slug + '" style="text-decoration:none;color:inherit;"><div class="rn-card">' +
               imgHTML +

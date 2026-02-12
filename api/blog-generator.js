@@ -701,9 +701,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 </div>
 
 <!-- HERO -->
-<section class="post-hero">
+<section class="post-hero" id="postHero">
   <div class="post-hero-bg"></div>
-  <div class="post-hero-brand">
+  <div class="post-hero-brand" id="heroBrand">
     <svg viewBox="0 0 72 72" fill="none">
       <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/>
       <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".15"/>
@@ -802,6 +802,34 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
       drawer.classList.remove('open');
     });
   });
+
+  // --- Hero image dynamic loading from registry ---
+  (function loadHeroImage(){
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+    var slug = '${slug}';
+    
+    fetch(API + '/api/blog-posts')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.success || !data.posts) return;
+        var post = data.posts.find(function(p){ return p.slug === slug; });
+        if (!post || !post.hero_image) return;
+        
+        // Insert hero image over the gradient background
+        var hero = document.getElementById('postHero');
+        if (!hero) return;
+        var img = document.createElement('img');
+        img.src = post.hero_image;
+        img.alt = post.hero_alt || '';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;';
+        hero.insertBefore(img, hero.firstChild);
+        
+        // Hide the branded fallback logo
+        var brand = document.getElementById('heroBrand');
+        if (brand) brand.style.display = 'none';
+      })
+      .catch(function(){});
+  })();
 
   // --- Read Next dynamic loading ---
   (function loadReadNext(){

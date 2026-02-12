@@ -75,9 +75,17 @@ function getEventStatus(tournament) {
 /**
  * Tournament State Engine
  * Single source of truth for tournament lifecycle state.
- * Uses BOTH current_round AND start_date to prevent false "Live" status.
- * DataGolf can report current_round > 0 before the tournament actually starts
- * (pre-loading data), so we MUST check the date before trusting current_round.
+ * 
+ * KEY INSIGHT: DataGolf's field-updates can report current_round > 0 
+ * even BEFORE play begins on tournament day. We cannot trust current_round
+ * alone as proof that play is underway.
+ * 
+ * Strategy:
+ * - Before start_date → always 'upcoming'
+ * - On start_date or after → 'upcoming' by default
+ * - Only 'live' if we have ACTUAL live scoring data (globalLeaderboard populated)
+ * - After end_date → 'completed'
+ * 
  * Returns: 'upcoming' | 'live' | 'completed'
  */
 function getTournamentState(tournament) {
@@ -88,45 +96,36 @@ function getTournamentState(tournament) {
     return 'completed';
   }
   
-  // Date-based guard: if we have a start_date, use it as the authority
+  // Date-based guard
   if (tournament.start_date) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const startDate = new Date(tournament.start_date + 'T00:00:00');
     startDate.setHours(0, 0, 0, 0);
     
-    // Before start date = always upcoming, regardless of current_round
+    // Before start date = always upcoming
     if (today < startDate) {
       return 'upcoming';
     }
     
-    // On or after start date: check if we're past the end date
+    // Past end date = completed
     if (tournament.end_date) {
       const endDate = new Date(tournament.end_date + 'T23:59:59');
       if (today > endDate) {
         return 'completed';
       }
     }
-    
-    // We're within the tournament date range — check for active play
-    if ((tournament.current_round || 0) > 0) {
-      return 'live';
-    }
-    
-    // Start date has arrived but no round data yet — could be early morning
-    // Default to upcoming to avoid false live state
-    return 'upcoming';
   }
   
-  // No start_date available — be conservative, default to upcoming
-  // Only show live if current_round is explicitly > 0 AND event_completed is false
-  if ((tournament.current_round || 0) > 0) {
-    // Without a start_date we can't verify, but current_round > 0 is a signal
-    // Log a warning so we know the date guard isn't working
-    console.warn('⚠️ Tournament state: current_round > 0 but no start_date — defaulting to upcoming. Event:', tournament.event_name);
-    return 'upcoming';
+  // Within tournament date range (or no dates available):
+  // Only report 'live' if we have actual live scoring data.
+  // globalLeaderboard is populated ONLY when the live-tournament API returns real scores.
+  if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
+    return 'live';
   }
   
+  // current_round > 0 but no live data yet — tournament day but play hasn't started
+  // or DataGolf is pre-loading. Stay upcoming.
   return 'upcoming';
 }
 
@@ -273,6 +272,30 @@ let hoveredPlayer = null;
 // ============================================
 // MAIN LOADER
 // ============================================
+
+/**
+ * Check if today falls within the tournament's date range.
+ * Used to decide whether to attempt live data fetch (separate from state determination).
+ */
+function isWithinTournamentDates(tournament) {
+  if (!tournament || !tournament.start_date) return false;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(tournament.start_date + 'T00:00:00');
+  startDate.setHours(0, 0, 0, 0);
+  
+  if (today < startDate) return false;
+  
+  if (tournament.end_date) {
+    const endDate = new Date(tournament.end_date + 'T00:00:00');
+    endDate.setHours(0, 0, 0, 0);
+    if (today > endDate) return false;
+  }
+  
+  return true;
+}
+
 async function loadAllData() {
   try {
     console.log('🏌️ Loading lab data...');
@@ -315,26 +338,39 @@ async function loadAllData() {
       console.warn('⚠️ Could not load DG rankings:', err);
     }
     
-    // Load live data ONLY if tournament state is actually live
-    const tournamentState = getTournamentState(globalTournamentInfo);
-    if (tournamentState === 'live') {
+    // Attempt to load live data if we're within the tournament date range.
+    // We check dates here (not getTournamentState) to avoid chicken-and-egg:
+    // getTournamentState needs globalLeaderboard to be populated first.
+    const shouldTryLive = isWithinTournamentDates(globalTournamentInfo);
+    if (shouldTryLive) {
+      console.log('📡 Within tournament dates — checking for live scoring data...');
       try {
         const liveResponse = await fetch(`${API_BASE_URL}/api/live-tournament`);
         const liveData = await liveResponse.json();
         
         if (liveData.success && liveData.data) {
-          // The in-play endpoint returns { data: [...] } directly
           const liveArray = liveData.data.data || liveData.data || [];
-          if (liveArray.length > 0) {
-            globalLeaderboard = liveArray; // Full leaderboard data
-            globalPredictions = liveArray; // Same data for predictions
-            console.log('✓ Using live data:', liveArray.length, 'players');
+          // Only use live data if players actually have scoring data
+          // (DataGolf may return player list without scores before play starts)
+          const hasScores = liveArray.some(p => 
+            p.current_score != null || p.thru != null || p.R1 != null
+          );
+          if (liveArray.length > 0 && hasScores) {
+            globalLeaderboard = liveArray;
+            globalPredictions = liveArray;
+            console.log('✓ Live scoring data confirmed:', liveArray.length, 'players');
+          } else {
+            console.log('ℹ️ Live endpoint returned data but no scores yet — tournament hasn\'t started');
           }
         }
       } catch (err) {
         console.warn('⚠️ Could not load live data:', err);
       }
     }
+    
+    // NOW determine tournament state (after live data attempt)
+    const tournamentState = getTournamentState(globalTournamentInfo);
+    console.log('✓ Final tournament state:', tournamentState);
     
     renderTournamentBanner();
     renderFieldStrength();
