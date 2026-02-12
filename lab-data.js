@@ -1714,6 +1714,7 @@ function renderEliteSkillPolar() {
               const dataset = chart.data.datasets[0];
               return chart.data.labels.map((label, i) => ({
                 text: label,
+                fontColor: 'rgba(250,250,250,0.7)',
                 fillStyle: catColors[i] + '55',
                 strokeStyle: catColors[i],
                 lineWidth: 2,
