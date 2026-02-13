@@ -1497,6 +1497,15 @@ function renderSkillBalance() {
   const t2gData = top10.map(p => (p.sg_ott || 0) + (p.sg_app || 0) + (p.sg_arg || 0));
   const puttData = top10.map(p => p.sg_putt || 0);
   
+  // Create gradients matching the SG Breakdown style (full color → 30% opacity)
+  const gradientT2G = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientT2G.addColorStop(0, '#5A8FA8');
+  gradientT2G.addColorStop(1, 'rgba(90,143,168,0.3)');
+  
+  const gradientPutt = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientPutt.addColorStop(0, '#DDA15E');
+  gradientPutt.addColorStop(1, 'rgba(221,161,94,0.3)');
+  
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1505,13 +1514,13 @@ function renderSkillBalance() {
         {
           label: 'SG: Tee-to-Green',
           data: t2gData,
-          backgroundColor: '#5A8FA8',
+          backgroundColor: gradientT2G,
           borderRadius: 3
         },
         {
           label: 'SG: Putting',
           data: puttData,
-          backgroundColor: '#DDA15E',
+          backgroundColor: gradientPutt,
           borderRadius: 3
         }
       ]
@@ -1595,11 +1604,11 @@ function renderFieldComposition() {
   const styleLabels = Object.keys(styleCounts).filter(k => styleCounts[k] > 0);
   const styleData = styleLabels.map(k => styleCounts[k]);
   const styleColors = {
-    Power: 'rgba(231,111,81,0.65)',
-    Precision: 'rgba(90,143,168,0.65)',
-    Touch: 'rgba(155,89,182,0.65)',
-    Scrambler: 'rgba(244,162,89,0.65)',
-    Complete: 'rgba(91,191,133,0.65)'
+    Power: 'rgba(231,111,81,0.75)',
+    Precision: 'rgba(90,143,168,0.75)',
+    Touch: 'rgba(155,89,182,0.75)',
+    Scrambler: 'rgba(244,162,89,0.75)',
+    Complete: 'rgba(91,191,133,0.75)'
   };
   const colors = styleLabels.map(k => styleColors[k]);
   
