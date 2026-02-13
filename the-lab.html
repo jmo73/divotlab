@@ -1154,40 +1154,6 @@ canvas { max-width: 100%; }
     }
   });
 })();
-
-// Section nav active state on scroll
-(function() {
-  const sections = ['tournament', 'field-strength', 'top-10', 'leaderboard', 'odds', 'predictions', 'analytics'];
-  const navLinks = {};
-  
-  sections.forEach(id => {
-    const link = document.querySelector(`.section-nav a[href="#${id}"]`);
-    if (link) navLinks[id] = link;
-  });
-  
-  function updateActiveNav() {
-    const scrollPos = window.scrollY + 100; // offset for nav height
-    
-    let currentSection = '';
-    sections.forEach(id => {
-      const section = document.getElementById(id);
-      if (section && section.offsetTop <= scrollPos) {
-        currentSection = id;
-      }
-    });
-    
-    Object.keys(navLinks).forEach(id => {
-      if (id === currentSection) {
-        navLinks[id].classList.add('active');
-      } else {
-        navLinks[id].classList.remove('active');
-      }
-    });
-  }
-  
-  window.addEventListener('scroll', updateActiveNav);
-  updateActiveNav(); // run on load
-})();
 </script>
 </body>
 </html>

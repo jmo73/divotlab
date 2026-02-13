@@ -6,18 +6,6 @@ const API_BASE_URL = 'https://divotlab-api.vercel.app';
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
-function getFlag(country) {
-  const flags = {
-    'USA': '🇺🇸', 'CAN': '🇨🇦', 'MEX': '🇲🇽', 'ENG': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'SCO': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'IRL': '🇮🇪',
-    'NIR': '🇬🇧', 'WAL': '🏴󠁧󠁢󠁷󠁬󠁳󠁿', 'ESP': '🇪🇸', 'FRA': '🇫🇷', 'GER': '🇩🇪', 'ITA': '🇮🇹',
-    'SWE': '🇸🇪', 'NOR': '🇳🇴', 'DEN': '🇩🇰', 'NED': '🇳🇱', 'BEL': '🇧🇪', 'AUT': '🇦🇹',
-    'SUI': '🇨🇭', 'JPN': '🇯🇵', 'KOR': '🇰🇷', 'CHN': '🇨🇳', 'AUS': '🇦🇺', 'NZL': '🇳🇿',
-    'RSA': '🇿🇦', 'ARG': '🇦🇷', 'BRA': '🇧🇷', 'CHI': '🇨🇱', 'COL': '🇨🇴', 'VEN': '🇻🇪',
-    'IND': '🇮🇳', 'THA': '🇹🇭', 'PHI': '🇵🇭', 'TWN': '🇹🇼', 'ZIM': '🇿🇼', 'FIJ': '🇫🇯',
-    'PER': '🇵🇪', 'CRC': '🇨🇷', 'PAN': '🇵🇦', 'PUR': '🇵🇷', 'DOM': '🇩🇴'
-  };
-  return flags[country] || '🏳️';
-}
 
 /**
  * Get an <img> flag element using flagcdn.com for consistent cross-platform rendering.
@@ -260,18 +248,86 @@ function getLabelColor(rating, label) {
   return `rgb(${red}, ${green}, ${blue})`;
 }
 
-function calculateFieldMetrics(players) {
-  if (!players || players.length === 0) return null;
+/**
+ * Build the tournament field player list with full skill data.
+ * 
+ * KEY INSIGHT: Some players (e.g. Rory McIlroy at start of season) appear in
+ * field-updates and predictions but NOT in skill-ratings. Without fallback,
+ * these players silently disappear, causing inconsistent elite/top-tier counts.
+ * 
+ * Resolution order for each player:
+ * 1. Match by dg_id in globalPlayers (skill-ratings) — full breakdown available
+ * 2. Match by dg_id in globalPredictions — use dg_skill_estimate as sg_total
+ * 3. Skip (no usable data)
+ * 
+ * Returns: Array of player objects with at least { dg_id, player_name, sg_total }
+ */
+function buildTournamentField() {
+  const stale = predictionsAreStale();
   
-  const avgSG = players.reduce((sum, p) => sum + (p.sg_total || 0), 0) / players.length;
-  const avgDrivingDist = players.reduce((sum, p) => sum + (p.driving_dist || 0), 0) / players.length;
-  const avgGIR = players.reduce((sum, p) => sum + ((p.gir || 0) * 100), 0) / players.length;
+  // Build a predictions lookup for fallback
+  const predictionLookup = new Map();
+  if (!stale && globalPredictions.length > 0) {
+    globalPredictions.forEach(p => {
+      if (p.dg_id && p.dg_skill_estimate != null) {
+        predictionLookup.set(p.dg_id, p);
+      }
+    });
+  }
   
-  return {
-    avgSG: avgSG.toFixed(2),
-    avgDrivingDist: avgDrivingDist > 0 ? Math.round(avgDrivingDist + 280) : null,
-    avgGIR: avgGIR > 0 ? avgGIR.toFixed(1) : null
-  };
+  let result = [];
+  
+  if (globalFieldList.length > 0) {
+    // Primary: field-updates list
+    result = globalFieldList.map(fp => {
+      // Try skill-ratings first (full breakdown)
+      const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
+      if (playerData && playerData.sg_total != null) return playerData;
+      
+      // Fallback: predictions data (sg_total from dg_skill_estimate)
+      const predData = predictionLookup.get(fp.dg_id);
+      if (predData && predData.dg_skill_estimate != null) {
+        return {
+          dg_id: fp.dg_id,
+          player_name: fp.player_name,
+          country: fp.country || '',
+          sg_total: predData.dg_skill_estimate,
+          sg_ott: null,
+          sg_app: null,
+          sg_arg: null,
+          sg_putt: null,
+          _fromPredictions: true
+        };
+      }
+      
+      // No usable data
+      return null;
+    }).filter(p => p != null && p.sg_total != null);
+  } else if (!stale && globalPredictions.length > 0) {
+    // Fallback: predictions list
+    result = globalPredictions.map(pred => {
+      const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
+      if (playerData && playerData.sg_total != null) return playerData;
+      
+      // Use prediction estimate
+      if (pred.dg_skill_estimate != null) {
+        return {
+          dg_id: pred.dg_id,
+          player_name: pred.player_name,
+          country: '',
+          sg_total: pred.dg_skill_estimate,
+          sg_ott: null,
+          sg_app: null,
+          sg_arg: null,
+          sg_putt: null,
+          _fromPredictions: true
+        };
+      }
+      return null;
+    }).filter(p => p != null && p.sg_total != null);
+  }
+  
+  return result;
 }
 
 // ============================================
@@ -286,7 +342,6 @@ let globalFieldList = [];           // Full field from field-updates (for upcomi
 let globalPredictionEventName = ''; // Which event the predictions are for (staleness check)
 let globalFieldStrengthResult = null; // Cached field strength calculation (shared across card + intelligence)
 let globalFieldForStrength = [];      // The actual player list used for field strength
-let hoveredPlayer = null;
 
 // ============================================
 // MAIN LOADER
@@ -471,29 +526,10 @@ function renderFieldStrength() {
   const stale = predictionsAreStale();
   const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   
-  // Build tournament field consistently:
-  // Primary: field-updates list matched with skill ratings (most stable)
-  // Fallback: predictions matched with skill ratings (only if same event)
-  let fieldForStrength = [];
-  
-  if (globalFieldList.length > 0) {
-    // Best source: field-updates gives us the definitive field list
-    fieldForStrength = globalFieldList
-      .map(fp => {
-        const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
-        if (playerData) return playerData;
-        return { dg_id: fp.dg_id, player_name: fp.player_name, sg_total: 0 };
-      })
-      .filter(p => p.sg_total != null && p.sg_total !== 0);
-  } else if (!stale && globalPredictions.length > 0) {
-    // Fallback: predictions list (only if not stale)
-    fieldForStrength = globalPredictions
-      .map(pred => {
-        const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
-        return playerData || null;
-      })
-      .filter(p => p && p.sg_total != null);
-  }
+  // Build tournament field consistently using centralized helper
+  // This ensures players like Rory (in field but not in skill-ratings) are included
+  // via their dg_skill_estimate from predictions
+  const fieldForStrength = buildTournamentField();
   
   // If we still have nothing, use all PGA players as a last resort
   const fieldPlayersToUse = fieldForStrength.length > 0 ? fieldForStrength : globalPlayers;
@@ -1941,21 +1977,11 @@ function renderValuePlayers() {
   const container = document.getElementById('value-players-list');
   if (!container) return;
   
-  const stale = predictionsAreStale();
+  // Use centralized field builder (includes prediction fallback for missing skill-ratings players)
+  const tournamentField = buildTournamentField();
   
-  // Get players in current tournament — use field list if predictions are stale
-  let tournamentPlayerIds;
-  if (!stale && globalPredictions.length > 0) {
-    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
-  } else if (globalFieldList.length > 0) {
-    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
-  } else {
-    tournamentPlayerIds = new Set();
-  }
-  
-  // Filter to players in tournament and sort by skill
-  const valuePlayers = globalPlayers
-    .filter(p => tournamentPlayerIds.has(p.dg_id) && p.sg_total != null)
+  // Sort by skill and take top 5
+  const valuePlayers = tournamentField
     .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
     .slice(0, 5);
   
@@ -2012,18 +2038,8 @@ function renderCourseProfile() {
   const container = document.getElementById('course-profile-content');
   if (!container) return;
   
-  const stale = predictionsAreStale();
-  
-  // Get tournament players — use field list if predictions are stale
-  let tournamentPlayerIds;
-  if (!stale && globalPredictions.length > 0) {
-    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
-  } else if (globalFieldList.length > 0) {
-    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
-  } else {
-    tournamentPlayerIds = new Set();
-  }
-  const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  // Use centralized field builder (includes prediction fallback)
+  const tournamentPlayers = buildTournamentField();
   
   if (tournamentPlayers.length === 0) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
@@ -2034,11 +2050,13 @@ function renderCourseProfile() {
   // Fall back to recalculating only if the global hasn't been set yet
   const field = globalFieldStrengthResult || calculateFieldStrength(tournamentPlayers);
   
-  // Determine most predictive skill
-  const avgOTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / tournamentPlayers.length;
-  const avgAPP = tournamentPlayers.reduce((sum, p) => sum + (p.sg_app || 0), 0) / tournamentPlayers.length;
-  const avgARG = tournamentPlayers.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / tournamentPlayers.length;
-  const avgPUTT = tournamentPlayers.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / tournamentPlayers.length;
+  // Determine most predictive skill (only from players with full breakdown)
+  const playersWithBreakdown = tournamentPlayers.filter(p => p.sg_ott != null);
+  const bkdnCount = playersWithBreakdown.length || 1; // avoid division by zero
+  const avgOTT = playersWithBreakdown.reduce((sum, p) => sum + (p.sg_ott || 0), 0) / bkdnCount;
+  const avgAPP = playersWithBreakdown.reduce((sum, p) => sum + (p.sg_app || 0), 0) / bkdnCount;
+  const avgARG = playersWithBreakdown.reduce((sum, p) => sum + (p.sg_arg || 0), 0) / bkdnCount;
+  const avgPUTT = playersWithBreakdown.reduce((sum, p) => sum + (p.sg_putt || 0), 0) / bkdnCount;
   
   const skills = [
     { name: 'Driving', avg: Math.abs(avgOTT), raw: avgOTT },
@@ -2103,29 +2121,24 @@ function renderWinningProfile() {
   const statsContainer = document.getElementById('winning-profile-stats');
   if (!container) return;
   
-  const stale = predictionsAreStale();
-  
-  // Get tournament players — use field list if predictions are stale
-  let tournamentPlayerIds;
-  if (!stale && globalPredictions.length > 0) {
-    tournamentPlayerIds = new Set(globalPredictions.map(p => p.dg_id));
-  } else if (globalFieldList.length > 0) {
-    tournamentPlayerIds = new Set(globalFieldList.map(p => p.dg_id));
-  } else {
-    tournamentPlayerIds = new Set();
-  }
-  const tournamentPlayers = globalPlayers.filter(p => tournamentPlayerIds.has(p.dg_id));
+  // Use centralized field builder (includes prediction fallback)
+  const tournamentPlayers = buildTournamentField();
   
   if (tournamentPlayers.length === 0) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px;">No data available</div>';
     return;
   }
   
-  // Calculate average skills of top 10 players
+  // Calculate average skills of top 10 players (only those with full SG breakdown)
   const top10 = tournamentPlayers
-    .filter(p => p.sg_total != null)
+    .filter(p => p.sg_total != null && p.sg_ott != null)
     .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
     .slice(0, 10);
+  
+  if (top10.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px;">Insufficient breakdown data</div>';
+    return;
+  }
   
   const avgOTT = top10.reduce((sum, p) => sum + Math.abs(p.sg_ott || 0), 0) / top10.length;
   const avgAPP = top10.reduce((sum, p) => sum + Math.abs(p.sg_app || 0), 0) / top10.length;
