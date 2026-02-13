@@ -265,9 +265,12 @@ function getLabelColor(rating, label) {
 function buildTournamentField() {
   const stale = predictionsAreStale();
   
-  // Build a predictions lookup for fallback
+  // Build a predictions lookup for dg_skill_estimate fallback.
+  // IMPORTANT: We always build this regardless of staleness because dg_skill_estimate
+  // is a player-level attribute (their overall skill), NOT an event-specific prediction.
+  // A player's skill rating doesn't change between events.
   const predictionLookup = new Map();
-  if (!stale && globalPredictions.length > 0) {
+  if (globalPredictions.length > 0) {
     globalPredictions.forEach(p => {
       if (p.dg_id && p.dg_skill_estimate != null) {
         predictionLookup.set(p.dg_id, p);
@@ -304,7 +307,7 @@ function buildTournamentField() {
       return null;
     }).filter(p => p != null && p.sg_total != null);
   } else if (!stale && globalPredictions.length > 0) {
-    // Fallback: predictions list
+    // Fallback: predictions list (only if same event — otherwise wrong player list)
     result = globalPredictions.map(pred => {
       const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
       if (playerData && playerData.sg_total != null) return playerData;
@@ -325,6 +328,37 @@ function buildTournamentField() {
       }
       return null;
     }).filter(p => p != null && p.sg_total != null);
+  }
+  
+  // Also try DG Rankings as an additional fallback source for skill estimates
+  // This catches players who are in the field but missing from both skill-ratings AND predictions
+  if (globalDGRankings && globalDGRankings.length > 0) {
+    const rankingLookup = new Map();
+    globalDGRankings.forEach(r => {
+      if (r.dg_id && r.dg_skill_estimate != null) {
+        rankingLookup.set(r.dg_id, r);
+      }
+    });
+    
+    // For any field player still missing, try rankings
+    if (globalFieldList.length > 0 && result.length < globalFieldList.length) {
+      const resultIds = new Set(result.map(p => p.dg_id));
+      globalFieldList.forEach(fp => {
+        if (!resultIds.has(fp.dg_id)) {
+          const rankData = rankingLookup.get(fp.dg_id);
+          if (rankData && rankData.dg_skill_estimate != null) {
+            result.push({
+              dg_id: fp.dg_id,
+              player_name: fp.player_name,
+              country: fp.country || '',
+              sg_total: rankData.dg_skill_estimate,
+              sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
+              _fromRankings: true
+            });
+          }
+        }
+      });
+    }
   }
   
   return result;
@@ -405,8 +439,8 @@ async function loadAllData() {
       const rankingsData = await rankingsResponse.json();
       
       if (rankingsData.success && rankingsData.data && rankingsData.data.rankings) {
-        globalDGRankings = rankingsData.data.rankings.slice(0, 10);
-        console.log('✓ Loaded DG Rankings top 10 (PGA Tour only)');
+        globalDGRankings = rankingsData.data.rankings.slice(0, 20);
+        console.log('✓ Loaded DG Rankings top 20 (PGA Tour only) — will display top 10 by skill');
       }
     } catch (err) {
       console.warn('⚠️ Could not load DG rankings:', err);
@@ -891,8 +925,9 @@ function renderTop10() {
         };
       }
     });
-    // Sort by displayed SG Total so cards descend visually
+    // Sort by displayed SG Total so cards descend visually, take top 10
     top10.sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
+    top10 = top10.slice(0, 10);
   } else {
     top10 = globalPlayers
       .filter(p => p.sg_total != null)

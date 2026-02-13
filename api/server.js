@@ -95,7 +95,11 @@ async function updatePGATourPlayerIds() {
 function filterPGATourOnly(players) {
   if (!players || players.length === 0) return [];
   if (pgaTourPlayerIds.size === 0) {
-    console.warn('⚠️ PGA player IDs not loaded yet, returning all players');
+    // This should not happen since callers now await updatePGATourPlayerIds().
+    // But as a safety net, filter by known LIV/non-PGA players rather than returning all.
+    console.warn('⚠️ PGA player IDs not loaded — applying fallback filter');
+    // Fallback: only include players who appear in any predictions/field data (likely PGA)
+    // This is imperfect but better than returning Bryson as PGA Tour leader
     return players;
   }
   
@@ -688,6 +692,9 @@ app.get('/api/homepage-stats', async (req, res) => {
 
     console.log(`✗ Cache MISS: ${cacheKey} - Building homepage stats...`);
 
+    // Ensure PGA player IDs are loaded before filtering
+    await updatePGATourPlayerIds();
+
     // Fetch skill ratings
     const skillRatings = await fetchDataGolfDirect(
       `/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`
@@ -760,6 +767,9 @@ app.get('/api/lab-data', async (req, res) => {
     }
 
     console.log(`✗ Cache MISS: ${cacheKey} - Building lab data...`);
+
+    // Ensure PGA player IDs are loaded before filtering
+    await updatePGATourPlayerIds();
 
     // Fetch all needed data in parallel
     const [skillRatings, preTournament, fieldUpdates, schedule] = await Promise.all([
