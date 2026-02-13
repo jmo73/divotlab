@@ -771,17 +771,111 @@ app.get('/api/lab-data', async (req, res) => {
     // Ensure PGA player IDs are loaded before filtering
     await updatePGATourPlayerIds();
 
-    // Fetch all needed data in parallel
-    const [skillRatings, preTournament, fieldUpdates, schedule] = await Promise.all([
+    // Fetch all needed data in parallel (including rankings for complete skill coverage)
+    const [skillRatings, preTournament, fieldUpdates, schedule, dgRankings] = await Promise.all([
       fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+      fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
+      fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`)
     ]);
 
     // Filter players to PGA Tour only
     const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
     const pgaPlayers = filterPGATourOnly(allPlayers);
+    
+    // Build PGA-only rankings sorted by skill estimate (top 10 for display)
+    const allRankings = dgRankings.rankings || [];
+    const pgaRankings = allRankings
+      .filter(p => p.primary_tour === 'PGA')
+      .sort((a, b) => (b.dg_skill_estimate || 0) - (a.dg_skill_estimate || 0));
+    const topRankings = pgaRankings.slice(0, 20); // Send top 20, client picks 10
+
+    // ── Build enriched field list ──────────────────────────────────────
+    // For every player in the field, resolve their best skill data.
+    // Priority: 1) skill-ratings (full breakdown), 2) rankings (dg_skill_estimate),
+    //           3) predictions (dg_skill_estimate)
+    const skillLookup = new Map();
+    pgaPlayers.forEach(p => { if (p.dg_id) skillLookup.set(p.dg_id, p); });
+    
+    const rankingLookup = new Map();
+    allRankings.forEach(p => { if (p.dg_id) rankingLookup.set(p.dg_id, p); });
+    
+    const predictions = preTournament.baseline_history_fit || preTournament.predictions || [];
+    const predictionLookup = new Map();
+    predictions.forEach(p => { if (p.dg_id) predictionLookup.set(p.dg_id, p); });
+
+    const rawFieldList = fieldUpdates.field || [];
+    const enrichedField = rawFieldList.map(fp => {
+      const skill = skillLookup.get(fp.dg_id);
+      const rank = rankingLookup.get(fp.dg_id);
+      const pred = predictionLookup.get(fp.dg_id);
+      
+      // Best available skill data
+      if (skill && skill.sg_total != null) {
+        return {
+          dg_id: fp.dg_id,
+          player_name: fp.player_name,
+          country: fp.country || skill.country || '',
+          am: fp.am || 0,
+          sg_total: skill.sg_total,
+          sg_ott: skill.sg_ott || null,
+          sg_app: skill.sg_app || null,
+          sg_arg: skill.sg_arg || null,
+          sg_putt: skill.sg_putt || null,
+          _source: 'skill-ratings'
+        };
+      }
+      
+      // Fallback: rankings skill estimate
+      if (rank && rank.dg_skill_estimate != null) {
+        return {
+          dg_id: fp.dg_id,
+          player_name: fp.player_name,
+          country: fp.country || rank.country || '',
+          am: fp.am || 0,
+          sg_total: rank.dg_skill_estimate,
+          sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
+          _source: 'rankings'
+        };
+      }
+      
+      // Fallback: prediction skill estimate
+      if (pred && pred.dg_skill_estimate != null) {
+        return {
+          dg_id: fp.dg_id,
+          player_name: fp.player_name,
+          country: fp.country || '',
+          am: fp.am || 0,
+          sg_total: pred.dg_skill_estimate,
+          sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
+          _source: 'predictions'
+        };
+      }
+      
+      // No skill data found for this player
+      return {
+        dg_id: fp.dg_id,
+        player_name: fp.player_name,
+        country: fp.country || '',
+        am: fp.am || 0,
+        sg_total: null,
+        sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
+        _source: 'none'
+      };
+    });
+    
+    // Log enrichment stats
+    const sources = enrichedField.reduce((acc, p) => { acc[p._source] = (acc[p._source] || 0) + 1; return acc; }, {});
+    console.log(`  Field enrichment: ${JSON.stringify(sources)} (${enrichedField.length} total)`);
+    
+    // Simple field list (for backward compat)
+    const fieldList = rawFieldList.map(p => ({
+      dg_id: p.dg_id,
+      player_name: p.player_name,
+      country: p.country || '',
+      am: p.am || 0
+    }));
 
     // Find current/upcoming event from schedule (fuzzy match for robustness)
     const eventName = fieldUpdates.event_name || preTournament.event_name;
@@ -810,19 +904,13 @@ app.get('/api/lab-data', async (req, res) => {
     // Extract the event name that predictions are actually FOR (may differ from field-updates event)
     const predictionEventName = preTournament.event_name || null;
 
-    // Build field list for upcoming state (names + dg_ids from field-updates)
-    const fieldList = (fieldUpdates.field || []).map(p => ({
-      dg_id: p.dg_id,
-      player_name: p.player_name,
-      country: p.country || '',
-      am: p.am || 0
-    }));
-
     const compositeData = {
-      players: pgaPlayers, // NOW PGA ONLY
-      predictions: preTournament.baseline_history_fit || preTournament.predictions || [],
-      prediction_event_name: predictionEventName, // Which event the predictions are actually for
-      field_list: fieldList, // Full field for upcoming state display
+      players: pgaPlayers, // PGA-filtered skill ratings (full breakdown)
+      enriched_field: enrichedField, // Every field player with best-available skill data
+      top_rankings: topRankings, // Top 20 PGA players by skill estimate
+      predictions: predictions,
+      prediction_event_name: predictionEventName,
+      field_list: fieldList,
       tournament: {
         event_id: fieldUpdates.event_id || currentEvent.event_id,
         event_name: eventName || 'Upcoming Tournament',

@@ -251,117 +251,30 @@ function getLabelColor(rating, label) {
 /**
  * Build the tournament field player list with full skill data.
  * 
- * KEY INSIGHT: Some players (e.g. Rory McIlroy at start of season) appear in
- * field-updates and predictions but NOT in skill-ratings. Without fallback,
- * these players silently disappear, causing inconsistent elite/top-tier counts.
- * 
- * Resolution order for each player:
- * 1. Match by dg_id in globalPlayers (skill-ratings) — full breakdown available
- * 2. Match by dg_id in globalPredictions — use dg_skill_estimate as sg_total
- * 3. Skip (no usable data)
+ * The server's /api/lab-data endpoint resolves the best skill data for every
+ * field player server-side (priority: skill-ratings → rankings → predictions).
+ * This eliminates client-side data stitching and ensures consistent results.
  * 
  * Returns: Array of player objects with at least { dg_id, player_name, sg_total }
  */
 function buildTournamentField() {
-  const stale = predictionsAreStale();
-  
-  // Build a predictions lookup for dg_skill_estimate fallback.
-  // IMPORTANT: We always build this regardless of staleness because dg_skill_estimate
-  // is a player-level attribute (their overall skill), NOT an event-specific prediction.
-  // A player's skill rating doesn't change between events.
-  const predictionLookup = new Map();
-  if (globalPredictions.length > 0) {
-    globalPredictions.forEach(p => {
-      if (p.dg_id && p.dg_skill_estimate != null) {
-        predictionLookup.set(p.dg_id, p);
-      }
-    });
+  // Primary: use server-enriched field (already has best-available skill data per player)
+  if (globalEnrichedField.length > 0) {
+    return globalEnrichedField.filter(p => p.sg_total != null);
   }
   
-  let result = [];
-  
+  // Fallback: shouldn't happen, but if enriched_field isn't available,
+  // try matching field list against globalPlayers
   if (globalFieldList.length > 0) {
-    // Primary: field-updates list
-    result = globalFieldList.map(fp => {
-      // Try skill-ratings first (full breakdown)
-      const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
-      if (playerData && playerData.sg_total != null) return playerData;
-      
-      // Fallback: predictions data (sg_total from dg_skill_estimate)
-      const predData = predictionLookup.get(fp.dg_id);
-      if (predData && predData.dg_skill_estimate != null) {
-        return {
-          dg_id: fp.dg_id,
-          player_name: fp.player_name,
-          country: fp.country || '',
-          sg_total: predData.dg_skill_estimate,
-          sg_ott: null,
-          sg_app: null,
-          sg_arg: null,
-          sg_putt: null,
-          _fromPredictions: true
-        };
-      }
-      
-      // No usable data
-      return null;
-    }).filter(p => p != null && p.sg_total != null);
-  } else if (!stale && globalPredictions.length > 0) {
-    // Fallback: predictions list (only if same event — otherwise wrong player list)
-    result = globalPredictions.map(pred => {
-      const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id || p.player_name === pred.player_name);
-      if (playerData && playerData.sg_total != null) return playerData;
-      
-      // Use prediction estimate
-      if (pred.dg_skill_estimate != null) {
-        return {
-          dg_id: pred.dg_id,
-          player_name: pred.player_name,
-          country: '',
-          sg_total: pred.dg_skill_estimate,
-          sg_ott: null,
-          sg_app: null,
-          sg_arg: null,
-          sg_putt: null,
-          _fromPredictions: true
-        };
-      }
-      return null;
-    }).filter(p => p != null && p.sg_total != null);
+    return globalFieldList
+      .map(fp => {
+        const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
+        return playerData || null;
+      })
+      .filter(p => p && p.sg_total != null);
   }
   
-  // Also try DG Rankings as an additional fallback source for skill estimates
-  // This catches players who are in the field but missing from both skill-ratings AND predictions
-  if (globalDGRankings && globalDGRankings.length > 0) {
-    const rankingLookup = new Map();
-    globalDGRankings.forEach(r => {
-      if (r.dg_id && r.dg_skill_estimate != null) {
-        rankingLookup.set(r.dg_id, r);
-      }
-    });
-    
-    // For any field player still missing, try rankings
-    if (globalFieldList.length > 0 && result.length < globalFieldList.length) {
-      const resultIds = new Set(result.map(p => p.dg_id));
-      globalFieldList.forEach(fp => {
-        if (!resultIds.has(fp.dg_id)) {
-          const rankData = rankingLookup.get(fp.dg_id);
-          if (rankData && rankData.dg_skill_estimate != null) {
-            result.push({
-              dg_id: fp.dg_id,
-              player_name: fp.player_name,
-              country: fp.country || '',
-              sg_total: rankData.dg_skill_estimate,
-              sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
-              _fromRankings: true
-            });
-          }
-        }
-      });
-    }
-  }
-  
-  return result;
+  return [];
 }
 
 // ============================================
@@ -373,6 +286,7 @@ let globalTournamentInfo = {};
 let globalDGRankings = [];
 let globalLeaderboard = [];
 let globalFieldList = [];           // Full field from field-updates (for upcoming state)
+let globalEnrichedField = [];       // Server-resolved field with best-available skill data per player
 let globalPredictionEventName = ''; // Which event the predictions are for (staleness check)
 let globalFieldStrengthResult = null; // Cached field strength calculation (shared across card + intelligence)
 let globalFieldForStrength = [];      // The actual player list used for field strength
@@ -413,37 +327,32 @@ async function loadAllData() {
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
-      const { players, predictions, tournament, field_list, prediction_event_name } = labData.data;
+      const { players, enriched_field, top_rankings, predictions, tournament, field_list, prediction_event_name } = labData.data;
       
       globalPlayers = players || [];
       globalPredictions = predictions || [];
       globalTournamentInfo = tournament || {};
       globalFieldList = field_list || [];
       globalPredictionEventName = prediction_event_name || '';
+      globalEnrichedField = enriched_field || []; // Server-resolved field with best skill data
+      globalDGRankings = top_rankings || [];       // Top 20 PGA players by skill estimate
       
-      console.log('✓ Loaded', globalPlayers.length, 'players');
+      console.log('✓ Loaded', globalPlayers.length, 'skill-rated players');
+      console.log('✓ Loaded', globalEnrichedField.length, 'enriched field players');
+      console.log('✓ Loaded', globalDGRankings.length, 'top rankings');
       console.log('✓ Loaded', globalPredictions.length, 'predictions');
       console.log('✓ Tournament:', globalTournamentInfo.event_name);
       console.log('✓ Predictions for:', globalPredictionEventName);
       console.log('✓ Field list:', globalFieldList.length, 'players');
       console.log('✓ Tournament state:', getTournamentState(globalTournamentInfo));
       
+      // Log enrichment sources
+      const sources = globalEnrichedField.reduce((acc, p) => { acc[p._source] = (acc[p._source] || 0) + 1; return acc; }, {});
+      console.log('✓ Field data sources:', JSON.stringify(sources));
+      
       if (predictionsAreStale()) {
         console.warn('⚠️ Predictions are STALE — predictions for', globalPredictionEventName, 'but displaying', globalTournamentInfo.event_name);
       }
-    }
-    
-    // Load DG Rankings for Top 10 (PGA ONLY)
-    try {
-      const rankingsResponse = await fetch(`${API_BASE_URL}/api/rankings?pga_only=true`);
-      const rankingsData = await rankingsResponse.json();
-      
-      if (rankingsData.success && rankingsData.data && rankingsData.data.rankings) {
-        globalDGRankings = rankingsData.data.rankings.slice(0, 20);
-        console.log('✓ Loaded DG Rankings top 20 (PGA Tour only) — will display top 10 by skill');
-      }
-    } catch (err) {
-      console.warn('⚠️ Could not load DG rankings:', err);
     }
     
     // Attempt to load live data if we're within the tournament date range.
@@ -907,21 +816,23 @@ function renderTop10() {
       // Try to find matching player data for full stats
       const playerData = globalPlayers.find(p => p.dg_id === ranking.dg_id);
       
-      if (playerData) {
-        // Use full player data — mark as having real breakdown
+      if (playerData && playerData.sg_total != null && playerData.sg_total !== 0) {
+        // Use full player data — has real SG breakdown
         return { ...playerData, _hasBreakdown: true };
       } else {
-        // Use ranking data — no real breakdown available
+        // Player either not in skill-ratings, or has null/0 sg_total there.
+        // Use dg_skill_estimate from rankings as the primary number.
+        // Merge any available breakdown from skill-ratings if it exists.
         return {
           dg_id: ranking.dg_id,
           player_name: ranking.player_name,
-          country: ranking.country,
+          country: ranking.country || (playerData ? playerData.country : ''),
           sg_total: ranking.dg_skill_estimate,
-          sg_ott: null,
-          sg_app: null,
-          sg_arg: null,
-          sg_putt: null,
-          _hasBreakdown: false
+          sg_ott: playerData ? playerData.sg_ott : null,
+          sg_app: playerData ? playerData.sg_app : null,
+          sg_arg: playerData ? playerData.sg_arg : null,
+          sg_putt: playerData ? playerData.sg_putt : null,
+          _hasBreakdown: !!(playerData && playerData.sg_ott != null)
         };
       }
     });
