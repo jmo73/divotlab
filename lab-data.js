@@ -223,6 +223,11 @@ function getPlayingStyle(player) {
   const offTee = player.sg_ott || 0;
   const aroundGreen = player.sg_arg || 0;
   
+  // If no breakdown data available, we can't determine style
+  if (player.sg_ott == null && player.sg_app == null && player.sg_putt == null && player.sg_arg == null) {
+    return { name: 'Elite', color: '#5BBF85' };
+  }
+  
   const categories = [
     { name: 'Power', value: offTee, color: '#E76F51' },
     { name: 'Precision', value: approach, color: '#5A8FA8' },
@@ -865,17 +870,19 @@ function renderTop10() {
       // Try to find matching player data for full stats
       const playerData = globalPlayers.find(p => p.dg_id === ranking.dg_id);
       
+      // Always use ranking.country as the authoritative source (skill-ratings may not have it)
+      const country = ranking.country || (playerData ? playerData.country : '') || '';
+      
       if (playerData && playerData.sg_total != null && playerData.sg_total !== 0) {
         // Use full player data — has real SG breakdown
-        return { ...playerData, _hasBreakdown: true };
+        return { ...playerData, country, _hasBreakdown: true };
       } else {
-        // Player either not in skill-ratings, or has null/0 sg_total there.
+        // Player not in skill-ratings or has no data there.
         // Use dg_skill_estimate from rankings as the primary number.
-        // Merge any available breakdown from skill-ratings if it exists.
         return {
           dg_id: ranking.dg_id,
           player_name: ranking.player_name,
-          country: ranking.country || (playerData ? playerData.country : ''),
+          country,
           sg_total: ranking.dg_skill_estimate,
           sg_ott: playerData ? playerData.sg_ott : null,
           sg_app: playerData ? playerData.sg_app : null,
@@ -903,7 +910,6 @@ function renderTop10() {
   
   container.innerHTML = top10.map((p, i) => {
     const style = getPlayingStyle(p);
-    const flagHtml = getFlagImg(p.country);
     
     // Show dash for SG breakdown if we don't have real data
     const formatSkill = (val) => {
@@ -915,20 +921,10 @@ function renderTop10() {
       return val >= 0 ? 'pos' : 'neg';
     };
     
-    return `
-      <div class="player-card" style="animation-delay: ${i * 0.05}s">
-        <div class="card-top">
-          <div class="rank-badge">${i + 1}</div>
-          ${flagHtml}
-          <span class="style-tag" style="color: ${style.color}; border-color: ${style.color};">
-            ${style.name}
-          </span>
-        </div>
-        <div class="player-name">${p.player_name}</div>
-        <div class="sg-total">
-          <span class="sg-number">${formatSG(p.sg_total)}</span>
-          <span class="sg-label">DataGolf Skill Rating</span>
-        </div>
+    // Build skills section — show breakdown or a clean note
+    let skillsHtml;
+    if (p._hasBreakdown) {
+      skillsHtml = `
         <div class="skills-list">
           <div class="skill-row">
             <span class="skill-name">Off-the-Tee</span>
@@ -946,7 +942,28 @@ function renderTop10() {
             <span class="skill-name">Putting</span>
             <span class="skill-value ${skillClass(p.sg_putt)}">${formatSkill(p.sg_putt)}</span>
           </div>
+        </div>`;
+    } else {
+      skillsHtml = `
+        <div class="skills-list" style="display: flex; align-items: center; justify-content: center; min-height: 88px;">
+          <span style="font-size: 11px; color: rgba(250,250,250,0.3); font-style: italic; letter-spacing: 0.03em;">Breakdown available after more PGA rounds</span>
+        </div>`;
+    }
+    
+    return `
+      <div class="player-card" style="animation-delay: ${i * 0.05}s">
+        <div class="card-top">
+          <div class="rank-badge">${i + 1}</div>
+          <span class="style-tag" style="color: ${style.color}; border-color: ${style.color};">
+            ${style.name}
+          </span>
         </div>
+        <div class="player-name">${p.player_name}</div>
+        <div class="sg-total">
+          <span class="sg-number">${formatSG(p.sg_total)}</span>
+          <span class="sg-label">DataGolf Skill Rating</span>
+        </div>
+        ${skillsHtml}
       </div>
     `;
   }).join('');

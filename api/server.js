@@ -72,22 +72,26 @@ async function updatePGATourPlayerIds() {
   }
   
   try {
-    console.log('🏌️ Updating PGA Tour player IDs from rankings...');
+    console.log('🏌️ Updating non-LIV player IDs from rankings...');
     const rankings = await fetchDataGolfDirect(
       `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`
     );
     
     if (rankings.rankings) {
+      // IMPORTANT: We exclude LIV players rather than requiring primary_tour='PGA'.
+      // Players like Rory McIlroy (primary_tour='euro') compete on the PGA Tour
+      // but get filtered out by a strict PGA-only check. Excluding LIV specifically
+      // keeps all PGA/Euro/Korn Ferry players while removing Bryson, Brooks, etc.
       pgaTourPlayerIds = new Set(
         rankings.rankings
-          .filter(p => p.primary_tour === 'PGA')
+          .filter(p => (p.primary_tour || '').toLowerCase() !== 'liv')
           .map(p => p.dg_id)
       );
       lastRankingsUpdate = now;
-      console.log(`✅ Updated PGA Tour player IDs: ${pgaTourPlayerIds.size} players`);
+      console.log(`✅ Updated non-LIV player IDs: ${pgaTourPlayerIds.size} players`);
     }
   } catch (error) {
-    console.error('❌ Error updating PGA player IDs:', error);
+    console.error('❌ Error updating player IDs:', error);
   }
 }
 
@@ -235,10 +239,10 @@ app.get('/api/rankings', async (req, res) => {
     // Update PGA player IDs cache from this data
     await updatePGATourPlayerIds();
 
-    // Apply PGA Tour filter using primary_tour field directly
+    // Apply tour filter — exclude LIV rather than requiring PGA
     let rankings = result.data.rankings || [];
     if (req.query.pga_only === 'true') {
-      rankings = rankings.filter(p => p.primary_tour === 'PGA');
+      rankings = rankings.filter(p => (p.primary_tour || '').toLowerCase() !== 'liv');
     }
 
     res.json({
