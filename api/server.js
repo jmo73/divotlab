@@ -784,12 +784,19 @@ app.get('/api/lab-data', async (req, res) => {
     const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
     const pgaPlayers = filterPGATourOnly(allPlayers);
     
-    // Build PGA-only rankings sorted by skill estimate (top 10 for display)
+    // Build top rankings by skill estimate.
+    // IMPORTANT: We exclude LIV players specifically rather than requiring primary_tour='PGA'.
+    // Players like Rory McIlroy (primary_tour='euro') and Tommy Fleetwood compete on
+    // the PGA Tour but may not have primary_tour set to 'PGA'. The top 10 globally
+    // minus LIV gives us exactly the PGA Tour's best.
     const allRankings = dgRankings.rankings || [];
-    const pgaRankings = allRankings
-      .filter(p => p.primary_tour === 'PGA')
-      .sort((a, b) => (b.dg_skill_estimate || 0) - (a.dg_skill_estimate || 0));
-    const topRankings = pgaRankings.slice(0, 20); // Send top 20, client picks 10
+    const nonLivRankings = allRankings.filter(p => {
+      const tour = (p.primary_tour || '').toLowerCase();
+      return tour !== 'liv';
+    });
+    const topRankings = [...nonLivRankings]
+      .sort((a, b) => (b.dg_skill_estimate || 0) - (a.dg_skill_estimate || 0))
+      .slice(0, 20); // Send top 20, client displays top 10
 
     // ── Build enriched field list ──────────────────────────────────────
     // For every player in the field, resolve their best skill data.

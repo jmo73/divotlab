@@ -54,6 +54,34 @@ function getEventStatus(tournament) {
   
   if (state === 'live') {
     const currentRound = tournament.current_round || 0;
+    
+    // Check if the current round is complete (all active players finished)
+    // and if the tournament itself is done (round 4 complete)
+    if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
+      const activePlayers = globalLeaderboard.filter(p => {
+        // Exclude WD/CUT/DQ players
+        const pos = String(p.current_pos || '').toUpperCase();
+        return !pos.includes('WD') && !pos.includes('CUT') && !pos.includes('DQ') && !pos.includes('MDF');
+      });
+      
+      const allFinished = activePlayers.length > 0 && activePlayers.every(p => {
+        const thru = p.thru;
+        if (thru === 18 || thru === '18' || thru === 'F' || thru === 'f') return true;
+        return false;
+      });
+      
+      if (allFinished) {
+        if (currentRound >= 4) {
+          // Tournament over — final round complete
+          return { label: 'Final', sublabel: '', color: '#5A8FA8' };
+        } else {
+          // Round complete but more rounds to play
+          return { label: `Round ${currentRound}`, sublabel: 'Complete', color: '#5BBF85' };
+        }
+      }
+    }
+    
+    // Round in progress
     return { label: 'Live', sublabel: `R${currentRound}`, color: '#E76F51' };
   }
   
@@ -73,6 +101,7 @@ function getEventStatus(tournament) {
  * - On start_date or after → 'upcoming' by default
  * - Only 'live' if we have ACTUAL live scoring data (globalLeaderboard populated)
  * - After end_date → 'completed'
+ * - Round 4 with all players finished → 'completed' (catches same-day completion)
  * 
  * Returns: 'upcoming' | 'live' | 'completed'
  */
@@ -109,6 +138,21 @@ function getTournamentState(tournament) {
   // Only report 'live' if we have actual live scoring data.
   // globalLeaderboard is populated ONLY when the live-tournament API returns real scores.
   if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
+    // Check if final round is complete — if so, tournament is done
+    const currentRound = tournament.current_round || 0;
+    if (currentRound >= 4) {
+      const activePlayers = globalLeaderboard.filter(p => {
+        const pos = String(p.current_pos || '').toUpperCase();
+        return !pos.includes('WD') && !pos.includes('CUT') && !pos.includes('DQ') && !pos.includes('MDF');
+      });
+      const allFinished = activePlayers.length > 0 && activePlayers.every(p => {
+        const thru = p.thru;
+        return thru === 18 || thru === '18' || thru === 'F' || thru === 'f';
+      });
+      if (allFinished) {
+        return 'completed';
+      }
+    }
     return 'live';
   }
   
@@ -485,9 +529,9 @@ function renderFieldStrength() {
   const pct = (parseFloat(field.rating) / 10) * 100;
   const labelColor = getLabelColor(field.rating, field.label);
   
-  // Get top 3 leaders from leaderboard (live data only)
+  // Get top 3 leaders from leaderboard (live or completed)
   let top3Leaders = [];
-  if (isLive && globalLeaderboard.length > 0) {
+  if ((isLive || state === 'completed') && globalLeaderboard.length > 0) {
     const sortedByScore = [...globalLeaderboard].sort((a, b) => {
       let scoreA = a.current_score;
       if (scoreA === 'E' || scoreA === 0) scoreA = 0;
@@ -515,7 +559,8 @@ function renderFieldStrength() {
   
   // Leaders card content
   let leadersContent = '';
-  if (isLive && top3Leaders.length > 0) {
+  if ((isLive || state === 'completed') && top3Leaders.length > 0) {
+    const leaderLabel = state === 'completed' ? 'Final' : 'Leaders';
     leadersContent = top3Leaders.map((p, i) => {
       const score = p.current_score || 0;
       const scoreDisplay = score > 0 ? `+${score}` : score === 0 || score === 'E' ? 'E' : score;
@@ -583,8 +628,8 @@ function renderFieldStrength() {
       <!-- Leaders Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">Leaders${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
-          <span class="strength-value" style="font-size: 18px;">${isLive ? '🏆' : ''}</span>
+          <span class="strength-label">${state === 'completed' ? 'Final Results' : 'Leaders'}${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-value" style="font-size: 18px;">${(isLive || state === 'completed') ? '🏆' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
           <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -623,7 +668,14 @@ function renderLeaderboard() {
   // Update live indicator above table
   if (liveIndicator) {
     if (isLive) {
-      liveIndicator.innerHTML = `🔴 Live Scores · ${tournamentName}`;
+      const eventStatus = getEventStatus(globalTournamentInfo);
+      // Could be "Live · R2" or "Round 2 · Complete"
+      const statusText = eventStatus.sublabel ? `${eventStatus.label} · ${eventStatus.sublabel}` : eventStatus.label;
+      const isRoundComplete = eventStatus.label.startsWith('Round') && eventStatus.sublabel === 'Complete';
+      const dotColor = isRoundComplete ? '🟢' : '🔴';
+      liveIndicator.innerHTML = `${dotColor} ${statusText} · ${tournamentName}`;
+    } else if (state === 'completed') {
+      liveIndicator.innerHTML = `✅ Final · ${tournamentName}`;
     } else if (state === 'upcoming') {
       liveIndicator.innerHTML = `Upcoming · ${tournamentName}`;
     } else {
@@ -631,8 +683,8 @@ function renderLeaderboard() {
     }
   }
   
-  // LIVE: show full leaderboard with scores
-  if (isLive && globalLeaderboard.length > 0) {
+  // LIVE or COMPLETED: show full leaderboard with scores
+  if ((isLive || state === 'completed') && globalLeaderboard.length > 0) {
     // Sort by current score (lowest to highest), then by position
     const sorted = [...globalLeaderboard].sort((a, b) => {
       let scoreA = a.current_score;
@@ -693,7 +745,9 @@ function renderLeaderboard() {
               
               // Position: if null/empty and hasn't started, show '-' (they'll sort to bottom)
               const pos = p.current_pos || (hasNotStarted ? '-' : '-');
-              const thruDisplay = hasNotStarted ? '-' : (p.thru || '-');
+              let thruDisplay = hasNotStarted ? '-' : (p.thru || '-');
+              // Show "F" for players who finished their round (thru = 18)
+              if (thruDisplay === 18 || thruDisplay === '18') thruDisplay = 'F';
               
               return `
                 <tr>
@@ -718,11 +772,17 @@ function renderLeaderboard() {
   
   // UPCOMING: show the field list with skill ratings
   if (state === 'upcoming' || state === 'completed') {
-    // Build a displayable field — use field list matched with skill data
+    // Build a displayable field — use server-enriched data if available
     let fieldDisplay = [];
     
-    // Try matching field list players with skill data
-    if (globalFieldList.length > 0) {
+    if (globalEnrichedField.length > 0) {
+      fieldDisplay = globalEnrichedField.map(p => ({
+        player_name: p.player_name,
+        country: p.country || '',
+        sg_total: p.sg_total,
+        am: p.am || 0
+      }));
+    } else if (globalFieldList.length > 0) {
       fieldDisplay = globalFieldList.map(fp => {
         const playerData = globalPlayers.find(p => p.dg_id === fp.dg_id);
         return {
@@ -730,17 +790,6 @@ function renderLeaderboard() {
           country: fp.country || (playerData ? playerData.country : ''),
           sg_total: playerData ? playerData.sg_total : null,
           am: fp.am || 0
-        };
-      });
-    } else if (!predictionsAreStale() && globalPredictions.length > 0) {
-      // Fallback: use predictions list
-      fieldDisplay = globalPredictions.map(pred => {
-        const playerData = globalPlayers.find(p => p.dg_id === pred.dg_id);
-        return {
-          player_name: pred.player_name,
-          country: playerData ? playerData.country : '',
-          sg_total: playerData ? playerData.sg_total : (pred.dg_skill_estimate || null),
-          am: 0
         };
       });
     }
