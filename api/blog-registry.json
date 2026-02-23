@@ -69,6 +69,20 @@
       "hero_alt": "Pebble Beach Holes 5-6",
       "hero_credit": "Photo: krh006",
       "featured": false
+    },
+    {
+      "slug": "what-is-strokes-gained-golf-simple-guide",
+      "title": "What Is Strokes Gained? The Stat That Changed Golf Forever",
+      "category": "Strokes Gained",
+      "category_class": "sg",
+      "date": "Feb 23, 2026",
+      "date_iso": "2026-02-23",
+      "read_time": "7 min read",
+      "meta_description": "Strokes gained revolutionized golf analysis. Here's how it works, why it matters, and what Scottie Scheffler's dominance really means.",
+      "hero_image": null,
+      "hero_alt":"",
+      "hero_credit": "",
+      "featured": false
     }
   ]
 }
