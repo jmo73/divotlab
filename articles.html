@@ -129,13 +129,57 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 .f-col a:hover { color:var(--white); }
 .footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
 
+
+/* MOBILE NAV */
+.nav-hamburger {
+  display:none;
+  flex-direction:column; justify-content:center; align-items:center;
+  width:40px; height:40px; margin-left:auto;
+  cursor:pointer; background:none; border:none;
+  gap:5px; z-index:101; position:relative;
+}
+.nav-hamburger span {
+  display:block; width:22px; height:2px;
+  background:var(--white); border-radius:2px;
+  transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease;
+}
+nav.light .nav-hamburger span { background:var(--black); }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.nav-drawer {
+  position:fixed; top:68px; left:0; right:0; z-index:99;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:12px 0 20px;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
+}
+.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer.light { background:rgba(250,250,250,0.95); border-bottom-color:rgba(0,0,0,0.07); }
+.nav-drawer a {
+  font-size:15px; font-weight:500; letter-spacing:.06em;
+  color:rgba(250,250,250,.75); padding:10px 0;
+  width:100%; text-align:center; transition:color .2s;
+}
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer.light a { color:var(--graphite); }
+.nav-drawer.light a:hover { color:var(--black); }
+.nav-drawer .nav-cta {
+  margin-top:8px; width:auto; padding:10px 32px; border-radius:5px;
+}
+
 @media(max-width:900px){
   .articles-grid { grid-template-columns:1fr 1fr; }
   .footer-grid { grid-template-columns:1fr 1fr; }
 }
 @media(max-width:600px){
   nav { padding:0 22px; }
-  .nav-links a:not(.nav-cta){ display:none; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
   .articles-hero { min-height:55vh; padding:120px 22px 80px; }
   .filter-bar { padding:0 22px; }
   .filter-row { gap:0; overflow-x:auto; }
@@ -160,12 +204,24 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <span class="nav-wordmark">DIVOT <span>LAB</span></span>
   </a>
   <div class="nav-links">
+    <a href="/practice">Practice</a>
     <a href="/articles">Articles</a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
     <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice</a>
+  <a href="/articles">Articles</a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
 
 <!-- HERO -->
 <section class="articles-hero">
@@ -219,7 +275,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <div class="f-col">
       <h5>Company</h5>
       <a href="/about">About</a>
+      <a href="/practice">Practice</a>
       <a href="/the-lab">The Lab</a>
+      <a href="/lab-picks">Lab Picks</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
     </div>
@@ -317,6 +375,26 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     });
 
   function esc(s) { if(!s) return ''; var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+})();
+</script>
+
+<script>
+(function(){
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  var navEl = document.querySelector('nav');
+  if (hamburger && drawer && navEl) {
+    hamburger.addEventListener('click', function(){
+      navEl.classList.toggle('menu-open');
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        navEl.classList.remove('menu-open');
+        drawer.classList.remove('open');
+      });
+    });
+  }
 })();
 </script>
 </body>
