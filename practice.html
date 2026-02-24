@@ -1101,18 +1101,55 @@ function showTeaser() {
 // ============================================
 // PAYMENT / UNLOCK
 // ============================================
-function handleUnlock() {
-  // TODO: Replace with Stripe Checkout redirect
-  // For now, show full results directly for testing
-  //
-  // Stripe integration:
-  // window.location.href = 'https://buy.stripe.com/YOUR_PAYMENT_LINK?client_reference_id=' + encodeURIComponent(JSON.stringify(answers));
-  //
-  // After successful payment, Stripe redirects to a success URL
-  // where you call showFullResults()
 
-  showFullResults();
+// *** PASTE YOUR STRIPE PAYMENT LINK HERE ***
+var STRIPE_LINK = 'https://buy.stripe.com/test_28E14nfgacI72ho6Phes000';
+
+function encodeAnswers() {
+  // Compact encode: handicap,miss,gir,proximity,updown,putts,three_putt,penalty
+  var keys = ['handicap','miss','gir','proximity','updown','putts','three_putt','penalty'];
+  return keys.map(function(k){ return answers[k] || ''; }).join(',');
 }
+
+function decodeAnswers(str) {
+  var keys = ['handicap','miss','gir','proximity','updown','putts','three_putt','penalty'];
+  var vals = str.split(',');
+  var obj = {};
+  keys.forEach(function(k, i){ obj[k] = vals[i] || ''; });
+  return obj;
+}
+
+function handleUnlock() {
+  // Save answers to sessionStorage so we can restore after Stripe redirect
+  sessionStorage.setItem('dl_answers', JSON.stringify(answers));
+
+  // Redirect to Stripe with answers encoded in client_reference_id
+  var encoded = encodeAnswers();
+  var url = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(encoded);
+  window.location.href = url;
+}
+
+// On page load: check if returning from Stripe payment
+(function checkPaymentReturn() {
+  var params = new URLSearchParams(window.location.search);
+
+  // Stripe Payment Links redirect with session_id
+  if (params.has('session_id')) {
+    // Try to restore answers from sessionStorage first
+    var stored = sessionStorage.getItem('dl_answers');
+    if (stored) {
+      try { answers = JSON.parse(stored); } catch(e) {}
+    }
+
+    // If we have answers, show results immediately
+    if (answers.handicap) {
+      document.getElementById('hero').style.display = 'none';
+      showFullResults();
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }
+})();
 
 // ============================================
 // FULL RESULTS
@@ -1223,6 +1260,7 @@ function showFullResults() {
 function retakeQuiz() {
   currentQ = 0;
   answers = {};
+  sessionStorage.removeItem('dl_answers');
   document.getElementById('resultsFull').classList.remove('active');
   document.getElementById('resultsFull').innerHTML = '';
   document.getElementById('hero').style.display = '';
