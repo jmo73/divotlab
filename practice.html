@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>What Should I Practice? — Divot Lab</title>
+<meta name="description" content="Answer 8 questions about your golf game. Get a data-backed practice plan that tells you exactly where you're losing strokes — and how to fix it.">
+<meta property="og:title" content="What Should I Practice? — Divot Lab">
+<meta property="og:description" content="Answer 8 questions about your golf game. Get a personalized, data-backed practice plan.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divotlab.com/what-should-i-practice">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://divotlab.com/what-should-i-practice">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) — REPLACE G-XXXXXXXXXX with your real ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+
+<style>
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+  --red:        #E76F51;
+  --amber:      #DDA15E;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--body);
+  color: var(--black);
+  background: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color:inherit; text-decoration:none; }
+
+/* =============================================
+   NAV — matches homepage exactly
+   ============================================= */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  padding: 0 56px; height: 68px;
+  display: flex; align-items: center;
+  background: rgba(10,10,10,0.55);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--white); }
+.nav-wordmark {
+  font-family:var(--body); font-size:14px; font-weight:600;
+  letter-spacing:.1em; color:var(--white);
+}
+.nav-wordmark span { font-weight:300; opacity:.55; }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a {
+  font-size:13px; font-weight:500; letter-spacing:.05em;
+  color:rgba(250,250,250,.65); transition:color .2s;
+}
+.nav-links a:hover { color:var(--white); }
+.nav-cta {
+  background:var(--green); color:var(--white)!important;
+  padding:9px 22px; border-radius:5px; font-weight:500;
+  transition:background .2s, transform .15s, box-shadow .2s;
+}
+.nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
+
+/* =============================================
+   MOBILE NAV – hamburger + drawer
+   ============================================= */
+.nav-hamburger {
+  display:none;
+  flex-direction:column; justify-content:center; align-items:center;
+  width:40px; height:40px; margin-left:auto;
+  cursor:pointer; background:none; border:none;
+  gap:5px; z-index:101; position:relative;
+}
+.nav-hamburger span {
+  display:block; width:22px; height:2px;
+  background:var(--white); border-radius:2px;
+  transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease;
+}
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.nav-drawer {
+  position:fixed; top:68px; left:0; right:0; z-index:99;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:12px 0 20px;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
+}
+.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer a {
+  font-size:15px; font-weight:500; letter-spacing:.06em;
+  color:rgba(250,250,250,.75); padding:10px 0;
+  width:100%; text-align:center; transition:color .2s;
+}
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer .nav-cta {
+  margin-top:8px; width:auto; padding:10px 32px; border-radius:5px;
+}
+
+/* =============================================
+   HERO
+   ============================================= */
+.hero {
+  min-height: 60vh;
+  padding: 140px 48px 80px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content:''; position:absolute;
+  top:0; left:50%; transform:translateX(-50%);
+  width:800px; height:800px;
+  background:radial-gradient(ellipse at center, rgba(27,77,62,.14) 0%, transparent 66%);
+  pointer-events:none;
+}
+.hero-inner { position:relative; z-index:1; max-width:620px; }
+.hero-eyebrow {
+  display:inline-block;
+  font-size:11px; font-weight:500; letter-spacing:.26em;
+  text-transform:uppercase; color:var(--green-light);
+  margin-bottom:28px;
+  opacity:0; animation: riseIn .55s cubic-bezier(.22,1,.36,1) .1s forwards;
+}
+.hero h1 {
+  font-family:var(--display);
+  font-size:clamp(44px,7vw,68px);
+  font-weight:600; color:var(--white);
+  letter-spacing:-.025em; line-height:1.06;
+  opacity:0; animation: riseIn .65s cubic-bezier(.22,1,.36,1) .25s forwards;
+}
+.hero h1 em { font-style:italic; color:var(--green-light); font-weight:500; }
+.hero-sub {
+  margin-top:20px; font-size:16px; font-weight:300;
+  color:rgba(250,250,250,.42); line-height:1.65;
+  max-width:440px; margin-left:auto; margin-right:auto;
+  opacity:0; animation: riseIn .6s cubic-bezier(.22,1,.36,1) .45s forwards;
+}
+.hero-start {
+  margin-top:36px;
+  opacity:0; animation: riseIn .6s cubic-bezier(.22,1,.36,1) .6s forwards;
+}
+.hero-start button {
+  background:var(--green); color:var(--white); border:none;
+  padding:15px 44px; border-radius:5px;
+  font-family:var(--body); font-size:15px; font-weight:500;
+  letter-spacing:.03em; cursor:pointer;
+  transition:background .2s, transform .15s, box-shadow .25s;
+}
+.hero-start button:hover {
+  background:#236b4f; transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(27,77,62,.28);
+}
+.hero-note {
+  margin-top:14px; font-size:12px; color:rgba(250,250,250,.22);
+  opacity:0; animation: riseIn .5s cubic-bezier(.22,1,.36,1) .75s forwards;
+}
+
+/* =============================================
+   QUIZ CONTAINER
+   ============================================= */
+.quiz-wrap {
+  display: none;
+  padding: 40px 24px 100px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.quiz-wrap.active { display: block; }
+
+/* Progress bar */
+.progress-bar {
+  width: 100%; height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--blue-mid));
+  border-radius: 2px;
+  transition: width .45s cubic-bezier(.22,1,.36,1);
+}
+.progress-label {
+  font-size:11px; font-weight:500; letter-spacing:.15em;
+  text-transform:uppercase; color:rgba(250,250,250,.28);
+  margin-bottom:12px;
+  text-align:center;
+}
+
+/* Question card */
+.question-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.question-card.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.question-card.exit {
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.q-number {
+  font-family:var(--mono); font-size:12px;
+  color:var(--green-light); letter-spacing:.05em;
+  margin-bottom:12px;
+}
+.q-text {
+  font-family:var(--display);
+  font-size:clamp(26px,4vw,34px);
+  font-weight:600; color:var(--white);
+  letter-spacing:-.01em; line-height:1.18;
+  margin-bottom:10px;
+}
+.q-subtext {
+  font-size:14px; color:rgba(250,250,250,.35);
+  line-height:1.55; margin-bottom:32px;
+}
+
+/* Options */
+.options { display:flex; flex-direction:column; gap:10px; }
+.option {
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  cursor:pointer;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+.option:hover {
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.14);
+  transform:translateX(4px);
+}
+.option.selected {
+  background:rgba(91,191,133,0.08);
+  border-color:var(--green-light);
+}
+.option-radio {
+  width:20px; height:20px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.18);
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:border-color .2s;
+}
+.option.selected .option-radio {
+  border-color:var(--green-light);
+}
+.option.selected .option-radio::after {
+  content:'';
+  width:10px; height:10px; border-radius:50%;
+  background:var(--green-light);
+}
+.option-text {
+  font-size:15px; color:rgba(250,250,250,.72);
+  font-weight:400; transition:color .2s;
+}
+.option.selected .option-text { color:var(--white); font-weight:500; }
+
+/* (quiz nav buttons removed — auto-advance only) */
+
+/* =============================================
+   RESULTS — TEASER (pre-payment)
+   ============================================= */
+.results-teaser {
+  display:none;
+  padding:100px 24px 80px;
+  max-width:640px;
+  margin:0 auto;
+  text-align:center;
+}
+.results-teaser.active { display:block; }
+
+.teaser-label {
+  font-size:11px; font-weight:500; letter-spacing:.24em;
+  text-transform:uppercase; color:var(--green-light);
+  margin-bottom:16px;
+  opacity:0; animation: riseIn .5s ease .1s forwards;
+}
+.teaser-title {
+  font-family:var(--display);
+  font-size:clamp(32px,5vw,44px);
+  font-weight:600; color:var(--white);
+  letter-spacing:-.02em; line-height:1.1;
+  margin-bottom:24px;
+  opacity:0; animation: riseIn .6s ease .2s forwards;
+}
+
+/* The revealed #1 weakness */
+.weakness-reveal {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;
+  padding:36px 32px;
+  margin:32px 0;
+  text-align:left;
+  opacity:0; animation: riseIn .6s ease .35s forwards;
+}
+.weakness-tag {
+  font-size:10px; font-weight:600; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--red);
+  margin-bottom:14px;
+}
+.weakness-name {
+  font-family:var(--display);
+  font-size:28px; font-weight:600; color:var(--white);
+  margin-bottom:8px;
+}
+.weakness-desc {
+  font-size:14px; color:rgba(250,250,250,.45); line-height:1.6;
+}
+
+/* Blurred locked items */
+.locked-preview {
+  margin:28px 0;
+  opacity:0; animation: riseIn .5s ease .5s forwards;
+}
+.locked-item {
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;
+  margin-bottom:8px;
+  position:relative;
+  overflow:hidden;
+}
+.locked-item::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent 20%, rgba(10,10,10,0.85) 60%);
+  pointer-events:none;
+}
+.locked-icon {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.locked-text {
+  font-size:14px; color:rgba(250,250,250,.5);
+}
+.lock-badge {
+  position:absolute; right:16px; top:50%; transform:translateY(-50%);
+  z-index:2;
+  font-size:10px; font-weight:600; letter-spacing:.12em;
+  text-transform:uppercase; color:rgba(250,250,250,.35);
+  background:rgba(255,255,255,0.06);
+  padding:4px 10px; border-radius:3px;
+}
+
+/* Unlock CTA */
+.unlock-section {
+  margin-top:36px;
+  opacity:0; animation: riseIn .5s ease .65s forwards;
+}
+.unlock-price {
+  font-family:var(--mono); font-size:32px; font-weight:500;
+  color:var(--white); margin-bottom:4px;
+}
+.unlock-price-note {
+  font-size:13px; color:rgba(250,250,250,.3); margin-bottom:24px;
+}
+.unlock-btn {
+  display:inline-block;
+  background:var(--green); color:var(--white); border:none;
+  padding:16px 48px; border-radius:5px;
+  font-family:var(--body); font-size:15px; font-weight:500;
+  letter-spacing:.03em; cursor:pointer;
+  transition:background .2s, transform .15s, box-shadow .25s;
+}
+.unlock-btn:hover {
+  background:#236b4f; transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(27,77,62,.28);
+}
+.unlock-guarantee {
+  margin-top:14px; font-size:12px; color:rgba(250,250,250,.22);
+}
+
+/* =============================================
+   RESULTS — FULL (post-payment)
+   ============================================= */
+.results-full {
+  display:none;
+  padding:100px 24px 100px;
+  max-width:720px;
+  margin:0 auto;
+}
+.results-full.active { display:block; }
+
+.results-header {
+  text-align:center; margin-bottom:48px;
+}
+.results-header .teaser-label {
+  opacity:1; animation:none;
+}
+.results-header h2 {
+  font-family:var(--display);
+  font-size:clamp(32px,5vw,42px);
+  font-weight:600; color:var(--white);
+  letter-spacing:-.02em; line-height:1.1;
+  margin-bottom:8px;
+}
+.results-header p {
+  font-size:14px; color:rgba(250,250,250,.35);
+}
+
+/* Priority cards */
+.priority-card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  padding:28px 28px 32px;
+  margin-bottom:16px;
+  opacity:0; transform:translateY(12px);
+}
+.priority-card.vis {
+  opacity:1; transform:translateY(0);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.priority-header {
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:16px;
+}
+.priority-num {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:13px; font-weight:600;
+  flex-shrink:0;
+}
+.priority-num.p1 { background:rgba(231,111,81,0.15); color:var(--red); }
+.priority-num.p2 { background:rgba(221,161,94,0.15); color:var(--amber); }
+.priority-num.p3 { background:rgba(90,143,168,0.15); color:var(--blue-mid); }
+.priority-num.p4 { background:rgba(91,191,133,0.1); color:var(--green-light); }
+.priority-title {
+  font-size:18px; font-weight:600; color:var(--white);
+}
+.priority-impact {
+  font-size:11px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; margin-left:auto;
+  flex-shrink:0;
+}
+.priority-body {
+  font-size:14px; color:rgba(250,250,250,.5);
+  line-height:1.65; margin-bottom:18px;
+}
+
+/* Drill cards inside priority */
+.drill {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:7px;
+  padding:16px 18px;
+  margin-top:10px;
+}
+.drill-name {
+  font-size:13px; font-weight:600; color:var(--white);
+  margin-bottom:4px;
+}
+.drill-desc {
+  font-size:12px; color:rgba(250,250,250,.38); line-height:1.55;
+}
+.drill-time {
+  display:inline-block; margin-top:6px;
+  font-family:var(--mono); font-size:10px;
+  color:var(--green-light); letter-spacing:.05em;
+  background:rgba(91,191,133,0.08);
+  padding:3px 8px; border-radius:3px;
+}
+
+/* Summary bar */
+.summary-bar {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  padding:24px 28px;
+  margin-top:32px;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:20px;
+  text-align:center;
+}
+.summary-stat-val {
+  font-family:var(--mono); font-size:22px; font-weight:500;
+  color:var(--green-light);
+}
+.summary-stat-lbl {
+  font-size:10px; font-weight:500; letter-spacing:.15em;
+  text-transform:uppercase; color:rgba(250,250,250,.28);
+  margin-top:4px;
+}
+
+/* Share / retake */
+.results-footer {
+  text-align:center; margin-top:40px;
+  padding-top:32px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.results-footer p {
+  font-size:13px; color:rgba(250,250,250,.3);
+  margin-bottom:16px;
+}
+.retake-btn {
+  background:none; border:1px solid rgba(255,255,255,0.12);
+  color:rgba(250,250,250,.5); padding:10px 28px;
+  border-radius:5px; font-family:var(--body); font-size:13px;
+  font-weight:500; cursor:pointer;
+  transition:border-color .2s, color .2s;
+}
+.retake-btn:hover { border-color:rgba(255,255,255,.25); color:var(--white); }
+
+/* Footer uses inline styles matching homepage */
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); padding:64px 56px 36px; }
+.footer-grid { max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:44px; }
+.f-brand .f-logo { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.f-brand .f-logo svg { width:20px; height:20px; }
+.f-brand .f-logo-text { font-weight:600; font-size:13px; letter-spacing:.1em; color:var(--white); }
+.f-brand .f-logo-text span { font-weight:300; opacity:.5; }
+.f-brand p { font-size:13px; color:rgba(250,250,250,.36); line-height:1.65; max-width:240px; }
+.f-col h5 { font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(250,250,250,.28); margin-bottom:18px; }
+.f-col a { display:block; font-size:13px; color:rgba(250,250,250,.5); margin-bottom:11px; transition:color .2s; }
+.f-col a:hover { color:var(--white); }
+.footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+@keyframes riseIn {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media(max-width:900px){
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:600px){
+  nav { padding:0 22px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .hero { padding:110px 22px 60px; }
+  .quiz-wrap { padding:30px 18px 80px; }
+  .results-teaser, .results-full { padding-left:18px; padding-right:18px; }
+  .summary-bar { grid-template-columns:1fr; gap:12px; }
+  footer { padding:40px 22px 28px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+  .footer-bottom { flex-direction:column; gap:8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/practice">Practice</a>
+    <a href="/articles">Articles</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice</a>
+  <a href="/articles">Articles</a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Diagnostic Tool</div>
+    <h1>What Should<br>You <em>Practice?</em></h1>
+    <p class="hero-sub">Answer eight questions about your game. Get a data-backed practice plan built around your actual game — not generic advice.</p>
+    <div class="hero-start">
+      <button onclick="startQuiz()">Start the Diagnosis</button>
+    </div>
+    <p class="hero-note" style="margin-top:22px;">Based on USGA handicap benchmarks and strokes gained research</p>
+  </div>
+</section>
+
+<!-- ========== QUIZ ========== -->
+<div class="quiz-wrap" id="quizWrap">
+  <div class="progress-label" id="progressLabel">Question 1 of 8</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:12.5%"></div>
+  </div>
+  <div id="questionContainer"></div>
+</div>
+
+<!-- ========== RESULTS TEASER ========== -->
+<div class="results-teaser" id="resultsTeaser">
+  <div class="teaser-label">Your #1 Priority</div>
+  <h2 class="teaser-title" id="teaserTitle"></h2>
+
+  <div class="weakness-reveal" id="weaknessReveal">
+    <div class="weakness-tag">Biggest Opportunity</div>
+    <div class="weakness-name" id="weaknessName"></div>
+    <div class="weakness-desc" id="weaknessDesc"></div>
+  </div>
+
+  <div class="locked-preview">
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(221,161,94,0.12);">2</div>
+      <div class="locked-text">Second priority area and targeted drills</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(90,143,168,0.12);">3</div>
+      <div class="locked-text">Third priority with practice schedule</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(91,191,133,0.08);">4</div>
+      <div class="locked-text">Your strength area — how to maintain it</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(255,255,255,0.04);">📋</div>
+      <div class="locked-text">Complete weekly practice plan with time allocations</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+  </div>
+
+  <div class="unlock-section">
+    <div class="unlock-price">$4.99</div>
+    <div class="unlock-price-note">One-time payment · Instant access</div>
+    <button class="unlock-btn" id="unlockBtn" onclick="handleUnlock()">Unlock Full Practice Plan</button>
+    <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
+  </div>
+</div>
+
+<!-- ========== RESULTS FULL ========== -->
+<div class="results-full" id="resultsFull"></div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles">All Articles</a>
+      <a href="/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach">Strokes Gained</a>
+      <a href="/driver-upgrade-myth">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/about">About</a>
+      <a href="/practice">Practice Tool</a>
+      <a href="/the-lab">The Lab</a>
+      <a href="/lab-picks">Lab Picks</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="javascript:void(0)">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Divot Lab</span>
+    <span>Built with data.</span>
+  </div>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// ============================================
+// MOBILE NAV
+// ============================================
+(function(){
+  var nav = document.getElementById('nav');
+  var drawer = document.getElementById('navDrawer');
+  var hamburger = document.getElementById('navHamburger');
+  if (hamburger) {
+    hamburger.addEventListener('click', function(){
+      nav.classList.toggle('menu-open');
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        nav.classList.remove('menu-open');
+        drawer.classList.remove('open');
+      });
+    });
+  }
+})();
+
+// ============================================
+// QUESTIONS
+// ============================================
+const questions = [
+  {
+    id: 'handicap',
+    text: 'What\'s your current handicap range?',
+    sub: 'Approximate is fine. This calibrates the entire analysis.',
+    options: [
+      { label: '20+ (beginner)', value: 'high' },
+      { label: '12–20 (developing)', value: 'mid-high' },
+      { label: '6–12 (intermediate)', value: 'mid' },
+      { label: '0–6 (advanced)', value: 'low' }
+    ]
+  },
+  {
+    id: 'miss',
+    text: 'What\'s your typical miss off the tee?',
+    sub: 'Think about your last five rounds. What pattern keeps showing up?',
+    options: [
+      { label: 'Big slice or push right', value: 'slice' },
+      { label: 'Hook or pull left', value: 'hook' },
+      { label: 'Inconsistent — both directions', value: 'inconsistent' },
+      { label: 'Fairly straight, just short', value: 'straight-short' }
+    ]
+  },
+  {
+    id: 'gir',
+    text: 'How many greens in regulation do you hit per round?',
+    sub: 'A green in regulation means on the green in par minus two strokes.',
+    options: [
+      { label: '0–3 greens (struggling)', value: 'very-low' },
+      { label: '4–7 greens (below average)', value: 'low' },
+      { label: '8–11 greens (solid)', value: 'mid' },
+      { label: '12+ greens (strong)', value: 'high' }
+    ]
+  },
+  {
+    id: 'proximity',
+    text: 'From 100–150 yards, where does your ball typically end up?',
+    sub: 'This is the scoring zone — where good rounds are made.',
+    options: [
+      { label: 'Rarely on the green', value: 'miss-green' },
+      { label: 'On the green, but 30+ feet away', value: 'far' },
+      { label: 'Usually 15–30 feet from the pin', value: 'mid' },
+      { label: 'Consistently inside 20 feet', value: 'close' }
+    ]
+  },
+  {
+    id: 'updown',
+    text: 'When you miss a green, how often do you get up-and-down?',
+    sub: 'Chip or pitch onto the green and one-putt to save par.',
+    options: [
+      { label: 'Rarely — 10% or less', value: 'very-low' },
+      { label: 'Sometimes — around 25%', value: 'low' },
+      { label: 'About half the time — 40–50%', value: 'mid' },
+      { label: 'Frequently — 60%+', value: 'high' }
+    ]
+  },
+  {
+    id: 'putts',
+    text: 'How many putts do you average per round?',
+    sub: 'Count every putt, including tap-ins.',
+    options: [
+      { label: '36+ putts', value: 'very-high' },
+      { label: '32–36 putts', value: 'high' },
+      { label: '29–32 putts', value: 'mid' },
+      { label: 'Under 29 putts', value: 'low' }
+    ]
+  },
+  {
+    id: 'three_putt',
+    text: 'How many three-putts per round?',
+    sub: 'Be honest — three-putts are the silent scorecard killers.',
+    options: [
+      { label: '4+ per round', value: 'very-high' },
+      { label: '2–3 per round', value: 'high' },
+      { label: '1 per round', value: 'mid' },
+      { label: 'Rare — less than 1', value: 'low' }
+    ]
+  },
+  {
+    id: 'penalty',
+    text: 'How many penalty strokes do you take per round?',
+    sub: 'OB, water, lost balls, unplayable lies.',
+    options: [
+      { label: '4+ penalties', value: 'very-high' },
+      { label: '2–3 penalties', value: 'high' },
+      { label: '1 penalty', value: 'mid' },
+      { label: 'Rarely any', value: 'low' }
+    ]
+  }
+];
+
+// ============================================
+// STATE
+// ============================================
+let currentQ = 0;
+let answers = {};
+
+// ============================================
+// QUIZ ENGINE
+// ============================================
+function startQuiz() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('quizWrap').classList.add('active');
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const container = document.getElementById('questionContainer');
+  const selected = answers[q.id] || null;
+
+  container.innerHTML = `
+    <div class="question-card active">
+      <div class="q-number">Q${currentQ + 1}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-subtext">${q.sub}</div>
+      <div class="options">
+        ${q.options.map((opt, i) => `
+          <div class="option ${selected === opt.value ? 'selected' : ''}" onclick="selectOption('${q.id}', '${opt.value}', this)">
+            <div class="option-radio"></div>
+            <div class="option-text">${opt.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  // Update progress
+  document.getElementById('progressFill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  document.getElementById('progressLabel').textContent = `Question ${currentQ + 1} of ${questions.length}`;
+}
+
+function selectOption(qId, value, el) {
+  answers[qId] = value;
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Auto-advance after brief delay
+  setTimeout(() => {
+    if (currentQ < questions.length - 1) {
+      nextQuestion();
+    } else {
+      showTeaser();
+    }
+  }, 400);
+}
+
+function nextQuestion() {
+  if (!answers[questions[currentQ].id]) return;
+
+  if (currentQ < questions.length - 1) {
+    const card = document.querySelector('.question-card');
+    card.classList.remove('active');
+    card.classList.add('exit');
+    setTimeout(() => {
+      currentQ++;
+      renderQuestion();
+    }, 250);
+  }
+}
+
+// ============================================
+// ANALYSIS ENGINE
+// ============================================
+function analyzeGame() {
+  const a = answers;
+  const scores = {
+    driving: 0,
+    approach: 0,
+    shortGame: 0,
+    putting: 0
+  };
+
+  // DRIVING score (higher = worse / more need to practice)
+  if (a.miss === 'inconsistent') scores.driving += 3;
+  else if (a.miss === 'slice') scores.driving += 2;
+  else if (a.miss === 'hook') scores.driving += 2;
+  else scores.driving += 0;
+
+  if (a.penalty === 'very-high') scores.driving += 4;
+  else if (a.penalty === 'high') scores.driving += 2;
+  else if (a.penalty === 'mid') scores.driving += 1;
+
+  // APPROACH score
+  if (a.gir === 'very-low') scores.approach += 4;
+  else if (a.gir === 'low') scores.approach += 3;
+  else if (a.gir === 'mid') scores.approach += 1;
+
+  if (a.proximity === 'miss-green') scores.approach += 3;
+  else if (a.proximity === 'far') scores.approach += 2;
+  else if (a.proximity === 'mid') scores.approach += 1;
+
+  // SHORT GAME score
+  if (a.updown === 'very-low') scores.shortGame += 4;
+  else if (a.updown === 'low') scores.shortGame += 3;
+  else if (a.updown === 'mid') scores.shortGame += 1;
+
+  // Missed greens + poor up-and-down = compounding
+  if ((a.gir === 'very-low' || a.gir === 'low') && (a.updown === 'very-low' || a.updown === 'low')) {
+    scores.shortGame += 2;
+  }
+
+  // PUTTING score
+  if (a.putts === 'very-high') scores.putting += 3;
+  else if (a.putts === 'high') scores.putting += 2;
+  else if (a.putts === 'mid') scores.putting += 1;
+
+  if (a.three_putt === 'very-high') scores.putting += 4;
+  else if (a.three_putt === 'high') scores.putting += 2;
+  else if (a.three_putt === 'mid') scores.putting += 1;
+
+  // Handicap modifier — higher handicaps get more weight on fundamentals
+  if (a.handicap === 'high') {
+    scores.driving += 1;
+    scores.approach += 1;
+  } else if (a.handicap === 'low') {
+    scores.putting += 1; // low handicaps tend to have more marginal putting gains
+  }
+
+  // Sort areas by score (highest = most urgent)
+  const areas = [
+    { key: 'driving', label: 'Off the Tee', score: scores.driving },
+    { key: 'approach', label: 'Approach Play', score: scores.approach },
+    { key: 'shortGame', label: 'Short Game', score: scores.shortGame },
+    { key: 'putting', label: 'Putting', score: scores.putting }
+  ].sort((a, b) => b.score - a.score);
+
+  return areas;
+}
+
+function getAreaDetails(key, rank, handicap) {
+  const details = {
+    driving: {
+      desc: 'Your tee shots are costing you more strokes than any other part of your game. Tour data shows that reducing penalty strokes and finding more fairways has the single highest ROI for players at your level.',
+      impact: 'High Impact',
+      impactColor: '#E76F51',
+      drills: [
+        {
+          name: 'The Corridor Drill',
+          desc: 'At the range, pick two targets 30 yards apart. Hit 20 drives trying to land between them. Track your percentage. Tour average fairway width is ~35 yards — this trains functional accuracy, not perfection.',
+          time: '15 min'
+        },
+        {
+          name: 'The 80% Swing',
+          desc: 'Hit 10 drives at 80% effort. Most amateurs gain accuracy and lose almost no distance by swinging within themselves. Note the distance difference — it\'s smaller than you think.',
+          time: '10 min'
+        }
+      ]
+    },
+    approach: {
+      desc: 'Your iron play from scoring distance is where the biggest gains are hiding. Strokes gained research consistently shows approach play separates handicap levels more than any other factor — even more than driving.',
+      impact: 'High Impact',
+      impactColor: '#E76F51',
+      drills: [
+        {
+          name: 'The 150-Yard Challenge',
+          desc: 'Hit 10 balls from 150 yards (or your 7-iron distance). Count how many land on a green-sized target (~30 yard circle). Track this number weekly. PGA Tour average is 8/10. A 15-handicap averages 4/10.',
+          time: '15 min'
+        },
+        {
+          name: 'Stock Yardage Ladder',
+          desc: 'Pick 5 clubs (PW through 6i). Hit 5 balls with each, noting average carry. Write these numbers down and carry them in your bag. Knowing your real distances eliminates the #1 amateur approach mistake: wrong club.',
+          time: '20 min'
+        }
+      ]
+    },
+    shortGame: {
+      desc: 'You\'re leaving too many strokes around the green. When you miss a green — and every golfer does — your ability to get up and down is the difference between a bogey and a double. This is the fastest area to improve with focused practice.',
+      impact: 'Medium-High Impact',
+      impactColor: '#DDA15E',
+      drills: [
+        {
+          name: 'The Up-and-Down Game',
+          desc: 'Drop 5 balls at different spots around the practice green (varying lies and distances). Try to get up and down from each. Track your score out of 5. This simulates real on-course scenarios, not repetitive chipping.',
+          time: '20 min'
+        },
+        {
+          name: 'The Landing Spot Drill',
+          desc: 'Place a towel 3 feet onto the green from the fringe. Chip 10 balls trying to land on the towel. This trains your brain to pick a landing spot rather than fixating on the hole — the key mental shift for short game consistency.',
+          time: '10 min'
+        }
+      ]
+    },
+    putting: {
+      desc: 'Your putting is bleeding strokes, particularly from distance. Three-putts are the most common way mid-handicappers throw away strokes, and the fix is almost always lag putting — not 3-footers.',
+      impact: 'Medium Impact',
+      impactColor: '#5A8FA8',
+      drills: [
+        {
+          name: 'The Lag Putting Circle',
+          desc: 'From 30, 40, and 50 feet, putt 5 balls each distance. Your goal: every ball within a 3-foot circle around the hole. This eliminates three-putts, which is worth more than making a few extra 6-footers.',
+          time: '15 min'
+        },
+        {
+          name: 'The Gate Drill (3–5 feet)',
+          desc: 'Place two tees just wider than your putter head, 4 feet from the hole. Putt through the gate. Make 10 in a row before you leave. This builds the stroke consistency that turns lip-outs into makes.',
+          time: '10 min'
+        }
+      ]
+    }
+  };
+
+  const d = details[key];
+
+  // Adjust impact labels based on rank
+  if (rank === 0) { d.impact = 'Highest Priority'; d.impactColor = '#E76F51'; }
+  else if (rank === 1) { d.impact = 'High Priority'; d.impactColor = '#DDA15E'; }
+  else if (rank === 2) { d.impact = 'Moderate Priority'; d.impactColor = '#5A8FA8'; }
+  else { d.impact = 'Maintain'; d.impactColor = '#5BBF85'; }
+
+  return d;
+}
+
+// ============================================
+// TEASER RESULTS
+// ============================================
+function showTeaser() {
+  document.getElementById('quizWrap').classList.remove('active');
+  document.getElementById('resultsTeaser').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const areas = analyzeGame();
+  const top = areas[0];
+  const details = getAreaDetails(top.key, 0, answers.handicap);
+
+  document.getElementById('teaserTitle').textContent = 'Your Results Are Ready';
+  document.getElementById('weaknessName').textContent = top.label;
+  document.getElementById('weaknessDesc').textContent = details.desc;
+}
+
+// ============================================
+// PAYMENT / UNLOCK
+// ============================================
+function handleUnlock() {
+  // TODO: Replace with Stripe Checkout redirect
+  // For now, show full results directly for testing
+  //
+  // Stripe integration:
+  // window.location.href = 'https://buy.stripe.com/YOUR_PAYMENT_LINK?client_reference_id=' + encodeURIComponent(JSON.stringify(answers));
+  //
+  // After successful payment, Stripe redirects to a success URL
+  // where you call showFullResults()
+
+  showFullResults();
+}
+
+// ============================================
+// FULL RESULTS
+// ============================================
+function showFullResults() {
+  document.getElementById('resultsTeaser').classList.remove('active');
+  const container = document.getElementById('resultsFull');
+  container.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const areas = analyzeGame();
+  const handicapLabel = {
+    'high': '20+', 'mid-high': '12–20', 'mid': '6–12', 'low': '0–6'
+  }[answers.handicap] || '';
+
+  // Calculate recommended practice split (rounded to nearest 5%, summing to 100%)
+  const total = areas.reduce((s, a) => s + a.score, 0) || 1;
+  const rawPcts = areas.map(a => Math.max(10, (a.score / total) * 100));
+  const rawSum = rawPcts.reduce((s, v) => s + v, 0);
+  // Normalize then round to nearest 5
+  let rounded = rawPcts.map(p => Math.round((p / rawSum) * 100 / 5) * 5);
+  // Ensure minimum 5%
+  rounded = rounded.map(r => Math.max(5, r));
+  // Fix sum to exactly 100 by adjusting the largest value
+  let diff = 100 - rounded.reduce((s, v) => s + v, 0);
+  if (diff !== 0) {
+    // Find the index with the largest value and adjust
+    let maxIdx = rounded.indexOf(Math.max(...rounded));
+    rounded[maxIdx] += diff;
+  }
+  const adjusted = rounded;
+
+  // Short labels for summary display
+  const shortLabels = {
+    driving: 'Driving',
+    approach: 'Approach',
+    shortGame: 'Short Game',
+    putting: 'Putting'
+  };
+
+  // Estimate strokes to gain
+  const potentialGain = areas[0].score >= 5 ? '3–5' : areas[0].score >= 3 ? '2–4' : '1–2';
+
+  container.innerHTML = `
+    <div class="results-header">
+      <div class="teaser-label">Your Practice Plan</div>
+      <h2>Personalized for a ${handicapLabel} Handicap</h2>
+      <p>Prioritized by where you're losing the most strokes</p>
+    </div>
+
+    <div class="summary-bar">
+      <div>
+        <div class="summary-stat-val">${potentialGain}</div>
+        <div class="summary-stat-lbl">Strokes to Gain</div>
+      </div>
+      <div>
+        <div class="summary-stat-val">${shortLabels[areas[0].key]}</div>
+        <div class="summary-stat-lbl">#1 Priority</div>
+      </div>
+      <div>
+        <div class="summary-stat-val">4</div>
+        <div class="summary-stat-lbl">Focus Areas</div>
+      </div>
+    </div>
+
+    ${areas.map((area, i) => {
+      const d = getAreaDetails(area.key, i, answers.handicap);
+      const pClass = i === 0 ? 'p1' : i === 1 ? 'p2' : i === 2 ? 'p3' : 'p4';
+      return `
+        <div class="priority-card" style="animation-delay:${i * 0.12}s">
+          <div class="priority-header">
+            <div class="priority-num ${pClass}">${i + 1}</div>
+            <div class="priority-title">${area.label}</div>
+            <div class="priority-impact" style="color:${d.impactColor}">${d.impact}</div>
+          </div>
+          <div class="priority-body">${d.desc}</div>
+          <div style="font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(250,250,250,.3); margin-bottom:8px;">
+            Recommended Drills
+          </div>
+          ${d.drills.map(drill => `
+            <div class="drill">
+              <div class="drill-name">${drill.name}</div>
+              <div class="drill-desc">${drill.desc}</div>
+              <span class="drill-time">${drill.time}</span>
+            </div>
+          `).join('')}
+          <div style="margin-top:12px; font-size:12px; color:rgba(250,250,250,.25);">
+            Practice time allocation: <span style="color:var(--green-light); font-weight:600;">${adjusted[i]}%</span> of your sessions
+          </div>
+        </div>
+      `;
+    }).join('')}
+
+    <div class="results-footer">
+      <p>Based on USGA handicap benchmarks and strokes gained research from Columbia University</p>
+      <button class="retake-btn" onclick="retakeQuiz()">Retake Diagnosis</button>
+    </div>
+  `;
+
+  // Stagger card reveals
+  setTimeout(() => {
+    container.querySelectorAll('.priority-card').forEach((card, i) => {
+      setTimeout(() => card.classList.add('vis'), i * 150);
+    });
+  }, 200);
+}
+
+function retakeQuiz() {
+  currentQ = 0;
+  answers = {};
+  document.getElementById('resultsFull').classList.remove('active');
+  document.getElementById('resultsFull').innerHTML = '';
+  document.getElementById('hero').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
