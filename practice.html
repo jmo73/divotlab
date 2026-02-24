@@ -202,6 +202,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   padding: 40px 24px 100px;
   max-width: 640px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 .quiz-wrap.active { display: block; }
 
@@ -312,6 +313,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   max-width:640px;
   margin:0 auto;
   text-align:center;
+  min-height:100vh;
 }
 .results-teaser.active { display:block; }
 
@@ -658,7 +660,10 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <h2 class="teaser-title" id="teaserTitle"></h2>
 
   <div class="weakness-reveal" id="weaknessReveal">
-    <div class="weakness-tag">Biggest Opportunity</div>
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+      <div class="priority-num p1">1</div>
+      <div class="weakness-tag" style="margin-bottom:0;">Biggest Opportunity</div>
+    </div>
     <div class="weakness-name" id="weaknessName"></div>
     <div class="weakness-desc" id="weaknessDesc"></div>
   </div>
