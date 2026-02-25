@@ -724,8 +724,8 @@ footer {
    ANIMATIONS
    ============================================= */
 @keyframes riseIn {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
+  from { opacity:0; transform:translateY(20px); filter:blur(8px); }
+  to   { opacity:1; transform:translateY(0); filter:blur(0); }
 }
 @keyframes fadeIn {
   to { opacity:1; }
@@ -736,8 +736,8 @@ footer {
 }
 
 /* scroll-reveal */
-.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
-.reveal.vis { opacity:1; transform:translateY(0); }
+.reveal { opacity:0; transform:translateY(22px); filter:blur(6px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1), filter .7s cubic-bezier(.22,1,.36,1); }
+.reveal.vis { opacity:1; transform:translateY(0); filter:blur(0); }
 
 /* =============================================
    MOBILE NAV – hamburger + drawer
@@ -902,19 +902,19 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 </section>
 
 <!-- ========== STAT BAR ========== -->
-<div class="stat-bar">
+<div class="stat-bar reveal">
   <div class="stat">
-    <div class="stat-val" id="stat-ott">+0.89</div>
+    <div class="stat-val" id="stat-ott" data-target="+0.89">+0.00</div>
     <div class="stat-lbl">SG: Off-the-Tee · <span id="stat-ott-name">S. Scheffler</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat-app">+1.25</div>
+    <div class="stat-val" id="stat-app" data-target="+1.25">+0.00</div>
     <div class="stat-lbl">SG: Approach · <span id="stat-app-name">S. Scheffler</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat-putt">+0.55</div>
+    <div class="stat-val" id="stat-putt" data-target="+0.55">+0.00</div>
     <div class="stat-lbl">SG: Putting · <span id="stat-putt-name">L. Åberg</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
@@ -1130,6 +1130,54 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   },{ threshold:0.1 });
   reveals.forEach(function(el){ obs.observe(el); });
 
+  // --- counter animation for stat values ---
+  function animateCounter(el, targetVal, duration) {
+    var isNegative = targetVal < 0;
+    var absTarget = Math.abs(targetVal);
+    var start = 0;
+    var startTime = null;
+    var prefix = targetVal >= 0 ? '+' : '-';
+    var decimals = (absTarget.toString().split('.')[1] || '').length || 2;
+    
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      // Ease out cubic
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = eased * absTarget;
+      el.textContent = prefix + current.toFixed(decimals);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = prefix + absTarget.toFixed(decimals);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Observe stat bar — trigger counters when visible
+  var statBar = document.querySelector('.stat-bar');
+  var statsAnimated = false;
+  if (statBar) {
+    var statObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !statsAnimated) {
+          statsAnimated = true;
+          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+          statEls.forEach(function(el, i) {
+            var target = parseFloat(el.getAttribute('data-target'));
+            if (!isNaN(target)) {
+              setTimeout(function() {
+                animateCounter(el, target, 1200);
+              }, i * 150);
+            }
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    statObs.observe(statBar);
+  }
+
   // --- dynamic article cards from blog registry ---
   (function loadArticles(){
     var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
@@ -1342,30 +1390,53 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       if (data.success && data.data) {
         const stats = data.data;
         
-        // Helper to format player name (Last, First → F. Last)
         function formatPlayerName(fullName) {
           if (!fullName) return 'Leader';
           const parts = fullName.split(', ');
           if (parts.length === 2) {
-            // "Scheffler, Scottie" → "S. Scheffler"
             return parts[1].charAt(0) + '. ' + parts[0];
           }
           return fullName;
         }
         
-        // Update stat values and player names
-        document.getElementById('stat-ott').textContent = stats.sgOTT.value;
+        // Update data-target attributes with live values
+        var ottEl = document.getElementById('stat-ott');
+        var appEl = document.getElementById('stat-app');
+        var puttEl = document.getElementById('stat-putt');
+        
+        ottEl.setAttribute('data-target', stats.sgOTT.value);
+        appEl.setAttribute('data-target', stats.sgApp.value);
+        puttEl.setAttribute('data-target', stats.sgPutt.value);
+        
+        // Update player names
         document.getElementById('stat-ott-name').textContent = formatPlayerName(stats.sgOTT.player);
-        
-        document.getElementById('stat-app').textContent = stats.sgApp.value;
         document.getElementById('stat-app-name').textContent = formatPlayerName(stats.sgApp.player);
-        
-        document.getElementById('stat-putt').textContent = stats.sgPutt.value;
         document.getElementById('stat-putt-name').textContent = formatPlayerName(stats.sgPutt.player);
+        
+        // If stat bar already scrolled into view before API loaded, animate now
+        if (statsAnimated) {
+          statsAnimated = false;
+          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+          statEls.forEach(function(el, i) {
+            var target = parseFloat(el.getAttribute('data-target'));
+            if (!isNaN(target)) {
+              setTimeout(function() {
+                animateCounter(el, target, 1200);
+              }, i * 150);
+            }
+          });
+          statsAnimated = true;
+        }
       }
     } catch (error) {
       console.warn('Could not load homepage stats:', error);
-      // Stats fall back to placeholder values
+      // Fall back to placeholder values — animate those instead
+      if (!statsAnimated && statBar) {
+        var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+        statEls.forEach(function(el) {
+          el.textContent = el.getAttribute('data-target');
+        });
+      }
     }
   })();
   
