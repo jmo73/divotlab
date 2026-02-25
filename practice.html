@@ -16,23 +16,19 @@
 <title>What Should I Practice? — Divot Lab</title>
 <meta name="description" content="Answer 8 questions about your golf game. Get a data-backed practice plan that tells you exactly where you're losing strokes — and how to fix it.">
 <meta property="og:title" content="What Should I Practice? — Divot Lab">
-<meta property="og:description" content="Answer 8 questions about your golf game. Get a personalized, data-backed practice plan.">
+<meta property="og:description" content="Answer 8 questions about your golf game. Get a personalized, data-backed practice plan built on strokes gained research.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://divotlab.com/what-should-i-practice">
+<meta property="og:url" content="https://divotlab.com/practice">
+<meta property="og:site_name" content="Divot Lab">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://divotlab.com/what-should-i-practice">
+<meta name="twitter:title" content="What Should I Practice? — Divot Lab">
+<meta name="twitter:description" content="Answer 8 questions about your golf game. Get a personalized, data-backed practice plan.">
+<link rel="canonical" href="https://divotlab.com/practice">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- Google tag (gtag.js) — REPLACE G-XXXXXXXXXX with your real ID -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-PEX1MKH2LP');
-</script>
+
 
 <style>
 :root {
@@ -424,6 +420,45 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .unlock-guarantee {
   margin-top:14px; font-size:12px; color:rgba(250,250,250,.22);
 }
+.unlock-email-row {
+  margin-bottom:18px;
+  max-width:320px;
+  margin-left:auto; margin-right:auto;
+}
+.unlock-email-input {
+  width:100%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:5px;
+  padding:12px 18px;
+  font-family:var(--body); font-size:14px;
+  color:var(--white); outline:none;
+  text-align:center;
+  transition:border-color .2s, background .2s;
+}
+.unlock-email-input::placeholder { color:rgba(250,250,250,.28); }
+.unlock-email-input:focus { border-color:var(--green-light); background:rgba(255,255,255,0.08); }
+.unlock-email-input.error { border-color:var(--red); }
+.unlock-email-note {
+  margin-top:8px; font-size:11px; color:rgba(250,250,250,.18);
+}
+
+/* Email sent confirmation */
+.email-sent-banner {
+  background:rgba(91,191,133,0.08);
+  border:1px solid rgba(91,191,133,0.2);
+  border-radius:8px;
+  padding:16px 20px;
+  margin:24px auto 0;
+  max-width:480px;
+  text-align:center;
+}
+.email-sent-banner p {
+  font-size:13px; color:var(--green-light); margin:0;
+}
+.email-sent-banner .email-sent-sub {
+  font-size:11px; color:rgba(250,250,250,.3); margin-top:4px;
+}
 
 /* =============================================
    RESULTS — FULL (post-payment)
@@ -697,9 +732,13 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 
   <div class="unlock-section">
     <div class="unlock-price">$4.99</div>
-    <div class="unlock-price-note">One-time payment · Instant access</div>
+    <div class="unlock-price-note">One-time payment · Instant access + emailed to you</div>
+    <div class="unlock-email-row">
+      <input type="email" id="unlockEmail" class="unlock-email-input" placeholder="your@email.com" required>
+    </div>
     <button class="unlock-btn" id="unlockBtn" onclick="handleUnlock()">Unlock Full Practice Plan</button>
     <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
+    <p class="unlock-email-note">We'll email your full plan so you can reference it at the range.</p>
   </div>
 </div>
 
@@ -719,7 +758,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
         </svg>
         <span class="f-logo-text">DIVOT <span>LAB</span></span>
       </div>
-      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+      <p>Golf analysis built on real numbers. Smart takes. Real stats. Clothes worth wearing.</p>
     </div>
     <div class="f-col">
       <h5>Read</h5>
@@ -739,7 +778,6 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
       <a href="/about">About</a>
       <a href="/practice">Practice</a>
       <a href="/the-lab">The Lab</a>
-      <a href="/lab-picks">Lab Picks</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
     </div>
@@ -1114,8 +1152,10 @@ function showTeaser() {
 // *** PASTE YOUR STRIPE PAYMENT LINK HERE ***
 var STRIPE_LINK = 'https://buy.stripe.com/7sYdR8eMO2nC8hJfUw1ZS01';
 
+// Google Apps Script webhook (same one used on homepage)
+var PRACTICE_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
+
 function encodeAnswers() {
-  // Compact encode: handicap,miss,gir,proximity,updown,putts,three_putt,penalty
   var keys = ['handicap','miss','gir','proximity','updown','putts','three_putt','penalty'];
   return keys.map(function(k){ return answers[k] || ''; }).join(',');
 }
@@ -1129,32 +1169,106 @@ function decodeAnswers(str) {
 }
 
 function handleUnlock() {
-  // Save answers to sessionStorage so we can restore after Stripe redirect
+  var emailInput = document.getElementById('unlockEmail');
+  var email = emailInput ? emailInput.value.trim() : '';
+  
+  // Validate email
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailInput.classList.add('error');
+    emailInput.focus();
+    emailInput.setAttribute('placeholder', 'Please enter your email');
+    setTimeout(function(){ emailInput.classList.remove('error'); }, 2000);
+    return;
+  }
+
+  // Save answers + email to sessionStorage so we can restore after Stripe redirect
   sessionStorage.setItem('dl_answers', JSON.stringify(answers));
+  sessionStorage.setItem('dl_email', email);
 
   // Redirect to Stripe with answers encoded in client_reference_id
   var encoded = encodeAnswers();
   var url = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(encoded);
+  // Pre-fill email in Stripe checkout
+  url += '&prefilled_email=' + encodeURIComponent(email);
   window.location.href = url;
+}
+
+// Build email-friendly HTML version of results
+function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
+  var priorityColors = ['#E76F51', '#DDA15E', '#5A8FA8', '#5BBF85'];
+  var priorityLabels = ['Highest Priority', 'High Priority', 'Moderate Priority', 'Maintain'];
+  
+  var areaHTML = areas.map(function(area, i) {
+    var d = getAreaDetails(area.key, i, answers.handicap);
+    return '<div style="background:#141414;border:1px solid #222;border-radius:8px;padding:20px 22px;margin-bottom:12px;">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
+        '<div style="width:28px;height:28px;border-radius:50%;background:' + priorityColors[i] + '22;color:' + priorityColors[i] + ';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">' + (i+1) + '</div>' +
+        '<span style="font-size:16px;font-weight:600;color:#FAFAFA;">' + area.label + '</span>' +
+        '<span style="margin-left:auto;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:' + priorityColors[i] + ';">' + priorityLabels[i] + '</span>' +
+      '</div>' +
+      '<p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px;">' + d.desc + '</p>' +
+      '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:8px;">Recommended Drills</div>' +
+      d.drills.map(function(drill) {
+        return '<div style="background:#1a1a1a;border:1px solid #282828;border-radius:6px;padding:12px 14px;margin-bottom:6px;">' +
+          '<div style="font-size:12px;font-weight:600;color:#FAFAFA;margin-bottom:3px;">' + drill.name + '</div>' +
+          '<div style="font-size:11px;color:#777;line-height:1.5;">' + drill.desc + '</div>' +
+          '<span style="display:inline-block;margin-top:4px;font-size:10px;color:#5BBF85;background:rgba(91,191,133,0.08);padding:2px 6px;border-radius:3px;">' + drill.time + '</span>' +
+        '</div>';
+      }).join('') +
+      '<div style="margin-top:8px;font-size:11px;color:#555;">Practice allocation: <span style="color:#5BBF85;font-weight:600;">' + adjusted[i] + '%</span> of sessions</div>' +
+    '</div>';
+  }).join('');
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>' +
+    '<body style="margin:0;padding:0;background:#0A0A0A;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;">' +
+    '<div style="max-width:600px;margin:0 auto;padding:32px 20px;">' +
+      '<div style="text-align:center;margin-bottom:32px;">' +
+        '<div style="font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#5BBF85;margin-bottom:12px;">DIVOT LAB</div>' +
+        '<div style="font-size:24px;font-weight:600;color:#FAFAFA;margin-bottom:6px;">Your Practice Plan</div>' +
+        '<div style="font-size:13px;color:#666;">Personalized for a ' + handicapLabel + ' Handicap</div>' +
+      '</div>' +
+      '<div style="background:#141414;border:1px solid #222;border-radius:8px;padding:20px;margin-bottom:24px;display:flex;justify-content:space-around;text-align:center;">' +
+        '<div><div style="font-size:20px;font-weight:600;color:#5BBF85;">' + potentialGain + '</div><div style="font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#555;margin-top:2px;">Strokes to Gain</div></div>' +
+        '<div><div style="font-size:20px;font-weight:600;color:#5BBF85;">' + areas[0].label + '</div><div style="font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#555;margin-top:2px;">#1 Priority</div></div>' +
+      '</div>' +
+      areaHTML +
+      '<div style="text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid #222;">' +
+        '<p style="font-size:11px;color:#444;">Based on USGA handicap benchmarks and strokes gained research</p>' +
+        '<a href="https://divotlab.com/practice" style="display:inline-block;margin-top:12px;font-size:12px;color:#5BBF85;">divotlab.com/practice</a>' +
+      '</div>' +
+    '</div></body></html>';
+}
+
+// Send results via email using Google Apps Script webhook
+function sendResultsEmail(email, resultsHTML) {
+  if (!email) return;
+  
+  fetch(PRACTICE_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'email=' + encodeURIComponent(email) + 
+          '&source=' + encodeURIComponent('practice-plan') +
+          '&subject=' + encodeURIComponent('Your Divot Lab Practice Plan') +
+          '&html=' + encodeURIComponent(resultsHTML)
+  }).then(function(r){ return r.text(); })
+    .then(function(){ console.log('✓ Results email sent'); })
+    .catch(function(e){ console.warn('Email send failed:', e); });
 }
 
 // On page load: check if returning from Stripe payment
 (function checkPaymentReturn() {
   var params = new URLSearchParams(window.location.search);
 
-  // Stripe Payment Links redirect with session_id
   if (params.has('session_id')) {
-    // Try to restore answers from sessionStorage first
     var stored = sessionStorage.getItem('dl_answers');
+    var storedEmail = sessionStorage.getItem('dl_email');
     if (stored) {
       try { answers = JSON.parse(stored); } catch(e) {}
     }
 
-    // If we have answers, show results immediately
     if (answers.handicap) {
       document.getElementById('hero').style.display = 'none';
-      showFullResults();
-      // Clean up URL
+      showFullResults(storedEmail);
       window.history.replaceState({}, '', window.location.pathname);
     }
   }
@@ -1163,7 +1277,7 @@ function handleUnlock() {
 // ============================================
 // FULL RESULTS
 // ============================================
-function showFullResults() {
+function showFullResults(email) {
   document.getElementById('resultsTeaser').classList.remove('active');
   const container = document.getElementById('resultsFull');
   container.classList.add('active');
@@ -1178,20 +1292,15 @@ function showFullResults() {
   const total = areas.reduce((s, a) => s + a.score, 0) || 1;
   const rawPcts = areas.map(a => Math.max(10, (a.score / total) * 100));
   const rawSum = rawPcts.reduce((s, v) => s + v, 0);
-  // Normalize then round to nearest 5
   let rounded = rawPcts.map(p => Math.round((p / rawSum) * 100 / 5) * 5);
-  // Ensure minimum 5%
   rounded = rounded.map(r => Math.max(5, r));
-  // Fix sum to exactly 100 by adjusting the largest value
   let diff = 100 - rounded.reduce((s, v) => s + v, 0);
   if (diff !== 0) {
-    // Find the index with the largest value and adjust
     let maxIdx = rounded.indexOf(Math.max(...rounded));
     rounded[maxIdx] += diff;
   }
   const adjusted = rounded;
 
-  // Short labels for summary display
   const shortLabels = {
     driving: 'Driving',
     approach: 'Approach',
@@ -1199,14 +1308,27 @@ function showFullResults() {
     putting: 'Putting'
   };
 
-  // Estimate strokes to gain
   const potentialGain = areas[0].score >= 5 ? '3–5' : areas[0].score >= 3 ? '2–4' : '1–2';
+
+  // Send email with results
+  if (email) {
+    var emailHTML = buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain);
+    sendResultsEmail(email, emailHTML);
+  }
+
+  var emailBanner = email ? `
+    <div class="email-sent-banner">
+      <p>Your practice plan has been emailed to ${email}</p>
+      <p class="email-sent-sub">Reference it at the range anytime.</p>
+    </div>
+  ` : '';
 
   container.innerHTML = `
     <div class="results-header">
       <div class="teaser-label">Your Practice Plan</div>
       <h2>Personalized for a ${handicapLabel} Handicap</h2>
       <p>Prioritized by where you're losing the most strokes</p>
+      ${emailBanner}
     </div>
 
     <div class="summary-bar">
@@ -1258,7 +1380,6 @@ function showFullResults() {
     </div>
   `;
 
-  // Stagger card reveals
   setTimeout(() => {
     container.querySelectorAll('.priority-card').forEach((card, i) => {
       setTimeout(() => card.classList.add('vis'), i * 150);

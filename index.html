@@ -11,8 +11,18 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Divot Lab - Golf, Analyzed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divot Lab — Golf, Analyzed</title>
+<meta name="description" content="Data-driven golf analysis. Strokes gained breakdowns, tournament intelligence, and insights that actually help your game. Stats that tell the story.">
+<meta property="og:title" content="Divot Lab — Golf, Analyzed">
+<meta property="og:description" content="Data-driven golf analysis. Strokes gained breakdowns, tournament intelligence, and insights that actually help your game.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divotlab.com">
+<meta property="og:site_name" content="Divot Lab">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Divot Lab — Golf, Analyzed">
+<meta name="twitter:description" content="Data-driven golf analysis. Stats that tell the story. Insights built on data, not opinion.">
+<link rel="canonical" href="https://divotlab.com">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1041,7 +1051,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
         </svg>
         <span class="f-logo-text">DIVOT <span>LAB</span></span>
       </div>
-      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+      <p>Golf analysis built on real numbers. Smart takes. Real stats. Clothes worth wearing.</p>
     </div>
     <div class="f-col">
       <h5>Read</h5>
@@ -1061,7 +1071,6 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="/about">About</a>
       <a href="/practice">Practice</a>
       <a href="/the-lab">The Lab</a>
-      <a href="/lab-picks">Lab Picks</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
     </div>
@@ -1254,13 +1263,22 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   var popupContent = document.getElementById('popupContent');
   var popupSuccess = document.getElementById('popupSuccess');
   
-  // Show popup after 3 seconds if not shown before
+  // Show popup after user scrolls 50% down the page (not on a timer)
   function showPopup() {
-    if (!localStorage.getItem('divotlab_popup_shown')) {
-      setTimeout(function() {
-        popupOverlay.classList.add('show');
-      }, 3000);
-    }
+    if (localStorage.getItem('divotlab_popup_shown')) return;
+    
+    var triggered = false;
+    window.addEventListener('scroll', function onScroll() {
+      if (triggered) return;
+      var scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      if (scrollPct > 0.45) {
+        triggered = true;
+        window.removeEventListener('scroll', onScroll);
+        setTimeout(function() {
+          popupOverlay.classList.add('show');
+        }, 500);
+      }
+    });
   }
   
   // Close popup
@@ -1349,6 +1367,5 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   
 })();
 </script>
-<script src="/divotlab-stats.js"></script>
 </body>
 </html>
