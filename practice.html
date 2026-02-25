@@ -1240,18 +1240,35 @@ function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
 }
 
 // Send results via email using Google Apps Script webhook
-function sendResultsEmail(email, resultsHTML) {
+function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) {
   if (!email) return;
+  
+  // Send compact data — Apps Script builds the email
+  var payload = {
+    email: email,
+    source: 'practice-plan',
+    handicap: handicapLabel,
+    potentialGain: potentialGain,
+    areas: areas.map(function(area, i) {
+      var d = getAreaDetails(area.key, i, answers.handicap);
+      return {
+        label: area.label,
+        priority: ['Highest Priority', 'High Priority', 'Moderate Priority', 'Maintain'][i],
+        desc: d.desc,
+        allocation: adjusted[i],
+        drills: d.drills.map(function(drill) {
+          return { name: drill.name, desc: drill.desc, time: drill.time };
+        })
+      };
+    })
+  };
   
   fetch(PRACTICE_WEBHOOK_URL, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'email=' + encodeURIComponent(email) + 
-          '&source=' + encodeURIComponent('practice-plan') +
-          '&subject=' + encodeURIComponent('Your Divot Lab Practice Plan') +
-          '&html=' + encodeURIComponent(resultsHTML)
-  }).then(function(r){ return r.text(); })
-    .then(function(){ console.log('✓ Results email sent'); })
+    body: 'payload=' + encodeURIComponent(JSON.stringify(payload))
+  }).then(function(){ console.log('✓ Results email request sent'); })
     .catch(function(e){ console.warn('Email send failed:', e); });
 }
 
@@ -1312,8 +1329,7 @@ function showFullResults(email) {
 
   // Send email with results
   if (email) {
-    var emailHTML = buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain);
-    sendResultsEmail(email, emailHTML);
+    sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain);
   }
 
   var emailBanner = email ? `
