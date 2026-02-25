@@ -8,8 +8,12 @@ const NodeCache = require('node-cache');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CRITICAL: Never expose this key client-side
-const DATAGOLF_API_KEY = 'dc8cd870e0460b9fb860cf59164e';
+// CRITICAL: API key from environment variable — never hardcode
+const DATAGOLF_API_KEY = process.env.DATAGOLF_API_KEY;
+
+if (!DATAGOLF_API_KEY) {
+  console.error('⚠️  DATAGOLF_API_KEY environment variable is not set!');
+}
 const DATAGOLF_BASE_URL = 'https://feeds.datagolf.com';
 
 // Lab Picks password (server-side only)

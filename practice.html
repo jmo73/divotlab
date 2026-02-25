@@ -20,7 +20,11 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://divotlab.com/practice">
 <meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://divotlab.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://divotlab.com/og-image.png">
 <meta name="twitter:title" content="What Should I Practice? — Divot Lab">
 <meta name="twitter:description" content="Answer 8 questions about your golf game. Get a personalized, data-backed practice plan.">
 <link rel="canonical" href="https://divotlab.com/practice">
@@ -1243,7 +1247,7 @@ function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
 function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) {
   if (!email) return;
   
-  // Send compact data — Apps Script builds the email
+  // Build compact payload
   var payload = {
     email: email,
     source: 'practice-plan',
@@ -1263,13 +1267,33 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
     })
   };
   
-  fetch(PRACTICE_WEBHOOK_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'payload=' + encodeURIComponent(JSON.stringify(payload))
-  }).then(function(){ console.log('✓ Results email request sent'); })
-    .catch(function(e){ console.warn('Email send failed:', e); });
+  // Use hidden form + iframe — the only 100% reliable cross-origin method for Apps Script
+  var iframe = document.createElement('iframe');
+  iframe.name = 'dl-email-frame';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = PRACTICE_WEBHOOK_URL;
+  form.target = 'dl-email-frame';
+  
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'payload';
+  input.value = JSON.stringify(payload);
+  form.appendChild(input);
+  
+  document.body.appendChild(form);
+  form.submit();
+  
+  // Clean up after a few seconds
+  setTimeout(function() {
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+  }, 5000);
+  
+  console.log('✓ Results email submitted via form');
 }
 
 // On page load: check if returning from Stripe payment
