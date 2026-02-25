@@ -447,10 +447,9 @@ app.get('/api/live-tournament', async (req, res) => {
     const result = await fetchDataGolf(
       `/preds/in-play?tour=${tour}&dead_heat=${deadHeat}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      300 // 5min cache
+      60 // 1min cache during live play
     );
 
-    // Include event_name from the response so client can verify it matches
     const eventName = result.data?.event_name || result.data?.info?.event_name || null;
 
     res.json({
@@ -479,7 +478,7 @@ app.get('/api/live-stats', async (req, res) => {
     const result = await fetchDataGolf(
       `/preds/live-tournament-stats?stats=${stats}&round=${round}&display=${display}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      300 // 5min cache
+      60 // 1min cache during live play
     );
 
     res.json({
@@ -505,7 +504,7 @@ app.get('/api/live-hole-stats', async (req, res) => {
     const result = await fetchDataGolf(
       `/preds/live-hole-stats?tour=${tour}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      300 // 5min cache
+      60 // 1min cache during live play
     );
 
     res.json({
@@ -943,7 +942,7 @@ app.get('/api/lab-data', async (req, res) => {
     const startDate = currentEvent.start_date ? new Date(currentEvent.start_date) : null;
     const endDate = currentEvent.end_date ? new Date(currentEvent.end_date) : null;
     const isDuringTournament = startDate && endDate && today >= startDate && today <= endDate;
-    const cacheTTL = isDuringTournament ? 3600 : 21600; // 1hr during tournament, 6hr otherwise
+    const cacheTTL = isDuringTournament ? 300 : 21600; // 5min during tournament, 6hr otherwise
     
     cache.set(cacheKey, compositeData, cacheTTL);
 

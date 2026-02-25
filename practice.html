@@ -271,11 +271,14 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   border-radius:8px;
   cursor:pointer;
   transition: background .2s, border-color .2s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
 }
-.option:hover {
-  background:rgba(255,255,255,0.06);
-  border-color:rgba(255,255,255,0.14);
-  transform:translateX(4px);
+@media (hover: hover) {
+  .option:hover {
+    background:rgba(255,255,255,0.06);
+    border-color:rgba(255,255,255,0.14);
+    transform:translateX(4px);
+  }
 }
 .option.selected {
   background:rgba(91,191,133,0.08);
@@ -590,7 +593,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   .nav-links { display:none; }
   .nav-hamburger { display:flex; }
   .hero { padding:110px 22px 60px; }
-  .quiz-wrap { padding:30px 18px 80px; }
+  .quiz-wrap { padding:100px 18px 80px; min-height:100vh; }
+  .results-teaser { padding-top:90px; }
   .results-teaser, .results-full { padding-left:18px; padding-right:18px; }
   .summary-bar { grid-template-columns:1fr; gap:12px; }
   footer { padding:40px 22px 28px; }
