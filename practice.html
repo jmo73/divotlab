@@ -614,6 +614,286 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 .footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
 
 /* =============================================
+   PLAN PREVIEW — CSS mockup of floating pages
+   ============================================= */
+.plan-preview {
+  margin:40px auto 0;
+  max-width:560px;
+  position:relative;
+  height:320px;
+  opacity:0; animation: riseIn .7s ease .8s forwards;
+}
+.plan-preview .preview-label {
+  text-align:center;
+  font-size:10px; font-weight:600; letter-spacing:.2em;
+  text-transform:uppercase; color:rgba(250,250,250,.2);
+  margin-bottom:18px;
+}
+.plan-page {
+  position:absolute;
+  width:220px;
+  border-radius:8px;
+  overflow:hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 1px rgba(255,255,255,.08);
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+}
+.plan-page:hover { transform:translateY(-6px) !important; }
+/* Page 1: Cover — left, tilted */
+.plan-page.pg-cover {
+  left:8%; top:10px;
+  transform:rotate(-6deg);
+  z-index:3;
+}
+/* Page 2: Mistakes — center, front */
+.plan-page.pg-mistakes {
+  left:50%; top:0;
+  transform:translateX(-50%);
+  z-index:4;
+  width:240px;
+}
+/* Page 3: Weekly — right, tilted */
+.plan-page.pg-weekly {
+  right:8%; top:14px;
+  transform:rotate(5deg);
+  z-index:2;
+}
+
+/* Mini page content — pure CSS mockups */
+.mini-cover {
+  background:#0A0A0A;
+  height:290px;
+  padding:24px 20px;
+  position:relative;
+  overflow:hidden;
+}
+.mini-cover::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#1B4D3E,#5BBF85,#5A8FA8);
+}
+.mini-cover::after {
+  content:'';
+  position:absolute; top:20%; left:10%;
+  width:200px; height:200px;
+  background:radial-gradient(ellipse,rgba(27,77,62,.15),transparent 65%);
+}
+.mini-cover .mc-brand { font-size:7px; font-weight:600; letter-spacing:.14em; color:#5BBF85; position:relative; z-index:1; }
+.mini-cover .mc-title { font-family:var(--display); font-size:22px; font-weight:600; color:#FAFAFA; line-height:1.05; margin-top:50px; position:relative; z-index:1; }
+.mini-cover .mc-title em { font-style:italic; color:#5BBF85; }
+.mini-cover .mc-line { width:36px; height:2px; background:linear-gradient(90deg,#5BBF85,#5A8FA8); margin-top:10px; border-radius:1px; position:relative; z-index:1; }
+.mini-cover .mc-meta { font-size:7px; color:rgba(250,250,250,.35); margin-top:14px; line-height:1.8; position:relative; z-index:1; }
+
+.mini-content {
+  background:#FAFAFA;
+  height:290px;
+  padding:18px 16px;
+  overflow:hidden;
+}
+.mini-content .mc-overline { font-size:5.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:4px; }
+.mini-content .mc-heading { font-family:var(--display); font-size:13px; font-weight:600; color:#0A0A0A; margin-bottom:3px; }
+.mini-content .mc-sub { font-size:6px; color:#4A4A4A; margin-bottom:10px; }
+.mini-card {
+  background:#F3F2F0;
+  border-radius:4px;
+  padding:7px 9px 7px 22px;
+  margin-bottom:5px;
+  position:relative;
+}
+.mini-card::before {
+  content:'';
+  position:absolute; left:8px; top:7px;
+  width:10px; height:10px; border-radius:50%;
+  background:linear-gradient(135deg,#1B4D3E,#5BBF85);
+}
+.mini-card .mc-card-title { font-size:6px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
+.mini-card .mc-card-body { font-size:5px; color:#4A4A4A; line-height:1.5; }
+
+.mini-dark {
+  background:#0A0A0A;
+  height:290px;
+  padding:18px 16px;
+  position:relative;
+  overflow:hidden;
+}
+.mini-dark::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,#1B4D3E,#5BBF85);
+}
+.mini-dark .mc-overline { font-size:5.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#5BBF85; margin-bottom:4px; }
+.mini-dark .mc-heading { font-family:var(--display); font-size:13px; font-weight:600; color:#FAFAFA; margin-bottom:3px; }
+.mini-dark .mc-sub { font-size:6px; color:rgba(250,250,250,.35); margin-bottom:10px; }
+.mini-week {
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:4px;
+  padding:7px 9px;
+  margin-bottom:5px;
+}
+.mini-week .mw-head { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
+.mini-week .mw-num { width:12px; height:12px; border-radius:50%; background:#1B4D3E; display:flex; align-items:center; justify-content:center; font-size:6px; font-weight:700; color:#fff; }
+.mini-week .mw-title { font-size:6.5px; font-weight:600; color:#FAFAFA; }
+.mini-week .mw-bullet { font-size:5px; color:rgba(250,250,250,.4); line-height:1.5; padding-left:6px; }
+
+/* =============================================
+   INTAKE FORM (post-payment)
+   ============================================= */
+.intake-section {
+  display:none;
+  padding:100px 24px 80px;
+  max-width:600px;
+  margin:0 auto;
+}
+.intake-section.active { display:block; }
+
+.intake-header {
+  text-align:center; margin-bottom:40px;
+}
+.intake-header .teaser-label { opacity:1; animation:none; }
+.intake-header h2 {
+  font-family:var(--display);
+  font-size:clamp(28px,4.5vw,38px);
+  font-weight:600; color:var(--white);
+  letter-spacing:-.02em; line-height:1.1;
+  margin-bottom:10px;
+}
+.intake-header p {
+  font-size:14px; color:rgba(250,250,250,.35); line-height:1.6;
+}
+
+.intake-group {
+  margin-bottom:28px;
+}
+.intake-label {
+  font-size:11px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:rgba(250,250,250,.35);
+  margin-bottom:10px; display:block;
+}
+.intake-input {
+  width:100%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:8px;
+  padding:14px 20px;
+  font-family:var(--body); font-size:15px;
+  color:var(--white); outline:none;
+  transition:border-color .2s, background .2s;
+}
+.intake-input::placeholder { color:rgba(250,250,250,.22); }
+.intake-input:focus { border-color:var(--green-light); background:rgba(255,255,255,0.07); }
+
+/* Days selector — 7 horizontal buttons */
+.days-row {
+  display:flex; gap:8px;
+}
+.day-btn {
+  flex:1;
+  padding:12px 0;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  font-family:var(--body); font-size:15px; font-weight:500;
+  color:rgba(250,250,250,.5);
+  cursor:pointer; text-align:center;
+  transition:background .2s, border-color .2s, color .2s, transform .12s;
+}
+.day-btn:hover { background:rgba(255,255,255,0.07); color:rgba(250,250,250,.8); }
+.day-btn.selected {
+  background:rgba(91,191,133,0.1);
+  border-color:var(--green-light);
+  color:var(--white); font-weight:600;
+  transform:scale(1.04);
+}
+
+/* Goals — selectable chips */
+.goals-grid {
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+.goal-chip {
+  padding:10px 18px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  font-family:var(--body); font-size:13px;
+  color:rgba(250,250,250,.55);
+  cursor:pointer;
+  transition:background .2s, border-color .2s, color .2s;
+  user-select:none; -webkit-tap-highlight-color:transparent;
+}
+.goal-chip:hover { background:rgba(255,255,255,0.07); color:rgba(250,250,250,.8); }
+.goal-chip.selected {
+  background:rgba(91,191,133,0.1);
+  border-color:var(--green-light);
+  color:var(--white);
+}
+.goal-chip.selected::before {
+  content:'✓ ';
+  font-size:11px;
+}
+.goals-limit {
+  font-size:11px; color:rgba(250,250,250,.2);
+  margin-top:8px;
+}
+.goal-other-input {
+  width:100%; margin-top:10px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;
+  padding:12px 18px;
+  font-family:var(--body); font-size:13px;
+  color:var(--white); outline:none;
+  transition:border-color .2s;
+  display:none;
+}
+.goal-other-input.visible { display:block; }
+.goal-other-input::placeholder { color:rgba(250,250,250,.2); }
+.goal-other-input:focus { border-color:var(--green-light); }
+
+/* Generate button */
+.generate-btn {
+  display:block; width:100%;
+  background:var(--green); color:var(--white); border:none;
+  padding:16px 40px; border-radius:8px;
+  font-family:var(--body); font-size:16px; font-weight:500;
+  letter-spacing:.03em; cursor:pointer;
+  transition:background .2s, transform .15s, box-shadow .25s;
+  margin-top:36px;
+}
+.generate-btn:hover { background:#236b4f; transform:translateY(-2px); box-shadow:0 8px 24px rgba(27,77,62,.28); }
+.generate-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.generate-note {
+  text-align:center; margin-top:12px;
+  font-size:11px; color:rgba(250,250,250,.18);
+}
+
+/* Loading overlay */
+.loading-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:200;
+  background:rgba(10,10,10,.92);
+  backdrop-filter:blur(12px);
+  flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:20px;
+}
+.loading-overlay.active { display:flex; }
+.loading-spinner {
+  width:40px; height:40px;
+  border:3px solid rgba(255,255,255,.08);
+  border-top-color:var(--green-light);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text {
+  font-size:15px; color:rgba(250,250,250,.5);
+  font-weight:400;
+}
+.loading-sub {
+  font-size:12px; color:rgba(250,250,250,.2);
+}
+
+/* =============================================
    ANIMATIONS
    ============================================= */
 @keyframes riseIn {
@@ -734,9 +1014,48 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     </div>
   </div>
 
+  <!-- Plan preview mockup -->
+  <div class="plan-preview">
+    <div class="preview-label">Your Personalized 90-Day Plan</div>
+    <!-- Cover page -->
+    <div class="plan-page pg-cover">
+      <div class="mini-cover">
+        <div class="mc-brand">DIVOT LAB</div>
+        <div class="mc-title">Your 90-Day<br><em>Practice Plan</em></div>
+        <div class="mc-line"></div>
+        <div class="mc-meta">Prepared for <strong style="color:rgba(250,250,250,.7);">You</strong><br>Handicap · Primary Focus<br>Generated today</div>
+      </div>
+    </div>
+    <!-- Mistakes page -->
+    <div class="plan-page pg-mistakes">
+      <div class="mini-content">
+        <div class="mc-overline">Deep Dive</div>
+        <div class="mc-heading">5 Mistakes Costing You Strokes</div>
+        <div class="mc-sub">And exactly how to fix each one.</div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #1</div><div class="mc-card-body">Personalized analysis of the biggest error in your game and exactly how to fix it.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #2</div><div class="mc-card-body">The second most impactful change based on your quiz responses.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #3</div><div class="mc-card-body">A subtle technical issue most players at your level miss.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #4</div><div class="mc-card-body">Course management error costing 1-2 strokes per round.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #5</div><div class="mc-card-body">The mental game adjustment that compounds over 90 days.</div></div>
+      </div>
+    </div>
+    <!-- Weekly plan page -->
+    <div class="plan-page pg-weekly">
+      <div class="mini-dark">
+        <div class="mc-overline">Your 4-Week Cycle</div>
+        <div class="mc-heading">The Progressive Plan</div>
+        <div class="mc-sub">Repeat three times across 90 days.</div>
+        <div class="mini-week"><div class="mw-head"><div class="mw-num">1</div><div class="mw-title">Foundation Week</div></div><div class="mw-bullet">• Setup & alignment fundamentals<br>• End-of-week test included</div></div>
+        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#2C5F7C;">2</div><div class="mw-title">Technique Week</div></div><div class="mw-bullet">• Building on Week 1 gains<br>• Measurable drill targets</div></div>
+        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#5BBF85;">3</div><div class="mw-title">Application Week</div></div><div class="mw-bullet">• On-course skill transfer<br>• Scoring benchmarks</div></div>
+        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#5A8FA8;">4</div><div class="mw-title">Pressure Week</div></div><div class="mw-bullet">• Competition simulation<br>• Cycle benchmark test</div></div>
+      </div>
+    </div>
+  </div>
+
   <div class="unlock-section">
     <div class="unlock-price">$4.99</div>
-    <div class="unlock-price-note">One-time payment · Instant access + emailed to you</div>
+    <div class="unlock-price-note">One-time payment · Instant PDF download + emailed to you</div>
     <div class="unlock-email-row">
       <input type="email" id="unlockEmail" class="unlock-email-input" placeholder="your@email.com" required>
     </div>
@@ -744,6 +1063,60 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
     <p class="unlock-email-note">We'll email your full plan so you can reference it at the range.</p>
   </div>
+</div>
+
+<!-- ========== INTAKE FORM (post-payment) ========== -->
+<div class="intake-section" id="intakeSection">
+  <div class="intake-header">
+    <div class="teaser-label">Payment Confirmed</div>
+    <h2>Let's Personalize<br>Your Plan</h2>
+    <p>A few quick details so we can build your 90-day practice plan with the right drills, targets, and benchmarks for your game.</p>
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">First Name</label>
+    <input type="text" class="intake-input" id="intakeName" placeholder="e.g. Jake" autocomplete="given-name">
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">Exact Handicap Index</label>
+    <input type="number" class="intake-input" id="intakeHandicap" placeholder="e.g. 14.2" step="0.1" min="0" max="54">
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">Practice Days Per Week</label>
+    <div class="days-row" id="daysRow">
+      <div class="day-btn" data-val="1">1</div>
+      <div class="day-btn" data-val="2">2</div>
+      <div class="day-btn selected" data-val="3">3</div>
+      <div class="day-btn" data-val="4">4</div>
+      <div class="day-btn" data-val="5">5</div>
+      <div class="day-btn" data-val="6">6</div>
+      <div class="day-btn" data-val="7">7</div>
+    </div>
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">What are your goals? <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.6;">Pick 2–4</span></label>
+    <div class="goals-grid" id="goalsGrid"></div>
+    <div class="goals-limit" id="goalsLimit">0 of 4 selected</div>
+    <input type="text" class="goal-other-input" id="goalOther" placeholder="Something else? Type it here.">
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">Home Course <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.6;">Optional</span></label>
+    <input type="text" class="intake-input" id="intakeCourse" placeholder="e.g. Lonnie Poole Golf Course">
+  </div>
+
+  <button class="generate-btn" id="generateBtn" onclick="handleGenerate()">Generate My 90-Day Plan</button>
+  <p class="generate-note">Takes about 10 seconds. Your plan will download automatically and be emailed to you.</p>
+</div>
+
+<!-- ========== LOADING OVERLAY ========== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Building your personalized plan...</div>
+  <div class="loading-sub">This takes about 10 seconds</div>
 </div>
 
 <!-- ========== RESULTS FULL ========== -->
@@ -1309,11 +1682,187 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
 
     if (answers.handicap) {
       document.getElementById('hero').style.display = 'none';
-      showFullResults(storedEmail);
+      // Route to intake form instead of showing results immediately
+      showIntakeForm(storedEmail);
       window.history.replaceState({}, '', window.location.pathname);
     }
   }
 })();
+
+// ============================================
+// INTAKE FORM
+// ============================================
+var GOAL_OPTIONS = [
+  "Break 100 consistently",
+  "Break 90 for the first time",
+  "Break 80 for the first time",
+  "Get to single-digit handicap",
+  "Get to scratch",
+  "Stop three-putting so much",
+  "Hit more fairways off the tee",
+  "Improve my iron striking",
+  "Get up-and-down more often",
+  "Build a consistent pre-shot routine",
+  "Play more confidently under pressure",
+  "Lower my scoring average by 3+ strokes"
+];
+
+var selectedGoals = [];
+var selectedDays = 3;
+var intakeEmail = '';
+
+function showIntakeForm(email) {
+  intakeEmail = email || '';
+  document.getElementById('resultsTeaser').classList.remove('active');
+  document.getElementById('intakeSection').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Render goal chips
+  var grid = document.getElementById('goalsGrid');
+  grid.innerHTML = GOAL_OPTIONS.map(function(g) {
+    return '<div class="goal-chip" onclick="toggleGoal(this, \'' + g.replace(/'/g, "\\'") + '\')">' + g + '</div>';
+  }).join('') + '<div class="goal-chip" onclick="toggleOther(this)" data-other="true">Other</div>';
+
+  // Day selector
+  document.querySelectorAll('.day-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.day-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      selectedDays = parseInt(this.dataset.val);
+    });
+  });
+
+  // Pre-fill handicap from quiz if possible
+  var hcMap = { 'high': 24, 'mid-high': 16, 'mid': 10, 'low': 4 };
+  if (answers.handicap && hcMap[answers.handicap]) {
+    document.getElementById('intakeHandicap').value = hcMap[answers.handicap];
+  }
+}
+
+function toggleGoal(el, goal) {
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    selectedGoals = selectedGoals.filter(function(g){ return g !== goal; });
+  } else {
+    if (selectedGoals.length >= 4) return; // max 4
+    el.classList.add('selected');
+    selectedGoals.push(goal);
+  }
+  document.getElementById('goalsLimit').textContent = selectedGoals.length + ' of 4 selected';
+}
+
+function toggleOther(el) {
+  var input = document.getElementById('goalOther');
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    input.classList.remove('visible');
+    input.value = '';
+  } else {
+    el.classList.add('selected');
+    input.classList.add('visible');
+    input.focus();
+  }
+}
+
+// Weakness mapping from quiz keys
+var WEAKNESS_KEY_MAP = {
+  driving: 'driving',
+  approach: 'approach',
+  shortGame: 'shortGame',
+  putting: 'putting'
+};
+
+function handleGenerate() {
+  var name = document.getElementById('intakeName').value.trim();
+  var handicap = document.getElementById('intakeHandicap').value;
+  var otherGoal = document.getElementById('goalOther').value.trim();
+
+  // Validation
+  if (!name) {
+    document.getElementById('intakeName').focus();
+    document.getElementById('intakeName').style.borderColor = 'var(--red)';
+    setTimeout(function(){ document.getElementById('intakeName').style.borderColor = ''; }, 2000);
+    return;
+  }
+  if (!handicap) {
+    document.getElementById('intakeHandicap').focus();
+    document.getElementById('intakeHandicap').style.borderColor = 'var(--red)';
+    setTimeout(function(){ document.getElementById('intakeHandicap').style.borderColor = ''; }, 2000);
+    return;
+  }
+
+  // Determine weakness from quiz
+  var areas = analyzeGame();
+  var weakness = areas[0].key; // top weakness key
+
+  // Compile goals
+  var allGoals = selectedGoals.slice();
+  if (otherGoal) allGoals.push(otherGoal);
+  if (allGoals.length === 0) allGoals.push('Improve my overall game');
+
+  // Show loading
+  document.getElementById('loadingOverlay').classList.add('active');
+  document.getElementById('generateBtn').disabled = true;
+
+  // API URL — adjust if your api is on a different domain
+  var API_URL = '/api/generate-plan';
+
+  var payload = {
+    name: name,
+    handicap: parseFloat(handicap),
+    weakness: weakness,
+    goals: allGoals,
+    practiceDays: selectedDays,
+    email: intakeEmail
+  };
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(response) {
+    if (!response.ok) throw new Error('Generation failed');
+    return response.blob();
+  })
+  .then(function(blob) {
+    // Download the PDF
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'divotlab-practice-plan-' + name.toLowerCase() + '.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Hide loading, show success + free results
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('intakeSection').classList.remove('active');
+
+    // Also send email with the free results (existing flow)
+    if (intakeEmail) {
+      var areas = analyzeGame();
+      var handicapLabel = { 'high': '20+', 'mid-high': '12-20', 'mid': '6-12', 'low': '0-6' }[answers.handicap] || '';
+      var total = areas.reduce(function(s,a){ return s + a.score; }, 0) || 1;
+      var rawPcts = areas.map(function(a){ return Math.max(10, (a.score / total) * 100); });
+      var rawSum = rawPcts.reduce(function(s,v){ return s + v; }, 0);
+      var rounded = rawPcts.map(function(p){ return Math.max(5, Math.round((p / rawSum) * 100 / 5) * 5); });
+      var diff = 100 - rounded.reduce(function(s,v){ return s + v; }, 0);
+      if (diff !== 0) { var maxIdx = rounded.indexOf(Math.max.apply(null, rounded)); rounded[maxIdx] += diff; }
+      var potentialGain = areas[0].score >= 5 ? '3-5' : areas[0].score >= 3 ? '2-4' : '1-2';
+      sendResultsEmail(intakeEmail, areas, rounded, handicapLabel, potentialGain);
+    }
+
+    showFullResults(intakeEmail);
+  })
+  .catch(function(err) {
+    console.error('Plan generation error:', err);
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('generateBtn').disabled = false;
+    alert('Something went wrong generating your plan. Please try again.');
+  });
+}
 
 // ============================================
 // FULL RESULTS

@@ -2,14 +2,28 @@
   "version": 2,
   "builds": [
     {
+      "src": "api/generate-plan.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/api/generate-plan",
+      "dest": "api/generate-plan.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "functions": {
+    "api/generate-plan.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
 }
