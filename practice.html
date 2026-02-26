@@ -312,13 +312,24 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
    ============================================= */
 .results-teaser {
   display:none;
-  padding:100px 24px 80px;
-  max-width:640px;
+  padding:100px 48px 80px;
+  max-width:1120px;
   margin:0 auto;
-  text-align:center;
   min-height:100vh;
 }
 .results-teaser.active { display:block; }
+
+/* Two-column layout */
+.teaser-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:48px;
+  align-items:start;
+}
+.teaser-left { text-align:left; }
+.teaser-right {
+  position:sticky; top:100px;
+}
 
 .teaser-label {
   font-size:11px; font-weight:500; letter-spacing:.24em;
@@ -328,7 +339,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 }
 .teaser-title {
   font-family:var(--display);
-  font-size:clamp(32px,5vw,44px);
+  font-size:clamp(28px,4vw,38px);
   font-weight:600; color:var(--white);
   letter-spacing:-.02em; line-height:1.1;
   margin-bottom:24px;
@@ -614,55 +625,68 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 .footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
 
 /* =============================================
-   PLAN PREVIEW — CSS mockup of floating pages
+   PLAN PREVIEW — right column showcase
    ============================================= */
 .plan-preview {
-  margin:40px auto 0;
-  max-width:560px;
+  margin:0 auto;
   position:relative;
-  height:320px;
-  opacity:0; animation: riseIn .7s ease .8s forwards;
+  height:380px;
+  max-width:420px;
+  opacity:0; animation: riseIn .7s ease .5s forwards;
 }
 .plan-preview .preview-label {
   text-align:center;
-  font-size:10px; font-weight:600; letter-spacing:.2em;
-  text-transform:uppercase; color:rgba(250,250,250,.2);
-  margin-bottom:18px;
+  font-size:9px; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:rgba(250,250,250,.18);
+  margin-bottom:20px;
 }
 .plan-page {
   position:absolute;
-  width:220px;
   border-radius:8px;
   overflow:hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 1px rgba(255,255,255,.08);
-  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  border:1px solid rgba(255,255,255,.06);
 }
-.plan-page:hover { transform:translateY(-6px) !important; }
-/* Page 1: Cover — left, tilted */
+
+/* Back page — weekly plan (deepest) */
+.plan-page.pg-weekly {
+  width:200px;
+  right:10px; top:8px;
+  z-index:1;
+  transform:rotate(4deg);
+  box-shadow: 0 16px 50px rgba(0,0,0,.45);
+}
+/* Middle page — cover (mid depth) */
 .plan-page.pg-cover {
-  left:8%; top:10px;
-  transform:rotate(-6deg);
-  z-index:3;
+  width:200px;
+  left:10px; top:14px;
+  z-index:2;
+  transform:rotate(-3deg);
+  box-shadow: 0 20px 55px rgba(0,0,0,.5);
 }
-/* Page 2: Mistakes — center, front */
+/* Front page — mistakes (foreground, largest) */
 .plan-page.pg-mistakes {
+  width:230px;
   left:50%; top:0;
   transform:translateX(-50%);
-  z-index:4;
-  width:240px;
+  z-index:3;
+  box-shadow: 0 24px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
 }
-/* Page 3: Weekly — right, tilted */
-.plan-page.pg-weekly {
-  right:8%; top:14px;
-  transform:rotate(5deg);
-  z-index:2;
+
+/* Subtle ambient glow behind the stack */
+.plan-preview::after {
+  content:'';
+  position:absolute;
+  top:30%; left:50%; transform:translateX(-50%);
+  width:300px; height:300px;
+  background:radial-gradient(ellipse,rgba(27,77,62,.10) 0%,transparent 60%);
+  pointer-events:none; z-index:0;
 }
 
 /* Mini page content — pure CSS mockups */
 .mini-cover {
   background:#0A0A0A;
-  height:290px;
-  padding:24px 20px;
+  height:270px;
+  padding:22px 18px;
   position:relative;
   overflow:hidden;
 }
@@ -674,44 +698,44 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 .mini-cover::after {
   content:'';
   position:absolute; top:20%; left:10%;
-  width:200px; height:200px;
+  width:180px; height:180px;
   background:radial-gradient(ellipse,rgba(27,77,62,.15),transparent 65%);
 }
-.mini-cover .mc-brand { font-size:7px; font-weight:600; letter-spacing:.14em; color:#5BBF85; position:relative; z-index:1; }
-.mini-cover .mc-title { font-family:var(--display); font-size:22px; font-weight:600; color:#FAFAFA; line-height:1.05; margin-top:50px; position:relative; z-index:1; }
+.mini-cover .mc-brand { font-size:6.5px; font-weight:600; letter-spacing:.14em; color:#5BBF85; position:relative; z-index:1; }
+.mini-cover .mc-title { font-family:var(--display); font-size:20px; font-weight:600; color:#FAFAFA; line-height:1.05; margin-top:46px; position:relative; z-index:1; }
 .mini-cover .mc-title em { font-style:italic; color:#5BBF85; }
-.mini-cover .mc-line { width:36px; height:2px; background:linear-gradient(90deg,#5BBF85,#5A8FA8); margin-top:10px; border-radius:1px; position:relative; z-index:1; }
-.mini-cover .mc-meta { font-size:7px; color:rgba(250,250,250,.35); margin-top:14px; line-height:1.8; position:relative; z-index:1; }
+.mini-cover .mc-line { width:32px; height:2px; background:linear-gradient(90deg,#5BBF85,#5A8FA8); margin-top:10px; border-radius:1px; position:relative; z-index:1; }
+.mini-cover .mc-meta { font-size:6.5px; color:rgba(250,250,250,.3); margin-top:12px; line-height:1.8; position:relative; z-index:1; }
 
 .mini-content {
   background:#FAFAFA;
-  height:290px;
-  padding:18px 16px;
+  height:310px;
+  padding:16px 14px;
   overflow:hidden;
 }
-.mini-content .mc-overline { font-size:5.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:4px; }
-.mini-content .mc-heading { font-family:var(--display); font-size:13px; font-weight:600; color:#0A0A0A; margin-bottom:3px; }
-.mini-content .mc-sub { font-size:6px; color:#4A4A4A; margin-bottom:10px; }
+.mini-content .mc-overline { font-size:5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:4px; }
+.mini-content .mc-heading { font-family:var(--display); font-size:12px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
+.mini-content .mc-sub { font-size:5.5px; color:#4A4A4A; margin-bottom:8px; }
 .mini-card {
   background:#F3F2F0;
   border-radius:4px;
-  padding:7px 9px 7px 22px;
-  margin-bottom:5px;
+  padding:6px 8px 6px 20px;
+  margin-bottom:4px;
   position:relative;
 }
 .mini-card::before {
   content:'';
-  position:absolute; left:8px; top:7px;
-  width:10px; height:10px; border-radius:50%;
+  position:absolute; left:7px; top:6px;
+  width:9px; height:9px; border-radius:50%;
   background:linear-gradient(135deg,#1B4D3E,#5BBF85);
 }
-.mini-card .mc-card-title { font-size:6px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
-.mini-card .mc-card-body { font-size:5px; color:#4A4A4A; line-height:1.5; }
+.mini-card .mc-card-title { font-size:5.5px; font-weight:600; color:#0A0A0A; margin-bottom:1px; }
+.mini-card .mc-card-body { font-size:4.5px; color:#4A4A4A; line-height:1.5; }
 
 .mini-dark {
   background:#0A0A0A;
-  height:290px;
-  padding:18px 16px;
+  height:270px;
+  padding:16px 14px;
   position:relative;
   overflow:hidden;
 }
@@ -719,20 +743,20 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:linear-gradient(90deg,#1B4D3E,#5BBF85);
 }
-.mini-dark .mc-overline { font-size:5.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#5BBF85; margin-bottom:4px; }
-.mini-dark .mc-heading { font-family:var(--display); font-size:13px; font-weight:600; color:#FAFAFA; margin-bottom:3px; }
-.mini-dark .mc-sub { font-size:6px; color:rgba(250,250,250,.35); margin-bottom:10px; }
+.mini-dark .mc-overline { font-size:5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#5BBF85; margin-bottom:3px; }
+.mini-dark .mc-heading { font-family:var(--display); font-size:12px; font-weight:600; color:#FAFAFA; margin-bottom:2px; }
+.mini-dark .mc-sub { font-size:5.5px; color:rgba(250,250,250,.3); margin-bottom:8px; }
 .mini-week {
   background:rgba(255,255,255,.035);
   border:1px solid rgba(255,255,255,.06);
-  border-radius:4px;
-  padding:7px 9px;
-  margin-bottom:5px;
+  border-radius:3px;
+  padding:6px 8px;
+  margin-bottom:4px;
 }
-.mini-week .mw-head { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
-.mini-week .mw-num { width:12px; height:12px; border-radius:50%; background:#1B4D3E; display:flex; align-items:center; justify-content:center; font-size:6px; font-weight:700; color:#fff; }
-.mini-week .mw-title { font-size:6.5px; font-weight:600; color:#FAFAFA; }
-.mini-week .mw-bullet { font-size:5px; color:rgba(250,250,250,.4); line-height:1.5; padding-left:6px; }
+.mini-week .mw-head { display:flex; align-items:center; gap:4px; margin-bottom:3px; }
+.mini-week .mw-num { width:11px; height:11px; border-radius:50%; background:#1B4D3E; display:flex; align-items:center; justify-content:center; font-size:5.5px; font-weight:700; color:#fff; }
+.mini-week .mw-title { font-size:6px; font-weight:600; color:#FAFAFA; }
+.mini-week .mw-bullet { font-size:4.5px; color:rgba(250,250,250,.35); line-height:1.5; padding-left:5px; }
 
 /* =============================================
    INTAKE FORM (post-payment)
@@ -906,6 +930,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
    ============================================= */
 @media(max-width:900px){
   .footer-grid { grid-template-columns:1fr 1fr; }
+  .teaser-grid { grid-template-columns:1fr; gap:36px; }
+  .teaser-right { position:static; }
+  .plan-preview { max-width:360px; height:340px; }
 }
 @media(max-width:600px){
   nav { padding:0 22px; }
@@ -913,8 +940,12 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   .nav-hamburger { display:flex; }
   .hero { padding:110px 22px 60px; }
   .quiz-wrap { padding:100px 18px 80px; min-height:100vh; }
-  .results-teaser { padding-top:90px; }
+  .results-teaser { padding-left:18px; padding-right:18px; }
   .results-teaser, .results-full { padding-left:18px; padding-right:18px; }
+  .plan-preview { height:300px; max-width:300px; }
+  .plan-page.pg-cover { width:160px; }
+  .plan-page.pg-mistakes { width:190px; }
+  .plan-page.pg-weekly { width:160px; }
   .summary-bar { grid-template-columns:1fr; gap:12px; }
   footer { padding:40px 22px 28px; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
@@ -982,6 +1013,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="teaser-label">Your #1 Priority</div>
   <h2 class="teaser-title" id="teaserTitle"></h2>
 
+  <div class="teaser-grid">
+  <!-- LEFT COLUMN: Results -->
+  <div class="teaser-left">
   <div class="weakness-reveal" id="weaknessReveal">
     <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
       <div class="priority-num p1">1</div>
@@ -1013,7 +1047,10 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
       <span class="lock-badge">Locked</span>
     </div>
   </div>
+  </div>
 
+  <!-- RIGHT COLUMN: Preview + Payment -->
+  <div class="teaser-right">
   <!-- Plan preview mockup -->
   <div class="plan-preview">
     <div class="preview-label">Your Personalized 90-Day Plan</div>
@@ -1063,6 +1100,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
     <p class="unlock-email-note">We'll email your full plan so you can reference it at the range.</p>
   </div>
+  </div><!-- end teaser-right -->
+  </div><!-- end teaser-grid -->
 </div>
 
 <!-- ========== INTAKE FORM (post-payment) ========== -->
