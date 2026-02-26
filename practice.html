@@ -324,9 +324,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:48px;
-  align-items:start;
+  align-items:stretch;
 }
-.teaser-left { text-align:left; }
+.teaser-left { text-align:left; display:flex; flex-direction:column; }
 .teaser-right {
   position:sticky; top:100px;
   background:rgba(255,255,255,0.025);
@@ -334,6 +334,8 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   border-radius:14px;
   padding:36px 32px 32px;
   text-align:center;
+  display:flex;
+  flex-direction:column;
 }
 
 .teaser-label {
@@ -962,7 +964,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 @media(max-width:900px){
   .footer-grid { grid-template-columns:1fr 1fr; }
   .teaser-grid { grid-template-columns:1fr; gap:36px; }
-  .teaser-right { position:static; max-width:480px; margin:0 auto; }
+  .teaser-right { position:static; }
   .plan-preview { max-width:340px; height:280px; }
 }
 @media(max-width:600px){
@@ -1082,6 +1084,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 
   <!-- RIGHT COLUMN: Preview + Payment -->
   <div class="teaser-right">
+  <div class="teaser-label" style="opacity:1;animation:none;margin-bottom:20px;">Your Full Practice Plan</div>
   <!-- Plan preview mockup -->
   <div class="plan-preview">
     <div class="preview-label">8-Page Personalized PDF</div>
@@ -1176,8 +1179,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   </div>
 
   <div class="intake-group">
-    <label class="intake-label">Exact Handicap Index</label>
-    <input type="number" class="intake-input" id="intakeHandicap" placeholder="e.g. 14.2" step="0.1" min="0" max="54">
+    <label class="intake-label">Exact Handicap Index <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.6;">Use + for plus handicaps (e.g. +2.4)</span></label>
+    <input type="number" class="intake-input" id="intakeHandicap" placeholder="e.g. 14.2 or -2.4 for plus" step="0.1" min="-8" max="54">
   </div>
 
   <div class="intake-group">
@@ -1814,13 +1817,31 @@ function showIntakeForm(email) {
   document.getElementById('intakeSection').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Render goal chips
+  // Render goal chips using data attributes (avoids quote-escaping bugs)
   var grid = document.getElementById('goalsGrid');
-  grid.innerHTML = GOAL_OPTIONS.map(function(g) {
-    return '<div class="goal-chip" onclick="toggleGoal(this, \'' + g.replace(/'/g, "\\'") + '\')">' + g + '</div>';
-  }).join('') + '<div class="goal-chip" onclick="toggleOther(this)" data-other="true">Other</div>';
+  var html = '';
+  GOAL_OPTIONS.forEach(function(g, i) {
+    html += '<div class="goal-chip" data-goal-index="' + i + '">' + g + '</div>';
+  });
+  html += '<div class="goal-chip" data-other="true">Other</div>';
+  grid.innerHTML = html;
 
-  // Day selector
+  // Attach click listeners to goal chips
+  grid.querySelectorAll('.goal-chip[data-goal-index]').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-goal-index'));
+      var goal = GOAL_OPTIONS[idx];
+      toggleGoal(this, goal);
+    });
+  });
+  var otherChip = grid.querySelector('.goal-chip[data-other]');
+  if (otherChip) {
+    otherChip.addEventListener('click', function() {
+      toggleOther(this);
+    });
+  }
+
+  // Day selector — attach click listeners
   document.querySelectorAll('.day-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.day-btn').forEach(function(b){ b.classList.remove('selected'); });
@@ -1830,8 +1851,8 @@ function showIntakeForm(email) {
   });
 
   // Pre-fill handicap from quiz if possible
-  var hcMap = { 'high': 24, 'mid-high': 16, 'mid': 10, 'low': 4 };
-  if (answers.handicap && hcMap[answers.handicap]) {
+  var hcMap = { 'high': 24, 'mid-high': 16, 'mid': 10, 'low': 2 };
+  if (answers.handicap && hcMap[answers.handicap] !== undefined) {
     document.getElementById('intakeHandicap').value = hcMap[answers.handicap];
   }
 }
@@ -1888,59 +1909,33 @@ function handleGenerate() {
     return;
   }
 
-  // Determine weakness from quiz
-  var areas = analyzeGame();
-  var weakness = areas[0].key; // top weakness key
-
   // Compile goals
   var allGoals = selectedGoals.slice();
   if (otherGoal) allGoals.push(otherGoal);
   if (allGoals.length === 0) allGoals.push('Improve my overall game');
 
-  // Show loading
+  // Show loading briefly for UX feel
   document.getElementById('loadingOverlay').classList.add('active');
   document.getElementById('generateBtn').disabled = true;
 
-  // API URL — adjust if your api is on a different domain
-  var API_URL = '/api/generate-plan';
-
-  var payload = {
+  // Store personalization data for use in results
+  window.planPersonalization = {
     name: name,
     handicap: parseFloat(handicap),
-    weakness: weakness,
-    goals: allGoals,
     practiceDays: selectedDays,
-    email: intakeEmail
+    goals: allGoals
   };
 
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(function(response) {
-    if (!response.ok) throw new Error('Generation failed');
-    return response.blob();
-  })
-  .then(function(blob) {
-    // Download the PDF
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'divotlab-practice-plan-' + name.toLowerCase() + '.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    // Hide loading, show success + free results
+  // Small delay for loading UX, then show results
+  setTimeout(function() {
     document.getElementById('loadingOverlay').classList.remove('active');
     document.getElementById('intakeSection').classList.remove('active');
 
-    // Also send email with the free results (existing flow)
+    // Send email with results
     if (intakeEmail) {
       var areas = analyzeGame();
-      var handicapLabel = { 'high': '20+', 'mid-high': '12-20', 'mid': '6-12', 'low': '0-6' }[answers.handicap] || '';
+      var handicapVal = parseFloat(handicap);
+      var handicapLabel = handicapVal < 0 ? '+' + Math.abs(handicapVal) : handicap;
       var total = areas.reduce(function(s,a){ return s + a.score; }, 0) || 1;
       var rawPcts = areas.map(function(a){ return Math.max(10, (a.score / total) * 100); });
       var rawSum = rawPcts.reduce(function(s,v){ return s + v; }, 0);
@@ -1952,13 +1947,7 @@ function handleGenerate() {
     }
 
     showFullResults(intakeEmail);
-  })
-  .catch(function(err) {
-    console.error('Plan generation error:', err);
-    document.getElementById('loadingOverlay').classList.remove('active');
-    document.getElementById('generateBtn').disabled = false;
-    alert('Something went wrong generating your plan. Please try again.');
-  });
+  }, 1500);
 }
 
 // ============================================
@@ -1971,9 +1960,24 @@ function showFullResults(email) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const areas = analyzeGame();
-  const handicapLabel = {
-    'high': '20+', 'mid-high': '12–20', 'mid': '6–12', 'low': '0–6'
-  }[answers.handicap] || '';
+  
+  // Use personalization data if available (from intake form)
+  const p = window.planPersonalization || {};
+  const exactHandicap = p.handicap;
+  var handicapDisplay;
+  if (exactHandicap !== undefined && exactHandicap !== null) {
+    if (exactHandicap < 0) {
+      handicapDisplay = '+' + Math.abs(exactHandicap) + ' (Plus Handicap)';
+    } else {
+      handicapDisplay = exactHandicap.toString();
+    }
+  } else {
+    handicapDisplay = {
+      'high': '20+', 'mid-high': '12–20', 'mid': '6–12', 'low': '0–6'
+    }[answers.handicap] || '';
+  }
+  const userName = p.name || '';
+  const practiceDays = p.practiceDays || 3;
 
   // Calculate recommended practice split (rounded to nearest 5%, summing to 100%)
   const total = areas.reduce((s, a) => s + a.score, 0) || 1;
@@ -2012,8 +2016,8 @@ function showFullResults(email) {
   container.innerHTML = `
     <div class="results-header">
       <div class="teaser-label">Your Practice Plan</div>
-      <h2>Personalized for a ${handicapLabel} Handicap</h2>
-      <p>Prioritized by where you're losing the most strokes</p>
+      <h2>${userName ? userName + '\'s ' : ''}Personalized Plan</h2>
+      <p>Handicap: ${handicapDisplay} · ${practiceDays} days/week · Prioritized by strokes gained impact</p>
       ${emailBanner}
     </div>
 
@@ -2027,8 +2031,8 @@ function showFullResults(email) {
         <div class="summary-stat-lbl">#1 Priority</div>
       </div>
       <div>
-        <div class="summary-stat-val">4</div>
-        <div class="summary-stat-lbl">Focus Areas</div>
+        <div class="summary-stat-val">${practiceDays}</div>
+        <div class="summary-stat-lbl">Days / Week</div>
       </div>
     </div>
 
