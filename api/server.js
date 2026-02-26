@@ -1017,6 +1017,87 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================
+// PRACTICE PLAN — PERSONALIZED INSIGHT (Claude Haiku)
+// ============================================
+app.post('/api/personalize-insight', async (req, res) => {
+  try {
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!anthropicKey) {
+      return res.status(500).json({ success: false, error: 'ANTHROPIC_API_KEY not configured' });
+    }
+
+    const { name, handicap, weakness, weaknessLabel, goals, practiceDays, areas } = req.body || {};
+
+    if (!name || handicap === undefined || !weakness) {
+      return res.status(400).json({ success: false, error: 'Missing required fields: name, handicap, weakness' });
+    }
+
+    // Format handicap display
+    const hcDisplay = handicap < 0 ? `+${Math.abs(handicap)}` : `${handicap}`;
+    const skillLevel = handicap < 0 ? 'plus handicap (elite)' :
+                       handicap <= 5 ? 'low single-digit (advanced)' :
+                       handicap <= 12 ? 'mid-handicap (intermediate)' :
+                       handicap <= 20 ? 'developing (mid-high)' : 'beginner (high handicap)';
+
+    // Build priority summary from areas
+    const areaSummary = (areas || []).map((a, i) => `${i + 1}. ${a.label} (score: ${a.score})`).join(', ');
+    const goalsList = (goals || []).join(', ') || 'general improvement';
+
+    const systemPrompt = `You are a golf performance coach writing a personalized analysis for a practice plan PDF. Write in second person ("you"). Be direct, specific, and encouraging without being cheesy. Reference the golfer's name naturally (once or twice, not every sentence). Use strokes gained concepts where relevant. No fluff — every sentence should feel like it earns its place. Do NOT use bullet points or lists. Write 3 tight paragraphs, approximately 150-200 words total.`;
+
+    const userPrompt = `Write a personalized practice plan analysis for:
+
+Name: ${name}
+Handicap Index: ${hcDisplay} (${skillLevel})
+Primary weakness: ${weaknessLabel || weakness} 
+Priority order: ${areaSummary}
+Goals: ${goalsList}
+Practice days per week: ${practiceDays}
+
+Write 3 paragraphs:
+1. Open with their specific situation — acknowledge their handicap level and what the data reveals about where they're losing strokes. Make it feel like you've studied their game.
+2. Explain WHY their primary weakness matters more than they think, using strokes gained context. Reference how tour players or scratch golfers compare in this area.
+3. Close with what this plan is designed to do over 90 days given their ${practiceDays} days/week schedule, and set realistic expectations for improvement. Be honest about what's achievable.`;
+
+    console.log(`🏌️ Generating personalized insight for ${name} (${hcDisplay} hcp, weakness: ${weakness})`);
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': anthropicKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        system: systemPrompt
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('Claude API error:', errText);
+      return res.status(500).json({ success: false, error: 'Claude API call failed' });
+    }
+
+    const data = await response.json();
+    const insight = data.content?.[0]?.text || '';
+
+    console.log(`✓ Insight generated: ${insight.length} chars`);
+
+    res.json({ success: true, insight });
+
+  } catch (error) {
+    console.error('Personalize insight error:', error);
+    res.status(500).json({ success: false, error: 'Failed to generate insight' });
+  }
+});
+
+// ============================================
 // BLOG GENERATOR ENDPOINTS
 // ============================================
 const blogGenerator = require('./blog-generator');
@@ -1383,6 +1464,9 @@ app.listen(PORT, () => {
   GET  /api/blog-drafts             (list drafts)
   GET  /api/blog-drafts/:slug       (preview draft)
   GET  /api/blog-drafts/:slug/download (download HTML)
+
+🏌️ PRACTICE PLAN:
+  POST /api/personalize-insight     (Claude Haiku — personalized paragraph)
 
 📰 BLOG REGISTRY:
   GET  /api/blog-posts              (all posts, ?category=pga&limit=10)
