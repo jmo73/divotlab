@@ -1359,9 +1359,6 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="unlock-section">
     <div class="unlock-price">$4.99</div>
     <div class="unlock-price-note">One-time payment · Instant PDF download + emailed to you</div>
-    <div class="unlock-email-row">
-      <input type="email" id="unlockEmail" class="unlock-email-input" placeholder="your@email.com" required>
-    </div>
     <button class="unlock-btn" id="unlockBtn" onclick="handleUnlock()">Unlock Full Practice Plan</button>
     <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
     <p class="unlock-email-note">We'll email your full plan so you can reference it at the range.</p>
@@ -1380,17 +1377,22 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   </div><!-- end teaser-grid -->
 </div>
 
-<!-- ========== INTAKE FORM (post-payment) ========== -->
+<!-- ========== INTAKE FORM (after quiz, before payment) ========== -->
 <div class="intake-section" id="intakeSection">
   <div class="intake-header">
-    <div class="teaser-label">Payment Confirmed</div>
-    <h2>Let's Personalize<br>Your Plan</h2>
-    <p>A few quick details so we can build your 90-day practice plan with the right drills, targets, and benchmarks for your game.</p>
+    <div class="teaser-label">Almost There</div>
+    <h2>Tell Us About<br>Your Game</h2>
+    <p>A few details so we can build your personalized 90-day practice plan with the right drills, targets, and benchmarks.</p>
   </div>
 
   <div class="intake-group">
     <label class="intake-label">First Name</label>
     <input type="text" class="intake-input" id="intakeName" placeholder="e.g. Jake" autocomplete="given-name">
+  </div>
+
+  <div class="intake-group">
+    <label class="intake-label">Email</label>
+    <input type="email" class="intake-input" id="intakeEmail" placeholder="your@email.com" autocomplete="email">
   </div>
 
   <div class="intake-group">
@@ -1443,8 +1445,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <input type="text" class="intake-input" id="intakeCourse" placeholder="e.g. Pebble Beach">
   </div>
 
-  <button class="generate-btn" id="generateBtn" onclick="handleGenerate()">Generate My 90-Day Plan</button>
-  <p class="generate-note">Takes about 10 seconds. Your plan will download automatically and be emailed to you.</p>
+  <button class="generate-btn" id="generateBtn" onclick="handleIntakeSubmit()">See My Results</button>
+  <p class="generate-note">We'll analyze your responses and show you exactly where to focus.</p>
 </div>
 
 <!-- ========== LOADING OVERLAY ========== -->
@@ -1527,17 +1529,6 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 // QUESTIONS
 // ============================================
 const questions = [
-  {
-    id: 'handicap',
-    text: 'What\'s your current handicap range?',
-    sub: 'Approximate is fine. This calibrates the entire analysis.',
-    options: [
-      { label: '20+ (beginner)', value: 'high' },
-      { label: '12–20 (developing)', value: 'mid-high' },
-      { label: '6–12 (intermediate)', value: 'mid' },
-      { label: '0–6 (advanced)', value: 'low' }
-    ]
-  },
   {
     id: 'miss',
     text: 'What\'s your typical miss off the tee?',
@@ -1669,7 +1660,7 @@ function selectOption(qId, value, el) {
     if (currentQ < questions.length - 1) {
       nextQuestion();
     } else {
-      showTeaser();
+      showIntakeForm('');
     }
   }, 400);
 }
@@ -1699,6 +1690,16 @@ function analyzeGame() {
     shortGame: 0,
     putting: 0
   };
+
+  // Derive handicap bucket from exact value
+  var hcVal = parseFloat(a.exactHandicap) || 15;
+  var hcBucket;
+  if (hcVal <= 6) hcBucket = 'low';
+  else if (hcVal <= 12) hcBucket = 'mid';
+  else if (hcVal <= 20) hcBucket = 'mid-high';
+  else hcBucket = 'high';
+  // Store for compatibility with getAreaDetails
+  a.handicap = hcBucket;
 
   // DRIVING score (higher = worse / more need to practice)
   if (a.miss === 'inconsistent') scores.driving += 3;
@@ -1841,10 +1842,56 @@ function getAreaDetails(key, rank, handicap) {
 }
 
 // ============================================
-// TEASER RESULTS
+// HANDLE INTAKE SUBMIT → personalized teaser
+// ============================================
+function handleIntakeSubmit() {
+  var name = document.getElementById('intakeName').value.trim();
+  var email = document.getElementById('intakeEmail').value.trim();
+  var handicap = document.getElementById('intakeHandicap').value;
+  var course = document.getElementById('intakeCourse').value.trim();
+  var otherGoal = document.getElementById('goalOther').value.trim();
+
+  // Validation
+  if (!name) {
+    document.getElementById('intakeName').focus();
+    document.getElementById('intakeName').style.borderColor = 'var(--red)';
+    setTimeout(function(){ document.getElementById('intakeName').style.borderColor = ''; }, 2000);
+    return;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('intakeEmail').focus();
+    document.getElementById('intakeEmail').style.borderColor = 'var(--red)';
+    setTimeout(function(){ document.getElementById('intakeEmail').style.borderColor = ''; }, 2000);
+    return;
+  }
+
+  // Store personal details in answers
+  answers.exactHandicap = parseFloat(handicap);
+  answers.userName = name;
+  answers.userEmail = email;
+  answers.userCourse = course;
+  answers.practiceDays = selectedDays;
+
+  var allGoals = selectedGoals.slice();
+  if (otherGoal) allGoals.push(otherGoal);
+  if (allGoals.length === 0) allGoals.push('Improve my overall game');
+  answers.userGoals = allGoals;
+
+  intakeEmail = email;
+
+  // Save to sessionStorage now so it persists through Stripe redirect
+  sessionStorage.setItem('dl_answers', JSON.stringify(answers));
+  sessionStorage.setItem('dl_email', email);
+
+  showTeaser();
+}
+
+// ============================================
+// TEASER RESULTS (personalized with their data)
 // ============================================
 function showTeaser() {
   document.getElementById('quizWrap').classList.remove('active');
+  document.getElementById('intakeSection').classList.remove('active');
   document.getElementById('resultsTeaser').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1852,7 +1899,17 @@ function showTeaser() {
   const top = areas[0];
   const details = getAreaDetails(top.key, 0, answers.handicap);
 
-  document.getElementById('teaserTitle').textContent = 'Your Results Are Ready';
+  var name = answers.userName || '';
+  var hc = answers.exactHandicap;
+  var hcDisplay = hc < 0 ? '+' + Math.abs(hc) : hc;
+  var potentialGain = top.score >= 5 ? '3–5' : top.score >= 3 ? '2–4' : '1–2';
+
+  // Personalized title
+  if (name) {
+    document.getElementById('teaserTitle').innerHTML = name + ', Your <em style="font-style:italic;color:var(--green-light);">' + top.label + '</em> Is Costing You ' + potentialGain + ' Strokes';
+  } else {
+    document.getElementById('teaserTitle').textContent = 'Your Results Are Ready';
+  }
   document.getElementById('weaknessName').textContent = top.label;
   document.getElementById('weaknessDesc').textContent = details.desc;
 }
@@ -1868,12 +1925,12 @@ var STRIPE_LINK = 'https://buy.stripe.com/7sYdR8eMO2nC8hJfUw1ZS01';
 var PRACTICE_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
 
 function encodeAnswers() {
-  var keys = ['handicap','miss','gir','proximity','updown','putts','three_putt','penalty'];
+  var keys = ['miss','gir','proximity','updown','putts','three_putt','penalty'];
   return keys.map(function(k){ return answers[k] || ''; }).join(',');
 }
 
 function decodeAnswers(str) {
-  var keys = ['handicap','miss','gir','proximity','updown','putts','three_putt','penalty'];
+  var keys = ['miss','gir','proximity','updown','putts','three_putt','penalty'];
   var vals = str.split(',');
   var obj = {};
   keys.forEach(function(k, i){ obj[k] = vals[i] || ''; });
@@ -1881,26 +1938,32 @@ function decodeAnswers(str) {
 }
 
 function handleUnlock() {
-  var emailInput = document.getElementById('unlockEmail');
-  var email = emailInput ? emailInput.value.trim() : '';
+  var email = answers.userEmail || intakeEmail || '';
   
-  // Validate email
+  if (!email) {
+    // Fallback: check if there's an email input in the unlock section
+    var emailInput = document.getElementById('unlockEmail');
+    if (emailInput) email = emailInput.value.trim();
+  }
+
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    emailInput.classList.add('error');
-    emailInput.focus();
-    emailInput.setAttribute('placeholder', 'Please enter your email');
-    setTimeout(function(){ emailInput.classList.remove('error'); }, 2000);
+    var emailInput = document.getElementById('unlockEmail');
+    if (emailInput) {
+      emailInput.classList.add('error');
+      emailInput.focus();
+      emailInput.setAttribute('placeholder', 'Please enter your email');
+      setTimeout(function(){ emailInput.classList.remove('error'); }, 2000);
+    }
     return;
   }
 
-  // Save answers + email to sessionStorage so we can restore after Stripe redirect
+  // Ensure everything is saved to sessionStorage
   sessionStorage.setItem('dl_answers', JSON.stringify(answers));
   sessionStorage.setItem('dl_email', email);
 
-  // Redirect to Stripe with answers encoded in client_reference_id
+  // Redirect to Stripe
   var encoded = encodeAnswers();
   var url = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(encoded);
-  // Pre-fill email in Stripe checkout
   url += '&prefilled_email=' + encodeURIComponent(email);
   window.location.href = url;
 }
@@ -2126,13 +2189,18 @@ function setSliderFromQuiz(quizHandicap) {
 }
 
 // ============================================
-// SHOW INTAKE FORM
+// SHOW INTAKE FORM (after quiz, before teaser)
 // ============================================
 function showIntakeForm(email) {
   intakeEmail = email || '';
+  document.getElementById('quizWrap').classList.remove('active');
   document.getElementById('resultsTeaser').classList.remove('active');
   document.getElementById('intakeSection').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Pre-fill email if we have it
+  var emailField = document.getElementById('intakeEmail');
+  if (emailField && email) emailField.value = email;
 
   // Render goal chips using data attributes
   var grid = document.getElementById('goalsGrid');
@@ -2158,9 +2226,9 @@ function showIntakeForm(email) {
     });
   }
 
-  // Day selector — remove old listeners, add new
+  // Day selector — clone to remove old listeners
   document.querySelectorAll('.day-btn').forEach(function(btn) {
-    var newBtn = btn.cloneNode(true); // clone removes old listeners
+    var newBtn = btn.cloneNode(true);
     btn.parentNode.replaceChild(newBtn, btn);
     newBtn.addEventListener('click', function() {
       document.querySelectorAll('.day-btn').forEach(function(b){ b.classList.remove('selected'); });
@@ -2171,11 +2239,6 @@ function showIntakeForm(email) {
 
   // Init handicap slider
   initHandicapSlider();
-
-  // Pre-fill handicap from quiz
-  if (answers.handicap) {
-    setSliderFromQuiz(answers.handicap);
-  }
 }
 
 function toggleGoal(el, goal) {
@@ -2213,42 +2276,30 @@ var WEAKNESS_KEY_MAP = {
 
 // ============================================
 // HANDLE GENERATE — Option D (templates + Claude insight)
+// Called after Stripe payment return
 // ============================================
 function handleGenerate() {
-  var name = document.getElementById('intakeName').value.trim();
-  var handicap = document.getElementById('intakeHandicap').value;
-  var otherGoal = document.getElementById('goalOther').value.trim();
-  var course = document.getElementById('intakeCourse').value.trim();
+  var name = answers.userName || 'Golfer';
+  var handicap = parseFloat(answers.exactHandicap) || 15;
+  var course = answers.userCourse || '';
+  var allGoals = answers.userGoals || ['Improve my overall game'];
+  var practiceDays = answers.practiceDays || selectedDays || 3;
 
-  // Validation
-  if (!name) {
-    document.getElementById('intakeName').focus();
-    document.getElementById('intakeName').style.borderColor = 'var(--red)';
-    setTimeout(function(){ document.getElementById('intakeName').style.borderColor = ''; }, 2000);
-    return;
-  }
-  if (!handicap && handicap !== '0') {
-    var sliderWrap = document.querySelector('.handicap-slider-wrap');
-    if (sliderWrap) {
-      sliderWrap.style.borderColor = 'var(--red)';
-      setTimeout(function(){ sliderWrap.style.borderColor = ''; }, 2000);
-    }
-    return;
-  }
+  // Derive handicap bucket
+  if (handicap <= 6) answers.handicap = 'low';
+  else if (handicap <= 12) answers.handicap = 'mid';
+  else if (handicap <= 20) answers.handicap = 'mid-high';
+  else answers.handicap = 'high';
 
   var areas = analyzeGame();
   var weakness = areas[0].key;
 
-  var allGoals = selectedGoals.slice();
-  if (otherGoal) allGoals.push(otherGoal);
-  if (allGoals.length === 0) allGoals.push('Improve my overall game');
-
-  // Show loading
+  // Show loading, hide everything else
+  document.getElementById('resultsTeaser').classList.remove('active');
+  document.getElementById('intakeSection').classList.remove('active');
   document.getElementById('loadingOverlay').classList.add('active');
-  document.getElementById('generateBtn').disabled = true;
 
-  // Compute all data needed for PDF
-  var handicapVal = parseFloat(handicap);
+  // Compute allocations
   var total = areas.reduce(function(s,a){ return s + a.score; }, 0) || 1;
   var rawPcts = areas.map(function(a){ return Math.max(10, (a.score / total) * 100); });
   var rawSum = rawPcts.reduce(function(s,v){ return s + v; }, 0);
@@ -2259,11 +2310,11 @@ function handleGenerate() {
 
   var planData = {
     name: name,
-    handicap: handicapVal,
+    handicap: handicap,
     weakness: weakness,
     weaknessLabel: areas[0].label,
     goals: allGoals,
-    practiceDays: selectedDays,
+    practiceDays: practiceDays,
     course: course,
     areas: areas,
     adjusted: rounded,
@@ -2282,7 +2333,7 @@ function handleGenerate() {
 
       // Send email
       if (intakeEmail) {
-        var hcLabel = handicapVal < 0 ? '+' + Math.abs(handicapVal) : handicap;
+        var hcLabel = handicap < 0 ? '+' + Math.abs(handicap) : String(handicap);
         sendResultsEmail(intakeEmail, areas, rounded, hcLabel, potentialGain);
       }
 
@@ -2291,8 +2342,7 @@ function handleGenerate() {
     .catch(function(err) {
       console.error('Generation error:', err);
       document.getElementById('loadingOverlay').classList.remove('active');
-      document.getElementById('generateBtn').disabled = false;
-      alert('Something went wrong. Please try again.');
+      alert('Something went wrong generating your plan. Please refresh and try again.');
     });
 }
 
@@ -2899,11 +2949,15 @@ function retakeQuiz() {
     if (stored) {
       try { answers = JSON.parse(stored); } catch(e) {}
     }
+    if (storedEmail) intakeEmail = storedEmail;
 
-    if (answers.handicap) {
+    // We already have all personal details from before payment
+    if (answers.exactHandicap !== undefined || answers.miss) {
       document.getElementById('hero').style.display = 'none';
-      showIntakeForm(storedEmail);
       window.history.replaceState({}, '', window.location.pathname);
+
+      // Go straight to generating PDF
+      handleGenerate();
     }
   }
 })();
