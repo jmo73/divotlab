@@ -329,6 +329,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .teaser-left { text-align:left; }
 .teaser-right {
   position:sticky; top:100px;
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px;
+  padding:36px 32px 32px;
+  text-align:center;
 }
 
 .teaser-label {
@@ -410,20 +415,23 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
 /* Unlock CTA */
 .unlock-section {
-  margin-top:36px;
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,0.06);
   opacity:0; animation: riseIn .5s ease .65s forwards;
+  text-align:center;
 }
 .unlock-price {
-  font-family:var(--mono); font-size:32px; font-weight:500;
+  font-family:var(--mono); font-size:36px; font-weight:500;
   color:var(--white); margin-bottom:4px;
 }
 .unlock-price-note {
-  font-size:13px; color:rgba(250,250,250,.3); margin-bottom:24px;
+  font-size:12px; color:rgba(250,250,250,.28); margin-bottom:22px;
 }
 .unlock-btn {
-  display:inline-block;
+  display:block; width:100%;
   background:var(--green); color:var(--white); border:none;
-  padding:16px 48px; border-radius:5px;
+  padding:16px 48px; border-radius:8px;
   font-family:var(--body); font-size:15px; font-weight:500;
   letter-spacing:.03em; cursor:pointer;
   transition:background .2s, transform .15s, box-shadow .25s;
@@ -433,19 +441,18 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   box-shadow:0 8px 24px rgba(27,77,62,.28);
 }
 .unlock-guarantee {
-  margin-top:14px; font-size:12px; color:rgba(250,250,250,.22);
+  margin-top:14px; font-size:11px; color:rgba(250,250,250,.2);
 }
 .unlock-email-row {
-  margin-bottom:18px;
-  max-width:320px;
-  margin-left:auto; margin-right:auto;
+  margin-bottom:14px;
+  max-width:100%;
 }
 .unlock-email-input {
   width:100%;
   background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:5px;
-  padding:12px 18px;
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:8px;
+  padding:14px 18px;
   font-family:var(--body); font-size:14px;
   color:var(--white); outline:none;
   text-align:center;
@@ -628,65 +635,67 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
    PLAN PREVIEW — right column showcase
    ============================================= */
 .plan-preview {
-  margin:0 auto;
+  margin:0 auto 8px;
   position:relative;
-  height:380px;
-  max-width:420px;
+  height:300px;
+  max-width:380px;
   opacity:0; animation: riseIn .7s ease .5s forwards;
 }
 .plan-preview .preview-label {
   text-align:center;
-  font-size:9px; font-weight:600; letter-spacing:.22em;
-  text-transform:uppercase; color:rgba(250,250,250,.18);
-  margin-bottom:20px;
+  font-size:8px; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:rgba(250,250,250,.15);
+  margin-bottom:16px;
 }
 .plan-page {
   position:absolute;
-  border-radius:8px;
+  border-radius:6px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.05);
 }
 
-/* Back page — weekly plan (deepest) */
-.plan-page.pg-weekly {
-  width:200px;
-  right:10px; top:8px;
-  z-index:1;
-  transform:rotate(4deg);
-  box-shadow: 0 16px 50px rgba(0,0,0,.45);
-}
-/* Middle page — cover (mid depth) */
+/* Back-left: Cover page */
 .plan-page.pg-cover {
-  width:200px;
-  left:10px; top:14px;
-  z-index:2;
-  transform:rotate(-3deg);
-  box-shadow: 0 20px 55px rgba(0,0,0,.5);
+  width:170px;
+  left:6px; top:16px;
+  z-index:1;
+  transform:rotate(-4deg);
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  opacity:.75;
 }
-/* Front page — mistakes (foreground, largest) */
+/* Back-right: Mistakes page */
 .plan-page.pg-mistakes {
-  width:230px;
+  width:170px;
+  right:6px; top:12px;
+  z-index:2;
+  transform:rotate(3.5deg);
+  box-shadow: 0 14px 44px rgba(0,0,0,.45);
+  opacity:.8;
+}
+/* FRONT CENTER: Drills page (hero) */
+.plan-page.pg-drills {
+  width:210px;
   left:50%; top:0;
   transform:translateX(-50%);
   z-index:3;
-  box-shadow: 0 24px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
+  box-shadow: 0 20px 56px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
 }
 
 /* Subtle ambient glow behind the stack */
 .plan-preview::after {
   content:'';
   position:absolute;
-  top:30%; left:50%; transform:translateX(-50%);
-  width:300px; height:300px;
-  background:radial-gradient(ellipse,rgba(27,77,62,.10) 0%,transparent 60%);
+  top:35%; left:50%; transform:translateX(-50%);
+  width:260px; height:260px;
+  background:radial-gradient(ellipse,rgba(27,77,62,.08) 0%,transparent 60%);
   pointer-events:none; z-index:0;
 }
 
 /* Mini page content — pure CSS mockups */
 .mini-cover {
   background:#0A0A0A;
-  height:270px;
-  padding:22px 18px;
+  height:230px;
+  padding:18px 16px;
   position:relative;
   overflow:hidden;
 }
@@ -697,66 +706,88 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 }
 .mini-cover::after {
   content:'';
-  position:absolute; top:20%; left:10%;
-  width:180px; height:180px;
+  position:absolute; top:15%; left:8%;
+  width:160px; height:160px;
   background:radial-gradient(ellipse,rgba(27,77,62,.15),transparent 65%);
 }
-.mini-cover .mc-brand { font-size:6.5px; font-weight:600; letter-spacing:.14em; color:#5BBF85; position:relative; z-index:1; }
-.mini-cover .mc-title { font-family:var(--display); font-size:20px; font-weight:600; color:#FAFAFA; line-height:1.05; margin-top:46px; position:relative; z-index:1; }
+.mini-cover .mc-brand { font-size:5.5px; font-weight:600; letter-spacing:.14em; color:#5BBF85; position:relative; z-index:1; }
+.mini-cover .mc-title { font-family:var(--display); font-size:17px; font-weight:600; color:#FAFAFA; line-height:1.05; margin-top:36px; position:relative; z-index:1; }
 .mini-cover .mc-title em { font-style:italic; color:#5BBF85; }
-.mini-cover .mc-line { width:32px; height:2px; background:linear-gradient(90deg,#5BBF85,#5A8FA8); margin-top:10px; border-radius:1px; position:relative; z-index:1; }
-.mini-cover .mc-meta { font-size:6.5px; color:rgba(250,250,250,.3); margin-top:12px; line-height:1.8; position:relative; z-index:1; }
+.mini-cover .mc-line { width:28px; height:2px; background:linear-gradient(90deg,#5BBF85,#5A8FA8); margin-top:8px; border-radius:1px; position:relative; z-index:1; }
+.mini-cover .mc-meta { font-size:5.5px; color:rgba(250,250,250,.3); margin-top:10px; line-height:1.8; position:relative; z-index:1; }
 
 .mini-content {
   background:#FAFAFA;
-  height:310px;
-  padding:16px 14px;
+  height:230px;
+  padding:14px 12px;
   overflow:hidden;
 }
-.mini-content .mc-overline { font-size:5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:4px; }
-.mini-content .mc-heading { font-family:var(--display); font-size:12px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
-.mini-content .mc-sub { font-size:5.5px; color:#4A4A4A; margin-bottom:8px; }
+.mini-content .mc-overline { font-size:4.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:3px; }
+.mini-content .mc-heading { font-family:var(--display); font-size:10px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
+.mini-content .mc-sub { font-size:5px; color:#4A4A4A; margin-bottom:7px; }
 .mini-card {
   background:#F3F2F0;
-  border-radius:4px;
-  padding:6px 8px 6px 20px;
-  margin-bottom:4px;
+  border-radius:3px;
+  padding:5px 7px 5px 18px;
+  margin-bottom:3px;
   position:relative;
 }
 .mini-card::before {
   content:'';
-  position:absolute; left:7px; top:6px;
-  width:9px; height:9px; border-radius:50%;
+  position:absolute; left:6px; top:5px;
+  width:8px; height:8px; border-radius:50%;
   background:linear-gradient(135deg,#1B4D3E,#5BBF85);
 }
-.mini-card .mc-card-title { font-size:5.5px; font-weight:600; color:#0A0A0A; margin-bottom:1px; }
-.mini-card .mc-card-body { font-size:4.5px; color:#4A4A4A; line-height:1.5; }
+.mini-card .mc-card-title { font-size:5px; font-weight:600; color:#0A0A0A; margin-bottom:1px; }
+.mini-card .mc-card-body { font-size:4px; color:#4A4A4A; line-height:1.45; }
 
-.mini-dark {
-  background:#0A0A0A;
-  height:270px;
+/* Drill page mockup — foreground */
+.mini-drills {
+  background:#FAFAFA;
+  height:290px;
   padding:16px 14px;
+  overflow:hidden;
+}
+.mini-drills .mc-overline { font-size:4.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#1B4D3E; margin-bottom:3px; }
+.mini-drills .mc-heading { font-family:var(--display); font-size:11px; font-weight:600; color:#0A0A0A; margin-bottom:2px; }
+.mini-drills .mc-sub { font-size:5px; color:#4A4A4A; margin-bottom:10px; }
+.mini-drill-card {
+  background:#F3F2F0;
+  border-radius:4px;
+  padding:8px 10px;
+  margin-bottom:5px;
   position:relative;
   overflow:hidden;
 }
-.mini-dark::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,#1B4D3E,#5BBF85);
+.mini-drill-card::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,#1B4D3E,#5BBF85);
 }
-.mini-dark .mc-overline { font-size:5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#5BBF85; margin-bottom:3px; }
-.mini-dark .mc-heading { font-family:var(--display); font-size:12px; font-weight:600; color:#FAFAFA; margin-bottom:2px; }
-.mini-dark .mc-sub { font-size:5.5px; color:rgba(250,250,250,.3); margin-bottom:8px; }
-.mini-week {
-  background:rgba(255,255,255,.035);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:3px;
-  padding:6px 8px;
-  margin-bottom:4px;
+.mini-drill-card .md-name { font-size:6px; font-weight:700; color:#0A0A0A; margin-bottom:2px; }
+.mini-drill-card .md-meta { font-size:4.5px; color:#5BBF85; margin-bottom:3px; font-weight:600; }
+.mini-drill-card .md-desc { font-size:4.5px; color:#4A4A4A; line-height:1.5; }
+
+/* What's included list */
+.included-list {
+  text-align:left;
+  margin:16px 0 0;
+  list-style:none;
 }
-.mini-week .mw-head { display:flex; align-items:center; gap:4px; margin-bottom:3px; }
-.mini-week .mw-num { width:11px; height:11px; border-radius:50%; background:#1B4D3E; display:flex; align-items:center; justify-content:center; font-size:5.5px; font-weight:700; color:#fff; }
-.mini-week .mw-title { font-size:6px; font-weight:600; color:#FAFAFA; }
-.mini-week .mw-bullet { font-size:4.5px; color:rgba(250,250,250,.35); line-height:1.5; padding-left:5px; }
+.included-list li {
+  font-size:12px; color:rgba(250,250,250,.55);
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  display:flex; align-items:center; gap:10px;
+}
+.included-list li:last-child { border-bottom:none; }
+.included-list .check {
+  width:16px; height:16px; border-radius:50%;
+  background:rgba(91,191,133,0.1);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  font-size:9px; color:var(--green-light);
+}
 
 /* =============================================
    INTAKE FORM (post-payment)
@@ -931,8 +962,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 @media(max-width:900px){
   .footer-grid { grid-template-columns:1fr 1fr; }
   .teaser-grid { grid-template-columns:1fr; gap:36px; }
-  .teaser-right { position:static; }
-  .plan-preview { max-width:360px; height:340px; }
+  .teaser-right { position:static; max-width:480px; margin:0 auto; }
+  .plan-preview { max-width:340px; height:280px; }
 }
 @media(max-width:600px){
   nav { padding:0 22px; }
@@ -942,10 +973,10 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   .quiz-wrap { padding:100px 18px 80px; min-height:100vh; }
   .results-teaser { padding-left:18px; padding-right:18px; }
   .results-teaser, .results-full { padding-left:18px; padding-right:18px; }
-  .plan-preview { height:300px; max-width:300px; }
-  .plan-page.pg-cover { width:160px; }
-  .plan-page.pg-mistakes { width:190px; }
-  .plan-page.pg-weekly { width:160px; }
+  .plan-preview { height:260px; max-width:280px; }
+  .plan-page.pg-cover { width:140px; }
+  .plan-page.pg-mistakes { width:140px; }
+  .plan-page.pg-drills { width:175px; }
   .summary-bar { grid-template-columns:1fr; gap:12px; }
   footer { padding:40px 22px 28px; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
@@ -1053,8 +1084,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="teaser-right">
   <!-- Plan preview mockup -->
   <div class="plan-preview">
-    <div class="preview-label">Your Personalized 90-Day Plan</div>
-    <!-- Cover page -->
+    <div class="preview-label">8-Page Personalized PDF</div>
+    <!-- Back-left: Cover page -->
     <div class="plan-page pg-cover">
       <div class="mini-cover">
         <div class="mc-brand">DIVOT LAB</div>
@@ -1063,33 +1094,60 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
         <div class="mc-meta">Prepared for <strong style="color:rgba(250,250,250,.7);">You</strong><br>Handicap · Primary Focus<br>Generated today</div>
       </div>
     </div>
-    <!-- Mistakes page -->
+    <!-- Back-right: Mistakes page -->
     <div class="plan-page pg-mistakes">
       <div class="mini-content">
         <div class="mc-overline">Deep Dive</div>
         <div class="mc-heading">5 Mistakes Costing You Strokes</div>
         <div class="mc-sub">And exactly how to fix each one.</div>
-        <div class="mini-card"><div class="mc-card-title">Mistake #1</div><div class="mc-card-body">Personalized analysis of the biggest error in your game and exactly how to fix it.</div></div>
-        <div class="mini-card"><div class="mc-card-title">Mistake #2</div><div class="mc-card-body">The second most impactful change based on your quiz responses.</div></div>
-        <div class="mini-card"><div class="mc-card-title">Mistake #3</div><div class="mc-card-body">A subtle technical issue most players at your level miss.</div></div>
-        <div class="mini-card"><div class="mc-card-title">Mistake #4</div><div class="mc-card-body">Course management error costing 1-2 strokes per round.</div></div>
-        <div class="mini-card"><div class="mc-card-title">Mistake #5</div><div class="mc-card-body">The mental game adjustment that compounds over 90 days.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #1</div><div class="mc-card-body">Personalized analysis of the biggest error in your game.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #2</div><div class="mc-card-body">The second most impactful change for your level.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #3</div><div class="mc-card-body">A subtle technical issue most players miss.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #4</div><div class="mc-card-body">Course management error costing 1-2 strokes.</div></div>
+        <div class="mini-card"><div class="mc-card-title">Mistake #5</div><div class="mc-card-body">The mental adjustment that compounds over 90 days.</div></div>
       </div>
     </div>
-    <!-- Weekly plan page -->
-    <div class="plan-page pg-weekly">
-      <div class="mini-dark">
-        <div class="mc-overline">Your 4-Week Cycle</div>
-        <div class="mc-heading">The Progressive Plan</div>
-        <div class="mc-sub">Repeat three times across 90 days.</div>
-        <div class="mini-week"><div class="mw-head"><div class="mw-num">1</div><div class="mw-title">Foundation Week</div></div><div class="mw-bullet">• Setup & alignment fundamentals<br>• End-of-week test included</div></div>
-        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#2C5F7C;">2</div><div class="mw-title">Technique Week</div></div><div class="mw-bullet">• Building on Week 1 gains<br>• Measurable drill targets</div></div>
-        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#5BBF85;">3</div><div class="mw-title">Application Week</div></div><div class="mw-bullet">• On-course skill transfer<br>• Scoring benchmarks</div></div>
-        <div class="mini-week"><div class="mw-head"><div class="mw-num" style="background:#5A8FA8;">4</div><div class="mw-title">Pressure Week</div></div><div class="mw-bullet">• Competition simulation<br>• Cycle benchmark test</div></div>
+    <!-- FRONT CENTER: Drills page -->
+    <div class="plan-page pg-drills">
+      <div class="mini-drills">
+        <div class="mc-overline">Your Drill Library</div>
+        <div class="mc-heading">4 Targeted Drills</div>
+        <div class="mc-sub">Specific routines with times, reps, and benchmarks.</div>
+        <div class="mini-drill-card">
+          <div class="md-name">Alignment Stick Gate</div>
+          <div class="md-meta">15 min · 20 balls · Accuracy</div>
+          <div class="md-desc">Place two alignment sticks 10 yards out, 6 feet apart. Every shot must land between them. Narrow the gate each session.</div>
+        </div>
+        <div class="mini-drill-card">
+          <div class="md-name">The 80% Swing</div>
+          <div class="md-meta">10 min · 15 balls · Tempo</div>
+          <div class="md-desc">Hit shots at 80% effort. Most amateurs gain accuracy and lose almost no distance by swinging within themselves.</div>
+        </div>
+        <div class="mini-drill-card">
+          <div class="md-name">3-2-1 Pressure Drill</div>
+          <div class="md-meta">10 min · 6 balls · Performance</div>
+          <div class="md-desc">Visualize a tight fairway. Hit 3 to target, then 2, then 1 final money ball. Score: 3pts fairway, 1pt rough.</div>
+        </div>
+        <div class="mini-drill-card">
+          <div class="md-name">Feet-Together Driver</div>
+          <div class="md-meta">10 min · 15 balls · Balance</div>
+          <div class="md-desc">Hit driver with feet touching. Forces smooth tempo and centered contact. Carry 200+? Balance is excellent.</div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- What's included -->
+  <ul class="included-list">
+    <li><span class="check">✓</span>Your #1 weakness — analyzed in detail</li>
+    <li><span class="check">✓</span>5 specific mistakes costing you strokes</li>
+    <li><span class="check">✓</span>4 targeted drills with times and benchmarks</li>
+    <li><span class="check">✓</span>4-week progressive practice schedule</li>
+    <li><span class="check">✓</span>Body mechanics checkpoints</li>
+    <li><span class="check">✓</span>90-day tracking log and benchmarks</li>
+  </ul>
+
+  <!-- Payment section -->
   <div class="unlock-section">
     <div class="unlock-price">$4.99</div>
     <div class="unlock-price-note">One-time payment · Instant PDF download + emailed to you</div>
