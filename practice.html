@@ -326,7 +326,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   gap:48px;
   align-items:start;
 }
-.teaser-left { text-align:left; }
+.teaser-left {
+  text-align:left;
+}
 .teaser-right {
   position:sticky; top:100px;
   background:rgba(255,255,255,0.025);
@@ -416,14 +418,17 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .locked-preview {
   margin:16px 0;
   opacity:0; animation: riseIn .5s ease .5s forwards;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 .locked-item {
   display:flex; align-items:center; gap:12px;
-  padding:10px 14px;
+  padding:14px 16px;
   background:rgba(255,255,255,0.02);
   border:1px solid rgba(255,255,255,0.06);
   border-radius:8px;
-  margin-bottom:6px;
+  flex:1;
 }
 .locked-icon {
   width:30px; height:30px; border-radius:50%;
@@ -802,13 +807,13 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 /* What's included list */
 .included-list {
   text-align:left;
-  margin:16px 0 0;
+  margin:20px auto 0;
   list-style:none;
+  display:inline-block;
 }
 .included-list li {
-  font-size:12px; color:rgba(250,250,250,.55);
-  padding:6px 0;
-  border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:12px; color:rgba(250,250,250,.45);
+  padding:5px 0;
   display:flex; align-items:center; gap:10px;
 }
 .included-list li:last-child { border-bottom:none; }
@@ -1350,16 +1355,6 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     </div>
   </div>
 
-  <!-- What's included -->
-  <ul class="included-list">
-    <li><span class="check">✓</span>Your #1 weakness — analyzed in detail</li>
-    <li><span class="check">✓</span>5 specific mistakes costing you strokes</li>
-    <li><span class="check">✓</span>4 targeted drills with times and benchmarks</li>
-    <li><span class="check">✓</span>4-week progressive practice schedule</li>
-    <li><span class="check">✓</span>Body mechanics checkpoints</li>
-    <li><span class="check">✓</span>90-day tracking log and benchmarks</li>
-  </ul>
-
   <!-- Payment section -->
   <div class="unlock-section">
     <div class="unlock-price">$4.99</div>
@@ -1371,6 +1366,16 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <p class="unlock-guarantee">Less than a bucket of range balls. Backed by strokes gained research.</p>
     <p class="unlock-email-note">We'll email your full plan so you can reference it at the range.</p>
   </div>
+  <!-- What's included - centered, below payment -->
+  <ul class="included-list" style="text-align:center;">
+    <li><span class="check">✓</span>Your #1 weakness — analyzed in detail</li>
+    <li><span class="check">✓</span>5 specific mistakes costing you strokes</li>
+    <li><span class="check">✓</span>4 targeted drills with times and benchmarks</li>
+    <li><span class="check">✓</span>4-week progressive practice schedule</li>
+    <li><span class="check">✓</span>Body mechanics checkpoints</li>
+    <li><span class="check">✓</span>90-day tracking log and benchmarks</li>
+  </ul>
+
   </div><!-- end teaser-right -->
   </div><!-- end teaser-grid -->
 </div>
