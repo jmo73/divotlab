@@ -378,8 +378,45 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 }
 
 /* Blurred locked items */
+.locked-drills-preview {
+  margin:20px 0;
+  opacity:0; animation: riseIn .5s ease .42s forwards;
+}
+.blurred-drill {
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:16px 18px;
+  margin-bottom:8px;
+  position:relative;
+  overflow:hidden;
+}
+.blurred-drill-name {
+  font-size:13px; font-weight:600; color:rgba(250,250,250,.6);
+  margin-bottom:2px;
+}
+.blurred-drill-meta {
+  font-family:var(--mono); font-size:10px; color:var(--green-light);
+  opacity:.5; margin-bottom:6px;
+}
+.blurred-drill-desc {
+  font-size:12px; color:rgba(250,250,250,.35); line-height:1.5;
+}
+.blur-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 15%, rgba(10,10,10,0.75) 55%, rgba(10,10,10,0.95) 100%);
+  pointer-events:none;
+}
+.blur-overlay::after {
+  content:'🔒 Full drills in your plan';
+  position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+  font-size:9px; font-weight:600; letter-spacing:.12em;
+  text-transform:uppercase; color:rgba(250,250,250,.25);
+  white-space:nowrap;
+}
+
 .locked-preview {
-  margin:28px 0;
+  margin:20px 0;
   opacity:0; animation: riseIn .5s ease .5s forwards;
 }
 .locked-item {
@@ -640,6 +677,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   margin:0 auto 8px;
   position:relative;
   height:300px;
+  min-height:300px;
+  flex-shrink:0;
   max-width:380px;
   opacity:0; animation: riseIn .7s ease .5s forwards;
 }
@@ -841,6 +880,131 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 /* Days selector — 7 horizontal buttons */
 .days-row {
   display:flex; gap:8px;
+}
+
+/* =============================================
+   HANDICAP SLIDER — premium feel
+   ============================================= */
+.handicap-slider-wrap {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;
+  padding:24px 24px 18px;
+}
+.handicap-display {
+  text-align:center;
+  margin-bottom:20px;
+}
+.handicap-value {
+  display:block;
+  font-family:var(--mono);
+  font-size:42px;
+  font-weight:500;
+  color:var(--white);
+  letter-spacing:-.02em;
+  line-height:1;
+  margin-bottom:6px;
+  transition:color .3s ease;
+}
+.handicap-value.plus { color:var(--green-light); }
+.handicap-level {
+  display:block;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:rgba(250,250,250,.3);
+  transition:color .3s ease;
+}
+.slider-track-wrap {
+  position:relative;
+  height:44px;
+  display:flex;
+  align-items:center;
+}
+.handicap-slider {
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:6px;
+  border-radius:3px;
+  background:rgba(255,255,255,0.08);
+  outline:none;
+  position:relative;
+  z-index:2;
+  cursor:pointer;
+}
+.handicap-slider::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  appearance:none;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--green);
+  border:3px solid var(--green-light);
+  cursor:pointer;
+  box-shadow:0 2px 12px rgba(27,77,62,.4), 0 0 0 0 rgba(91,191,133,0);
+  transition:box-shadow .2s, transform .15s;
+}
+.handicap-slider::-webkit-slider-thumb:hover {
+  transform:scale(1.12);
+  box-shadow:0 2px 16px rgba(27,77,62,.5), 0 0 0 6px rgba(91,191,133,.1);
+}
+.handicap-slider::-webkit-slider-thumb:active {
+  transform:scale(1.05);
+  box-shadow:0 2px 8px rgba(27,77,62,.6), 0 0 0 10px rgba(91,191,133,.12);
+}
+.handicap-slider::-moz-range-thumb {
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--green);
+  border:3px solid var(--green-light);
+  cursor:pointer;
+  box-shadow:0 2px 12px rgba(27,77,62,.4);
+}
+.slider-fill {
+  position:absolute;
+  left:0; top:50%;
+  height:6px;
+  border-radius:3px;
+  background:linear-gradient(90deg,var(--green-light),var(--green));
+  transform:translateY(-50%);
+  pointer-events:none;
+  z-index:1;
+  transition:width .05s;
+}
+.slider-labels {
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+}
+.slider-labels span {
+  font-size:10px;
+  color:rgba(250,250,250,.2);
+  letter-spacing:.05em;
+}
+.slider-label-scratch {
+  position:relative;
+}
+.slider-label-scratch::before {
+  content:'';
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  width:1px;
+  height:10px;
+  background:rgba(255,255,255,.12);
+}
+
+/* Right column title override */
+.teaser-right > .teaser-label:first-child {
+  font-size:14px !important;
+  font-weight:600 !important;
+  letter-spacing:.18em !important;
+  color:var(--green-light) !important;
+  margin-bottom:24px !important;
 }
 .day-btn {
   flex:1;
@@ -1058,25 +1222,57 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <div class="weakness-desc" id="weaknessDesc"></div>
   </div>
 
+  <!-- Blurred sample drills for #1 priority -->
+  <div class="locked-drills-preview">
+    <div style="font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(250,250,250,.22); margin-bottom:10px;">Sample Drills — Priority #1</div>
+    <div class="blurred-drill">
+      <div class="blurred-drill-name">The Corridor Drill</div>
+      <div class="blurred-drill-meta">15 min · Accuracy Focus</div>
+      <div class="blurred-drill-desc">At the range, pick two targets 30 yards apart. Hit 20 drives trying to land between them...</div>
+      <div class="blur-overlay"></div>
+    </div>
+    <div class="blurred-drill">
+      <div class="blurred-drill-name">The 80% Swing</div>
+      <div class="blurred-drill-meta">10 min · Tempo Control</div>
+      <div class="blurred-drill-desc">Hit 10 drives at 80% effort. Most amateurs gain accuracy and lose almost no distance...</div>
+      <div class="blur-overlay"></div>
+    </div>
+  </div>
+
   <div class="locked-preview">
     <div class="locked-item">
       <div class="locked-icon" style="background:rgba(221,161,94,0.12);">2</div>
-      <div class="locked-text">Second priority area and targeted drills</div>
+      <div class="locked-text">Second priority area with targeted drills and time allocations</div>
       <span class="lock-badge">Locked</span>
     </div>
     <div class="locked-item">
       <div class="locked-icon" style="background:rgba(90,143,168,0.12);">3</div>
-      <div class="locked-text">Third priority with practice schedule</div>
+      <div class="locked-text">Third priority with practice schedule and benchmarks</div>
       <span class="lock-badge">Locked</span>
     </div>
     <div class="locked-item">
       <div class="locked-icon" style="background:rgba(91,191,133,0.08);">4</div>
-      <div class="locked-text">Your strength area — how to maintain it</div>
+      <div class="locked-text">Your strength area — maintenance drills to keep it sharp</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(231,111,81,0.08);">⚠️</div>
+      <div class="locked-text">5 specific mistakes costing you strokes at your handicap level</div>
       <span class="lock-badge">Locked</span>
     </div>
     <div class="locked-item">
       <div class="locked-icon" style="background:rgba(255,255,255,0.04);">📋</div>
-      <div class="locked-text">Complete weekly practice plan with time allocations</div>
+      <div class="locked-text">Complete weekly practice schedule customized to your availability</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(255,255,255,0.04);">🏋️</div>
+      <div class="locked-text">Body mechanics checkpoints for your primary weakness</div>
+      <span class="lock-badge">Locked</span>
+    </div>
+    <div class="locked-item">
+      <div class="locked-icon" style="background:rgba(255,255,255,0.04);">📊</div>
+      <div class="locked-text">90-day tracking log with progress benchmarks</div>
       <span class="lock-badge">Locked</span>
     </div>
   </div>
@@ -1087,7 +1283,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="teaser-label" style="opacity:1;animation:none;margin-bottom:20px;">Your Full Practice Plan</div>
   <!-- Plan preview mockup -->
   <div class="plan-preview">
-    <div class="preview-label">8-Page Personalized PDF</div>
+    <div class="preview-label">7-Page Personalized PDF</div>
     <!-- Back-left: Cover page -->
     <div class="plan-page pg-cover">
       <div class="mini-cover">
@@ -1179,8 +1375,23 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   </div>
 
   <div class="intake-group">
-    <label class="intake-label">Exact Handicap Index <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.6;">Use negative for plus handicaps (e.g. -2.4)</span></label>
-    <input type="number" class="intake-input" id="intakeHandicap" placeholder="e.g. 14.2 or -2.4 for plus" step="0.1" min="-8" max="54">
+    <label class="intake-label">Handicap Index</label>
+    <div class="handicap-slider-wrap">
+      <div class="handicap-display" id="handicapDisplay">
+        <span class="handicap-value" id="handicapValue">14.0</span>
+        <span class="handicap-level" id="handicapLevel">Mid-Handicap</span>
+      </div>
+      <div class="slider-track-wrap">
+        <input type="range" class="handicap-slider" id="handicapSlider" min="-100" max="500" value="140" step="1">
+        <div class="slider-fill" id="sliderFill"></div>
+      </div>
+      <div class="slider-labels">
+        <span class="slider-label-plus">+10</span>
+        <span class="slider-label-scratch">Scratch</span>
+        <span class="slider-label-max">50</span>
+      </div>
+    </div>
+    <input type="hidden" id="intakeHandicap" value="14.0">
   </div>
 
   <div class="intake-group">
@@ -1205,7 +1416,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 
   <div class="intake-group">
     <label class="intake-label">Home Course <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.6;">Optional</span></label>
-    <input type="text" class="intake-input" id="intakeCourse" placeholder="e.g. Lonnie Poole Golf Course">
+    <input type="text" class="intake-input" id="intakeCourse" placeholder="e.g. Pebble Beach">
   </div>
 
   <button class="generate-btn" id="generateBtn" onclick="handleGenerate()">Generate My 90-Day Plan</button>
@@ -1769,28 +1980,8 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
   console.log('✓ Results email submitted via form');
 }
 
-// On page load: check if returning from Stripe payment
-(function checkPaymentReturn() {
-  var params = new URLSearchParams(window.location.search);
-
-  if (params.has('session_id')) {
-    var stored = sessionStorage.getItem('dl_answers');
-    var storedEmail = sessionStorage.getItem('dl_email');
-    if (stored) {
-      try { answers = JSON.parse(stored); } catch(e) {}
-    }
-
-    if (answers.handicap) {
-      document.getElementById('hero').style.display = 'none';
-      // Route to intake form instead of showing results immediately
-      showIntakeForm(storedEmail);
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }
-})();
-
 // ============================================
-// INTAKE FORM
+// INTAKE FORM — STATE & OPTIONS
 // ============================================
 var GOAL_OPTIONS = [
   "Break 100 consistently",
@@ -1811,13 +2002,73 @@ var selectedGoals = [];
 var selectedDays = 3;
 var intakeEmail = '';
 
+// ============================================
+// HANDICAP SLIDER
+// ============================================
+function initHandicapSlider() {
+  var slider = document.getElementById('handicapSlider');
+  var valueEl = document.getElementById('handicapValue');
+  var levelEl = document.getElementById('handicapLevel');
+  var fillEl = document.getElementById('sliderFill');
+  var hiddenInput = document.getElementById('intakeHandicap');
+  if (!slider) return;
+
+  function updateSlider() {
+    var raw = parseInt(slider.value); // -100 to 500
+    var handicap = raw / 10; // -10.0 to 50.0
+    var display;
+
+    if (handicap < 0) {
+      display = '+' + Math.abs(handicap).toFixed(1);
+      valueEl.classList.add('plus');
+    } else {
+      display = handicap.toFixed(1);
+      valueEl.classList.remove('plus');
+    }
+    valueEl.textContent = display;
+    hiddenInput.value = handicap;
+
+    // Level label
+    var level;
+    if (handicap < 0) level = 'Plus Handicap (Elite)';
+    else if (handicap <= 2) level = 'Scratch Golfer';
+    else if (handicap <= 5) level = 'Low Single-Digit';
+    else if (handicap <= 9) level = 'Single-Digit';
+    else if (handicap <= 14) level = 'Mid-Handicap';
+    else if (handicap <= 20) level = 'Developing';
+    else if (handicap <= 30) level = 'Higher Handicap';
+    else level = 'Beginner';
+    levelEl.textContent = level;
+
+    // Fill bar (visual)
+    var pct = ((raw + 100) / 600) * 100;
+    fillEl.style.width = pct + '%';
+  }
+
+  slider.addEventListener('input', updateSlider);
+  updateSlider(); // init
+}
+
+function setSliderFromQuiz(quizHandicap) {
+  var slider = document.getElementById('handicapSlider');
+  if (!slider) return;
+  var hcMap = { 'high': 240, 'mid-high': 160, 'mid': 100, 'low': 20 };
+  if (hcMap[quizHandicap] !== undefined) {
+    slider.value = hcMap[quizHandicap];
+    slider.dispatchEvent(new Event('input'));
+  }
+}
+
+// ============================================
+// SHOW INTAKE FORM
+// ============================================
 function showIntakeForm(email) {
   intakeEmail = email || '';
   document.getElementById('resultsTeaser').classList.remove('active');
   document.getElementById('intakeSection').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Render goal chips using data attributes (avoids quote-escaping bugs)
+  // Render goal chips using data attributes
   var grid = document.getElementById('goalsGrid');
   var html = '';
   GOAL_OPTIONS.forEach(function(g, i) {
@@ -1841,19 +2092,23 @@ function showIntakeForm(email) {
     });
   }
 
-  // Day selector — attach click listeners
+  // Day selector — remove old listeners, add new
   document.querySelectorAll('.day-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
+    var newBtn = btn.cloneNode(true); // clone removes old listeners
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function() {
       document.querySelectorAll('.day-btn').forEach(function(b){ b.classList.remove('selected'); });
       this.classList.add('selected');
       selectedDays = parseInt(this.dataset.val);
     });
   });
 
+  // Init handicap slider
+  initHandicapSlider();
+
   // Pre-fill handicap from quiz
-  var hcMap = { 'high': 24, 'mid-high': 16, 'mid': 10, 'low': 2 };
-  if (answers.handicap && hcMap[answers.handicap] !== undefined) {
-    document.getElementById('intakeHandicap').value = hcMap[answers.handicap];
+  if (answers.handicap) {
+    setSliderFromQuiz(answers.handicap);
   }
 }
 
@@ -1907,9 +2162,11 @@ function handleGenerate() {
     return;
   }
   if (!handicap && handicap !== '0') {
-    document.getElementById('intakeHandicap').focus();
-    document.getElementById('intakeHandicap').style.borderColor = 'var(--red)';
-    setTimeout(function(){ document.getElementById('intakeHandicap').style.borderColor = ''; }, 2000);
+    var sliderWrap = document.querySelector('.handicap-slider-wrap');
+    if (sliderWrap) {
+      sliderWrap.style.borderColor = 'var(--red)';
+      setTimeout(function(){ sliderWrap.style.borderColor = ''; }, 2000);
+    }
     return;
   }
 
@@ -2653,6 +2910,28 @@ function retakeQuiz() {
   document.getElementById('hero').style.display = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ============================================
+// INITIALIZATION — runs after all functions defined
+// ============================================
+(function init() {
+  // Check if returning from Stripe payment
+  var params = new URLSearchParams(window.location.search);
+
+  if (params.has('session_id')) {
+    var stored = sessionStorage.getItem('dl_answers');
+    var storedEmail = sessionStorage.getItem('dl_email');
+    if (stored) {
+      try { answers = JSON.parse(stored); } catch(e) {}
+    }
+
+    if (answers.handicap) {
+      document.getElementById('hero').style.display = 'none';
+      showIntakeForm(storedEmail);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }
+})();
 </script>
 </body>
 </html>
