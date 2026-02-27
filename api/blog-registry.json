@@ -83,6 +83,34 @@
       "hero_alt":"",
       "hero_credit": "",
       "featured": false
+    },
+    {
+      "slug": "how-to-practice-golf-data-backed-plan",
+      "title": "How to Practice Golf: A Plan Based on What Tour Data Actually Shows",
+      "category": "Improvement",
+      "category_class": "improve",
+      "date": "Feb 27, 2026",
+      "date_iso": "2026-02-27",
+      "read_time": "9 min read",
+      "meta_description": "Most golfers practice wrong. Tour strokes gained data reveals exactly where your time should go — and it's not where you think.",
+      "hero_image": null,
+      "hero_alt": "",
+      "hero_credit": "",
+      "featured": false
+    },
+    {
+      "slug": "what-handicap-says-about-your-game",
+      "title": "What Your Handicap Tells You About Your Game (And What to Fix First)",
+      "category": "Improvement",
+      "category_class": "improve",
+      "date": "Feb 27, 2026",
+      "date_iso": "2026-02-27",
+      "read_time": "8 min read",
+      "meta_description": "A 15-handicapper and a 25-handicapper have completely different weakness profiles. Here's what the strokes gained data says you should actually work on.",
+      "hero_image": null,
+      "hero_alt": "",
+      "hero_credit": "",
+      "featured": false
     }
   ]
 }

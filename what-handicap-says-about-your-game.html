@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>What Your Handicap Tells You About Your Game (And What to Fix First) - Divot Lab</title>
+<meta name="description" content="A 15-handicapper and a 25-handicapper have completely different weakness profiles. Here's what the strokes gained data says you should actually work on.">
+<meta property="og:title" content="What Your Handicap Tells You About Your Game (And What to Fix First) - Divot Lab">
+<meta property="og:description" content="A 15-handicapper and a 25-handicapper have completely different weakness profiles. Here's what the strokes gained data says you should actually work on.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divotlab.com/what-handicap-says-about-your-game">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What Your Handicap Tells You About Your Game (And What to Fix First) - Divot Lab">
+<meta name="twitter:description" content="A 15-handicapper and a 25-handicapper have completely different weakness profiles. Here's what the strokes gained data says you should actually work on.">
+<link rel="canonical" href="https://divotlab.com/what-handicap-says-about-your-game">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family: var(--body); color: var(--black); background: var(--white); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color:inherit; text-decoration:none; }
+.post-body a { color: var(--blue-mid); text-decoration: none; border-bottom: 1px solid rgba(90,143,168,0.3); padding-bottom: 1px; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease; }
+.post-body a:hover { color: var(--green-light); border-bottom-color: var(--green-light); background: rgba(91,191,133,0.06); border-radius: 2px; }
+.post-source a { color: var(--blue-mid); border-bottom: 1px solid rgba(90,143,168,0.25); padding-bottom: 1px; transition: color 0.2s ease, border-color 0.2s ease; }
+.post-source a:hover { color: var(--green-light); border-bottom-color: var(--green-light); }
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 56px; height:68px; display:flex; align-items:center; background:rgba(10,10,10,1); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid rgba(255,255,255,0.07); transition:background .35s, border-color .35s; }
+nav.scrolled { background:rgba(10,10,10,0.55); }
+nav.light { background:rgba(250,250,250,0.88); border-bottom-color:rgba(0,0,0,0.07); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--white); transition:color .35s; }
+nav.light .nav-logo svg { color:var(--black); }
+.nav-wordmark { font-family:var(--body); font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--white); transition:color .35s; }
+.nav-wordmark span { font-weight:300; opacity:.55; }
+nav.light .nav-wordmark { color:var(--black); }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a { font-size:13px; font-weight:500; letter-spacing:.05em; color:rgba(250,250,250,.65); transition:color .2s; }
+.nav-links a:hover { color:var(--white); }
+nav.light .nav-links a { color:var(--graphite); }
+nav.light .nav-links a:hover { color:var(--black); }
+.nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s, transform .15s, box-shadow .2s; }
+.nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; align-items:center; width:40px; height:40px; margin-left:auto; cursor:pointer; background:none; border:none; gap:5px; z-index:101; position:relative; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
+nav.light .nav-hamburger span { background:var(--black); }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-drawer { position:fixed; top:68px; left:0; right:0; z-index:99; background:rgba(10,10,10,0.92); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); border-bottom:1px solid rgba(255,255,255,0.07); padding:12px 0 20px; display:flex; flex-direction:column; align-items:center; gap:4px; max-height:0; overflow:hidden; opacity:0; transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease; }
+.nav-drawer.open { max-height:260px; opacity:1; }
+.nav-drawer.light { background:rgba(250,250,250,0.95); border-bottom-color:rgba(0,0,0,0.07); }
+.nav-drawer a { font-size:15px; font-weight:500; letter-spacing:.06em; color:rgba(250,250,250,.75); padding:10px 0; width:100%; text-align:center; transition:color .2s; }
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer.light a { color:var(--graphite); }
+.nav-drawer .nav-cta { margin-top:8px; width:auto; padding:10px 32px; border-radius:5px; }
+.post-hero { position:relative; height:480px; overflow:hidden; margin-top:68px; }
+.post-hero-bg { position:absolute; inset:0; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.post-hero-brand { position:absolute; top:50%; left:50%; transform:translate(-50%,-65%); z-index:0; display:flex; flex-direction:column; align-items:center; gap:16px; opacity:.12; }
+.post-hero-brand svg { width:80px; height:80px; }
+.post-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.25) 40%, rgba(10,10,10,0.75) 80%, rgba(10,10,10,0.92) 100%); }
+.post-hero-content { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 48px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:56px; }
+.post-cat { display:inline-block; width:fit-content; font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:4px 10px; border-radius:3px; margin-bottom:18px; }
+.post-cat.pga { background:rgba(44,95,124,.22); color:#7ab8d4; }
+.post-cat.sg { background:rgba(91,191,133,.22); color:#6dd89a; }
+.post-cat.improve { background:rgba(27,77,62,.25); color:var(--green-light); }
+.post-hero h1 { font-family:var(--display); font-size:clamp(32px, 5vw, 48px); font-weight:600; color:var(--white); letter-spacing:-.02em; line-height:1.1; margin-bottom:16px; }
+.post-hero-meta { font-size:13px; color:rgba(250,250,250,.5); display:flex; align-items:center; gap:6px; }
+.post-hero-meta .dot { opacity:.4; }
+.post-body-wrap { background:var(--white); padding:72px 48px 96px; }
+.post-body { max-width:680px; margin:0 auto; }
+.post-body p { font-size:16px; font-weight:300; line-height:1.8; color:var(--graphite); margin-bottom:24px; }
+.post-body p:first-of-type::first-letter { font-family:var(--display); font-size:56px; font-weight:700; float:left; line-height:.85; margin-right:12px; margin-top:4px; color:var(--black); }
+.post-body h2 { font-family:var(--display); font-size:28px; font-weight:600; color:var(--black); letter-spacing:-.01em; line-height:1.2; margin-top:52px; margin-bottom:16px; }
+.stat-callout { background:var(--black); border-radius:9px; padding:32px 36px; margin:40px 0; display:flex; align-items:center; gap:32px; }
+.stat-callout-val { font-family:var(--mono); font-size:42px; font-weight:500; color:var(--blue-mid); letter-spacing:-.02em; white-space:nowrap; flex-shrink:0; }
+.stat-callout-right { display:flex; flex-direction:column; gap:4px; }
+.stat-callout-label { font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(250,250,250,.35); }
+.stat-callout-note { font-size:13px; font-weight:300; color:rgba(250,250,250,.5); line-height:1.5; }
+.post-pullquote { border-left:3px solid var(--green); padding:8px 0 8px 28px; margin:40px 0; }
+.post-pullquote p { font-family:var(--display); font-size:22px !important; font-weight:500; font-style:italic; color:var(--black) !important; line-height:1.45 !important; margin-bottom:0 !important; }
+.post-pullquote p::first-letter { font-size:22px !important; float:none !important; margin:0 !important; }
+.post-divider { width:48px; height:2px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); margin:48px 0; border-radius:1px; }
+.post-source { font-size:11px; color:var(--steel); letter-spacing:.06em; margin-top:-16px; margin-bottom:28px; }
+.post-source a { color:var(--blue-mid); text-decoration:underline; text-underline-offset:3px; }
+.read-next-wrap { background:var(--warm-gray); padding:72px 48px; }
+.read-next-inner { max-width:720px; margin:0 auto; }
+.read-next-label { font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--green); margin-bottom:24px; }
+.read-next-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.rn-card { background:var(--white); border:1px solid #E6E6E4; border-radius:9px; overflow:hidden; cursor:pointer; transition:transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s, border-color .28s; position:relative; }
+.rn-card:hover { transform:translateY(-4px); box-shadow:0 14px 40px rgba(0,0,0,.08); border-color:transparent; }
+.rn-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1); }
+.rn-card:hover::after { transform:scaleX(1); }
+.rn-img { height:150px; position:relative; overflow:hidden; }
+.rn-img-fallback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.rn-img-fallback svg { width:44px; height:44px; opacity:.3; }
+.rn-fallback-cat { font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(250,250,250,.28); }
+.rn-img-bg { position:absolute; inset:0; }
+.rn-card:nth-child(1) .rn-img-bg { background:linear-gradient(140deg, #0f1520 0%, #162028 60%, #0a0a0a 100%); }
+.rn-card:nth-child(2) .rn-img-bg { background:linear-gradient(140deg, #1a140f 0%, #241a15 60%, #0a0a0a 100%); }
+.rn-body { padding:18px 20px 20px; }
+.rn-cat { display:inline-block; font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; padding:3px 8px; border-radius:3px; margin-bottom:8px; }
+.rn-cat.pga { background:rgba(44,95,124,.1); color:var(--blue); }
+.rn-cat.sg { background:rgba(91,191,133,.1); color:#3a9e6b; }
+.rn-cat.improve { background:rgba(27,77,62,.1); color:var(--green); }
+.rn-title { font-family:var(--display); font-size:18px; font-weight:600; line-height:1.3; color:var(--black); margin-bottom:6px; }
+.rn-meta { font-size:11px; color:var(--graphite); opacity:.6; }
+footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); padding:64px 56px 36px; }
+.footer-grid { max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:44px; }
+.f-brand .f-logo { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.f-brand .f-logo svg { width:20px; height:20px; }
+.f-brand .f-logo-text { font-weight:600; font-size:13px; letter-spacing:.1em; color:var(--white); }
+.f-brand .f-logo-text span { font-weight:300; opacity:.5; }
+.f-brand p { font-size:13px; color:rgba(250,250,250,.36); line-height:1.65; max-width:240px; }
+.f-col h5 { font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(250,250,250,.28); margin-bottom:18px; }
+.f-col a { display:block; font-size:13px; color:rgba(250,250,250,.5); margin-bottom:11px; transition:color .2s; }
+.f-col a:hover { color:var(--white); }
+.footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
+@media(max-width:768px){
+  .post-hero { height:400px; }
+  .post-hero-content { padding-bottom:40px; padding-left:24px; padding-right:24px; }
+  .post-body-wrap { padding:52px 24px 72px; }
+  .stat-callout { flex-direction:column; align-items:flex-start; gap:12px; padding:24px; }
+  .stat-callout-val { font-size:36px; }
+  .read-next-wrap { padding:52px 24px; }
+  .read-next-grid { grid-template-columns:1fr; }
+  footer { padding:48px 24px 28px; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:600px){
+  nav { padding:0 22px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .post-hero { height:340px; }
+  .post-hero h1 { font-size:28px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/practice">Practice</a>
+    <a href="/articles">Articles</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice</a>
+  <a href="/articles">Articles</a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- HERO -->
+<section class="post-hero" id="postHero">
+  <div class="post-hero-bg"></div>
+  <div class="post-hero-brand" id="heroBrand">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="white"/>
+    </svg>
+  </div>
+  <div class="post-hero-overlay"></div>
+  <div class="post-hero-content">
+    <span class="post-cat improve">Improvement</span>
+    <h1>What Your Handicap Tells You About Your Game (And What to Fix First)</h1>
+    <div class="post-hero-meta">
+      Feb 27, 2026 <span class="dot">·</span> 8 min read <span class="dot">·</span> Improvement
+    </div>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="post-body-wrap">
+  <article class="post-body">
+    <p>A 15-handicap and a 25-handicap look nothing alike on a scorecard. One player makes a few pars, catches a couple of bogeys, and the round feels manageable. The other is fighting for survival off the tee, scrambling from places the course architect never intended, and wondering why the range session felt so promising. But ask both players what they need to work on, and you'll often hear the same answer: "everything."</p>
+
+<p>That's the wrong answer. Not because it's too vague — because it's factually incorrect. <a href="/what-is-strokes-gained-golf-simple-guide">Strokes gained research</a> has mapped out exactly where different handicap levels lose their shots, and the profiles are dramatically different. A 25-handicapper working on their putting is like a restaurant fixing the dessert menu when the kitchen is on fire.</p>
+
+<h2>The 25+ Handicapper: Tee Box Triage</h2>
+
+<p>If your handicap starts with a 2 and doesn't end with a decimal, your number one job is keeping the ball in play off the tee. This sounds obvious, and it is — but the magnitude of the problem is what most golfers underestimate.</p>
+
+<p>USGA data shows that the average 25-handicapper hits roughly 25% of fairways. That's not a typo. Three out of every four tee shots are in trouble — deep rough, trees, hazards, the adjacent fairway. Each missed fairway costs between 0.3 and 0.8 strokes depending on severity. Over 14 par-4s and par-5s, that's 3 to 6 strokes lost before you've even thought about approach shots.</p>
+
+<div class="stat-callout"><div class="stat-callout-val">25%</div><div class="stat-callout-right"><div class="stat-callout-label">Fairways Hit</div><div class="stat-callout-note">Average for a 25-handicapper — each miss costs 0.3 to 0.8 strokes</div></div></div>
+
+<p>The fix isn't a swing overhaul. For most high-handicappers, it's simpler: hit less club off the tee. A 200-yard 5-iron in the fairway leaves a better scoring position than a 250-yard driver in the right trees. The strokes gained math on this is unambiguous — going from 25% fairways to 40% fairways, even with a shorter tee shot, saves roughly 2 to 3 strokes per round.</p>
+
+<p>Once you're reliably finding grass, the second priority is contact quality on approach shots. Not distance, not trajectory — just solid contact. A 25-handicapper who makes clean contact with a 7-iron and hits the green 20% of the time is playing a fundamentally different game than one who's chunking and topping their way to the putting surface.</p>
+
+<h2>The 15-Handicap Plateau</h2>
+
+<p>The 15-handicapper is the most frustrated golfer in the sport. They can play. They hit decent drives, they know their yardages, they make the occasional birdie. And they've been stuck at 15 for three years.</p>
+
+<p>The data explains why: the 15-handicapper has solved the tee ball (50-55% fairways) and the short game is functional. What's holding them back is approach shot dispersion — specifically, the gap between their average proximity to the hole and a single-digit player's proximity. A 15-handicap hits the green in regulation about 30-35% of the time. A 5-handicap hits 50%. That 15-20% gap translates to 4 to 5 fewer birdie or par opportunities every round.</p>
+
+<div class="stat-callout"><div class="stat-callout-val">15%</div><div class="stat-callout-right"><div class="stat-callout-label">GIR Gap</div><div class="stat-callout-note">Difference in greens in regulation between a 15-handicap and a 5-handicap — worth roughly 4-5 strokes per round</div></div></div>
+
+<p>This is the <a href="/strokes-gained-approach">approach play problem</a> that shows up at every level of golf, but it's sharpest here. The 15-handicapper doesn't need to hit it closer on the shots they're already putting on the green. They need to put more shots on the green in the first place. That means practicing 150-yard iron shots until the misses are 25-foot misses instead of 40-foot misses.</p>
+
+<p>The other hidden weakness at this level is lag putting. A 15-handicapper three-putts roughly 8-10% of greens. At two or three three-putts per round, that's an easy 2 to 3 strokes just from failing to get long putts close. Targeted practice from 30 to 40 feet — not to make them, just to die them inside four feet — is one of the highest-ROI practice activities at this handicap.</p>
+
+<h2>The Single-Digit Grind</h2>
+
+<p>Drop below 10, and the game changes texture entirely. The big misses are mostly gone. Fairways are hit more often than not. Greens are reachable. The scorecard doesn't have any blow-up holes — it just has too many bogeys and not enough birdies.</p>
+
+<p>Single-digit players lose strokes in subtler, harder-to-diagnose ways. A pin is on the left and they aim at it instead of the center. They face a 15-yard pitch from light rough and leave it 12 feet short. They three-putt once per round from a distance where tour pros two-putt 95% of the time.</p>
+
+<p>DataGolf's tour-level data shows what separates the best from the very good, and it's useful as a framework even for amateurs. Among the current top 10, <a href="/scheffler-putting-analysis">Scottie Scheffler gains 0.57 strokes per round putting</a> — not because he makes more short putts, but because his speed control from distance is exceptional. He rarely faces a four-footer for par because his first putt consistently stops within three feet.</p>
+
+<div class="post-pullquote"><p>"The difference between a 5-handicap and a scratch player isn't talent. It's knowing which 5 strokes to eliminate."</p></div>
+
+<p>For the single-digit amateur, this translates to a practice strategy focused on precision rather than mechanics. Short game from real lies, not perfect mats. Putting from the distances you actually face — 20 to 35 feet, not 6-footers you're already making. Approach shots where you pick a specific landing zone and track whether you hit it, not just whether you hit the green.</p>
+
+<h2>The Universal Mistake</h2>
+
+<p>Across all handicap levels, one pattern shows up more than any other: golfers practice what they enjoy, not what they need. High handicappers hit drivers because it's fun. Mid handicappers practice putting because it feels productive. Low handicappers groove their best clubs because it builds confidence.</p>
+
+<p>None of these are bad things to do. They're just not the things that lower your score. Tour players understand this instinctively — or rather, their coaches and caddies force them to understand it. <a href="/how-to-practice-golf-data-backed-plan">Structured practice</a> that targets your actual weakness profile, even when it's not fun, is what separates golfers who improve from golfers who plateau.</p>
+
+<p>The challenge for amateurs is that most don't know their weakness profile. They have feelings about their game — "I can't putt," "my short game is bad," "I need more distance" — but <a href="/driver-upgrade-myth">feelings aren't data</a>. A three-putt sticks in your memory while the approach shot that left you 40 feet away disappears from consciousness. The blow-up drive on 7 defines your round while the ten fairways you hit are invisible.</p>
+
+<h2>Finding Your Real Numbers</h2>
+
+<p>There are a few ways to get an honest picture of your game. Shot-tracking devices like <a href="https://www.arccosgolf.com" target="_blank" rel="noopener noreferrer">Arccos</a> and <a href="https://shotscope.com/us/" target="_blank" rel="noopener noreferrer">Shot Scope</a> generate strokes gained data automatically, which is powerful if you commit to wearing the sensors for 10-15 rounds. The numbers that come back are often humbling and almost always surprising.</p>
+
+<p>If you don't want to invest in hardware, Divot Lab's <a href="/practice">practice diagnosis</a> takes a different approach — eight questions about your game that identify your handicap-specific weakness profile and generate a <a href="/how-to-practice-golf-data-backed-plan">personalized practice plan</a> based on the strokes gained research. It won't replace 15 rounds of tracked data, but it gives you a starting framework grounded in what the numbers say about golfers at your level.</p>
+
+<p>The best players on the <a href="/the-lab">PGA Tour</a> don't guess where their strokes are going. They measure, they target, they track. You don't need a tour-level budget to do the same thing — you just need to stop assuming and start asking the data.</p>
+
+<div class="post-divider"></div>
+
+<p>Your handicap isn't just a number on a card. It's a roadmap — a surprisingly detailed one, if you know how to read it. The 25-handicapper who starts finding fairways, the 15-handicapper who tightens their iron dispersion, the single-digit player who eliminates one three-putt per round: each of them is targeting the specific weakness that their handicap level predicts. The path to lower scores is different at every level. The first step is the same: figure out which path you're on.</p>
+
+<p class="post-source">Data via <a href="https://datagolf.com">DataGolf</a>'s predictive skill model · USGA handicap benchmarks and strokes gained research</p>
+  </article>
+</div>
+
+<!-- READ NEXT -->
+<div class="read-next-wrap">
+  <div class="read-next-inner">
+    <div class="read-next-label">Read Next</div>
+    <div class="read-next-grid" id="readNextGrid">
+      <!-- Loaded dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Data-driven golf analysis and premium apparel. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles">All Articles</a>
+      <a href="/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach">Strokes Gained</a>
+      <a href="/driver-upgrade-myth">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/about">About</a>
+      <a href="/practice">Practice</a>
+      <a href="/the-lab">The Lab</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="javascript:void(0)">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Divot Lab</span>
+    <span>Built with data.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var nav = document.getElementById('nav');
+  var drawer = document.getElementById('navDrawer');
+  var hamburger = document.getElementById('navHamburger');
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        var scrolled = window.scrollY > 200;
+        nav.classList.toggle('scrolled', scrolled);
+        nav.classList.toggle('light', scrolled);
+        drawer.classList.toggle('light', scrolled);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+  hamburger.addEventListener('click', function(){
+    nav.classList.toggle('menu-open');
+    drawer.classList.toggle('open');
+  });
+  drawer.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      nav.classList.remove('menu-open');
+      drawer.classList.remove('open');
+    });
+  });
+
+  (function loadHeroImage(){
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+    var slug = 'what-handicap-says-about-your-game';
+    fetch(API + '/api/blog-posts')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.success || !data.posts) return;
+        var post = data.posts.find(function(p){ return p.slug === slug; });
+        if (!post || !post.hero_image) return;
+        var hero = document.getElementById('postHero');
+        if (!hero) return;
+        var img = document.createElement('img');
+        img.src = post.hero_image;
+        img.alt = post.hero_alt || '';
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;';
+        hero.insertBefore(img, hero.firstChild);
+        var brand = document.getElementById('heroBrand');
+        if (brand) brand.style.display = 'none';
+      })
+      .catch(function(){});
+  })();
+
+  (function loadReadNext(){
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+    var slug = 'what-handicap-says-about-your-game';
+    var grid = document.getElementById('readNextGrid');
+    if (!grid) return;
+    var logoSVG = '<svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".12"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="white"/></svg>';
+    function esc(s){if(!s)return'';var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+    fetch(API + '/api/blog-posts/' + slug + '/read-next?limit=2')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.success && data.posts && data.posts.length > 0) {
+          grid.innerHTML = data.posts.map(function(p){
+            var imgHTML;
+            if (p.hero_image) {
+              imgHTML = '<div class="rn-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>';
+            } else {
+              imgHTML = '<div class="rn-img"><div class="rn-img-fallback">' + logoSVG + '<span class="rn-fallback-cat">' + esc(p.category) + '</span></div></div>';
+            }
+            return '<a href="/' + p.slug + '" style="text-decoration:none;color:inherit;"><div class="rn-card">' + imgHTML + '<div class="rn-body"><span class="rn-cat ' + p.category_class + '">' + esc(p.category) + '</span><h3 class="rn-title">' + esc(p.title) + '</h3><div class="rn-meta">' + esc(p.date) + ' <span class="dot">&middot;</span> ' + esc(p.read_time) + '</div></div></div></a>';
+          }).join('');
+        }
+      })
+      .catch(function(){});
+  })();
+})();
+</script>
+</body>
+</html>

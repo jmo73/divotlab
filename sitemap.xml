@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Core Pages -->
   <url>
     <loc>https://divotlab.com/</loc>
     <changefreq>weekly</changefreq>
@@ -26,8 +25,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!-- Blog Posts -->
   <url>
     <loc>https://divotlab.com/scheffler-putting-analysis</loc>
     <lastmod>2026-02-01</lastmod>
@@ -47,8 +44,32 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://divotlab.com/short-game-focus-backwards-tour-data</loc>
+    <loc>https://divotlab.com/short-game-focus-backwards-tour-data-analytics</loc>
+    <lastmod>2026-02-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://divotlab.com/scheffler-pebble-beach-field-power-advantage</loc>
     <lastmod>2026-02-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://divotlab.com/what-is-strokes-gained-golf-simple-guide</loc>
+    <lastmod>2026-02-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://divotlab.com/how-to-practice-golf-data-backed-plan</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://divotlab.com/what-handicap-says-about-your-game</loc>
+    <lastmod>2026-02-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
