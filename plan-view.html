@@ -524,19 +524,38 @@ body {
     break-after: auto;
   }
   .page {
-    width: 8.5in;
-    height: 11in;
-    min-height: auto;
-    overflow: hidden;
-    page-break-after: avoid;
-    break-after: avoid;
+    width: 8.5in !important;
+    height: 11in !important;
+    min-height: auto !important;
+    overflow: hidden !important;
+    padding: 0.55in 0.7in 0.6in !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    padding: 0.55in 0.7in 0.6in;
   }
+  /* Reset mobile overrides */
+  .brand-footer {
+    position: absolute !important;
+    bottom: 0.35in !important;
+    left: 0.7in !important;
+    right: 0.7in !important;
+    margin-top: 0 !important;
+  }
+  .cover {
+    min-height: 11in !important;
+    padding: 0.55in 0.7in 0.6in !important;
+  }
+  .cover .cover-title { font-size: 52px !important; margin-top: 90px !important; }
+  .cover .cover-tag {
+    position: absolute !important;
+    bottom: 48px !important;
+    left: 0.7in !important;
+    margin-top: 0 !important;
+  }
+  .stat-grid { grid-template-columns: repeat(3, 1fr) !important; }
   /* Tighten spacing for print */
-  .page-title { font-size: 30px; margin-bottom: 6px; }
+  .page-title { font-size: 30px !important; margin-bottom: 6px; }
   .page-subtitle { font-size: 12.5px; margin-bottom: 22px; }
+  .overline { font-size: 10px !important; }
   .card { padding: 14px 20px; margin-bottom: 10px; }
   .card.numbered { padding-left: 48px; }
   .card .num { left: 14px; top: 14px; width: 24px; height: 24px; font-size: 11px; }
@@ -555,16 +574,15 @@ body {
   .prog-body { font-size: 11.5px; line-height: 1.6; }
   .sched-card { padding: 14px 18px; margin-bottom: 8px; }
   .sched-card-day { font-size: 17px; }
-  .stat-grid { margin-bottom: 20px; }
   .stat-cell { padding: 14px 16px; }
-  .stat-cell .stat-value { font-size: 26px; }
-  .stat-cell .stat-value.small { font-size: 18px; }
+  .stat-cell .stat-value { font-size: 26px !important; }
+  .stat-cell .stat-value.small { font-size: 18px !important; }
   .alloc-bar { height: 34px; margin-bottom: 24px; }
+  .alloc-seg { font-size: 9.5px !important; }
+  .alloc-seg small { font-size: 8.5px !important; }
   .callout { padding: 18px 22px 18px 26px; margin-bottom: 24px; }
-  .brand-footer { bottom: 0.35in; left: 0.7in; right: 0.7in; }
-  /* Cover adjustments */
-  .cover .cover-title { font-size: 52px; margin-top: 90px; }
-  .cover .cover-meta { font-size: 14px; }
+  .cover .cover-meta { font-size: 14px !important; }
+  .goal-chip-pdf { font-size: 12px !important; padding: 7px 16px !important; }
   /* Prevent cards from splitting across pages */
   .card, .checkpoint, .drill-card, .prog-card, .sched-card,
   .stat-grid, .alloc-bar, .callout, .goal-chips,
@@ -575,18 +593,106 @@ body {
 }
 
 /* =============================================
-   RESPONSIVE (screen only)
+   RESPONSIVE — MOBILE SCREEN VIEW
    ============================================= */
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
   .toolbar { padding: 12px 16px; flex-wrap: wrap; }
   .toolbar-info { display: none; }
-  .toolbar-actions { width: 100%; justify-content: stretch; }
-  .btn-print, .btn-back { flex: 1; justify-content: center; }
-  .bookmark-tip { margin: 12px 16px; padding: 12px 16px; }
+  .toolbar-actions { width: 100%; justify-content: stretch; gap: 8px; }
+  .btn-print, .btn-back { flex: 1; justify-content: center; font-size: 12px; padding: 10px 14px; }
+  .bookmark-tip { margin: 12px 16px; padding: 12px 16px; font-size: 11px; }
   .pages-wrap { margin: 16px 8px 40px; gap: 12px; }
-  .page { padding: 0.5in 0.5in 0.6in; }
-  .brand-footer { left: 0.5in; right: 0.5in; }
-  .cover .cover-title { font-size: 42px; margin-top: 60px; }
+  
+  /* Key fix: make pages fluid on mobile screens */
+  .page {
+    width: 100%;
+    min-height: auto;
+    padding: 28px 22px 36px;
+  }
+  .page-shadow { border-radius: 8px; }
+  
+  /* Brand footer — relative on mobile instead of absolute */
+  .brand-footer {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 28px;
+  }
+  
+  /* Scale down typography */
+  .page-title { font-size: clamp(24px, 6vw, 34px); }
+  .page-subtitle { font-size: 13px; margin-bottom: 20px; }
+  .overline { font-size: 9px; }
+  
+  /* Cover */
+  .cover { min-height: 70vh; padding: 28px 22px 40px; }
+  .cover .logo { font-size: 12px; }
+  .cover .cover-title { font-size: clamp(36px, 9vw, 52px); margin-top: 50px; }
+  .cover .cover-accent { margin: 16px 0 28px; }
+  .cover .cover-meta { font-size: 13px; line-height: 1.7; }
+  .cover .cover-tag { position: relative; bottom: auto; left: auto; margin-top: 40px; }
+  
+  /* Stat grid — 2 columns on mobile */
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .stat-cell .stat-value { font-size: 24px; }
+  .stat-cell .stat-value.small { font-size: 17px; }
+  
+  /* Allocation bar */
+  .alloc-bar { height: 36px; }
+  .alloc-seg { font-size: 8px; }
+  .alloc-seg small { font-size: 7px; }
+  
+  /* Cards */
+  .card { padding: 16px 18px; margin-bottom: 10px; }
+  .card.numbered { padding-left: 48px; }
+  .card .num { width: 24px; height: 24px; font-size: 11px; left: 14px; top: 16px; }
+  .card .card-title { font-size: 13px; }
+  .card .card-body { font-size: 12px; }
+  
+  .checkpoint { padding: 14px 18px 14px 22px; margin-bottom: 10px; }
+  .checkpoint .cp-title { font-size: 13px; }
+  .checkpoint .cp-body { font-size: 12px; }
+  
+  /* Drills */
+  .drill-area-header { margin-top: 16px; margin-bottom: 10px; }
+  .drill-area-name { font-size: 18px; }
+  .drill-area-badge { font-size: 8px; padding: 2px 8px; }
+  .drill-card { padding: 16px 18px 16px 22px; margin-bottom: 10px; }
+  .drill-card .drill-name { font-size: 16px; }
+  .drill-card .drill-meta { font-size: 10px; }
+  .drill-card .drill-desc { font-size: 12px; }
+  
+  /* Schedule cards */
+  .sched-card { padding: 14px 16px; }
+  .sched-card-day { font-size: 17px; }
+  .sched-card-focus { font-size: 9px; }
+  .sched-drill-item { font-size: 11px; }
+  
+  /* Progression */
+  .prog-card { padding: 16px 18px; }
+  .prog-num { width: 32px; height: 32px; font-size: 13px; }
+  .prog-title { font-size: 18px; }
+  .prog-body { font-size: 12px; }
+  
+  /* Goals */
+  .goal-chips { gap: 6px; }
+  .goal-chip-pdf { font-size: 11px; padding: 6px 12px; }
+  
+  /* Callout */
+  .callout { padding: 18px 20px 18px 24px; }
+  .callout .callout-title { font-size: 12px; }
+  .callout p { font-size: 12px; }
+  
+  /* Log table */
+  .log-table { font-size: 10px; }
+  .log-table th { font-size: 8px; padding: 8px 8px; }
+  .log-table td { padding: 10px 8px; }
+  
+  .bench-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+  .bench-cell { padding: 10px 10px; }
+  .bench-cell.header { font-size: 8px; }
+  .bench-cell .bench-label { font-size: 11px; }
 }
 </style>
 </head>
