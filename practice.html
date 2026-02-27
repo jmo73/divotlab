@@ -2033,10 +2033,11 @@ function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
 }
 
 // Send results via email using Google Apps Script webhook
-function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) {
+function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, planURL) {
   if (!email) return;
   
-  var planURL = sessionStorage.getItem('dl_plan_url') || '';
+  // Use passed URL, fall back to sessionStorage
+  if (!planURL) planURL = sessionStorage.getItem('dl_plan_url') || '';
   
   // Build compact payload
   var payload = {
@@ -2359,14 +2360,14 @@ function handleGenerate() {
       planData.personalInsight = insight;
       return generatePDF(planData);
     })
-    .then(function() {
+    .then(function(planURL) {
       document.getElementById('loadingOverlay').classList.remove('active');
       document.getElementById('intakeSection').classList.remove('active');
 
-      // Send email
+      // Send email with plan URL passed directly
       if (intakeEmail) {
         var hcLabel = handicap < 0 ? '+' + Math.abs(handicap) : String(handicap);
-        sendResultsEmail(intakeEmail, areas, rounded, hcLabel, potentialGain);
+        sendResultsEmail(intakeEmail, areas, rounded, hcLabel, potentialGain, planURL);
       }
 
       showFullResults(intakeEmail, planData);
@@ -2451,12 +2452,11 @@ function generatePDF(planData) {
     var encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
     var planURL = window.location.origin + '/plan-view#' + encoded;
 
-    // Store the URL for email and results page
+    // Store for results page display
     sessionStorage.setItem('dl_plan_url', planURL);
 
-    // Don't window.open (gets blocked by popup blockers after async chain)
-    // Instead, we'll show a prominent link on the results page
-    resolve();
+    // Return the URL so callers can use it directly
+    resolve(planURL);
   });
 }
 
