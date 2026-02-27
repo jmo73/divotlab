@@ -1319,7 +1319,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="teaser-right-title">Your Full Practice Plan</div>
   <!-- Plan preview mockup -->
   <div class="plan-preview">
-    <div class="preview-label">7-Page Personalized PDF</div>
+    <div class="preview-label">9-Page Personalized Plan</div>
     <!-- Back-left: Cover page -->
     <div class="plan-page pg-cover">
       <div class="mini-cover">
@@ -2618,7 +2618,7 @@ function showFullResults(email, planData) {
   var emailBanner = '';
   if (planURL) {
     emailBanner = '<div class="email-sent-banner">' +
-      '<a href="' + planURL + '" target="_blank" class="view-plan-btn">View & Download Your 7-Page Plan</a>' +
+      '<a href="' + planURL + '" target="_blank" class="view-plan-btn">View & Download Your Full Practice Plan</a>' +
       (email ? '<p style="margin-top:10px;">A copy has also been sent to ' + email + '</p>' : '') +
       '<p class="email-sent-sub">Opens your full practice plan — bookmark it for anytime access, or download as PDF.</p>' +
     '</div>';
@@ -2630,7 +2630,7 @@ function showFullResults(email, planData) {
     '<div class="teaser-label">Your Practice Plan</div>' +
     '<h2>' + (userName ? userName + '\'s ' : '') + 'Personalized Plan</h2>' +
     '<p>Handicap: ' + handicapDisplay + ' · ' + practiceDays + ' days/week · Prioritized by strokes gained impact</p>' +
-    emailBanner +
+    (emailBanner ? '<div style="margin-top:28px;">' + emailBanner + '</div>' : '') +
   '</div>' +
 
   '<div class="summary-bar">' +
@@ -2658,7 +2658,7 @@ function showFullResults(email, planData) {
   }).join('') +
 
   '<div class="results-footer">' +
-    '<p>Your 7-page practice plan is open in a new tab. Bookmark it for the range. Based on USGA handicap benchmarks and strokes gained research from Columbia University.</p>' +
+    '<p>Your practice plan is open in a new tab. Bookmark it for the range. Based on USGA handicap benchmarks and strokes gained research from Columbia University.</p>' +
     '<button class="retake-btn" onclick="retakeQuiz()">Retake Diagnosis</button>' +
   '</div>';
 

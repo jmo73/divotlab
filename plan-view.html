@@ -767,21 +767,35 @@ function renderPlan(d) {
   });
   html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 4</span></div></div></div>';
 
-  // PAGE 5: DRILL LIBRARY
+  // PAGE 5: COMPLETE DRILL REFERENCE (all 4 areas)
   html += '<div class="page-shadow"><div class="page">' +
-    '<div class="overline">Practice Drills</div>' +
-    '<h2 class="page-title">Your ' + d.weaknessLabel + ' Drill Library</h2>' +
-    '<p class="page-subtitle">Structured drills with specific metrics to track progress session to session.</p>';
+    '<div class="overline">Complete Drill Reference</div>' +
+    '<h2 class="page-title">Your Practice Drill Library</h2>' +
+    '<p class="page-subtitle">Every drill referenced in your weekly schedule, with full descriptions and time targets.</p>';
   areaDetails.slice(0, 2).forEach(function(area) {
     area.drills.forEach(function(drill) {
       html += '<div class="drill-card"><div class="drill-name">' + drill.name + '</div>' +
-        '<div class="drill-meta">' + drill.time + ' &bull; ' + area.label + '</div>' +
+        '<div class="drill-meta">' + drill.time + ' &bull; ' + area.label + ' &bull; ' + area.priority + '</div>' +
         '<div class="drill-desc">' + drill.desc + '</div></div>';
     });
   });
   html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 5</span></div></div></div>';
 
-  // PAGE 6: WEEKLY SCHEDULE (dark)
+  // PAGE 6: DRILL REFERENCE continued (areas 3 & 4)
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Complete Drill Reference (Continued)</div>' +
+    '<h2 class="page-title">Supporting Areas</h2>' +
+    '<p class="page-subtitle">Maintaining these areas prevents regression while you focus on your primary weakness.</p>';
+  areaDetails.slice(2).forEach(function(area) {
+    area.drills.forEach(function(drill) {
+      html += '<div class="drill-card"><div class="drill-name">' + drill.name + '</div>' +
+        '<div class="drill-meta">' + drill.time + ' &bull; ' + area.label + ' &bull; ' + area.priority + '</div>' +
+        '<div class="drill-desc">' + drill.desc + '</div></div>';
+    });
+  });
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 6</span></div></div></div>';
+
+  // PAGE 7: WEEKLY SCHEDULE (dark)
   html += '<div class="page-shadow"><div class="page dark-page">' +
     '<div class="overline">Your Weekly Schedule</div>' +
     '<h2 class="page-title">' + d.practiceDays + '-Day Practice Week</h2>' +
@@ -791,7 +805,13 @@ function renderPlan(d) {
       '<span class="sched-focus">' + day.focus + '</span>' +
       '<div class="sched-detail">' + day.detail + '</div></div>';
   });
-  html += '<div style="margin-top:24px;"><div class="overline">90-Day Progression</div></div>';
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 7</span></div></div></div>';
+
+  // PAGE 8: 90-DAY PROGRESSION (dark)
+  html += '<div class="page-shadow"><div class="page dark-page">' +
+    '<div class="overline">Your Roadmap</div>' +
+    '<h2 class="page-title">90-Day Progression</h2>' +
+    '<p class="page-subtitle">Four phases designed to build skill systematically. Each phase has a clear goal and criteria before advancing.</p>';
   var phases = [
     { label: 'Weeks 1\u20133', title: 'Foundation', desc: 'Master each drill at comfortable pace. Track baseline scores. Build the habit.', color: 'var(--blue-mid)' },
     { label: 'Weeks 4\u20136', title: 'Build', desc: 'Narrow targets, add time pressure. Aim for 15% improvement in drill scores.', color: 'var(--green)' },
@@ -804,9 +824,9 @@ function renderPlan(d) {
       '<div><div class="prog-label">' + p.label + '</div><div class="prog-title">' + p.title + '</div></div>' +
     '</div><div class="prog-body">' + p.desc + '</div></div>';
   });
-  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 6</span></div></div></div>';
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 8</span></div></div></div>';
 
-  // PAGE 7: SESSION LOG
+  // PAGE 9: SESSION LOG
   html += '<div class="page-shadow"><div class="page">' +
     '<div class="overline">Session Log</div>' +
     '<h2 class="page-title">Record What Matters</h2>' +
@@ -822,7 +842,7 @@ function renderPlan(d) {
       '<div class="bench-cell"><span class="bench-label">Avg Putts / Round</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
       '<div class="bench-cell"><span class="bench-label">' + d.weaknessLabel + ' Drill Best</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
     '</div>' +
-    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 7</span></div>' +
+    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 9</span></div>' +
   '</div></div>';
 
   wrap.innerHTML = html;
