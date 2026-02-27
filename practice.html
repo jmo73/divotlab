@@ -2036,8 +2036,8 @@ function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
 function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, planURL) {
   if (!email) return;
   
-  // Use passed URL, fall back to sessionStorage
-  if (!planURL) planURL = sessionStorage.getItem('dl_plan_url') || '';
+  // Get the raw plan JSON (stored by generatePDF)
+  var planJson = sessionStorage.getItem('dl_plan_json') || '';
   
   // Build compact payload
   var payload = {
@@ -2045,7 +2045,6 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, 
     source: 'practice-plan',
     handicap: handicapLabel,
     potentialGain: potentialGain,
-    planURL: planURL,
     areas: areas.map(function(area, i) {
       var d = getAreaDetails(area.key, i, answers.handicap);
       return {
@@ -2059,9 +2058,6 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, 
       };
     })
   };
-  
-  // Remove planURL from JSON payload (sent separately to avoid encoding issues)
-  delete payload.planURL;
   
   // Use hidden form + iframe — the only 100% reliable cross-origin method for Apps Script
   var iframe = document.createElement('iframe');
@@ -2080,12 +2076,13 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, 
   input.value = JSON.stringify(payload);
   form.appendChild(input);
   
-  // Send planURL as separate field to avoid JSON/encoding issues with # and base64 chars
-  var urlInput = document.createElement('input');
-  urlInput.type = 'hidden';
-  urlInput.name = 'planURL';
-  urlInput.value = planURL;
-  form.appendChild(urlInput);
+  // Send the raw plan JSON as a separate field — Apps Script will store it
+  // and generate a short ID URL (never truncates, unlike the old 3000+ char URL)
+  var dataInput = document.createElement('input');
+  dataInput.type = 'hidden';
+  dataInput.name = 'planData';
+  dataInput.value = planJson;
+  form.appendChild(dataInput);
   
   document.body.appendChild(form);
   form.submit();
@@ -2097,7 +2094,7 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain, 
   }, 5000);
   
   console.log('✓ Results email submitted via form');
-  console.log('  planURL sent as separate field:', planURL ? 'YES (' + planURL.length + ' chars)' : 'EMPTY');
+  console.log('  planData sent as separate field:', planJson ? 'YES (' + planJson.length + ' chars)' : 'EMPTY');
 }
 
 // ============================================
@@ -2448,15 +2445,17 @@ function generatePDF(planData) {
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
     };
 
-    // Encode as base64 URL hash
+    // Store the raw plan JSON for the Apps Script to save with a short ID
+    // The Apps Script will return the short URL (divotlab.com/plan-view?id=xxx)
+    sessionStorage.setItem('dl_plan_json', JSON.stringify(payload));
+
+    // Also create a hash-based URL as immediate fallback (works in the current session)
     var encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
-    var planURL = window.location.origin + '/plan-view#' + encoded;
+    var hashURL = window.location.origin + '/plan-view#' + encoded;
+    sessionStorage.setItem('dl_plan_url', hashURL);
 
-    // Store for results page display
-    sessionStorage.setItem('dl_plan_url', planURL);
-
-    // Return the URL so callers can use it directly
-    resolve(planURL);
+    // Return the hash URL for immediate display; email will use the short ID URL
+    resolve(hashURL);
   });
 }
 

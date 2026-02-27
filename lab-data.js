@@ -518,6 +518,13 @@ function renderFieldStrength() {
   const stale = predictionsAreStale();
   const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   
+  // Distinguish "round actively in progress" from "round complete, tournament ongoing"
+  // isLive = tournament has leaderboard data (could be between rounds at night)
+  // isActivelyLive = players are currently on the course mid-round
+  const eventStatus = getEventStatus(globalTournamentInfo);
+  const isRoundComplete = isLive && eventStatus.label.startsWith('Round') && eventStatus.sublabel === 'Complete';
+  const isActivelyLive = isLive && !isRoundComplete;
+  
   // Build tournament field consistently using centralized helper
   // This ensures players like Rory (in field but not in skill-ratings) are included
   // via their dg_skill_estimate from predictions
@@ -633,7 +640,7 @@ function renderFieldStrength() {
       <!-- Leaders Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">${state === 'completed' ? 'Final Results' : 'Leaders'}${isLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-label">${state === 'completed' ? 'Final Results' : (isRoundComplete ? `R${globalTournamentInfo.current_round || ''} Complete` : 'Leaders')}${isActivelyLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${(isLive || state === 'completed') ? '🏆' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
@@ -646,7 +653,7 @@ function renderFieldStrength() {
       <!-- Odds Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">Win Odds${isLive && !stale ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-label">Win Odds${isActivelyLive && !stale ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${top3Odds.length > 0 ? '%' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
@@ -979,6 +986,11 @@ function renderPredictions() {
   const stale = predictionsAreStale();
   const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
   
+  // Check if round is complete (not actively live)
+  const predEventStatus = getEventStatus(globalTournamentInfo);
+  const predRoundComplete = isLive && predEventStatus.label.startsWith('Round') && predEventStatus.sublabel === 'Complete';
+  const predActivelyLive = isLive && !predRoundComplete;
+  
   // If predictions are stale or tournament is upcoming without fresh predictions, show upcoming state
   if (stale || (state === 'upcoming' && globalPredictions.length === 0)) {
     container.innerHTML = `
@@ -1000,7 +1012,7 @@ function renderPredictions() {
   
   container.innerHTML = `
     <div style="margin-bottom: 20px; font-size: 13px; color: rgba(250,250,250,0.45); text-align: center;">
-      ${isLive ? '🔴 Live Predictions' : 'Pre-Tournament Predictions'} · ${eventName}
+      ${predActivelyLive ? '🔴 Live Predictions' : (predRoundComplete ? `Predictions · ${predEventStatus.label} Complete` : 'Pre-Tournament Predictions')} · ${eventName}
     </div>
     
     <div class="table-wrapper">
@@ -1964,13 +1976,20 @@ function renderTournamentContext() {
     nameEl.textContent = globalTournamentInfo.event_name;
     
     const state = getTournamentState(globalTournamentInfo);
+    const eventStatus = getEventStatus(globalTournamentInfo);
     const dateRange = formatTournamentDate(globalTournamentInfo.start_date, globalTournamentInfo.end_date);
     
     if (state === 'completed') {
       datesEl.textContent = dateRange ? `${dateRange} · Tournament Complete` : 'Tournament Complete';
     } else if (state === 'live') {
-      const round = globalTournamentInfo.current_round || 0;
-      datesEl.textContent = `Round ${round} In Progress${dateRange ? ` · ${dateRange}` : ''}`;
+      // Use getEventStatus to distinguish "Round X In Progress" from "Round X Complete"
+      const isRoundComplete = eventStatus.label.startsWith('Round') && eventStatus.sublabel === 'Complete';
+      if (isRoundComplete) {
+        datesEl.textContent = `${eventStatus.label} Complete${dateRange ? ` · ${dateRange}` : ''}`;
+      } else {
+        const round = globalTournamentInfo.current_round || 0;
+        datesEl.textContent = `Round ${round} In Progress${dateRange ? ` · ${dateRange}` : ''}`;
+      }
     } else {
       const dateLabel = getUpcomingDateLabel(globalTournamentInfo);
       datesEl.textContent = `Upcoming · ${dateLabel}`;

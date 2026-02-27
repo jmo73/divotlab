@@ -889,6 +889,15 @@ function buildWeeklySchedule(days, areaDetails, adjusted) {
 // DECODE PLAN DATA FROM URL
 // ============================================
 function decodePlanFromURL() {
+  // Method 1: ID-based URL (new system) — /plan-view?id=abc123
+  var params = new URLSearchParams(window.location.search);
+  var planId = params.get('id');
+  if (planId) {
+    // Return a promise-like marker; we'll handle async loading in init
+    return { _loadById: planId };
+  }
+  
+  // Method 2: Hash-based URL (legacy/immediate) — /plan-view#base64data
   try {
     var hash = window.location.hash.substring(1);
     if (!hash) return null;
@@ -898,6 +907,25 @@ function decodePlanFromURL() {
     console.error('Failed to decode plan data:', e);
     return null;
   }
+}
+
+/**
+ * Fetch plan data from Google Apps Script by ID
+ * Uses the doGet handler: SCRIPT_URL?action=getPlan&id=xxx
+ */
+function fetchPlanById(planId) {
+  // The Apps Script URL for the practice plan webhook
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd62h-Vro5p5960py4UVcXez2dZ_IA2Gu-X5McjDXvXhboWndedbP943xKN4rfMZZoNQ/exec';
+  var fetchURL = SCRIPT_URL + '?action=getPlan&id=' + encodeURIComponent(planId);
+  
+  return fetch(fetchURL)
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+      if (data.success && data.planData) {
+        return JSON.parse(data.planData);
+      }
+      throw new Error(data.error || 'Plan not found');
+    });
 }
 
 // ============================================
@@ -1134,6 +1162,33 @@ function renderPlan(d) {
 // ============================================
 (function() {
   var planData = decodePlanFromURL();
+  
+  // If plan needs to be fetched by ID (async)
+  if (planData && planData._loadById) {
+    // Show a loading state
+    document.getElementById('pagesWrap').innerHTML = '<div style="text-align:center;padding:80px 20px;"><div style="font-size:14px;color:var(--graphite);">Loading your practice plan...</div></div>';
+    
+    fetchPlanById(planData._loadById)
+      .then(function(data) {
+        if (!data || !data.name || !data.areas) {
+          throw new Error('Invalid plan data');
+        }
+        document.getElementById('pagesWrap').innerHTML = ''; // Clear loading
+        renderPlan(data);
+        setupMobileCheck();
+      })
+      .catch(function(err) {
+        console.error('Failed to load plan:', err);
+        document.getElementById('toolbar').style.display = 'none';
+        document.getElementById('bookmarkTip').style.display = 'none';
+        document.getElementById('mobilePdfTip').style.display = 'none';
+        document.getElementById('pagesWrap').style.display = 'none';
+        document.getElementById('errorState').style.display = 'flex';
+      });
+    return;
+  }
+  
+  // Hash-based URL (immediate decode)
   if (!planData || !planData.name || !planData.areas) {
     document.getElementById('toolbar').style.display = 'none';
     document.getElementById('bookmarkTip').style.display = 'none';
@@ -1143,7 +1198,10 @@ function renderPlan(d) {
     return;
   }
   renderPlan(planData);
+  setupMobileCheck();
+})();
 
+function setupMobileCheck() {
   // Mobile: hide download button, show tip to use desktop
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 900;
   if (isMobile) {
@@ -1151,7 +1209,7 @@ function renderPlan(d) {
     document.getElementById('bookmarkTip').style.display = 'none';
     document.getElementById('mobilePdfTip').style.display = 'block';
   }
-})();
+}
 </script>
 </body>
 </html>
