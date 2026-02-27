@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>Your Practice Plan — Divot Lab</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   TOKENS
+   ============================================= */
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --green-bg:   rgba(27,77,62,0.06);
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+  --amber:      #C9982E;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; }
+body {
+  font-family: var(--body);
+  color: var(--black);
+  background: var(--warm-gray);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* =============================================
+   TOOLBAR (hidden in print)
+   ============================================= */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.toolbar-brand svg { width: 22px; height: 22px; color: var(--white); }
+.toolbar-brand span {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--white);
+}
+.toolbar-brand span em { font-weight: 300; opacity: .55; font-style: normal; }
+.toolbar-info {
+  font-size: 12px;
+  color: rgba(250,250,250,0.45);
+  text-align: center;
+  flex: 1;
+}
+.toolbar-info strong { color: rgba(250,250,250,0.8); font-weight: 500; }
+.toolbar-actions { display: flex; gap: 10px; }
+.btn-print {
+  background: var(--green);
+  color: var(--white);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 5px;
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.btn-print:hover { background: #236b4f; transform: translateY(-1px); }
+.btn-print svg { width: 16px; height: 16px; }
+.btn-back {
+  background: rgba(255,255,255,0.07);
+  color: rgba(250,250,250,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-back:hover { background: rgba(255,255,255,0.12); color: rgba(250,250,250,0.85); }
+
+.bookmark-tip {
+  background: rgba(91,191,133,0.08);
+  border: 1px solid rgba(91,191,133,0.15);
+  border-radius: 8px;
+  padding: 14px 24px;
+  margin: 16px 32px;
+  font-size: 12px;
+  color: rgba(250,250,250,0.5);
+  text-align: center;
+  background-color: rgba(10,10,10,0.92);
+}
+.bookmark-tip strong { color: var(--green-light); font-weight: 500; }
+
+/* =============================================
+   PAGE CONTAINER (screen view)
+   ============================================= */
+.pages-wrap {
+  max-width: 8.5in;
+  margin: 24px auto 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.page-shadow {
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* =============================================
+   PLAN PAGES — exact match to existing template
+   ============================================= */
+@page { size: letter; margin: 0; }
+.page {
+  width: 8.5in;
+  min-height: 11in;
+  padding: 0.7in 0.78in 0.72in;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  background: var(--white);
+}
+.page:last-child { page-break-after: auto; }
+
+.overline {
+  font-family: var(--body);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 8px;
+}
+.page-title {
+  font-family: var(--display);
+  font-size: 34px; font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1.1;
+  color: var(--black); margin-bottom: 8px;
+}
+.page-subtitle {
+  font-size: 13.5px; font-weight: 300;
+  color: var(--graphite); line-height: 1.65;
+  margin-bottom: 30px; max-width: 520px;
+}
+.accent-line {
+  width: 52px; height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 2px; margin: 14px 0 26px;
+}
+.brand-footer {
+  position: absolute; bottom: 24px;
+  left: 0.78in; right: 0.78in;
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  font-size: 9px; color: var(--steel); letter-spacing: 0.04em;
+}
+.brand-footer .brand { font-weight: 600; color: var(--graphite); letter-spacing: 0.1em; }
+
+/* Cover */
+.cover { background: var(--black); display: flex; flex-direction: column; justify-content: center; }
+.cover::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--green), var(--green-light) 50%, var(--blue-mid));
+}
+.cover::after {
+  content: ""; position: absolute; top: 15%; left: 5%;
+  width: 600px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.20) 0%, rgba(27,77,62,0.06) 40%, transparent 70%);
+  pointer-events: none;
+}
+.cover-glow-2 {
+  position: absolute; bottom: 2%; right: 2%;
+  width: 420px; height: 420px;
+  background: radial-gradient(ellipse at center, rgba(44,95,124,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cover .logo {
+  font-family: var(--body); font-weight: 600; font-size: 14px;
+  letter-spacing: 0.14em; color: var(--green-light);
+  position: relative; z-index: 1;
+}
+.cover .logo span { font-weight: 300; color: #555; }
+.cover .cover-title {
+  font-family: var(--display); font-size: 58px; font-weight: 600;
+  line-height: 1.04; letter-spacing: -0.025em; color: var(--white);
+  margin-top: 110px; position: relative; z-index: 1;
+}
+.cover .cover-title em { font-style: italic; color: var(--green-light); font-weight: 500; }
+.cover .cover-accent {
+  width: 88px; height: 3px; margin: 20px 0 38px;
+  background: linear-gradient(90deg, var(--green-light), var(--blue-mid));
+  border-radius: 2px; position: relative; z-index: 1;
+}
+.cover .cover-meta {
+  font-size: 15px; font-weight: 400;
+  color: rgba(250,250,250,0.50); line-height: 1.85;
+  position: relative; z-index: 1;
+}
+.cover .cover-meta strong { color: rgba(250,250,250,0.85); font-weight: 500; }
+.cover .cover-tag {
+  position: absolute; bottom: 48px; left: 0.78in;
+  font-size: 11px; font-style: italic;
+  color: rgba(250,250,250,0.20); letter-spacing: 0.03em; z-index: 1;
+}
+
+/* Stat grid */
+.stat-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; background: rgba(0,0,0,0.07);
+  border-radius: 10px; overflow: hidden; margin-bottom: 28px;
+}
+.stat-cell { background: var(--white); padding: 18px 20px; }
+.stat-cell .stat-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--steel); margin-bottom: 5px;
+}
+.stat-cell .stat-value {
+  font-family: var(--display); font-size: 30px; font-weight: 700;
+  color: var(--black); letter-spacing: -0.02em;
+}
+.stat-cell .stat-value.small { font-size: 21px; }
+
+/* Allocation bar */
+.alloc-bar {
+  display: flex; border-radius: 8px; overflow: hidden;
+  margin-bottom: 34px; height: 40px;
+}
+.alloc-seg {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: #fff; font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.04em; line-height: 1.2;
+}
+.alloc-seg small { font-weight: 400; font-size: 8.5px; opacity: 0.8; }
+
+/* Callout */
+.callout {
+  border-radius: 10px; padding: 22px 26px 22px 30px;
+  margin-bottom: 32px; position: relative; overflow: hidden;
+}
+.callout::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; border-radius: 3px 0 0 3px;
+}
+.callout.green { background: var(--green-bg); }
+.callout.green::before { background: linear-gradient(to bottom, var(--green), var(--green-light)); }
+.callout .callout-title { font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--green); }
+.callout p { font-size: 12.5px; color: var(--graphite); line-height: 1.7; }
+
+/* Cards */
+.card { background: var(--warm-gray); border-radius: 10px; padding: 18px 24px; margin-bottom: 14px; position: relative; }
+.card.numbered { padding-left: 56px; }
+.card .num {
+  position: absolute; left: 18px; top: 18px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  color: #fff; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.card .card-title { font-weight: 600; font-size: 14px; color: var(--black); margin-bottom: 5px; }
+.card .card-body { font-size: 12.5px; color: var(--graphite); line-height: 1.7; }
+
+/* Checkpoints */
+.checkpoint {
+  background: linear-gradient(135deg, rgba(27,77,62,0.05), rgba(27,77,62,0.02));
+  border-radius: 10px; padding: 18px 24px 18px 28px;
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.checkpoint::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--green); border-radius: 3px 0 0 3px;
+}
+.checkpoint .cp-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--green); margin-bottom: 4px;
+}
+.checkpoint .cp-title { font-weight: 600; font-size: 14px; color: var(--black); margin-bottom: 5px; }
+.checkpoint .cp-body { font-size: 12.5px; color: var(--graphite); line-height: 1.7; }
+
+/* Drill cards */
+.drill-card {
+  background: linear-gradient(145deg, var(--warm-gray), #EEEDEB);
+  border-radius: 10px; padding: 20px 24px 20px 28px;
+  margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.drill-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: linear-gradient(to bottom, var(--blue), var(--blue-mid));
+  border-radius: 3px 0 0 3px;
+}
+.drill-card .drill-name { font-family: var(--display); font-size: 19px; font-weight: 600; color: var(--black); margin-bottom: 3px; }
+.drill-card .drill-meta { font-family: var(--mono); font-size: 10.5px; color: var(--blue-mid); margin-bottom: 10px; }
+.drill-card .drill-desc { font-size: 12.5px; color: var(--graphite); line-height: 1.7; }
+
+/* Dark pages */
+.dark-page { background: var(--black); }
+.dark-page::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+}
+.dark-page::after {
+  content: ""; position: absolute; top: -10%; left: 30%;
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, rgba(27,77,62,0.08), transparent 60%);
+  pointer-events: none;
+}
+.dark-page .overline { color: var(--green-light); }
+.dark-page .page-title { color: var(--white); }
+.dark-page .page-subtitle { color: rgba(250,250,250,0.4); margin-bottom: 22px; }
+.dark-page .brand-footer { border-top-color: rgba(255,255,255,0.06); color: rgba(250,250,250,0.2); }
+.dark-page .brand-footer .brand { color: rgba(250,250,250,0.35); }
+
+.sched-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.sched-item:last-child { border-bottom: none; }
+.sched-day { font-size: 12px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.sched-focus {
+  display: inline-block; font-size: 9px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green-light); background: rgba(91,191,133,0.1);
+  padding: 2px 8px; border-radius: 3px; margin-right: 6px;
+}
+.sched-detail { font-size: 11px; color: rgba(250,250,250,0.45); margin-top: 3px; }
+
+/* Log table */
+.log-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.07); margin-bottom: 28px; font-size: 11px;
+}
+.log-table th {
+  background: var(--warm-gray); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--steel); padding: 10px 12px; text-align: left;
+}
+.log-table td { padding: 12px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--graphite); }
+.log-table tr:last-child td { border-bottom: none; }
+
+.bench-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 1px; background: rgba(0,0,0,0.07); border-radius: 10px; overflow: hidden;
+}
+.bench-cell { background: var(--white); padding: 12px 14px; }
+.bench-cell.header {
+  background: var(--warm-gray); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--steel);
+}
+.bench-cell .bench-label { font-size: 12.5px; color: var(--graphite); }
+.bench-cell .bench-input { display: block; height: 18px; border-bottom: 1px dashed rgba(0,0,0,0.12); }
+
+/* Progression cards */
+.prog-card {
+  background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 16px 22px; margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+.prog-header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+.prog-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.prog-label { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; color: #fff; }
+.prog-title { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--white); }
+.prog-body { font-size: 11px; color: rgba(250,250,250,0.5); line-height: 1.6; }
+
+/* =============================================
+   ERROR STATE
+   ============================================= */
+.error-state {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px;
+  background: var(--black);
+  color: var(--white);
+}
+.error-state h1 { font-family: var(--display); font-size: 36px; margin-bottom: 12px; }
+.error-state p { font-size: 15px; color: rgba(250,250,250,0.45); margin-bottom: 28px; }
+.error-state a {
+  background: var(--green); color: var(--white);
+  padding: 13px 34px; border-radius: 5px;
+  font-size: 14px; font-weight: 500; text-decoration: none;
+}
+
+/* =============================================
+   PRINT STYLES
+   ============================================= */
+@media print {
+  .toolbar, .bookmark-tip { display: none !important; }
+  body { background: white; }
+  .pages-wrap { margin: 0; gap: 0; max-width: none; }
+  .page-shadow { box-shadow: none; border-radius: 0; }
+  .page { width: 8.5in; min-height: 11in; }
+}
+
+/* =============================================
+   RESPONSIVE (screen only)
+   ============================================= */
+@media screen and (max-width: 700px) {
+  .toolbar { padding: 12px 16px; flex-wrap: wrap; }
+  .toolbar-info { display: none; }
+  .toolbar-actions { width: 100%; justify-content: stretch; }
+  .btn-print, .btn-back { flex: 1; justify-content: center; }
+  .bookmark-tip { margin: 12px 16px; padding: 12px 16px; }
+  .pages-wrap { margin: 16px 8px 40px; gap: 12px; }
+  .page { padding: 0.5in 0.5in 0.6in; }
+  .brand-footer { left: 0.5in; right: 0.5in; }
+  .cover .cover-title { font-size: 42px; margin-top: 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toolbar — hidden in print -->
+<div class="toolbar" id="toolbar">
+  <a href="https://divotlab.com" class="toolbar-brand">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span>DIVOT <em>LAB</em></span>
+  </a>
+  <div class="toolbar-info" id="toolbarInfo"></div>
+  <div class="toolbar-actions">
+    <a href="https://divotlab.com/practice" class="btn-back">Back to Practice Tool</a>
+    <button class="btn-print" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download PDF
+    </button>
+  </div>
+</div>
+<div class="bookmark-tip" id="bookmarkTip">
+  <strong>Bookmark this page</strong> — your plan lives at this URL permanently. You can also download it as a PDF using the button above.
+</div>
+
+<!-- Plan pages container -->
+<div class="pages-wrap" id="pagesWrap"></div>
+
+<!-- Error state (hidden by default) -->
+<div class="error-state" id="errorState" style="display:none;">
+  <h1>Plan Not Found</h1>
+  <p>This link doesn't contain valid plan data. Take the quiz to generate your personalized practice plan.</p>
+  <a href="https://divotlab.com/practice">Take the Quiz</a>
+</div>
+
+<script>
+// ============================================
+// CONTENT TEMPLATES — identical to practice.html
+// ============================================
+function getAreaDetails(key, rank, handicap) {
+  var details = {
+    driving: {
+      desc: 'Your tee shots are costing you more strokes than any other part of your game. Tour data shows that reducing penalty strokes and finding more fairways has the single highest ROI for players at your level.',
+      impact: 'High Impact',
+      impactColor: '#E76F51',
+      drills: [
+        { name: 'The Corridor Drill', desc: 'At the range, pick two targets 30 yards apart. Hit 20 drives trying to land between them. Track your percentage. Tour average fairway width is ~35 yards — this trains functional accuracy, not perfection.', time: '15 min' },
+        { name: 'The 80% Swing', desc: 'Hit 10 drives at 80% effort. Most amateurs gain accuracy and lose almost no distance by swinging within themselves. Note the distance difference — it\'s smaller than you think.', time: '10 min' }
+      ]
+    },
+    approach: {
+      desc: 'Your iron play from scoring distance is where the biggest gains are hiding. Strokes gained research consistently shows approach play separates handicap levels more than any other factor — even more than driving.',
+      impact: 'High Impact',
+      impactColor: '#E76F51',
+      drills: [
+        { name: 'The 150-Yard Challenge', desc: 'Hit 10 balls from 150 yards (or your 7-iron distance). Count how many land on a green-sized target (~30 yard circle). Track this number weekly. PGA Tour average is 8/10. A 15-handicap averages 4/10.', time: '15 min' },
+        { name: 'Stock Yardage Ladder', desc: 'Pick 5 clubs (PW through 6i). Hit 5 balls with each, noting average carry. Write these numbers down and carry them in your bag. Knowing your real distances eliminates the #1 amateur approach mistake: wrong club.', time: '20 min' }
+      ]
+    },
+    shortGame: {
+      desc: 'You\'re leaving too many strokes around the green. When you miss a green — and every golfer does — your ability to get up and down is the difference between a bogey and a double. This is the fastest area to improve with focused practice.',
+      impact: 'Medium-High Impact',
+      impactColor: '#DDA15E',
+      drills: [
+        { name: 'The Up-and-Down Game', desc: 'Drop 5 balls at different spots around the practice green (varying lies and distances). Try to get up and down from each. Track your score out of 5. This simulates real on-course scenarios, not repetitive chipping.', time: '20 min' },
+        { name: 'The Landing Spot Drill', desc: 'Place a towel 3 feet onto the green from the fringe. Chip 10 balls trying to land on the towel. This trains your brain to pick a landing spot rather than fixating on the hole — the key mental shift for short game consistency.', time: '10 min' }
+      ]
+    },
+    putting: {
+      desc: 'Your putting is bleeding strokes, particularly from distance. Three-putts are the most common way mid-handicappers throw away strokes, and the fix is almost always lag putting — not 3-footers.',
+      impact: 'Medium Impact',
+      impactColor: '#5A8FA8',
+      drills: [
+        { name: 'The Lag Putting Circle', desc: 'From 30, 40, and 50 feet, putt 5 balls each distance. Your goal: every ball within a 3-foot circle around the hole. This eliminates three-putts, which is worth more than making a few extra 6-footers.', time: '15 min' },
+        { name: 'The Gate Drill (3\u20135 feet)', desc: 'Place two tees just wider than your putter head, 4 feet from the hole. Putt through the gate. Make 10 in a row before you leave. This builds the stroke consistency that turns lip-outs into makes.', time: '10 min' }
+      ]
+    }
+  };
+  var d = details[key];
+  if (rank === 0) { d.impact = 'Highest Priority'; d.impactColor = '#E76F51'; }
+  else if (rank === 1) { d.impact = 'High Priority'; d.impactColor = '#DDA15E'; }
+  else if (rank === 2) { d.impact = 'Moderate Priority'; d.impactColor = '#5A8FA8'; }
+  else { d.impact = 'Maintain'; d.impactColor = '#5BBF85'; }
+  return d;
+}
+
+function buildMistakesContent(weakness, handicap) {
+  var templates = {
+    driving: [
+      { title: 'Swinging Too Hard', desc: 'The single biggest amateur driving mistake. Tour pros swing at ~85% effort on most tee shots. You\'re probably swinging at 100%+, which destroys your sequencing and sends the ball sideways. Dial it back to 80% and watch your dispersion tighten immediately.' },
+      { title: 'Aiming at the Fairway (Not a Target)', desc: '"Hit the fairway" is too vague. Pick a specific target — a tree, a yardage marker, a bunker edge. Your brain needs a precise aim point. Tour players pick targets the size of a trash can, not a football field.' },
+      { title: 'Ignoring Your Miss Pattern', desc: 'Every golfer has a dominant miss (slice, hook, or random). Instead of trying to hit it straight, play your miss. Aim left if you slice. This simple adjustment can eliminate penalty strokes without changing your swing.' },
+      { title: 'Using Driver When You Shouldn\'t', desc: 'On tight holes, a 3-wood or hybrid off the tee often produces better scores. Do the math: a 240-yard 3-wood in the fairway beats a 280-yard drive in the trees every time. Leave ego in the bag.' },
+      { title: 'Poor Setup and Alignment', desc: 'Most driving problems start before the swing. Ball position should be just inside your lead heel. Feet, hips, and shoulders should all be parallel to your target line. Lay a club on the ground at the range to check — you\'ll be surprised how far off you are.' }
+    ],
+    approach: [
+      { title: 'Wrong Club Selection', desc: 'Amateurs under-club on 80% of approach shots. You hit your 7-iron 155 yards that one time — but your average is 143. Play your average, not your best. This alone can save 2-3 strokes per round.' },
+      { title: 'Aiming at the Pin', desc: 'Unless the pin is in the center of the green, aiming at it is a losing strategy. Tour pros miss the green 30% of the time. You miss it more. Aim at the center of the green and let your misses be playable.' },
+      { title: 'Decelerating Through Impact', desc: 'Taking too big a backswing and then slowing down through the ball is epidemic among amateurs. Take a shorter backswing and accelerate through. Contact quality will improve dramatically.' },
+      { title: 'Not Knowing Your Distances', desc: 'If you don\'t know your actual carry distances for each club (not the number on the shaft), you\'re guessing on every approach. Spend one range session mapping your real distances. It\'s the lowest-effort, highest-impact thing you can do.' },
+      { title: 'Ignoring Wind and Elevation', desc: 'A 10 mph headwind can add 10-15 yards to a shot. A downhill lie can reduce distance. Most amateurs don\'t adjust at all. Start factoring in conditions and you\'ll find more greens immediately.' }
+    ],
+    shortGame: [
+      { title: 'Using Only One Club Around the Green', desc: 'If you chip with your 56-degree for everything, you\'re making the game harder. A bump-and-run with a 9-iron is far more consistent for most lies. Match the club to the shot, not the other way around.' },
+      { title: 'Trying to Be Too Precise', desc: 'Around the green, your goal is proximity, not perfection. Getting the ball within 6 feet is a great result. Trying to hole every chip leads to deceleration, skulls, and chunks.' },
+      { title: 'Poor Weight Distribution', desc: 'On chip shots, 60-70% of your weight should be on your front foot — and stay there. Shifting back to "help the ball up" is the #1 cause of fat chips and skulled shots.' },
+      { title: 'No Landing Spot Strategy', desc: 'Most amateurs look at the hole when chipping. Tour players look at where they want the ball to LAND. Pick a spot on the green where the ball should first bounce, then let it release to the hole.' },
+      { title: 'Neglecting Short Game Practice', desc: 'The average amateur spends 75% of practice hitting full shots and 25% on short game. Tour players flip that ratio. Your short game is where the strokes are — practice accordingly.' }
+    ],
+    putting: [
+      { title: 'Speed Over Line (Always)', desc: 'Distance control matters 3x more than read accuracy on putts over 10 feet. A putt with perfect line but wrong speed misses by 5 feet. A putt with slightly wrong line but perfect speed misses by inches.' },
+      { title: 'Moving Your Head', desc: 'Looking up early to see where the ball is going changes your stroke path and contact point. Practice keeping your eyes on the spot where the ball was until you hear it drop (or don\'t).' },
+      { title: 'Inconsistent Setup', desc: 'Eyes over the ball, slight forward press, consistent ball position (just forward of center). If these change putt to putt, your stroke can\'t be consistent. Build a setup routine and use it every time.' },
+      { title: 'Grip Pressure in Putting', desc: 'Even lighter than full shots — a 2 or 3 out of 10. Tight grip = jerky stroke = inconsistent speed. Hold the putter like you\'re holding a bird: firm enough it doesn\'t fly away, gentle enough you don\'t hurt it.' },
+      { title: 'Follow-Through Length', desc: 'Your follow-through should be equal to or slightly longer than your backswing. A short, stabby follow-through is the hallmark of deceleration and the #1 cause of pulled short putts.' }
+    ]
+  };
+  return templates[weakness] || templates.driving;
+}
+
+function buildMechanicsContent(weakness) {
+  var templates = {
+    driving: [
+      { title: 'Grip Pressure: 4 out of 10', desc: 'On a scale of 1 (barely holding) to 10 (death grip), your grip pressure should be about a 4. This allows your wrists to hinge naturally and your clubhead to release through impact. Tension kills clubhead speed.' },
+      { title: 'Shoulder Turn: Back to Target', desc: 'At the top of your backswing, your lead shoulder should be under your chin and your back should face the target. If you can\'t get there, it\'s a flexibility issue — not a swing issue. Work on rotation, not arm lift.' },
+      { title: 'Weight Transfer: Front Foot at Impact', desc: 'At impact, 80% of your weight should be on your front foot. If you\'re hanging back, you\'re adding loft and losing distance. Feel like you\'re "posting up" on your lead leg through the shot.' },
+      { title: 'Tempo: 3:1 Ratio', desc: 'Tour players take about 0.75 seconds on the backswing and 0.25 seconds on the downswing — a 3:1 ratio. Most amateurs rush the transition. Count "one-two-three" on the way back, "four" on the way down.' },
+      { title: 'Finish Position: Belt Buckle to Target', desc: 'A balanced finish with your belt buckle facing the target and weight fully on your front foot. If you can\'t hold your finish for 3 seconds, something went wrong earlier in the swing.' }
+    ],
+    approach: [
+      { title: 'Ball Position: Center to Slightly Forward', desc: 'For mid-irons, the ball should be centered or one ball width forward of center. Too far forward = thin shots. Too far back = fat shots. Use alignment sticks at the range to build consistency.' },
+      { title: 'Divot Location: After the Ball', desc: 'Your divot should start at or just after where the ball was — not behind it. This means you\'re hitting down on the ball. If your divots start behind the ball, focus on getting your weight forward earlier.' },
+      { title: 'Arm Extension Through Impact', desc: 'Both arms should be extended through the hitting zone, forming a wide arc. Pulling your arms in (the "chicken wing") robs you of compression and consistency. Think "reach through the ball."' },
+      { title: 'Eye Line: Stay Level', desc: 'Your eye line should stay level through the swing. Dipping or raising your head changes your spine angle and moves the bottom of your arc. Pick a spot on the ball and keep your eyes there.' },
+      { title: 'Shaft Lean at Impact', desc: 'Your hands should be ahead of the clubhead at impact. This is how you compress the ball. Feel like you\'re dragging the handle through impact rather than flipping the club at the ball.' }
+    ],
+    shortGame: [
+      { title: 'Open Stance, Narrow Width', desc: 'For standard chips, open your stance about 20 degrees and narrow your feet to shoulder width or less. This pre-sets your body to rotate through the shot rather than swaying.' },
+      { title: 'Weight Forward: 60/40', desc: 'Set 60% of your weight on your front foot at address and keep it there. Don\'t shift back. Your sternum should stay over or slightly ahead of the ball throughout.' },
+      { title: 'Wrist Angle: Maintain It', desc: 'Whatever wrist angle you set at address, maintain it through the shot. "Flipping" or adding wrist action is the most common cause of inconsistent contact around the green.' },
+      { title: 'Shoulder Rock, Not Hand Flip', desc: 'The chipping motion is driven by your shoulders rocking, not your hands. Think of your arms and club as a triangle that stays intact while your shoulders create the motion.' },
+      { title: 'Follow-Through Length Controls Distance', desc: 'In chipping, backswing length and follow-through length should roughly match. Shorter swing = shorter shot. Don\'t try to control distance with deceleration — it kills consistency.' }
+    ],
+    putting: [
+      { title: 'Eyes Over or Just Inside the Ball', desc: 'When you set up, your eyes should be directly over the ball or slightly inside the line. Drop a ball from between your eyes at address — it should land on or just inside your ball position.' },
+      { title: 'Pendulum from the Shoulders', desc: 'The putting stroke is a pendulum motion driven by your shoulders. Your wrists, arms, and hands should be passive. If your wrists are breaking, the putter face opens and closes unpredictably.' },
+      { title: 'Putter Face Angle at Impact', desc: 'The putter face direction at impact determines 80% of the ball\'s starting direction. Even 2 degrees open means a 6-footer misses. The gate drill trains face control specifically.' },
+      { title: 'Consistent Ball Position', desc: 'Place the ball just forward of center in your stance — about one ball width ahead of the midpoint. This ensures you contact the ball slightly on the upstroke, promoting a smooth roll.' },
+      { title: 'Quiet Lower Body', desc: 'Your lower body should be completely still during the putting stroke. Any knee flex, hip slide, or weight shift introduces variables. Set up stable and stay stable.' }
+    ]
+  };
+  return templates[weakness] || templates.driving;
+}
+
+function buildWeeklySchedule(days, areaDetails, adjusted) {
+  var dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  var schedule = [];
+  var activeDays = [];
+  if (days === 1) activeDays = [5];
+  else if (days === 2) activeDays = [2, 5];
+  else if (days === 3) activeDays = [1, 3, 5];
+  else if (days === 4) activeDays = [0, 2, 4, 5];
+  else if (days === 5) activeDays = [0, 1, 3, 4, 5];
+  else if (days === 6) activeDays = [0, 1, 2, 3, 4, 5];
+  else activeDays = [0, 1, 2, 3, 4, 5, 6];
+
+  var focusOrder = [];
+  areaDetails.forEach(function(area, i) {
+    var count = Math.max(1, Math.round((adjusted[i] / 100) * days));
+    for (var c = 0; c < count && focusOrder.length < days; c++) {
+      focusOrder.push(area);
+    }
+  });
+  while (focusOrder.length < days) { focusOrder.push(areaDetails[0]); }
+  focusOrder = focusOrder.slice(0, days);
+
+  activeDays.forEach(function(dayIdx, i) {
+    var area = focusOrder[i] || areaDetails[0];
+    var drillNames = area.drills.map(function(d) { return d.name; }).join(' + ');
+    var totalTime = area.drills.reduce(function(sum, d) { return sum + parseInt(d.time); }, 0);
+    schedule.push({ label: dayNames[dayIdx], focus: area.label, detail: drillNames + ' (' + totalTime + ' min total)' });
+  });
+  return schedule;
+}
+
+// ============================================
+// DECODE PLAN DATA FROM URL
+// ============================================
+function decodePlanFromURL() {
+  try {
+    var hash = window.location.hash.substring(1);
+    if (!hash) return null;
+    var json = decodeURIComponent(atob(hash));
+    return JSON.parse(json);
+  } catch (e) {
+    console.error('Failed to decode plan data:', e);
+    return null;
+  }
+}
+
+// ============================================
+// RENDER PLAN PAGES
+// ============================================
+function renderPlan(d) {
+  var hcDisplay = d.handicap < 0 ? '+' + Math.abs(d.handicap) : String(d.handicap);
+  var dateStr = d.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  var hcBucket = d.handicap < 0 ? 'low' : d.handicap <= 6 ? 'low' : d.handicap <= 12 ? 'mid' : d.handicap <= 20 ? 'mid-high' : 'high';
+
+  var priorityColors = ['#E76F51', '#DDA15E', '#5A8FA8', '#5BBF85'];
+  var priorityLabels = ['Highest Priority', 'High Priority', 'Moderate Priority', 'Maintain'];
+  var barColors = ['var(--green)', 'var(--green-light)', 'var(--blue-mid)', 'var(--graphite)'];
+
+  var areaDetails = d.areas.map(function(area, i) {
+    var det = getAreaDetails(area.key, i, hcBucket);
+    det.label = area.label;
+    det.key = area.key;
+    det.allocation = d.adjusted[i];
+    det.color = priorityColors[i];
+    det.priority = priorityLabels[i];
+    return det;
+  });
+
+  var weeklySchedule = buildWeeklySchedule(d.practiceDays, areaDetails, d.adjusted);
+  var mistakes = buildMistakesContent(d.weakness, hcBucket);
+  var mechanics = buildMechanicsContent(d.weakness);
+  var insightParas = (d.personalInsight || '').split('\n\n').filter(function(p) { return p.trim(); });
+  var skillLevel = d.handicap < 0 ? 'Elite' : d.handicap <= 5 ? 'Advanced' : d.handicap <= 12 ? 'Intermediate' : d.handicap <= 20 ? 'Developing' : 'Beginner';
+  var projectedDrop = d.areas[0].score >= 5 ? '4\u20138' : d.areas[0].score >= 3 ? '3\u20135' : '1\u20133';
+  var goalDisplay = d.goals && d.goals.length > 0 ? d.goals.join('. ') + '.' : 'General improvement across all areas.';
+
+  // Update toolbar info
+  document.getElementById('toolbarInfo').innerHTML = '<strong>' + d.name + '</strong> &middot; ' + hcDisplay + ' HCP &middot; ' + d.weaknessLabel + ' Focus';
+
+  var wrap = document.getElementById('pagesWrap');
+  var html = '';
+
+  // PAGE 1: COVER
+  html += '<div class="page-shadow"><div class="page cover">' +
+    '<div class="cover-glow-2"></div>' +
+    '<div class="logo">DIVOT <span>LAB</span></div>' +
+    '<h1 class="cover-title">Your 90-Day<br><em>Practice Plan</em></h1>' +
+    '<div class="cover-accent"></div>' +
+    '<div class="cover-meta">' +
+      'Prepared for <strong>' + d.name + '</strong><br>' +
+      'Handicap: <strong>' + hcDisplay + '</strong> &nbsp;&middot;&nbsp; Primary Focus: <strong>' + d.weaknessLabel + '</strong><br>' +
+      (d.course ? 'Home Course: <strong>' + d.course + '</strong><br>' : '') +
+      'Generated: ' + dateStr +
+    '</div>' +
+    '<div class="cover-tag">Personalized improvement. Backed by strokes gained data.</div>' +
+  '</div></div>';
+
+  // PAGE 2: DIAGNOSTIC PROFILE
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Your Diagnostic Profile</div>' +
+    '<h2 class="page-title">' + d.name + '\'s Game Snapshot</h2>' +
+    '<div class="accent-line"></div>' +
+    '<div class="stat-grid">' +
+      '<div class="stat-cell"><div class="stat-label">Handicap</div><div class="stat-value">' + hcDisplay + '</div></div>' +
+      '<div class="stat-cell"><div class="stat-label">Skill Level</div><div class="stat-value small">' + skillLevel + '</div></div>' +
+      '<div class="stat-cell"><div class="stat-label">Primary Focus</div><div class="stat-value small">' + d.weaknessLabel + '</div></div>' +
+      '<div class="stat-cell"><div class="stat-label">Days / Week</div><div class="stat-value">' + d.practiceDays + '</div></div>' +
+      '<div class="stat-cell"><div class="stat-label">Projected Drop</div><div class="stat-value small">' + projectedDrop + ' strokes</div></div>' +
+      '<div class="stat-cell"><div class="stat-label">Strokes to Gain</div><div class="stat-value small">' + d.potentialGain + '</div></div>' +
+    '</div>' +
+    '<div class="overline" style="margin-top:6px;">Practice Time Allocation</div>' +
+    '<div class="alloc-bar">';
+  areaDetails.forEach(function(a, i) {
+    html += '<div class="alloc-seg" style="flex:' + a.allocation + ';background:' + barColors[i] + ';">' + a.label + '<small>' + a.allocation + '%</small></div>';
+  });
+  html += '</div>';
+
+  if (insightParas.length > 0) {
+    html += '<div class="callout green"><div class="callout-title">What the Data Says About ' + d.name + '\'s Game</div>';
+    insightParas.forEach(function(p) { html += '<p>' + p + '</p>'; });
+    html += '</div>';
+  }
+
+  html += '<div class="overline">Your Goals</div>' +
+    '<p style="font-size:13.5px;color:var(--graphite);line-height:1.7;margin-bottom:28px;">' + goalDisplay + '</p>' +
+    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 2</span></div>' +
+  '</div></div>';
+
+  // PAGE 3: 5 MISTAKES
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Deep Dive: ' + d.weaknessLabel + '</div>' +
+    '<h2 class="page-title">5 Mistakes Costing You Strokes</h2>' +
+    '<p class="page-subtitle">And exactly how to fix each one.</p>';
+  mistakes.forEach(function(m, i) {
+    html += '<div class="card numbered"><div class="num">' + (i + 1) + '</div>' +
+      '<div class="card-title">' + m.title + '</div>' +
+      '<div class="card-body">' + m.desc + '</div></div>';
+  });
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 3</span></div></div></div>';
+
+  // PAGE 4: BODY MECHANICS
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Body Mechanics</div>' +
+    '<h2 class="page-title">What Your Body Should Feel</h2>' +
+    '<p class="page-subtitle">Focus on one or two checkpoints per session — not all five at once.</p>';
+  mechanics.forEach(function(m, i) {
+    html += '<div class="checkpoint"><div class="cp-label">Checkpoint ' + (i + 1) + '</div>' +
+      '<div class="cp-title">' + m.title + '</div>' +
+      '<div class="cp-body">' + m.desc + '</div></div>';
+  });
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 4</span></div></div></div>';
+
+  // PAGE 5: DRILL LIBRARY
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Practice Drills</div>' +
+    '<h2 class="page-title">Your ' + d.weaknessLabel + ' Drill Library</h2>' +
+    '<p class="page-subtitle">Structured drills with specific metrics to track progress session to session.</p>';
+  areaDetails.slice(0, 2).forEach(function(area) {
+    area.drills.forEach(function(drill) {
+      html += '<div class="drill-card"><div class="drill-name">' + drill.name + '</div>' +
+        '<div class="drill-meta">' + drill.time + ' &bull; ' + area.label + '</div>' +
+        '<div class="drill-desc">' + drill.desc + '</div></div>';
+    });
+  });
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 5</span></div></div></div>';
+
+  // PAGE 6: WEEKLY SCHEDULE (dark)
+  html += '<div class="page-shadow"><div class="page dark-page">' +
+    '<div class="overline">Your Weekly Schedule</div>' +
+    '<h2 class="page-title">' + d.practiceDays + '-Day Practice Week</h2>' +
+    '<p class="page-subtitle">Structured around your availability. Repeat this cycle for 90 days, tightening targets each round.</p>';
+  weeklySchedule.forEach(function(day) {
+    html += '<div class="sched-item"><div class="sched-day">' + day.label + '</div>' +
+      '<span class="sched-focus">' + day.focus + '</span>' +
+      '<div class="sched-detail">' + day.detail + '</div></div>';
+  });
+  html += '<div style="margin-top:24px;"><div class="overline">90-Day Progression</div></div>';
+  var phases = [
+    { label: 'Weeks 1\u20133', title: 'Foundation', desc: 'Master each drill at comfortable pace. Track baseline scores. Build the habit.', color: 'var(--blue-mid)' },
+    { label: 'Weeks 4\u20136', title: 'Build', desc: 'Narrow targets, add time pressure. Aim for 15% improvement in drill scores.', color: 'var(--green)' },
+    { label: 'Weeks 7\u20139', title: 'Challenge', desc: 'Simulate on-course pressure. Combine drills into sequences. Play practice rounds.', color: 'var(--blue)' },
+    { label: 'Weeks 10\u201313', title: 'Compete', desc: 'Test in real rounds. Track on-course stats. Compare to baseline.', color: 'var(--green-light)' }
+  ];
+  phases.forEach(function(p, i) {
+    html += '<div class="prog-card"><div class="prog-header">' +
+      '<div class="prog-num" style="background:' + p.color + ';">' + (i + 1) + '</div>' +
+      '<div><div class="prog-label">' + p.label + '</div><div class="prog-title">' + p.title + '</div></div>' +
+    '</div><div class="prog-body">' + p.desc + '</div></div>';
+  });
+  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 6</span></div></div></div>';
+
+  // PAGE 7: SESSION LOG
+  html += '<div class="page-shadow"><div class="page">' +
+    '<div class="overline">Session Log</div>' +
+    '<h2 class="page-title">Record What Matters</h2>' +
+    '<p class="page-subtitle">Track each session. The 90-day trend line is your clearest proof of progress.</p>' +
+    '<table class="log-table"><thead><tr><th>Date</th><th>Cycle / Week</th><th>Focus</th><th>Drill Score</th><th style="width:38%">Key Takeaway</th></tr></thead><tbody>';
+  for (var r = 0; r < 8; r++) { html += '<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>'; }
+  html += '</tbody></table>';
+  html += '<div class="overline">90-Day Benchmarks</div>' +
+    '<div class="bench-grid">' +
+      '<div class="bench-cell header">Metric</div><div class="bench-cell header">Day 1</div><div class="bench-cell header">Day 45</div><div class="bench-cell header">Day 90</div>' +
+      '<div class="bench-cell"><span class="bench-label">Handicap Index</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
+      '<div class="bench-cell"><span class="bench-label">Best Round</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
+      '<div class="bench-cell"><span class="bench-label">Avg Putts / Round</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
+      '<div class="bench-cell"><span class="bench-label">' + d.weaknessLabel + ' Drill Best</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
+    '</div>' +
+    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 7</span></div>' +
+  '</div></div>';
+
+  wrap.innerHTML = html;
+
+  // Update page title
+  document.title = d.name + '\'s Practice Plan \u2014 Divot Lab';
+}
+
+// ============================================
+// INIT
+// ============================================
+(function() {
+  var planData = decodePlanFromURL();
+  if (!planData || !planData.name || !planData.areas) {
+    document.getElementById('toolbar').style.display = 'none';
+    document.getElementById('bookmarkTip').style.display = 'none';
+    document.getElementById('pagesWrap').style.display = 'none';
+    document.getElementById('errorState').style.display = 'flex';
+    return;
+  }
+  renderPlan(planData);
+})();
+</script>
+</body>
+</html>

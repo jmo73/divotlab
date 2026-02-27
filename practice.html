@@ -2018,12 +2018,15 @@ function buildResultsEmailHTML(areas, adjusted, handicapLabel, potentialGain) {
 function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) {
   if (!email) return;
   
+  var planURL = sessionStorage.getItem('dl_plan_url') || '';
+  
   // Build compact payload
   var payload = {
     email: email,
     source: 'practice-plan',
     handicap: handicapLabel,
     potentialGain: potentialGain,
+    planURL: planURL,
     areas: areas.map(function(area, i) {
       var d = getAreaDetails(area.key, i, answers.handicap);
       return {
@@ -2395,321 +2398,36 @@ function buildFallbackInsight(d) {
 }
 
 // ============================================
-// PDF GENERATION (client-side via html2pdf.js)
+// PLAN VIEW — encode data into URL and redirect
 // ============================================
 function generatePDF(planData) {
-  return new Promise(function(resolve, reject) {
-    // Dynamically load html2pdf.js if not already loaded
-    if (window.html2pdf) {
-      buildAndDownloadPDF(planData).then(resolve).catch(reject);
-    } else {
-      var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-      script.onload = function() {
-        buildAndDownloadPDF(planData).then(resolve).catch(reject);
-      };
-      script.onerror = function() {
-        console.warn('html2pdf.js failed to load — skipping PDF download');
-        resolve(); // Don't block the flow
-      };
-      document.head.appendChild(script);
-    }
-  });
-}
-
-function buildAndDownloadPDF(d) {
-  var hcDisplay = d.handicap < 0 ? '+' + Math.abs(d.handicap) : String(d.handicap);
-  var today = new Date();
-  var dateStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-  var priorityColors = ['#E76F51', '#DDA15E', '#5A8FA8', '#5BBF85'];
-  var priorityLabels = ['Highest Priority', 'High Priority', 'Moderate Priority', 'Maintain'];
-  var areaDetails = d.areas.map(function(area, i) {
-    return Object.assign({}, getAreaDetails(area.key, i, answers.handicap), {
-      label: area.label, key: area.key, allocation: d.adjusted[i],
-      color: priorityColors[i], priority: priorityLabels[i]
-    });
-  });
-
-  var weeklySchedule = buildWeeklySchedule(d.practiceDays, areaDetails, d.adjusted);
-  var mistakes = buildMistakesContent(d.weakness, answers.handicap);
-  var mechanics = buildMechanicsContent(d.weakness);
-  var insightParas = (d.personalInsight || '').split('\n\n').filter(function(p) { return p.trim(); });
-
-  var skillLevel = d.handicap < 0 ? 'Elite' : d.handicap <= 5 ? 'Advanced' : d.handicap <= 12 ? 'Intermediate' : d.handicap <= 20 ? 'Developing' : 'Beginner';
-  var projectedDrop = d.areas[0].score >= 5 ? '4–8' : d.areas[0].score >= 3 ? '3–5' : '1–3';
-  var goalDisplay = d.goals.length > 0 ? d.goals.join('. ') + '.' : 'General improvement across all areas.';
-
-  // ═══ BUILD FULL HTML DOCUMENT ═══
-  var css = [
-    '@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");',
-    ':root{--black:#0A0A0A;--white:#FAFAFA;--graphite:#4A4A4A;--steel:#C4C4C4;--green:#1B4D3E;--green-light:#5BBF85;--green-bg:rgba(27,77,62,0.06);--blue:#2C5F7C;--blue-mid:#5A8FA8;--warm-gray:#F3F2F0;--amber:#C9982E;--display:"Cormorant Garamond",Georgia,serif;--body:"DM Sans","Helvetica Neue",sans-serif;--mono:"JetBrains Mono","Courier New",monospace;}',
-    '*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}',
-    'html{font-size:16px;}',
-    'body{font-family:var(--body);color:var(--black);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact;}',
-    '@page{size:letter;margin:0;}',
-    '.page{width:8.5in;min-height:11in;padding:0.7in 0.78in 0.72in;position:relative;overflow:hidden;page-break-after:always;background:var(--white);}',
-    '.page:last-child{page-break-after:auto;}',
-    '.overline{font-family:var(--body);font-size:10px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}',
-    '.page-title{font-family:var(--display);font-size:34px;font-weight:600;letter-spacing:-0.02em;line-height:1.1;color:var(--black);margin-bottom:8px;}',
-    '.page-subtitle{font-size:13.5px;font-weight:300;color:var(--graphite);line-height:1.65;margin-bottom:30px;max-width:520px;}',
-    '.accent-line{width:52px;height:3px;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:2px;margin:14px 0 26px;}',
-    '.brand-footer{position:absolute;bottom:24px;left:0.78in;right:0.78in;display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(0,0,0,0.06);font-size:9px;color:var(--steel);letter-spacing:0.04em;}',
-    '.brand-footer .brand{font-weight:600;color:var(--graphite);letter-spacing:0.1em;}',
-    // Cover
-    '.cover{background:var(--black);display:flex;flex-direction:column;justify-content:center;}',
-    '.cover::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--green-light) 50%,var(--blue-mid));}',
-    '.cover::after{content:"";position:absolute;top:15%;left:5%;width:600px;height:600px;background:radial-gradient(ellipse at center,rgba(27,77,62,0.20) 0%,rgba(27,77,62,0.06) 40%,transparent 70%);pointer-events:none;}',
-    '.cover-glow-2{position:absolute;bottom:2%;right:2%;width:420px;height:420px;background:radial-gradient(ellipse at center,rgba(44,95,124,0.12) 0%,transparent 65%);pointer-events:none;}',
-    '.cover .logo{font-family:var(--body);font-weight:600;font-size:14px;letter-spacing:0.14em;color:var(--green-light);position:relative;z-index:1;}',
-    '.cover .logo span{font-weight:300;color:#555;}',
-    '.cover .cover-title{font-family:var(--display);font-size:58px;font-weight:600;line-height:1.04;letter-spacing:-0.025em;color:var(--white);margin-top:110px;position:relative;z-index:1;}',
-    '.cover .cover-title em{font-style:italic;color:var(--green-light);font-weight:500;}',
-    '.cover .cover-accent{width:88px;height:3px;margin:20px 0 38px;background:linear-gradient(90deg,var(--green-light),var(--blue-mid));border-radius:2px;position:relative;z-index:1;}',
-    '.cover .cover-meta{font-size:15px;font-weight:400;color:rgba(250,250,250,0.50);line-height:1.85;position:relative;z-index:1;}',
-    '.cover .cover-meta strong{color:rgba(250,250,250,0.85);font-weight:500;}',
-    '.cover .cover-tag{position:absolute;bottom:48px;left:0.78in;font-size:11px;font-style:italic;color:rgba(250,250,250,0.20);letter-spacing:0.03em;z-index:1;}',
-    // Stat grid
-    '.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,0,0,0.07);border-radius:10px;overflow:hidden;margin-bottom:28px;}',
-    '.stat-cell{background:var(--white);padding:18px 20px;}',
-    '.stat-cell .stat-label{font-size:9px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--steel);margin-bottom:5px;}',
-    '.stat-cell .stat-value{font-family:var(--display);font-size:30px;font-weight:700;color:var(--black);letter-spacing:-0.02em;}',
-    '.stat-cell .stat-value.small{font-size:21px;}',
-    // Allocation bar
-    '.alloc-bar{display:flex;border-radius:8px;overflow:hidden;margin-bottom:34px;height:40px;}',
-    '.alloc-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:9.5px;font-weight:600;letter-spacing:0.04em;line-height:1.2;}',
-    '.alloc-seg small{font-weight:400;font-size:8.5px;opacity:0.8;}',
-    // Callout
-    '.callout{border-radius:10px;padding:22px 26px 22px 30px;margin-bottom:32px;position:relative;overflow:hidden;}',
-    '.callout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}',
-    '.callout.green{background:var(--green-bg);}',
-    '.callout.green::before{background:linear-gradient(to bottom,var(--green),var(--green-light));}',
-    '.callout .callout-title{font-weight:600;font-size:13px;margin-bottom:8px;color:var(--green);}',
-    '.callout p{font-size:12.5px;color:var(--graphite);line-height:1.7;}',
-    // Cards
-    '.card{background:var(--warm-gray);border-radius:10px;padding:18px 24px;margin-bottom:14px;position:relative;}',
-    '.card.numbered{padding-left:56px;}',
-    '.card .num{position:absolute;left:18px;top:18px;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}',
-    '.card .card-title{font-weight:600;font-size:14px;color:var(--black);margin-bottom:5px;}',
-    '.card .card-body{font-size:12.5px;color:var(--graphite);line-height:1.7;}',
-    // Checkpoints
-    '.checkpoint{background:linear-gradient(135deg,rgba(27,77,62,0.05),rgba(27,77,62,0.02));border-radius:10px;padding:18px 24px 18px 28px;margin-bottom:12px;position:relative;overflow:hidden;}',
-    '.checkpoint::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);border-radius:3px 0 0 3px;}',
-    '.checkpoint .cp-label{font-size:9px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}',
-    '.checkpoint .cp-title{font-weight:600;font-size:14px;color:var(--black);margin-bottom:5px;}',
-    '.checkpoint .cp-body{font-size:12.5px;color:var(--graphite);line-height:1.7;}',
-    // Drill cards
-    '.drill-card{background:linear-gradient(145deg,var(--warm-gray),#EEEDEB);border-radius:10px;padding:20px 24px 20px 28px;margin-bottom:14px;position:relative;overflow:hidden;}',
-    '.drill-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--blue),var(--blue-mid));border-radius:3px 0 0 3px;}',
-    '.drill-card .drill-name{font-family:var(--display);font-size:19px;font-weight:600;color:var(--black);margin-bottom:3px;}',
-    '.drill-card .drill-meta{font-family:var(--mono);font-size:10.5px;color:var(--blue-mid);margin-bottom:10px;}',
-    '.drill-card .drill-desc{font-size:12.5px;color:var(--graphite);line-height:1.7;}',
-    // Dark pages
-    '.dark-page{background:var(--black);}',
-    '.dark-page::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--green-light));}',
-    '.dark-page::after{content:"";position:absolute;top:-10%;left:30%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(27,77,62,0.08),transparent 60%);pointer-events:none;}',
-    '.dark-page .overline{color:var(--green-light);}',
-    '.dark-page .page-title{color:var(--white);}',
-    '.dark-page .page-subtitle{color:rgba(250,250,250,0.4);margin-bottom:22px;}',
-    '.dark-page .brand-footer{border-top-color:rgba(255,255,255,0.06);color:rgba(250,250,250,0.2);}',
-    '.dark-page .brand-footer .brand{color:rgba(250,250,250,0.35);}',
-    '.sched-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}',
-    '.sched-item:last-child{border-bottom:none;}',
-    '.sched-day{font-size:12px;font-weight:600;color:var(--white);margin-bottom:3px;}',
-    '.sched-focus{display:inline-block;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.1);padding:2px 8px;border-radius:3px;margin-right:6px;}',
-    '.sched-detail{font-size:11px;color:rgba(250,250,250,0.45);margin-top:3px;}',
-    // Log table
-    '.log-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.07);margin-bottom:28px;font-size:11px;}',
-    '.log-table th{background:var(--warm-gray);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--steel);padding:10px 12px;text-align:left;}',
-    '.log-table td{padding:12px 12px;border-bottom:1px solid rgba(0,0,0,0.04);color:var(--graphite);}',
-    '.log-table tr:last-child td{border-bottom:none;}',
-    '.bench-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:1px;background:rgba(0,0,0,0.07);border-radius:10px;overflow:hidden;}',
-    '.bench-cell{background:var(--white);padding:12px 14px;}',
-    '.bench-cell.header{background:var(--warm-gray);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--steel);}',
-    '.bench-cell .bench-label{font-size:12.5px;color:var(--graphite);}',
-    '.bench-cell .bench-input{display:block;height:18px;border-bottom:1px dashed rgba(0,0,0,0.12);}',
-    // Progression
-    '.prog-card{background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 22px;margin-bottom:10px;position:relative;z-index:1;}',
-    '.prog-header{display:flex;align-items:center;gap:14px;margin-bottom:6px;}',
-    '.prog-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}',
-    '.prog-label{font-size:9px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;opacity:0.5;color:#fff;}',
-    '.prog-title{font-family:var(--display);font-size:18px;font-weight:600;color:var(--white);}',
-    '.prog-body{font-size:11px;color:rgba(250,250,250,0.5);line-height:1.6;}'
-  ].join('\n');
-
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>';
-
-  // ═══ PAGE 1: COVER ═══
-  html += '<div class="page cover">' +
-    '<div class="cover-glow-2"></div>' +
-    '<div class="logo">DIVOT <span>LAB</span></div>' +
-    '<h1 class="cover-title">Your 90-Day<br><em>Practice Plan</em></h1>' +
-    '<div class="cover-accent"></div>' +
-    '<div class="cover-meta">' +
-      'Prepared for <strong>' + d.name + '</strong><br>' +
-      'Handicap: <strong>' + hcDisplay + '</strong> &nbsp;&middot;&nbsp; Primary Focus: <strong>' + d.weaknessLabel + '</strong><br>' +
-      (d.course ? 'Home Course: <strong>' + d.course + '</strong><br>' : '') +
-      'Generated: ' + dateStr +
-    '</div>' +
-    '<div class="cover-tag">Personalized improvement. Backed by strokes gained data.</div>' +
-  '</div>';
-
-  // ═══ PAGE 2: DIAGNOSTIC PROFILE ═══
-  html += '<div class="page">' +
-    '<div class="overline">Your Diagnostic Profile</div>' +
-    '<h2 class="page-title">' + d.name + '\'s Game Snapshot</h2>' +
-    '<div class="accent-line"></div>' +
-    '<div class="stat-grid">' +
-      '<div class="stat-cell"><div class="stat-label">Handicap</div><div class="stat-value">' + hcDisplay + '</div></div>' +
-      '<div class="stat-cell"><div class="stat-label">Skill Level</div><div class="stat-value small">' + skillLevel + '</div></div>' +
-      '<div class="stat-cell"><div class="stat-label">Primary Focus</div><div class="stat-value small">' + d.weaknessLabel + '</div></div>' +
-      '<div class="stat-cell"><div class="stat-label">Days / Week</div><div class="stat-value">' + d.practiceDays + '</div></div>' +
-      '<div class="stat-cell"><div class="stat-label">Projected Drop</div><div class="stat-value small">' + projectedDrop + ' strokes</div></div>' +
-      '<div class="stat-cell"><div class="stat-label">Strokes to Gain</div><div class="stat-value small">' + d.potentialGain + '</div></div>' +
-    '</div>' +
-    '<div class="overline" style="margin-top:6px;">Practice Time Allocation</div>' +
-    '<div class="alloc-bar">';
-  var barColors = ['var(--green)', 'var(--green-light)', 'var(--blue-mid)', 'var(--graphite)'];
-  areaDetails.forEach(function(a, i) {
-    html += '<div class="alloc-seg" style="flex:' + a.allocation + ';background:' + barColors[i] + ';">' + a.label + '<small>' + a.allocation + '%</small></div>';
-  });
-  html += '</div>';
-
-  // Personalized insight callout
-  if (insightParas.length > 0) {
-    html += '<div class="callout green"><div class="callout-title">What the Data Says About ' + d.name + '\'s Game</div>';
-    insightParas.forEach(function(p) { html += '<p>' + p + '</p>'; });
-    html += '</div>';
-  }
-
-  html += '<div class="overline">Your Goals</div>' +
-    '<p style="font-size:13.5px;color:var(--graphite);line-height:1.7;margin-bottom:28px;">' + goalDisplay + '</p>' +
-    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 2</span></div>' +
-  '</div>';
-
-  // ═══ PAGE 3: 5 MISTAKES ═══
-  html += '<div class="page">' +
-    '<div class="overline">Deep Dive: ' + d.weaknessLabel + '</div>' +
-    '<h2 class="page-title">5 Mistakes Costing You Strokes</h2>' +
-    '<p class="page-subtitle">And exactly how to fix each one.</p>';
-  mistakes.forEach(function(m, i) {
-    html += '<div class="card numbered"><div class="num">' + (i + 1) + '</div>' +
-      '<div class="card-title">' + m.title + '</div>' +
-      '<div class="card-body">' + m.desc + '</div></div>';
-  });
-  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 3</span></div></div>';
-
-  // ═══ PAGE 4: BODY MECHANICS ═══
-  html += '<div class="page">' +
-    '<div class="overline">Body Mechanics</div>' +
-    '<h2 class="page-title">What Your Body Should Feel</h2>' +
-    '<p class="page-subtitle">Focus on one or two checkpoints per session — not all five at once.</p>';
-  mechanics.forEach(function(m, i) {
-    html += '<div class="checkpoint"><div class="cp-label">Checkpoint ' + (i + 1) + '</div>' +
-      '<div class="cp-title">' + m.title + '</div>' +
-      '<div class="cp-body">' + m.desc + '</div></div>';
-  });
-  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 4</span></div></div>';
-
-  // ═══ PAGE 5: DRILL LIBRARY ═══
-  html += '<div class="page">' +
-    '<div class="overline">Practice Drills</div>' +
-    '<h2 class="page-title">Your ' + d.weaknessLabel + ' Drill Library</h2>' +
-    '<p class="page-subtitle">Structured drills with specific metrics to track progress session to session.</p>';
-  areaDetails.slice(0, 2).forEach(function(area) {
-    area.drills.forEach(function(drill) {
-      html += '<div class="drill-card">' +
-        '<div class="drill-name">' + drill.name + '</div>' +
-        '<div class="drill-meta">' + drill.time + ' &bull; ' + area.label + '</div>' +
-        '<div class="drill-desc">' + drill.desc + '</div></div>';
-    });
-  });
-  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 5</span></div></div>';
-
-  // ═══ PAGE 6: WEEKLY SCHEDULE (dark) ═══
-  html += '<div class="page dark-page">' +
-    '<div class="overline">Your Weekly Schedule</div>' +
-    '<h2 class="page-title">' + d.practiceDays + '-Day Practice Week</h2>' +
-    '<p class="page-subtitle">Structured around your availability. Repeat this cycle for 90 days, tightening targets each round.</p>';
-  weeklySchedule.forEach(function(day) {
-    html += '<div class="sched-item"><div class="sched-day">' + day.label + '</div>' +
-      '<span class="sched-focus">' + day.focus + '</span>' +
-      '<div class="sched-detail">' + day.detail + '</div></div>';
-  });
-  // Progression
-  html += '<div style="margin-top:24px;"><div class="overline">90-Day Progression</div></div>';
-  var phases = [
-    { label: 'Weeks 1–3', title: 'Foundation', desc: 'Master each drill at comfortable pace. Track baseline scores. Build the habit.', color: 'var(--blue-mid)' },
-    { label: 'Weeks 4–6', title: 'Build', desc: 'Narrow targets, add time pressure. Aim for 15% improvement in drill scores.', color: 'var(--green)' },
-    { label: 'Weeks 7–9', title: 'Challenge', desc: 'Simulate on-course pressure. Combine drills into sequences. Play practice rounds.', color: 'var(--blue)' },
-    { label: 'Weeks 10–13', title: 'Compete', desc: 'Test in real rounds. Track on-course stats. Compare to baseline.', color: 'var(--green-light)' }
-  ];
-  phases.forEach(function(p, i) {
-    html += '<div class="prog-card"><div class="prog-header">' +
-      '<div class="prog-num" style="background:' + p.color + ';">' + (i + 1) + '</div>' +
-      '<div><div class="prog-label">' + p.label + '</div><div class="prog-title">' + p.title + '</div></div>' +
-    '</div><div class="prog-body">' + p.desc + '</div></div>';
-  });
-  html += '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 6</span></div></div>';
-
-  // ═══ PAGE 7: SESSION LOG ═══
-  html += '<div class="page">' +
-    '<div class="overline">Session Log</div>' +
-    '<h2 class="page-title">Record What Matters</h2>' +
-    '<p class="page-subtitle">Track each session. The 90-day trend line is your clearest proof of progress.</p>' +
-    '<table class="log-table"><thead><tr><th>Date</th><th>Cycle / Week</th><th>Focus</th><th>Drill Score</th><th style="width:38%">Key Takeaway</th></tr></thead><tbody>';
-  for (var r = 0; r < 8; r++) { html += '<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>'; }
-  html += '</tbody></table>';
-  html += '<div class="overline">90-Day Benchmarks</div>' +
-    '<div class="bench-grid">' +
-      '<div class="bench-cell header">Metric</div><div class="bench-cell header">Day 1</div><div class="bench-cell header">Day 45</div><div class="bench-cell header">Day 90</div>' +
-      '<div class="bench-cell"><span class="bench-label">Handicap Index</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
-      '<div class="bench-cell"><span class="bench-label">Best Round</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
-      '<div class="bench-cell"><span class="bench-label">Avg Putts / Round</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
-      '<div class="bench-cell"><span class="bench-label">' + d.weaknessLabel + ' Drill Best</span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div><div class="bench-cell"><span class="bench-input"></span></div>' +
-    '</div>' +
-    '<div class="brand-footer"><span class="brand">DIVOT LAB</span><span>Personalized Practice Plan &middot; Page 7</span></div>' +
-  '</div>';
-
-  html += '</body></html>';
-
-  // ═══ RENDER VIA IFRAME (fixes blank page issue) ═══
-  var filename = 'divotlab-practice-plan-' + d.name.toLowerCase().replace(/\s+/g, '-') + '.pdf';
-
-  var iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;left:0;top:0;width:8.5in;height:11in;border:none;z-index:-9999;opacity:0;pointer-events:none;';
-  document.body.appendChild(iframe);
-
-  var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(html);
-  iframeDoc.close();
-
-  // Wait for fonts + render, then capture
   return new Promise(function(resolve) {
-    setTimeout(function() {
-      html2pdf().set({
-        margin: 0,
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.96 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          width: 816,  // 8.5in * 96dpi
-          windowWidth: 816
-        },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-      }).from(iframeDoc.body).save().then(function() {
-        document.body.removeChild(iframe);
-        resolve();
-      }).catch(function(err) {
-        console.error('PDF render error:', err);
-        document.body.removeChild(iframe);
-        resolve();
-      });
-    }, 1500); // allow fonts to load
+    // Build compact payload for URL encoding
+    var payload = {
+      name: planData.name,
+      handicap: planData.handicap,
+      weakness: planData.weakness,
+      weaknessLabel: planData.weaknessLabel,
+      goals: planData.goals,
+      practiceDays: planData.practiceDays,
+      course: planData.course || '',
+      areas: planData.areas.map(function(a) { return { key: a.key, label: a.label, score: a.score }; }),
+      adjusted: planData.adjusted,
+      potentialGain: planData.potentialGain,
+      personalInsight: planData.personalInsight || '',
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    };
+
+    // Encode as base64 URL hash
+    var encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+    var planURL = window.location.origin + '/plan-view#' + encoded;
+
+    // Store the URL for email
+    sessionStorage.setItem('dl_plan_url', planURL);
+
+    // Open in new tab so they don't lose the page
+    window.open(planURL, '_blank');
+    resolve();
   });
 }
 
@@ -2879,7 +2597,8 @@ function showFullResults(email, planData) {
     sendResultsEmail(email, areas, adjusted, hcLabel, potentialGain);
   }
 
-  var emailBanner = email ? '<div class="email-sent-banner"><p>Your practice plan PDF has been downloaded and emailed to ' + email + '</p><p class="email-sent-sub">Check your downloads folder. Reference it at the range anytime.</p></div>' : '';
+  var planURL = sessionStorage.getItem('dl_plan_url') || '';
+  var emailBanner = email ? '<div class="email-sent-banner"><p>Your practice plan has been emailed to ' + email + '</p><p class="email-sent-sub">' + (planURL ? 'Your plan is also open in a new tab — bookmark it for anytime access.' : 'Check your email for the full plan.') + '</p></div>' : '';
 
   container.innerHTML = '<div class="results-header">' +
     '<div class="teaser-label">Your Practice Plan</div>' +
@@ -2913,7 +2632,7 @@ function showFullResults(email, planData) {
   }).join('') +
 
   '<div class="results-footer">' +
-    '<p>Your 7-page PDF has been downloaded. Based on USGA handicap benchmarks and strokes gained research from Columbia University.</p>' +
+    '<p>Your 7-page practice plan is open in a new tab. Bookmark it for the range. Based on USGA handicap benchmarks and strokes gained research from Columbia University.</p>' +
     '<button class="retake-btn" onclick="retakeQuiz()">Retake Diagnosis</button>' +
   '</div>';
 
