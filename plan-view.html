@@ -511,10 +511,67 @@ body {
    ============================================= */
 @media print {
   .toolbar, .bookmark-tip { display: none !important; }
-  body { background: white; }
+  body { background: white; margin: 0; padding: 0; }
   .pages-wrap { margin: 0; gap: 0; max-width: none; }
-  .page-shadow { box-shadow: none; border-radius: 0; }
-  .page { width: 8.5in; min-height: 11in; }
+  .page-shadow {
+    box-shadow: none;
+    border-radius: 0;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page-shadow:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+  .page {
+    width: 8.5in;
+    height: 11in;
+    min-height: auto;
+    overflow: hidden;
+    page-break-after: avoid;
+    break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 0.55in 0.7in 0.6in;
+  }
+  /* Tighten spacing for print */
+  .page-title { font-size: 30px; margin-bottom: 6px; }
+  .page-subtitle { font-size: 12.5px; margin-bottom: 22px; }
+  .card { padding: 14px 20px; margin-bottom: 10px; }
+  .card.numbered { padding-left: 48px; }
+  .card .num { left: 14px; top: 14px; width: 24px; height: 24px; font-size: 11px; }
+  .card .card-title { font-size: 13px; margin-bottom: 3px; }
+  .card .card-body { font-size: 11.5px; line-height: 1.6; }
+  .checkpoint { padding: 14px 20px 14px 24px; margin-bottom: 9px; }
+  .checkpoint .cp-title { font-size: 13px; margin-bottom: 3px; }
+  .checkpoint .cp-body { font-size: 11.5px; line-height: 1.6; }
+  .drill-card { padding: 16px 20px 16px 24px; margin-bottom: 10px; }
+  .drill-card .drill-name { font-size: 17px; }
+  .drill-card .drill-desc { font-size: 11.5px; line-height: 1.6; }
+  .drill-area-header { margin-top: 18px; margin-bottom: 10px; }
+  .drill-area-name { font-size: 19px; }
+  .prog-card { padding: 16px 20px; margin-bottom: 9px; }
+  .prog-title { font-size: 19px; }
+  .prog-body { font-size: 11.5px; line-height: 1.6; }
+  .sched-card { padding: 14px 18px; margin-bottom: 8px; }
+  .sched-card-day { font-size: 17px; }
+  .stat-grid { margin-bottom: 20px; }
+  .stat-cell { padding: 14px 16px; }
+  .stat-cell .stat-value { font-size: 26px; }
+  .stat-cell .stat-value.small { font-size: 18px; }
+  .alloc-bar { height: 34px; margin-bottom: 24px; }
+  .callout { padding: 18px 22px 18px 26px; margin-bottom: 24px; }
+  .brand-footer { bottom: 0.35in; left: 0.7in; right: 0.7in; }
+  /* Cover adjustments */
+  .cover .cover-title { font-size: 52px; margin-top: 90px; }
+  .cover .cover-meta { font-size: 14px; }
+  /* Prevent cards from splitting across pages */
+  .card, .checkpoint, .drill-card, .prog-card, .sched-card,
+  .stat-grid, .alloc-bar, .callout, .goal-chips,
+  .drill-area-header, .bench-grid, .log-table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
 }
 
 /* =============================================
