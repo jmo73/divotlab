@@ -631,6 +631,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   border-radius:10px;
   padding:24px 28px;
   margin-top:32px;
+  margin-bottom:36px;
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
   gap:20px;
@@ -1936,7 +1937,7 @@ function showTeaser() {
 // ============================================
 
 // *** PASTE YOUR STRIPE PAYMENT LINK HERE ***
-var STRIPE_LINK = 'https://buy.stripe.com/7sYdR8eMO2nC8hJfUw1ZS01';
+var STRIPE_LINK = 'https://buy.stripe.com/00w5kC6gi6DS8hJeQs1ZS02';
 
 // Google Apps Script webhook (same one used on homepage)
 var PRACTICE_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzLzMo3FwqJjb-kRhruQxCd2C3AftCPrZszu_A6VLNVTTX7tiXej4M7VkLmZkugaKtQyQ/exec';
@@ -2085,6 +2086,7 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
   }, 5000);
   
   console.log('✓ Results email submitted via form');
+  console.log('  planURL in payload:', planURL ? 'YES (' + planURL.length + ' chars)' : 'EMPTY');
 }
 
 // ============================================
@@ -2608,11 +2610,6 @@ function showFullResults(email, planData) {
   }
 
   const shortLabels = { driving: 'Driving', approach: 'Approach', shortGame: 'Short Game', putting: 'Putting' };
-
-  if (email) {
-    var hcLabel = handicapDisplay;
-    sendResultsEmail(email, areas, adjusted, hcLabel, potentialGain);
-  }
 
   var planURL = sessionStorage.getItem('dl_plan_url') || '';
   var emailBanner = '';
