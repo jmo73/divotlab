@@ -52,6 +52,32 @@ body {
 }
 a { color:inherit; text-decoration:none; }
 
+/* Article body links */
+.post-body a {
+  color: var(--blue-mid);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(90,143,168,0.3);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.post-body a:hover {
+  color: var(--green-light);
+  border-bottom-color: var(--green-light);
+  background: rgba(91,191,133,0.06);
+  border-radius: 2px;
+}
+/* Source line links */
+.post-source a {
+  color: var(--blue-mid);
+  border-bottom: 1px solid rgba(90,143,168,0.25);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.post-source a:hover {
+  color: var(--green-light);
+  border-bottom-color: var(--green-light);
+}
+
 /* =============================================
    NAV — same as homepage
    ============================================= */
@@ -567,7 +593,7 @@ footer {
 <div class="post-body-wrap">
   <article class="post-body">
 
-    <p>Every golfer has heard it. Drive for show, putt for dough. It's the oldest piece of conventional wisdom in the game, and for decades it went basically unchallenged. Then strokes gained data arrived, and it quietly dismantled the whole thing. The stat that actually separates winners from the rest of the field isn't driving. It isn't putting. It's the shot in between — and most people don't even realize it's there.</p>
+    <p>Every golfer has heard it. Drive for show, putt for dough. It's the oldest piece of conventional wisdom in the game, and for decades it went basically unchallenged. Then <a href="/what-is-strokes-gained-golf-simple-guide">strokes gained</a> data arrived, and it quietly dismantled the whole thing. The stat that actually separates winners from the rest of the field isn't driving. It isn't putting. It's the shot in between — and most people don't even realize it's there.</p>
 
     <h2>Four Categories. One That Matters Most.</h2>
 
@@ -609,7 +635,7 @@ footer {
 
     <p>That gap compounds fast. Over 18 holes, a player who consistently leaves themselves in birdie range from their approach shots will outscore a player who hits it just as far off the tee but leaves themselves routine two-putt territory every time. The approach shot is the fulcrum. Everything else — driving, short game, putting — pivots around what happens when the iron lands.</p>
 
-    <p>Scottie Scheffler made this visible at the highest level in 2025. He led the PGA Tour in SG: Approach, and also led in total strokes gained, scoring average, and wins. That's not coincidence. His approach numbers were the engine behind all of it.</p>
+    <p>Scottie Scheffler made this visible at the highest level in 2025. He led the PGA Tour in SG: Approach — a stat you can track in real time on <a href="/the-lab">The Lab</a> — and also led in total strokes gained, scoring average, and wins. That's not coincidence. His approach numbers were the engine behind all of it.</p>
 
     <div class="post-divider"></div>
 
@@ -617,7 +643,7 @@ footer {
 
     <p>If you take one thing from the data, it's this: the most valuable practice you can do isn't necessarily what feels the most urgent. Most golfers, when they're frustrated, reach for the driver or head to the putting green. The data says the range session with a 7-iron might be worth more than either.</p>
 
-    <p>That's not a flashy conclusion. But it's the one the numbers consistently support — at the tour level, and at every handicap below it.</p>
+    <p>That's not a flashy conclusion. But it's the one the numbers consistently support — at the tour level, and at every handicap below it. Not sure what your specific weakness profile looks like? <a href="/practice">Take the free diagnosis</a> — it takes two minutes.</p>
 
     <p class="post-source">Stats via <a href="#">DataGolf</a> · PGA Tour shot-level data · 2015–2025 analysis</p>
 
