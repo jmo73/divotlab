@@ -1290,10 +1290,22 @@ app.get('/api/blog-drafts/:slug/download', (req, res) => {
 // ============================================
 // BLOG REGISTRY ENDPOINTS
 // ============================================
-const blogRegistry = require('./blog-registry.json');
+const fs = require('fs');
+const path = require('path');
+
+function loadBlogRegistry() {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, 'blog-registry.json'), 'utf8');
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('❌ Failed to load blog-registry.json:', err.message);
+    return { posts: [] };
+  }
+}
 
 // GET all published posts (for articles page and homepage)
 app.get('/api/blog-posts', (req, res) => {
+  const blogRegistry = loadBlogRegistry();
   const { category, limit, offset } = req.query;
   let posts = [...blogRegistry.posts];
   
@@ -1317,6 +1329,7 @@ app.get('/api/blog-posts', (req, res) => {
 
 // GET the 3 most recent posts (for homepage "From the Lab" section)
 app.get('/api/blog-posts/latest', (req, res) => {
+  const blogRegistry = loadBlogRegistry();
   const limit = parseInt(req.query.limit) || 3;
   const posts = [...blogRegistry.posts]
     .sort((a, b) => new Date(b.date_iso) - new Date(a.date_iso))
@@ -1326,6 +1339,7 @@ app.get('/api/blog-posts/latest', (req, res) => {
 
 // GET "Read Next" recommendations for a given post
 app.get('/api/blog-posts/:slug/read-next', (req, res) => {
+  const blogRegistry = loadBlogRegistry();
   const currentSlug = req.params.slug;
   const current = blogRegistry.posts.find(p => p.slug === currentSlug);
   const limit = parseInt(req.query.limit) || 2;
@@ -1356,6 +1370,7 @@ app.get('/api/blog-posts/:slug/read-next', (req, res) => {
 
 // POST a new blog post to the registry (called after reviewing a draft)
 app.post('/api/blog-posts', (req, res) => {
+  const blogRegistry = loadBlogRegistry();
   const { slug, title, category, category_class, date, date_iso, read_time, meta_description, hero_image, hero_alt, hero_credit, featured } = req.body || {};
   
   if (!slug || !title) {
@@ -1389,6 +1404,7 @@ app.post('/api/blog-posts', (req, res) => {
 
 // PUT — update a registry entry (e.g., add a hero image later)
 app.put('/api/blog-posts/:slug', (req, res) => {
+  const blogRegistry = loadBlogRegistry();
   const idx = blogRegistry.posts.findIndex(p => p.slug === req.params.slug);
   if (idx === -1) {
     return res.status(404).json({ success: false, error: 'Post not found' });
@@ -1479,5 +1495,5 @@ app.listen(PORT, () => {
 🏌️  PGA Tour filter: Uses primary_tour === "PGA"
   `);
 });
-// test
+
 module.exports = app;
