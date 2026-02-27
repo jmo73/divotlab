@@ -7,10 +7,7 @@
     },
     {
       "src": "server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["blog-registry.json", "blog-config.json"]
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
