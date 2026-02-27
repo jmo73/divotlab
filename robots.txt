@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://divotlab.com/sitemap.xml
+
+# Keep private pages out of search
+Disallow: /plan-view
+Disallow: /lab-picks
