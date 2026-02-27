@@ -2059,6 +2059,9 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
     })
   };
   
+  // Remove planURL from JSON payload (sent separately to avoid encoding issues)
+  delete payload.planURL;
+  
   // Use hidden form + iframe — the only 100% reliable cross-origin method for Apps Script
   var iframe = document.createElement('iframe');
   iframe.name = 'dl-email-frame';
@@ -2076,6 +2079,13 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
   input.value = JSON.stringify(payload);
   form.appendChild(input);
   
+  // Send planURL as separate field to avoid JSON/encoding issues with # and base64 chars
+  var urlInput = document.createElement('input');
+  urlInput.type = 'hidden';
+  urlInput.name = 'planURL';
+  urlInput.value = planURL;
+  form.appendChild(urlInput);
+  
   document.body.appendChild(form);
   form.submit();
   
@@ -2086,7 +2096,7 @@ function sendResultsEmail(email, areas, adjusted, handicapLabel, potentialGain) 
   }, 5000);
   
   console.log('✓ Results email submitted via form');
-  console.log('  planURL in payload:', planURL ? 'YES (' + planURL.length + ' chars)' : 'EMPTY');
+  console.log('  planURL sent as separate field:', planURL ? 'YES (' + planURL.length + ' chars)' : 'EMPTY');
 }
 
 // ============================================
