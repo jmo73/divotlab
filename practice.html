@@ -501,13 +501,30 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
 /* Email sent confirmation */
 .email-sent-banner {
-  background:rgba(91,191,133,0.08);
-  border:1px solid rgba(91,191,133,0.2);
-  border-radius:8px;
-  padding:16px 20px;
-  margin:24px auto 0;
-  max-width:480px;
+  background:rgba(91,191,133,0.06);
+  border:1px solid rgba(91,191,133,0.15);
+  border-radius:10px;
+  padding:24px;
+  margin-bottom:28px;
   text-align:center;
+}
+.email-sent-banner .view-plan-btn {
+  display:inline-block;
+  background:var(--green);
+  color:var(--white);
+  padding:16px 40px;
+  border-radius:8px;
+  font-family:var(--body);
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:.03em;
+  text-decoration:none;
+  transition:background .2s, transform .15s, box-shadow .25s;
+}
+.email-sent-banner .view-plan-btn:hover {
+  background:#236b4f;
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(27,77,62,.28);
 }
 .email-sent-banner p {
   font-size:13px; color:var(--green-light); margin:0;
@@ -2422,11 +2439,11 @@ function generatePDF(planData) {
     var encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
     var planURL = window.location.origin + '/plan-view#' + encoded;
 
-    // Store the URL for email
+    // Store the URL for email and results page
     sessionStorage.setItem('dl_plan_url', planURL);
 
-    // Open in new tab so they don't lose the page
-    window.open(planURL, '_blank');
+    // Don't window.open (gets blocked by popup blockers after async chain)
+    // Instead, we'll show a prominent link on the results page
     resolve();
   });
 }
@@ -2598,7 +2615,16 @@ function showFullResults(email, planData) {
   }
 
   var planURL = sessionStorage.getItem('dl_plan_url') || '';
-  var emailBanner = email ? '<div class="email-sent-banner"><p>Your practice plan has been emailed to ' + email + '</p><p class="email-sent-sub">' + (planURL ? 'Your plan is also open in a new tab — bookmark it for anytime access.' : 'Check your email for the full plan.') + '</p></div>' : '';
+  var emailBanner = '';
+  if (planURL) {
+    emailBanner = '<div class="email-sent-banner">' +
+      '<a href="' + planURL + '" target="_blank" class="view-plan-btn">View & Download Your 7-Page Plan</a>' +
+      (email ? '<p style="margin-top:10px;">A copy has also been sent to ' + email + '</p>' : '') +
+      '<p class="email-sent-sub">Opens your full practice plan — bookmark it for anytime access, or download as PDF.</p>' +
+    '</div>';
+  } else if (email) {
+    emailBanner = '<div class="email-sent-banner"><p>Your practice plan has been emailed to ' + email + '</p></div>';
+  }
 
   container.innerHTML = '<div class="results-header">' +
     '<div class="teaser-label">Your Practice Plan</div>' +
