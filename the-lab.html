@@ -33,7 +33,6 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { 
   scroll-behavior: smooth;
-  overflow-x: hidden;
   max-width: 100%;
 }
 body {
@@ -90,6 +89,10 @@ nav {
   padding: 0 48px;
   display: flex;
   gap: 0;
+}
+/* Offset anchor scroll targets to clear fixed nav (64px) + section-nav (~47px) */
+.lab-hero, .lab-section, .strength-section {
+  scroll-margin-top: 120px;
 }
 .section-nav a {
   padding: 14px 22px;
@@ -1238,6 +1241,57 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       });
     });
   }
+})();
+</script>
+
+<!-- Section Nav: smooth scroll + scroll-spy -->
+<script>
+(function(){
+  var sectionNav = document.querySelector('.section-nav');
+  if (!sectionNav) return;
+  var navLinks = sectionNav.querySelectorAll('a[href^="#"]');
+  
+  // --- Click handler: smooth scroll to section, prevent router interception ---
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('href').substring(1);
+      var target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Update active state immediately on click
+        navLinks.forEach(function(l) { l.classList.remove('active'); });
+        link.classList.add('active');
+      }
+    });
+  });
+
+  // --- Scroll-spy: highlight active section in nav ---
+  var sections = [];
+  navLinks.forEach(function(link) {
+    var id = link.getAttribute('href').substring(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+
+  var ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        var scrollPos = window.scrollY + 140; // offset for both navs
+        var current = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].el.offsetTop <= scrollPos) {
+            current = sections[i];
+          }
+        }
+        navLinks.forEach(function(l) { l.classList.remove('active'); });
+        if (current) current.link.classList.add('active');
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
 })();
 </script>
 </body>
