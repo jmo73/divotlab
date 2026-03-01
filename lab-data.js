@@ -1883,51 +1883,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 3600000); // 1 hour = 3,600,000ms
   
-  // Section nav active states with Events section
+  // Section nav active states — scroll-position based
   const navLinks = document.querySelectorAll('.section-nav a');
-  const eventsSection = document.getElementById('events');
-  const leaderboardSection = document.getElementById('leaderboard');
-  const intelligenceSection = document.getElementById('intelligence');
-  const strategySection = document.getElementById('strategy');
-  const predictionsSection = document.getElementById('predictions');
-  const rankingsSection = document.getElementById('rankings');
-  const analyticsSection = document.getElementById('analytics');
+  const sectionIds = ['events', 'leaderboard', 'intelligence', 'predictions', 'rankings', 'analytics', 'strategy'];
+  const allSections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
   
-  const allSections = [eventsSection, leaderboardSection, intelligenceSection, strategySection, predictionsSection, rankingsSection, analyticsSection].filter(Boolean);
-  
-  // Track which section is currently intersecting
-  let currentSection = 'events';
-  
-  const observer = new IntersectionObserver((entries) => {
-    // Find the section with the highest intersection ratio
-    let maxRatio = 0;
-    let activeSection = null;
-    
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-        maxRatio = entry.intersectionRatio;
-        activeSection = entry.target;
+  // Scroll-spy: highlight whichever section's top is closest above the viewport top
+  let spyTicking = false;
+  function updateActiveNav() {
+    const scrollPos = window.scrollY + 140; // offset for fixed nav + section-nav
+    let current = allSections[0];
+    for (let i = 0; i < allSections.length; i++) {
+      if (allSections[i].offsetTop <= scrollPos) {
+        current = allSections[i];
       }
-    });
-    
-    // Only switch if we have a clear winner (at least 30% visible)
-    if (activeSection && maxRatio >= 0.3) {
-      currentSection = activeSection.id;
+    }
+    if (current) {
       navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
+        link.classList.toggle('active', link.getAttribute('href') === `#${current.id}`);
       });
     }
-  }, { 
-    threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-    rootMargin: '-120px 0px -30% 0px'
+  }
+  
+  window.addEventListener('scroll', function() {
+    if (!spyTicking) {
+      requestAnimationFrame(function() {
+        updateActiveNav();
+        spyTicking = false;
+      });
+      spyTicking = true;
+    }
   });
   
-  allSections.forEach(section => observer.observe(section));
-  
+  // Also update on nav link click for instant feedback
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      navLinks.forEach(function(l) { l.classList.remove('active'); });
+      link.classList.add('active');
+    });
+  });
+
   // Set Events as active on load
-  navLinks.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === '#events');
-  });
+  updateActiveNav();
 });
 
 // Separate function to reload live predictions
