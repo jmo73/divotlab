@@ -71,12 +71,16 @@ function getEventStatus(tournament) {
       });
       
       if (allFinished) {
-        if (currentRound >= 4) {
+        // DataGolf increments current_round as soon as a round finishes,
+        // so current_round is already pointing to the NEXT round.
+        // Subtract 1 to get the round that was actually just completed.
+        const completedRound = currentRound - 1;
+        if (completedRound >= 4) {
           // Tournament over — final round complete
           return { label: 'Final', sublabel: '', color: '#5A8FA8' };
         } else {
           // Round complete but more rounds to play
-          return { label: `Round ${currentRound}`, sublabel: 'Complete', color: '#5BBF85' };
+          return { label: `Round ${completedRound}`, sublabel: 'Complete', color: '#5BBF85' };
         }
       }
     }
@@ -138,7 +142,12 @@ function getTournamentState(tournament) {
   // Only report 'live' if we have actual live scoring data.
   // globalLeaderboard is populated ONLY when the live-tournament API returns real scores.
   if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
-    // Check if final round is complete — if so, tournament is done
+    // Check if final round is complete — if so, tournament is done.
+    // DataGolf increments current_round when a round finishes, so:
+    //   - During R4: current_round = 4, not all finished → live
+    //   - After R4:  current_round = 5 (or stays 4), all finished → completed
+    // We use >= 4 but also require allFinished, so R3-complete (current_round=4, 
+    // but thru values reset) won't false-positive.
     const currentRound = tournament.current_round || 0;
     if (currentRound >= 4) {
       const activePlayers = globalLeaderboard.filter(p => {
@@ -640,7 +649,7 @@ function renderFieldStrength() {
       <!-- Leaders Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">${state === 'completed' ? 'Final Results' : (isRoundComplete ? `R${globalTournamentInfo.current_round || ''} Complete` : 'Leaders')}${isActivelyLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-label">${state === 'completed' ? 'Final Results' : (isRoundComplete ? `${eventStatus.label} Complete` : 'Leaders')}${isActivelyLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${(isLive || state === 'completed') ? '🏆' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
