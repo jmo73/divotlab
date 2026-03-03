@@ -879,44 +879,39 @@ function renderTop10() {
   const container = document.getElementById('top10-grid');
   if (!container) return;
   
-  // Use DG Rankings if available, otherwise fallback to players sorted by SG
+  // Source top 10 from skill-ratings (globalPlayers), which is already PGA-filtered
+  // (LIV excluded server-side). This ensures the rankings cards match the charts,
+  // which also source from globalPlayers.
+  // If a player lacks a country in skill-ratings, fall back to rankings data.
   let top10;
-  if (globalDGRankings && globalDGRankings.length > 0) {
-    top10 = globalDGRankings.map(ranking => {
-      // Try to find matching player data for full stats
-      const playerData = globalPlayers.find(p => p.dg_id === ranking.dg_id);
-      
-      // Always use ranking.country as the authoritative source (skill-ratings may not have it)
-      const country = ranking.country || (playerData ? playerData.country : '') || '';
-      
-      if (playerData && playerData.sg_total != null && playerData.sg_total !== 0) {
-        // Use full player data — has real SG breakdown
-        return { ...playerData, country, _hasBreakdown: true };
-      } else {
-        // Player not in skill-ratings or has no data there.
-        // Use dg_skill_estimate from rankings as the primary number.
-        return {
-          dg_id: ranking.dg_id,
-          player_name: ranking.player_name,
-          country,
-          sg_total: ranking.dg_skill_estimate,
-          sg_ott: playerData ? playerData.sg_ott : null,
-          sg_app: playerData ? playerData.sg_app : null,
-          sg_arg: playerData ? playerData.sg_arg : null,
-          sg_putt: playerData ? playerData.sg_putt : null,
-          _hasBreakdown: !!(playerData && playerData.sg_ott != null)
-        };
-      }
-    });
-    // Sort by displayed SG Total so cards descend visually, take top 10
-    top10.sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
-    top10 = top10.slice(0, 10);
-  } else {
-    top10 = globalPlayers
-      .filter(p => p.sg_total != null)
+  const playersWithSG = globalPlayers.filter(p => p.sg_total != null);
+  
+  if (playersWithSG.length > 0) {
+    top10 = [...playersWithSG]
       .sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0))
       .slice(0, 10)
-      .map(p => ({ ...p, _hasBreakdown: true }));
+      .map(p => {
+        // Enrich country from rankings if skill-ratings doesn't have it
+        let country = p.country || '';
+        if (!country && globalDGRankings.length > 0) {
+          const ranking = globalDGRankings.find(r => r.dg_id === p.dg_id);
+          if (ranking) country = ranking.country || '';
+        }
+        return { ...p, country, _hasBreakdown: !!(p.sg_ott != null) };
+      });
+  } else {
+    // Last resort fallback: use rankings if skill-ratings unavailable
+    top10 = (globalDGRankings || [])
+      .sort((a, b) => (b.dg_skill_estimate || 0) - (a.dg_skill_estimate || 0))
+      .slice(0, 10)
+      .map(r => ({
+        dg_id: r.dg_id,
+        player_name: r.player_name,
+        country: r.country || '',
+        sg_total: r.dg_skill_estimate,
+        sg_ott: null, sg_app: null, sg_arg: null, sg_putt: null,
+        _hasBreakdown: false
+      }));
   }
   
   if (!top10.length) {
