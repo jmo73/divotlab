@@ -4,6 +4,7 @@
 const express = require('express');
 const cors = require('cors');
 const NodeCache = require('node-cache');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,8 +17,14 @@ if (!DATAGOLF_API_KEY) {
 }
 const DATAGOLF_BASE_URL = 'https://feeds.datagolf.com';
 
-// Lab Picks password (server-side only)
-const LAB_PICKS_PASSWORD = 'lab2026picks';
+// Admin secret for protected endpoints (set in Vercel env vars)
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
+if (!ADMIN_SECRET) {
+  console.error('⚠️  ADMIN_SECRET environment variable is not set! Admin endpoints will be locked.');
+}
+
+// Lab Picks password from env (fallback for backward compat, but move to env var)
+const LAB_PICKS_PASSWORD = process.env.LAB_PICKS_PASSWORD || 'lab2026picks';
 
 // Caching with intelligent TTL
 const cache = new NodeCache({
@@ -30,9 +37,70 @@ const cache = new NodeCache({
 let pgaTourPlayerIds = new Set();
 let lastRankingsUpdate = 0;
 
-// Middleware
-app.use(cors());
+// ============================================
+// SECURITY MIDDLEWARE
+// ============================================
+
+// CORS — only allow requests from your domain, Vercel previews, and localhost for dev
+const allowedOrigins = [
+  'https://divotlab.com',
+  'https://www.divotlab.com',
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500'
+];
+// Match Vercel preview URLs for your frontend project (e.g. divotlab-xyz-123.vercel.app)
+const vercelPreviewPattern = /^https:\/\/divotlab[a-z0-9-]*\.vercel\.app$/;
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (server-to-server, curl in dev)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'), false);
+  }
+}));
+
 app.use(express.json());
+
+// Rate limiters
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,                  // 100 requests per 15 min per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Too many requests, please try again later.' }
+});
+
+const aiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,                   // 10 AI generations per hour per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Rate limit reached for AI generation. Please try again later.' }
+});
+
+const strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3,                    // 3 blog generations per hour (admin only anyway)
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Rate limit reached.' }
+});
+
+// Apply general rate limit to all API routes
+app.use('/api/', generalLimiter);
+
+// Admin auth middleware — checks for ADMIN_SECRET in x-admin-secret header
+function requireAdmin(req, res, next) {
+  const secret = req.headers['x-admin-secret'];
+  if (!ADMIN_SECRET || secret !== ADMIN_SECRET) {
+    return res.status(403).json({ success: false, error: 'Forbidden' });
+  }
+  next();
+}
 
 // ============================================
 // LAB PICKS AUTHENTICATION
@@ -987,7 +1055,7 @@ app.get('/api/cache-status', (req, res) => {
 });
 
 // UTILITY: Clear cache
-app.post('/api/clear-cache', (req, res) => {
+app.post('/api/clear-cache', requireAdmin, (req, res) => {
   const keysToClear = req.body.keys;
   
   if (keysToClear && Array.isArray(keysToClear)) {
@@ -1019,7 +1087,7 @@ app.get('/health', (req, res) => {
 // ============================================
 // PRACTICE PLAN — PERSONALIZED INSIGHT (Claude Haiku)
 // ============================================
-app.post('/api/personalize-insight', async (req, res) => {
+app.post('/api/personalize-insight', aiLimiter, async (req, res) => {
   try {
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
     if (!anthropicKey) {
@@ -1106,7 +1174,7 @@ const blogGenerator = require('./blog-generator');
 const blogDrafts = new Map();
 
 // ENDPOINT: Generate a blog post
-app.post('/api/generate-blog', async (req, res) => {
+app.post('/api/generate-blog', strictLimiter, requireAdmin, async (req, res) => {
   try {
     const { type = 'tournament_preview', topic } = req.body || {};
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
@@ -1355,7 +1423,7 @@ app.get('/api/blog-posts/:slug/read-next', (req, res) => {
 });
 
 // POST a new blog post to the registry (called after reviewing a draft)
-app.post('/api/blog-posts', (req, res) => {
+app.post('/api/blog-posts', requireAdmin, (req, res) => {
   const { slug, title, category, category_class, date, date_iso, read_time, meta_description, hero_image, hero_alt, hero_credit, featured } = req.body || {};
   
   if (!slug || !title) {
@@ -1388,7 +1456,7 @@ app.post('/api/blog-posts', (req, res) => {
 });
 
 // PUT — update a registry entry (e.g., add a hero image later)
-app.put('/api/blog-posts/:slug', (req, res) => {
+app.put('/api/blog-posts/:slug', requireAdmin, (req, res) => {
   const idx = blogRegistry.posts.findIndex(p => p.slug === req.params.slug);
   if (idx === -1) {
     return res.status(404).json({ success: false, error: 'Post not found' });
@@ -1480,4 +1548,4 @@ app.listen(PORT, () => {
   `);
 });
 // test
-module.exports = app;// trigger 
+module.exports = app;// trigger
