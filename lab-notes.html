@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Notes — DIVOT LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   TOKENS — exact DIVOT LAB brand
+   ============================================= */
+:root {
+  --black:       #0A0A0A;
+  --black-mid:   #111110;
+  --black-card:  #161614;
+  --black-card2: #1C1C19;
+  --white:       #FAFAFA;
+  --graphite:    #4A4A4A;
+  --steel:       #C4C4C4;
+  --steel-dim:   #6A6A64;
+  --green:       #1B4D3E;
+  --green-light: #5BBF85;
+  --green-glow:  rgba(91,191,133,0.08);
+  --green-glow2: rgba(91,191,133,0.15);
+  --blue:        #2C5F7C;
+  --blue-mid:    #5A8FA8;
+  --gold:        #C9A84C;
+  --gold-dim:    rgba(201,168,76,0.12);
+  --warm-gray:   #F3F2F0;
+  --border:      rgba(255,255,255,0.07);
+  --border-hover:rgba(255,255,255,0.14);
+
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* =============================================
+   RESET
+   ============================================= */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--body);
+  color: var(--white);
+  background: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+a { color:inherit; text-decoration:none; }
+
+/* =============================================
+   NAV — glass morphism, matches divotlab.com
+   ============================================= */
+nav {
+  position: fixed;
+  inset-inline: 0; top: 0;
+  z-index: 100;
+  padding: 0 56px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,10,10,0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo svg { width: 26px; height: 26px; color: var(--white); }
+
+.nav-wordmark {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--white);
+}
+.nav-wordmark span { font-weight: 300; opacity: 0.5; }
+
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(250,250,250,0.55);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+
+.nav-cta {
+  background: var(--green) !important;
+  color: var(--white) !important;
+  padding: 7px 18px !important;
+  border-radius: 6px;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  transition: all 0.2s !important;
+}
+.nav-cta:hover { background: var(--green-light) !important; }
+
+/* =============================================
+   HERO
+   ============================================= */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 100px 32px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* dark bg + premium green gradient */
+.hero {
+  background: var(--black);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(27,77,62,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(44,95,124,0.15) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(91,191,133,0.06) 0%, transparent 60%);
+}
+
+/* additional glow overlay for depth */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(91,191,133,0.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -200px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(44,95,124,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.1s forwards;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(3.2rem, 7vw, 5.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.2s forwards;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--green-light);
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--steel-dim);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.35s forwards;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.5s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(.22,1,.36,1);
+  text-decoration: none;
+}
+
+.btn-green {
+  background: var(--green);
+  color: var(--white);
+}
+.btn-green:hover {
+  background: var(--green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(91,191,133,0.18);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--steel);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--white);
+  background: rgba(255,255,255,0.03);
+}
+
+.hero-note {
+  margin-top: 20px;
+  font-size: 12px;
+  color: rgba(250,250,250,0.25);
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.6s forwards;
+}
+
+/* scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 1s 1.2s forwards;
+}
+
+.scroll-hint span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250,250,250,0.25);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--green-light), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+/* =============================================
+   SECTIONS — common
+   ============================================= */
+.section {
+  padding: 100px 56px;
+  position: relative;
+}
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin-bottom: 14px;
+}
+
+.section-desc {
+  font-size: 16px;
+  color: var(--steel-dim);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 64px;
+}
+.section-header .section-desc { margin: 0 auto; }
+
+/* =============================================
+   WHAT YOU GET — content preview
+   ============================================= */
+.what-you-get {
+  background: var(--black-mid);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.content-card {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(.22,1,.36,1);
+}
+
+.content-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.content-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-hover);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+.content-card:hover::before { opacity: 1; }
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  background: var(--green-glow);
+}
+
+.content-card h3 {
+  font-family: var(--body);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.content-card p {
+  font-size: 14px;
+  color: var(--steel-dim);
+  line-height: 1.65;
+}
+
+.card-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  background: var(--green-glow);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+/* =============================================
+   SAMPLE EMAIL — preview of what they get
+   ============================================= */
+.sample-section {
+  background: var(--black);
+}
+
+.sample-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 64px;
+  align-items: center;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.sample-text .section-desc { margin-bottom: 28px; }
+
+.sample-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sample-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--steel);
+  line-height: 1.55;
+}
+
+.sample-list li::before {
+  content: '—';
+  color: var(--green-light);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* fake email preview */
+.email-preview {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+.email-bar {
+  padding: 14px 20px;
+  background: var(--black-card2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.email-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.email-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.email-bar-subject {
+  font-size: 12px;
+  color: var(--steel-dim);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.email-body {
+  padding: 28px 24px;
+}
+
+.email-from {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--green-light);
+  margin-bottom: 6px;
+}
+
+.email-subject-line {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.email-meta {
+  font-size: 11px;
+  color: rgba(250,250,250,0.25);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.email-content-line {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.email-content-line:last-child { border-bottom: none; }
+
+.email-content-label {
+  font-size: 13px;
+  color: var(--steel);
+}
+
+.email-content-value {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--green-light);
+}
+
+/* =============================================
+   LAB PICKS — tier 2 preview
+   ============================================= */
+.picks-section {
+  background: var(--black-mid);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.picks-section::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.picks-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.picks-card {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+.picks-card-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, var(--black-card2) 100%);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.picks-card-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.picks-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.picks-body { padding: 24px; }
+
+.pick-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 80px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+}
+.pick-row:last-child { border-bottom: none; }
+
+.pick-player {
+  font-weight: 600;
+  color: var(--white);
+}
+
+.pick-player small {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--steel-dim);
+  margin-top: 2px;
+}
+
+.pick-odds {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gold);
+  background: var(--gold-dim);
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-align: center;
+  justify-self: end;
+}
+
+.pick-book {
+  font-size: 11px;
+  color: var(--steel-dim);
+  text-align: right;
+}
+
+.picks-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: rgba(250,250,250,0.25);
+  text-align: center;
+}
+
+/* =============================================
+   PRICING
+   ============================================= */
+.pricing-section {
+  background: var(--black);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 40px 32px;
+  position: relative;
+  transition: all 0.35s cubic-bezier(.22,1,.36,1);
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+.pricing-card.gold {
+  border-color: rgba(201,168,76,0.3);
+  background: linear-gradient(180deg, rgba(201,168,76,0.04) 0%, var(--black-card) 40%);
+}
+
+.pricing-card.gold::before {
+  content: 'BEST VALUE';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  background: var(--gold);
+  color: var(--black);
+  padding: 4px 14px;
+  border-radius: 100px;
+}
+
+.pricing-tier {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--steel-dim);
+  margin-bottom: 8px;
+}
+
+.pricing-card.gold .pricing-tier { color: var(--gold); }
+
+.pricing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.pricing-dollar {
+  font-family: var(--display);
+  font-size: 3.2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.pricing-period {
+  font-size: 14px;
+  color: var(--steel-dim);
+}
+
+.pricing-annual {
+  font-size: 12px;
+  color: rgba(250,250,250,0.25);
+  margin-bottom: 28px;
+}
+
+.pricing-desc {
+  font-size: 14px;
+  color: var(--steel-dim);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 32px;
+}
+
+.pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--steel);
+  line-height: 1.45;
+}
+
+.pricing-features li::before {
+  content: '✓';
+  color: var(--green-light);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.pricing-card.gold .pricing-features li::before {
+  color: var(--gold);
+}
+
+.pricing-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  border: none;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.pricing-btn-green {
+  background: var(--green);
+  color: var(--white);
+}
+.pricing-btn-green:hover {
+  background: var(--green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(91,191,133,0.15);
+}
+
+.pricing-btn-gold {
+  background: var(--gold);
+  color: var(--black);
+}
+.pricing-btn-gold:hover {
+  background: #D4B45E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,0.2);
+}
+
+.pricing-note {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 12px;
+  color: rgba(250,250,250,0.2);
+}
+
+/* =============================================
+   SOCIAL PROOF
+   ============================================= */
+.proof-section {
+  background: var(--black-mid);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 56px;
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.proof-card {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 24px;
+}
+
+.proof-quote {
+  font-size: 14px;
+  color: var(--steel);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.proof-author {
+  font-size: 12px;
+  color: var(--steel-dim);
+}
+.proof-author strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* =============================================
+   FAQ
+   ============================================= */
+.faq-section {
+  background: var(--black);
+  padding: 100px 56px;
+}
+
+.faq-list {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  padding: 0;
+  letter-spacing: -0.01em;
+}
+
+.faq-q .ic {
+  color: var(--steel-dim);
+  font-size: 18px;
+  font-weight: 300;
+  transition: transform 0.3s;
+}
+
+.faq-item.open .faq-q .ic { transform: rotate(45deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  font-size: 14px;
+  color: var(--steel-dim);
+  line-height: 1.7;
+}
+
+.faq-item.open .faq-a {
+  max-height: 220px;
+  padding-top: 14px;
+}
+
+/* =============================================
+   FINAL CTA
+   ============================================= */
+.final-cta {
+  text-align: center;
+  padding: 120px 32px;
+  position: relative;
+  overflow: hidden;
+  background: var(--black-mid);
+  border-top: 1px solid var(--border);
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute;
+  bottom: -250px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(27,77,62,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.final-cta .section-title { margin-bottom: 12px; }
+.final-cta .section-desc {
+  margin: 0 auto 36px;
+  max-width: 480px;
+}
+
+/* =============================================
+   PRACTICE PLAN CALLOUT
+   ============================================= */
+.practice-callout {
+  padding: 56px 56px;
+  background: var(--black);
+  border-top: 1px solid var(--border);
+}
+
+.practice-callout-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 40px 44px;
+  text-align: center;
+}
+
+.practice-callout h3 {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.practice-callout p {
+  font-size: 14px;
+  color: var(--steel-dim);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .practice-callout { padding: 40px 20px; }
+  .practice-callout-inner { padding: 32px 24px; }
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  padding: 28px 56px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-left {
+  font-size: 12px;
+  color: rgba(250,250,250,0.2);
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: rgba(250,250,250,0.25);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--steel); }
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: 0.35; transform: scaleY(1); }
+  50%     { opacity: 1;    transform: scaleY(1.12); }
+}
+
+/* scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
+}
+.reveal.vis { opacity: 1; transform: translateY(0); }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 900px) {
+  .section { padding: 72px 32px; }
+  nav { padding: 0 28px; }
+  .content-grid { grid-template-columns: 1fr 1fr; }
+  .sample-layout,
+  .picks-layout { grid-template-columns: 1fr; gap: 40px; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .proof-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 28px; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 0 20px; height: 56px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 90px 20px 70px; }
+  .section { padding: 64px 20px; }
+  .content-grid { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; align-items: center; }
+  .proof-section { padding: 60px 20px; }
+  .faq-section { padding: 64px 20px; }
+  .final-cta { padding: 80px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav>
+  <a href="https://divotlab.com" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="https://divotlab.com/articles">Articles</a>
+    <a href="https://divotlab.com/practice">Practice</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-eyebrow">Introducing Lab Notes</div>
+  <h1>Data-backed picks.<br>Every <em>tournament.</em></h1>
+  <p class="hero-sub">Course-fit models. Odds comparison across every major sportsbook. Plus weekly analysis, practice drills, and the stats that actually move the needle. One subscription for a major edge.</p>
+  <div class="hero-ctas">
+    <a href="#pricing" class="btn btn-green">Start Your Free Week →</a>
+    <a href="#picks" class="btn btn-ghost">See a sample pick sheet</a>
+  </div>
+  <p class="hero-note">Cancel anytime. First week free. Tiers starting at $4.99/mo.</p>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ========== WHAT YOU GET ========== -->
+<section class="section what-you-get" id="what">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">What You Get</div>
+    <h2 class="section-title">Every insight, built on data</h2>
+    <p class="section-desc">Lab Notes isn't hot takes or recycled ESPN clips. It's original analysis, practice strategy, and tournament coverage built from the numbers.</p>
+  </div>
+
+  <div class="content-grid">
+    <div class="content-card reveal">
+      <div class="card-icon">&#9971;</div>
+      <h3>Tournament Preview</h3>
+      <p>Course breakdown, field strength analysis, key stats to watch, and which players' games fit the week. Built from strokes gained models and historical course data.</p>
+    </div>
+
+    <div class="content-card reveal">
+      <div class="card-icon">&#128202;</div>
+      <h3>Weekend Recap & Stats</h3>
+      <p>What actually happened and why. Strokes gained breakdowns for the top 10, the key stat swings, and what the leaderboard doesn't tell you.</p>
+    </div>
+
+    <div class="content-card reveal">
+      <div class="card-icon">&#127919;</div>
+      <h3>Practice Lab</h3>
+      <p>One drill, one stat, one focus area. Structured practice plans based on strokes gained data — specific to your handicap range. 15-minute and 45-minute sessions.</p>
+    </div>
+
+    <div class="content-card reveal">
+      <div class="card-icon">&#128218;</div>
+      <h3>Deep Dives</h3>
+      <p>Long-form analysis pieces. "Why putting stats lie." "The approach shot myth." Original research that changes how you think about the game.</p>
+    </div>
+
+    <div class="content-card reveal">
+      <div class="card-icon">&#9881;&#65039;</div>
+      <h3>Gear & Tech</h3>
+      <p>Data-driven equipment analysis. Launch monitor comparisons. What the numbers actually say about that new driver — not what the marketing says.</p>
+    </div>
+
+    <div class="content-card reveal">
+      <div class="card-icon">&#128200;</div>
+      <h3>Stat of the Week</h3>
+      <p>One number, explained. A single data point from the PGA Tour or your handicap range that reframes how you should think about improvement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SAMPLE EMAIL ========== -->
+<section class="section sample-section">
+  <div class="sample-layout">
+    <div class="sample-text reveal">
+      <div class="section-eyebrow">Inside an Issue</div>
+      <h2 class="section-title">Not another generic<br>golf newsletter.</h2>
+      <p class="section-desc">Every Lab Notes issue is structured. You know exactly what you're getting, every week. Scan it in 5 minutes or go deep for 20.</p>
+      <ul class="sample-list">
+        <li>Tournament preview with course-fit model scores</li>
+        <li>3 players to watch (and the specific stat to track)</li>
+        <li>One practice drill mapped to your handicap range</li>
+        <li>Weekend recap with strokes gained leader breakdown</li>
+        <li>Stat of the week with context that actually matters</li>
+        <li>Gear spotlight when warranted (no filler weeks)</li>
+      </ul>
+    </div>
+
+    <div class="email-preview reveal">
+      <div class="email-bar">
+        <div class="email-dots"><span></span><span></span><span></span></div>
+        <span class="email-bar-subject">Lab Notes — Week 12</span>
+      </div>
+      <div class="email-body">
+        <div class="email-from">DIVOT LAB</div>
+        <div class="email-subject-line">The Masters Preview:<br>What the Data Says About Augusta</div>
+        <div class="email-meta">Tuesday, April 7 · 8 min read</div>
+        <div class="email-content-line">
+          <span class="email-content-label">Course Fit #1</span>
+          <span class="email-content-value">S. Scheffler — 94.2</span>
+        </div>
+        <div class="email-content-line">
+          <span class="email-content-label">Course Fit #2</span>
+          <span class="email-content-value">X. Schauffele — 91.7</span>
+        </div>
+        <div class="email-content-line">
+          <span class="email-content-label">Course Fit #3</span>
+          <span class="email-content-value">R. McIlroy — 88.4</span>
+        </div>
+        <div class="email-content-line">
+          <span class="email-content-label">Key Stat This Week</span>
+          <span class="email-content-value">SG: Approach 150-200yd</span>
+        </div>
+        <div class="email-content-line">
+          <span class="email-content-label">Practice Drill</span>
+          <span class="email-content-value">The 6-3-1 Putting Gate →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LAB PICKS ========== -->
+<section class="section picks-section" id="picks">
+  <div class="picks-layout">
+    <div class="picks-card reveal">
+      <div class="picks-card-header">
+        <h4>Lab Picks — The Masters</h4>
+        <span class="picks-badge">Pro Tier Only</span>
+      </div>
+      <div class="picks-body">
+        <div class="pick-row">
+          <div class="pick-player">S. Scheffler<small>Outright Winner</small></div>
+          <div class="pick-odds">+450</div>
+          <div class="pick-book">DraftKings</div>
+        </div>
+        <div class="pick-row">
+          <div class="pick-player">C. Morikawa<small>Top 10 Finish</small></div>
+          <div class="pick-odds">+165</div>
+          <div class="pick-book">FanDuel</div>
+        </div>
+        <div class="pick-row">
+          <div class="pick-player">T. Fleetwood<small>Top 20 Finish</small></div>
+          <div class="pick-odds">+110</div>
+          <div class="pick-book">BetMGM</div>
+        </div>
+        <div class="pick-row">
+          <div class="pick-player">S. Burns<small>First Round Leader</small></div>
+          <div class="pick-odds">+2800</div>
+          <div class="pick-book">Caesars</div>
+        </div>
+        <div class="pick-row">
+          <div class="pick-player">Scheffler vs. Hovland<small>H2H Matchup — 72 Holes</small></div>
+          <div class="pick-odds">-135</div>
+          <div class="pick-book">DraftKings</div>
+        </div>
+      </div>
+      <div class="picks-footer">All picks backed by course-fit model, recent form data, and odds value analysis across 6 major sportsbooks.</div>
+    </div>
+
+    <div class="picks-text reveal">
+      <div class="section-eyebrow" style="color: var(--gold);">Lab Picks</div>
+      <h2 class="section-title">Data-driven picks.<br>Every tournament.</h2>
+      <p class="section-desc">Pro tier members get an additional weekly email with detailed betting breakdowns for the current tournament. Course-fit scores, recent form analysis, best available odds across DraftKings, FanDuel, BetMGM, Caesars, and more.</p>
+      <p class="section-desc" style="margin-top: 16px;">Not tips from a gut feeling. Picks from a model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRICING ========== -->
+<section class="section pricing-section" id="pricing">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Pick your tier</h2>
+    <p class="section-desc">Both plans include a free first week. Cancel anytime from your account.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card gold reveal">
+      <div class="pricing-tier">Lab Notes Pro</div>
+      <div class="pricing-price">
+        <span class="pricing-dollar">$9.99</span>
+        <span class="pricing-period">/mo</span>
+      </div>
+      <p class="pricing-annual">$99.99/year (save 16%)</p>
+      <p class="pricing-desc">The full package. Weekly analysis plus data-backed tournament picks with odds comparison across every major sportsbook.</p>
+      <ul class="pricing-features">
+        <li>Everything in Lab Notes</li>
+        <li>Lab Picks — weekly betting breakdown (Wed)</li>
+        <li>Course-fit model scores per player</li>
+        <li>Best odds comparison (6+ sportsbooks)</li>
+        <li>Outright, top 10, top 20, matchup picks</li>
+        <li>Longshot value plays</li>
+        <li>Season-long pick tracking & ROI</li>
+        <li>Priority access to new features</li>
+      </ul>
+      <a href="#" class="pricing-btn pricing-btn-gold">Start Free Week →</a>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Lab Notes</div>
+      <div class="pricing-price">
+        <span class="pricing-dollar">$4.99</span>
+        <span class="pricing-period">/mo</span>
+      </div>
+      <p class="pricing-annual">$49.99/year (save 16%)</p>
+      <p class="pricing-desc">Weekly analysis, tournament coverage, and practice plans — without the betting picks.</p>
+      <ul class="pricing-features">
+        <li>Weekly tournament preview & recap (Tue)</li>
+        <li>Strokes gained breakdowns</li>
+        <li>Practice Lab — drills by handicap range</li>
+        <li>Deep dive analysis pieces</li>
+        <li>Stat of the week</li>
+        <li>Gear & tech spotlights</li>
+        <li>Full archive access</li>
+      </ul>
+      <a href="#" class="pricing-btn pricing-btn-green">Start Free Week →</a>
+    </div>
+  </div>
+
+  <p class="pricing-note">Annual plans billed once per year. Cancel anytime. No refund needed — you keep access through the end of your term.</p>
+</section>
+
+<!-- ========== SOCIAL PROOF ========== -->
+<div class="proof-section">
+  <div class="proof-grid">
+    <div class="proof-card reveal">
+      <p class="proof-quote">"I've subscribed to every golf newsletter out there. Lab Notes is the only one where I actually read the whole thing every week. The practice drills alone are worth it."</p>
+      <div class="proof-author"><strong>Ryan C.</strong> · 12 handicap, Charlotte NC</div>
+    </div>
+    <div class="proof-card reveal">
+      <p class="proof-quote">"The Lab Picks paid for my entire annual subscription in the first month. The course-fit model is legit — it surfaces value the sharps are already on."</p>
+      <div class="proof-author"><strong>Jake P.</strong> · Pro tier, Scottsdale AZ</div>
+    </div>
+    <div class="proof-card reveal">
+      <p class="proof-quote">"Finally, golf analysis that treats the audience like adults. No clickbait, no filler. Just the numbers and what they mean. This is what The Ringer should be doing for golf."</p>
+      <div class="proof-author"><strong>Michelle T.</strong> · 8 handicap, Austin TX</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PRACTICE PLAN CALLOUT ========== -->
+<section class="practice-callout">
+  <div class="practice-callout-inner reveal">
+    <div class="practice-callout-text">
+      <div class="section-eyebrow">Not ready for a subscription?</div>
+      <h3>Get a personalized practice plan. One time. $4.99.</h3>
+      <p>Take a 2-minute quiz about your game — handicap, weak spots, available practice time — and get a custom 9-page practice plan built from strokes gained data. No subscription required.</p>
+      <a href="https://divotlab.com/practice" class="btn btn-ghost" style="margin-top: 8px;">Take the Quiz →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section class="final-cta">
+  <div class="section-eyebrow reveal">Ready?</div>
+  <h2 class="section-title reveal">Your inbox. <em>Upgraded.</em></h2>
+  <p class="section-desc reveal">First week free. The data doesn't lie — and neither do we.</p>
+  <a href="#pricing" class="btn btn-green reveal">Start Your Free Week →</a>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="faq-section" id="faq">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-title">Common questions</h2>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        When do emails go out?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Lab Notes lands every Tuesday morning. If you're on the Pro tier, Lab Picks arrives on Wednesday — giving you time to place bets before the tournament starts Thursday.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Where does the data come from?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">We use strokes gained models, PGA Tour ShotLink data, and our own proprietary course-fit scoring system. All picks include the specific data points behind each recommendation.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Is this gambling advice?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Lab Picks is for entertainment and informational purposes. We provide data-backed analysis and identify where we see value in the odds. All betting decisions are yours. Please gamble responsibly.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Can I upgrade from Lab Notes to Pro?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Yes — upgrade anytime from your account. You'll be prorated for the remainder of your current billing cycle. Downgrading works the same way.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        What handicap range is the Practice Lab for?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Every drill includes modifications for three ranges: 0-10, 10-20, and 20+. The strokes gained data behind each drill is calibrated to your level — what matters for a 5 handicap is different than what matters for a 20.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Can I cancel anytime?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Yes. One click from your account settings. No contracts, no fees. If you cancel, you keep access through the end of your billing period.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-left">© 2026 Divot Lab · Built with data.</div>
+  <div class="footer-links">
+    <a href="https://divotlab.com">Home</a>
+    <a href="https://divotlab.com/articles">Articles</a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="https://instagram.com/divotlab">Instagram</a>
+    <a href="#">Terms</a>
+    <a href="#">Privacy</a>
+  </div>
+</footer>
+
+<!-- ========== JS ========== -->
+<script>
+(function(){
+  var reveals = document.querySelectorAll('.reveal');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('vis'); }
+    });
+  },{ threshold: 0.1 });
+  reveals.forEach(function(el){ obs.observe(el); });
+})();
+</script>
+
+</body>
+</html>
