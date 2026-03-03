@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab Notes — DIVOT LAB</title>
+<link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -53,61 +54,125 @@ body {
 a { color:inherit; text-decoration:none; }
 
 /* =============================================
-   NAV — glass morphism, matches divotlab.com
+   NAV — matches homepage exactly
    ============================================= */
 nav {
   position: fixed;
-  inset-inline: 0; top: 0;
+  top: 0; left: 0; right: 0;
   z-index: 100;
   padding: 0 56px;
-  height: 64px;
+  height: 68px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background: rgba(10,10,10,0.55);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: background .35s, border-color .35s;
 }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.nav-logo svg { width: 26px; height: 26px; color: var(--white); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--white); transition:color .35s; }
 
 .nav-wordmark {
   font-family: var(--body);
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: .1em;
   color: var(--white);
+  transition: color .35s;
 }
-.nav-wordmark span { font-weight: 300; opacity: 0.5; }
+.nav-wordmark span { font-weight:300; opacity:.55; }
 
-.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
 .nav-links a {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(250,250,250,0.55);
-  transition: color 0.2s;
+  font-size:13px; font-weight:500; letter-spacing:.05em;
+  color:rgba(250,250,250,.65);
+  transition: color .2s;
 }
-.nav-links a:hover { color: var(--white); }
+.nav-links a:hover { color:var(--white); }
 
 .nav-cta {
-  background: var(--green) !important;
+  background: var(--green);
   color: var(--white) !important;
-  padding: 7px 18px !important;
-  border-radius: 6px;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.06em !important;
-  transition: all 0.2s !important;
+  padding: 9px 22px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background .2s, transform .15s, box-shadow .2s;
 }
-.nav-cta:hover { background: var(--green-light) !important; }
+.nav-cta:hover {
+  background:#236b4f;
+  transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(27,77,62,.3);
+}
+
+/* =============================================
+   MOBILE NAV – hamburger + drawer
+   ============================================= */
+.nav-hamburger {
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:40px; height:40px;
+  margin-left:auto;
+  cursor:pointer;
+  background:none; border:none;
+  gap:5px;
+  z-index:101;
+  position:relative;
+}
+.nav-hamburger span {
+  display:block;
+  width:22px; height:2px;
+  background:var(--white);
+  border-radius:2px;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),
+             opacity .2s ease;
+}
+
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.nav-drawer {
+  position:fixed;
+  top:68px; left:0; right:0;
+  z-index:99;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:12px 0 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height .38s cubic-bezier(.22,1,.36,1),
+             opacity .28s ease;
+}
+.nav-drawer.open {
+  max-height:260px;
+  opacity:1;
+}
+
+.nav-drawer a {
+  font-size:15px; font-weight:500; letter-spacing:.06em;
+  color:rgba(250,250,250,.75);
+  padding:10px 0;
+  width:100%; text-align:center;
+  transition:color .2s;
+}
+.nav-drawer a:hover { color:var(--white); }
+
+.nav-drawer .nav-cta {
+  margin-top:8px;
+  width:auto; padding:10px 32px;
+  border-radius:5px;
+}
 
 /* =============================================
    HERO
@@ -663,6 +728,8 @@ nav {
   padding: 40px 32px;
   position: relative;
   transition: all 0.35s cubic-bezier(.22,1,.36,1);
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-card:hover {
@@ -738,6 +805,7 @@ nav {
 .pricing-features {
   list-style: none;
   margin-bottom: 32px;
+  flex-grow: 1;
 }
 
 .pricing-features li {
@@ -1042,8 +1110,9 @@ footer {
 }
 
 @media (max-width: 600px) {
-  nav { padding: 0 20px; height: 56px; }
-  .nav-links a:not(.nav-cta) { display: none; }
+  nav { padding: 0 22px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
   .hero { padding: 90px 20px 70px; }
   .section { padding: 64px 20px; }
   .content-grid { grid-template-columns: 1fr; }
@@ -1057,9 +1126,9 @@ footer {
 <body>
 
 <!-- ========== NAV ========== -->
-<nav>
-  <a href="https://divotlab.com" class="nav-logo">
-    <svg viewBox="0 0 72 72" fill="none">
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg id="navIcon" viewBox="0 0 72 72" fill="none">
       <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
       <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
       <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
@@ -1068,12 +1137,27 @@ footer {
     <span class="nav-wordmark">DIVOT <span>LAB</span></span>
   </a>
   <div class="nav-links">
-    <a href="https://divotlab.com/articles">Articles</a>
-    <a href="https://divotlab.com/practice">Practice</a>
+    <a href="/practice">Practice</a>
+    <a href="/articles">Articles</a>
     <a href="https://divotlab.printful.me/">Shop</a>
-    <a href="#pricing" class="nav-cta">Subscribe</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
+
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice</a>
+  <a href="/articles">Articles</a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
 
 <!-- ========== HERO ========== -->
 <section class="hero">
@@ -1324,7 +1408,7 @@ footer {
 <section class="final-cta">
   <div class="section-eyebrow reveal">Ready?</div>
   <h2 class="section-title reveal">Your inbox. <em>Upgraded.</em></h2>
-  <p class="section-desc reveal">First week free. The data doesn't lie — and neither do we.</p>
+  <p class="section-desc reveal">First week free. See if the numbers change how you watch the game.</p>
   <a href="#pricing" class="btn btn-green reveal">Start Your Free Week →</a>
 </section>
 
@@ -1402,6 +1486,7 @@ footer {
 <!-- ========== JS ========== -->
 <script>
 (function(){
+  // scroll reveal
   var reveals = document.querySelectorAll('.reveal');
   var obs = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -1409,6 +1494,23 @@ footer {
     });
   },{ threshold: 0.1 });
   reveals.forEach(function(el){ obs.observe(el); });
+
+  // hamburger menu
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  var navEl = document.getElementById('nav');
+  if(hamburger && drawer){
+    hamburger.addEventListener('click', function(){
+      navEl.classList.toggle('menu-open');
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        navEl.classList.remove('menu-open');
+        drawer.classList.remove('open');
+      });
+    });
+  }
 })();
 </script>
 

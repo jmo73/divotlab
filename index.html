@@ -139,6 +139,10 @@ nav.light .nav-links a:hover { color:var(--black); }
 .hero {
   min-height: 100vh;
   background: var(--black);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(27,77,62,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(44,95,124,0.15) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(91,191,133,0.06) 0%, transparent 60%);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -147,21 +151,21 @@ nav.light .nav-links a:hover { color:var(--black); }
   padding: 100px 48px 90px;
   overflow: hidden;
 }
-/* glow layers */
+/* additional glow overlay for depth */
 .hero::before {
   content:'';
   position:absolute;
-  top:5%; left:50%; transform:translateX(-50%);
-  width:780px; height:780px;
-  background:radial-gradient(ellipse at center, rgba(27,77,62,.17) 0%, transparent 68%);
+  top:-150px; left:50%; transform:translateX(-50%);
+  width:1000px; height:800px;
+  background:radial-gradient(circle, rgba(91,191,133,0.1) 0%, transparent 55%);
   pointer-events:none;
 }
 .hero::after {
   content:'';
   position:absolute;
-  bottom:-15%; right:10%;
-  width:520px; height:520px;
-  background:radial-gradient(ellipse at center, rgba(44,95,124,.11) 0%, transparent 66%);
+  bottom:-200px; right:-100px;
+  width:500px; height:500px;
+  background:radial-gradient(circle, rgba(44,95,124,0.12) 0%, transparent 60%);
   pointer-events:none;
 }
 
@@ -736,8 +740,8 @@ footer {
 }
 
 /* scroll-reveal */
-.reveal { opacity:0; transform:translateY(22px); filter:blur(6px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1), filter .7s cubic-bezier(.22,1,.36,1); }
-.reveal.vis { opacity:1; transform:translateY(0); filter:blur(0); }
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal.vis { opacity:1; transform:translateY(0); }
 
 /* =============================================
    MOBILE NAV – hamburger + drawer
