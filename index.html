@@ -728,8 +728,8 @@ footer {
    ANIMATIONS
    ============================================= */
 @keyframes riseIn {
-  from { opacity:0; transform:translateY(20px); filter:blur(8px); }
-  to   { opacity:1; transform:translateY(0); filter:blur(0); }
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 @keyframes fadeIn {
   to { opacity:1; }
@@ -996,12 +996,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   <div class="email-inner reveal">
     <div class="email-label">Lab Notes</div>
     <h2 class="email-title">The weekly update.<br>No filler.</h2>
-    <p class="email-sub">One insight. One data point. What's coming next. Right to your inbox.</p>
-    <form id="emailForm" class="email-row">
-      <input type="email" id="emailInput" placeholder="your@email.com" required>
-      <button type="submit">Subscribe</button>
-    </form>
-    <p id="emailMessage" class="email-note">10% off your first order. Unsubscribe anytime.</p>
+    <p class="email-sub">Tournament previews. Data-backed picks. Practice plans built from strokes gained data. One premium email, every week.</p>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:8px;">
+      <a href="/lab-notes" class="btn-fill" style="padding:14px 36px;">See Plans & Pricing</a>
+    </div>
+    <p class="email-note" style="margin-top:18px;">Tiers starting at $4.99/mo. First week free.</p>
   </div>
 </section>
 
