@@ -62,6 +62,25 @@ nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 56px; heigh
 .nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s, transform .15s, box-shadow .2s; }
 .nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
 
+/* Lab Notes PRO pill */
+.nav-lab-notes { position: relative; }
+.nav-lab-notes .pro-pill {
+  display: inline-block;
+  background: rgba(91,191,133,0.15);
+  color: #5BBF85;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 5px;
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+}
+
+
 /* HERO */
 .articles-hero { min-height:65vh; background:linear-gradient(165deg, #0a0a0a 0%, #0d1215 100%); position:relative; display:flex; align-items:center; justify-content:center; padding:140px 56px 100px; overflow:hidden; }
 .articles-hero::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; background:radial-gradient(ellipse at center, rgba(44,95,124,.10) 0%, transparent 65%); pointer-events:none; }
@@ -218,6 +237,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   <div class="nav-links">
     <a href="/practice">Practice</a>
     <a href="/articles">Articles</a>
+    <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
     <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -230,6 +250,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <div class="nav-drawer" id="navDrawer">
   <a href="/practice">Practice</a>
   <a href="/articles">Articles</a>
+  <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
   <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -294,7 +315,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="/about">About</a>
       <a href="/practice">Practice</a>
       <a href="/the-lab">The Lab</a>
-      <a href="/lab-picks">Lab Picks</a>
+      <a href="/lab-notes">Lab Notes</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
     </div>

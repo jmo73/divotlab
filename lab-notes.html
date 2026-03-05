@@ -1,9 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab Notes — DIVOT LAB</title>
+<title>Lab Notes — Data-Backed Golf Picks Every Tournament — Divot Lab</title>
+<meta name="description" content="Get data-backed tournament picks, betting edges, and player insights delivered every event week. Built on DataGolf analytics and strokes gained models.">
+<meta property="og:title" content="Lab Notes — Data-Backed Golf Picks Every Tournament — Divot Lab">
+<meta property="og:description" content="Get data-backed tournament picks, betting edges, and player insights delivered every event week. Built on DataGolf analytics and strokes gained models.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://divotlab.com/lab-notes">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://divotlab.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://divotlab.com/og-image.png">
+<link rel="canonical" href="https://divotlab.com/lab-notes">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,6 +125,25 @@ nav {
   transform:translateY(-1px);
   box-shadow:0 4px 14px rgba(27,77,62,.3);
 }
+
+/* Lab Notes PRO pill */
+.nav-lab-notes { position: relative; }
+.nav-lab-notes .pro-pill {
+  display: inline-block;
+  background: rgba(91,191,133,0.15);
+  color: #5BBF85;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 5px;
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+}
+
 
 /* =============================================
    MOBILE NAV – hamburger + drawer
@@ -1106,7 +1145,7 @@ footer {
   .picks-layout { grid-template-columns: 1fr; gap: 40px; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
   .proof-grid { grid-template-columns: 1fr; }
-  footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 28px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 600px) {
@@ -1120,7 +1159,42 @@ footer {
   .proof-section { padding: 60px 20px; }
   .faq-section { padding: 64px 20px; }
   .final-cta { padding: 80px 20px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  footer { padding: 48px 22px 28px; }
 }
+
+/* FOOTER */
+footer {
+  background:var(--black);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:64px 56px 36px;
+}
+.footer-grid {
+  max-width:1120px; margin:0 auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr 1fr;
+  gap:44px;
+}
+.f-brand .f-logo { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.f-brand .f-logo svg { width:20px; height:20px; }
+.f-brand .f-logo-text { font-weight:600; font-size:13px; letter-spacing:.1em; color:var(--white); }
+.f-brand .f-logo-text span { font-weight:300; opacity:.5; }
+.f-brand p { font-size:13px; color:rgba(250,250,250,.36); line-height:1.65; max-width:240px; }
+.f-col h5 {
+  font-size:10px; font-weight:600; letter-spacing:.2em;
+  text-transform:uppercase; color:rgba(250,250,250,.28);
+  margin-bottom:18px;
+}
+.f-col a { display:block; font-size:13px; color:rgba(250,250,250,.5); margin-bottom:11px; transition:color .2s; }
+.f-col a:hover { color:var(--white); }
+.footer-bottom {
+  max-width:1120px; margin:44px auto 0;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex; justify-content:space-between;
+  font-size:12px; color:rgba(250,250,250,.22);
+}
+
 </style>
 </head>
 <body>
@@ -1139,6 +1213,7 @@ footer {
   <div class="nav-links">
     <a href="/practice">Practice</a>
     <a href="/articles">Articles</a>
+    <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
     <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -1154,6 +1229,7 @@ footer {
 <div class="nav-drawer" id="navDrawer">
   <a href="/practice">Practice</a>
   <a href="/articles">Articles</a>
+  <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
   <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -1472,14 +1548,45 @@ footer {
 
 <!-- ========== FOOTER ========== -->
 <footer>
-  <div class="footer-left">© 2026 Divot Lab · Built with data.</div>
-  <div class="footer-links">
-    <a href="https://divotlab.com">Home</a>
-    <a href="https://divotlab.com/articles">Articles</a>
-    <a href="https://divotlab.printful.me/">Shop</a>
-    <a href="https://instagram.com/divotlab">Instagram</a>
-    <a href="#">Terms</a>
-    <a href="#">Privacy</a>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Golf analysis built on real numbers. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles">All Articles</a>
+      <a href="/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach">Strokes Gained</a>
+      <a href="/driver-upgrade-myth">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/lab-notes">Lab Notes</a>
+      <a href="/about">About</a>
+      <a href="/practice">Practice</a>
+      <a href="/the-lab">The Lab</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="javascript:void(0)">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Divot Lab</span>
+    <span>Built with data.</span>
   </div>
 </footer>
 
