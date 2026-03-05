@@ -66,6 +66,25 @@ nav.light .nav-links a { color:var(--graphite); }
 nav.light .nav-links a:hover { color:var(--black); }
 .nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s, transform .15s, box-shadow .2s; }
 .nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
+
+/* Lab Notes PRO pill */
+.nav-lab-notes { position: relative; }
+.nav-lab-notes .pro-pill {
+  display: inline-block;
+  background: rgba(91,191,133,0.15);
+  color: #5BBF85;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 5px;
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+}
+
 .nav-hamburger { display:none; flex-direction:column; justify-content:center; align-items:center; width:40px; height:40px; margin-left:auto; cursor:pointer; background:none; border:none; gap:5px; z-index:101; position:relative; }
 .nav-hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
 nav.light .nav-hamburger span { background:var(--black); }
@@ -161,6 +180,25 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   .footer-grid { grid-template-columns:1fr; gap:28px; }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "What Your Handicap Tells You About Your Game (And What to Fix First)",
+  "description": "A 15-handicapper and a 25-handicapper have completely different weakness profiles.",
+  "url": "https://divotlab.com/what-handicap-says-about-your-game",
+  "datePublished": "2026-02-20",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Divot Lab",
+    "url": "https://divotlab.com"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Divot Lab"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -178,6 +216,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="nav-links">
     <a href="/practice">Practice</a>
     <a href="/articles">Articles</a>
+    <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
     <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -189,6 +228,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 <div class="nav-drawer" id="navDrawer">
   <a href="/practice">Practice</a>
   <a href="/articles">Articles</a>
+  <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
   <a href="/the-lab" class="nav-cta">The Lab</a>
@@ -322,6 +362,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     </div>
     <div class="f-col">
       <h5>Company</h5>
+      <a href="/lab-notes">Lab Notes</a>
       <a href="/about">About</a>
       <a href="/practice">Practice</a>
       <a href="/the-lab">The Lab</a>
