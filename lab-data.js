@@ -175,10 +175,14 @@ function getTournamentState(tournament) {
  */
 function predictionsAreStale() {
   if (!globalPredictionEventName || !globalTournamentInfo.event_name) return false;
-  // Normalize both names for comparison (trim, lowercase)
-  const predName = globalPredictionEventName.trim().toLowerCase();
-  const tournName = globalTournamentInfo.event_name.trim().toLowerCase();
-  return predName !== tournName;
+  // Normalize both names for comparison — strip everything except alphanumeric
+  // to handle mismatches like "THE PLAYERS Championship" vs "The Players"
+  const predName = globalPredictionEventName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const tournName = globalTournamentInfo.event_name.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Fuzzy: if either contains the other, consider them a match
+  if (predName === tournName) return false;
+  if (predName.includes(tournName) || tournName.includes(predName)) return false;
+  return true;
 }
 
 /**
