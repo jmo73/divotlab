@@ -124,7 +124,7 @@
       "hero_image": null,
       "hero_alt": "",
       "hero_credit": "",
-      "featured": true
+      "featured": false
     },
     {
       "slug": "strokes-gained-by-handicap-where-you-lose-shots",
@@ -153,6 +153,20 @@
       "hero_alt": "",
       "hero_credit": "",
       "featured": false
+    },
+    {
+      "slug": "players-championship-2026-preview",
+      "title": "The Players Championship 2026: What TPC Sawgrass Actually Rewards",
+      "category": "PGA Tour",
+      "category_class": "pga",
+      "date": "Mar 9, 2026",
+      "date_iso": "2026-03-09",
+      "read_time": "7 min read",
+      "meta_description": "123 players. $25 million. 47 of the top 50 in the world. Here's what TPC Sawgrass actually demands — and which players fit the profile this week.",
+      "hero_image": null,
+      "hero_alt": "",
+      "hero_credit": "",
+      "featured": true
     }
   ]
 }
