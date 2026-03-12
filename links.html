@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divot Lab · Links</title>
+<meta name="description" content="Golf analytics that actually help your game. Stats, practice plans, newsletter, and more.">
+<meta property="og:title" content="Divot Lab · Links">
+<meta property="og:description" content="Golf analytics that actually help your game.">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0A0A0A;
+  --white: #FAFAFA;
+  --graphite: #4A4A4A;
+  --green: #1B4D3E;
+  --green-light: #5BBF85;
+  --gold: #C9A84C;
+  --blue-mid: #5A8FA8;
+  --border: rgba(255,255,255,0.07);
+  --subtle: rgba(255,255,255,0.04);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--body);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Atmospheric glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.14) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 20px 40px;
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+}
+
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.wordmark {
+  font-family: var(--body);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.wordmark span { font-weight: 300; opacity: 0.5; }
+
+.tagline {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--green-light);
+  letter-spacing: 0.02em;
+}
+
+.bio {
+  font-size: 14px;
+  color: rgba(250,250,250,0.4);
+  line-height: 1.55;
+  margin-top: 14px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── LINKS ── */
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  text-decoration: none;
+  color: var(--white);
+  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.link-item:nth-child(1) { animation-delay: 0.15s; }
+.link-item:nth-child(2) { animation-delay: 0.2s; }
+.link-item:nth-child(3) { animation-delay: 0.25s; }
+.link-item:nth-child(4) { animation-delay: 0.3s; }
+.link-item:nth-child(5) { animation-delay: 0.35s; }
+.link-item:nth-child(6) { animation-delay: 0.4s; }
+
+.link-item:hover {
+  border-color: rgba(91,191,133,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.link-item:active {
+  transform: translateY(0);
+}
+
+/* Featured link (Lab Notes) */
+.link-item.featured {
+  background: rgba(27,77,62,0.15);
+  border-color: rgba(91,191,133,0.2);
+}
+.link-item.featured:hover {
+  border-color: rgba(91,191,133,0.4);
+  box-shadow: 0 8px 28px rgba(27,77,62,0.2);
+}
+
+.link-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.link-icon.green { background: rgba(27,77,62,0.4); }
+.link-icon.gold { background: rgba(201,168,76,0.15); }
+.link-icon.blue { background: rgba(44,95,124,0.2); }
+.link-icon.dark { background: rgba(255,255,255,0.06); }
+
+.link-text {
+  flex: 1;
+  min-width: 0;
+}
+.link-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.01em;
+}
+.link-desc {
+  font-size: 12px;
+  color: var(--graphite);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.link-arrow {
+  color: rgba(250,250,250,0.15);
+  flex-shrink: 0;
+  transition: color 0.2s, transform 0.2s;
+}
+.link-item:hover .link-arrow {
+  color: var(--green-light);
+  transform: translateX(3px);
+}
+
+/* Badge */
+.link-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.link-badge.pro { background: var(--green-light); color: var(--black); }
+.link-badge.new { background: rgba(201,168,76,0.2); color: var(--gold); }
+.link-badge.free { background: rgba(255,255,255,0.06); color: var(--graphite); }
+
+/* ── SOCIAL ROW ── */
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.45s forwards;
+}
+
+.social-link {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--subtle);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250,250,250,0.4);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.social-link:hover {
+  border-color: rgba(91,191,133,0.25);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+.social-link svg { width: 18px; height: 18px; }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.5s forwards;
+}
+.footer-text {
+  font-size: 12px;
+  color: rgba(250,250,250,0.15);
+  letter-spacing: 0.04em;
+}
+.footer-url {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(250,250,250,0.1);
+  margin-top: 6px;
+  letter-spacing: 0.03em;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <svg class="logo-mark" viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <div class="wordmark">DIVOT <span>LAB</span></div>
+    <div class="tagline">Golf. Analyzed.</div>
+    <p class="bio">Tour data → your improvement. Stats, practice plans, and analysis that actually help your game.</p>
+  </div>
+
+  <!-- LINKS -->
+  <div class="links">
+
+    <!-- Lab Notes — featured -->
+    <a href="https://www.divotlab.com/lab-notes" class="link-item featured">
+      <div class="link-icon green">📊</div>
+      <div class="link-text">
+        <div class="link-title">Lab Notes Newsletter</div>
+        <div class="link-desc">Weekly analysis + betting picks every Tue & Wed</div>
+      </div>
+      <span class="link-badge pro">PRO</span>
+      <svg class="link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- The Lab -->
+    <a href="https://www.divotlab.com/the-lab" class="link-item">
+      <div class="link-icon green">🧪</div>
+      <div class="link-text">
+        <div class="link-title">The Lab</div>
+        <div class="link-desc">Live tournament data, rankings & predictions</div>
+      </div>
+      <svg class="link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- Practice Plan -->
+    <a href="https://www.divotlab.com/practice" class="link-item">
+      <div class="link-icon gold">🏌️</div>
+      <div class="link-text">
+        <div class="link-title">Practice Plan</div>
+        <div class="link-desc">Personalized 90-day plan based on your game</div>
+      </div>
+      <svg class="link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- Articles -->
+    <a href="https://www.divotlab.com/articles" class="link-item">
+      <div class="link-icon blue">📝</div>
+      <div class="link-text">
+        <div class="link-title">Articles</div>
+        <div class="link-desc">PGA Tour analysis & strokes gained deep dives</div>
+      </div>
+      <svg class="link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- Shop -->
+    <a href="https://divotlab.printful.me/" class="link-item">
+      <div class="link-icon dark">👕</div>
+      <div class="link-text">
+        <div class="link-title">Shop</div>
+        <div class="link-desc">Tees, hats & apparel</div>
+      </div>
+      <svg class="link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+  </div>
+
+  <!-- SOCIALS -->
+  <div class="socials">
+    <!-- Instagram -->
+    <a href="https://instagram.com/divotlab" class="social-link" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="5"/>
+        <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+    <!-- TikTok -->
+    <a href="https://tiktok.com/@divotlab" class="social-link" aria-label="TikTok">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78c.27 0 .54.04.78.1v-3.5a6.37 6.37 0 0 0-.78-.05A6.34 6.34 0 0 0 3.15 15.3 6.34 6.34 0 0 0 9.49 21.6a6.34 6.34 0 0 0 6.34-6.34V8.7a8.16 8.16 0 0 0 3.76.93V6.69z"/>
+      </svg>
+    </a>
+    <!-- Website -->
+    <a href="https://www.divotlab.com" class="social-link" aria-label="Website">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-url">divotlab.com</div>
+  </div>
+
+</div>
+
+</body>
+</html>
