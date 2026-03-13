@@ -2551,12 +2551,22 @@ function computeMomentum(field) {
   
   console.log('  Momentum: parsed', events.length, 'events from archive');
   
-  if (events.length === 0) return [];
+  // Filter out metadata entries that aren't real events
+  const validEvents = events.filter(e => {
+    const name = (e.event_name || '').toLowerCase();
+    if (name === 'models_available' || name === 'year' || name === 'event_name' || name === '') return false;
+    const preds = e.baseline_history_fit || e.predictions || e.baseline || [];
+    return Array.isArray(preds) && preds.length > 0;
+  });
+  
+  console.log('  Momentum: ', validEvents.length, 'valid events after filtering metadata');
+  
+  if (validEvents.length === 0) return [];
   
   // Build a map: dg_id → [{event_name, win_prob, event_index}]
   const playerHistory = {};
   
-  events.forEach((event, eventIdx) => {
+  validEvents.forEach((event, eventIdx) => {
     const eventName = event.event_name || `Event ${eventIdx + 1}`;
     const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
     
@@ -2688,15 +2698,26 @@ function renderCourseFit() {
     
     const bestColor = skillColors[p.best_skill] || '#5BBF85';
     
+    // Mini contribution bar — shows how each SG category contributes to this player's fit
+    const contribs = p.contributions || [];
+    const totalContrib = contribs.reduce((s, c) => s + Math.max(0, c.edge), 0) || 1;
+    const miniBar = contribs.map(c => {
+      const pct = Math.max(2, (Math.max(0, c.edge) / totalContrib) * 100);
+      return `<div style="width:${pct}%;background:${skillColors[c.skill] || '#5BBF85'};height:100%;border-radius:2px;" title="${c.skill}: ${c.sg >= 0 ? '+' : ''}${c.sg.toFixed(2)} × ${(c.weight * 100).toFixed(0)}%"></div>`;
+    }).join('');
+    
     return `
       <div style="display: flex; align-items: center; padding: 10px 0; ${i < top15.length - 1 ? 'border-bottom: 1px solid rgba(255,255,255,0.04);' : ''}">
         <div style="width: 32px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${i < 3 ? '#C9A84C' : i < 5 ? '#5BBF85' : 'rgba(250,250,250,0.3)'};">${String(i + 1).padStart(2, '0')}</div>
-        <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <div style="width: 180px; display: flex; align-items: center; gap: 8px;">
           ${getFlagImg(p.country)}
-          <span style="font-size: 14px; font-weight: 500; color: #FAFAFA;">${p.player_name}</span>
+          <span style="font-size: 14px; font-weight: 500; color: #FAFAFA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name}</span>
+        </div>
+        <div style="flex: 1; padding: 0 16px;">
+          <div style="display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden;">${miniBar}</div>
         </div>
         <div style="width: 50px; text-align: center; font-size: 12px;">${fitDeltaStr}</div>
-        <div style="width: 60px; text-align: right;">
+        <div style="width: 50px; text-align: right;">
           <span style="font-size: 10px; font-weight: 600; letter-spacing: .05em; color: ${bestColor}; background: ${bestColor}15; padding: 2px 6px; border-radius: 3px;">${p.best_skill}</span>
         </div>
         <div style="width: 65px; text-align: right; font-family: var(--mono); font-size: 15px; font-weight: 500; color: #5BBF85;">${p.course_fit_raw >= 0 ? '+' : ''}${p.course_fit_raw.toFixed(2)}</div>
@@ -2711,15 +2732,15 @@ function renderCourseFit() {
     ${weightBar}
     <div style="display: flex; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
       <div style="width: 32px; font-size: 10px; color: rgba(250,250,250,0.3);">#</div>
-      <div style="flex: 1; font-size: 10px; font-weight: 600; letter-spacing: .1em; color: rgba(250,250,250,0.3); text-transform: uppercase;">Player</div>
-      <div style="width: 50px; text-align: center; font-size: 10px; color: rgba(250,250,250,0.3);" title="Fit rank vs skill rank delta">±SK</div>
-      <div style="width: 60px; text-align: right; font-size: 10px; color: rgba(250,250,250,0.3);">Edge</div>
-      <div style="width: 65px; text-align: right; font-size: 10px; color: rgba(250,250,250,0.3);">Fit</div>
+      <div style="width: 180px; font-size: 10px; font-weight: 600; letter-spacing: .1em; color: rgba(250,250,250,0.3); text-transform: uppercase;">Player</div>
+      <div style="flex: 1; font-size: 10px; color: rgba(250,250,250,0.3); text-align: center;">SG Contribution</div>
+      <div style="width: 50px; text-align: center;" class="info-tip"><span style="font-size: 10px; color: rgba(250,250,250,0.3);">±SK</span><span class="tip-text">Fit rank vs overall skill rank. ▲3 means this player ranks 3 spots higher on course fit than raw skill — the course suits their game.</span></div>
+      <div style="width: 50px; text-align: right;" class="info-tip"><span style="font-size: 10px; color: rgba(250,250,250,0.3);">Edge</span><span class="tip-text">The SG category where this player's skill most exceeds the field median, weighted by course importance.</span></div>
+      <div style="width: 65px; text-align: right;" class="info-tip"><span style="font-size: 10px; color: rgba(250,250,250,0.3);">Fit</span><span class="tip-text">Weighted course fit score. Each player's SG categories multiplied by this course's weight profile, then summed.</span></div>
     </div>
     ${rows}
     <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25); line-height: 1.5;">
-      ${matchNote}<br>
-      <span style="color: rgba(250,250,250,0.2);">±SK = fit rank vs overall skill rank · ▲ = course suits them better than raw skill suggests</span>
+      ${matchNote}
     </div>
   `;
 }
@@ -2759,11 +2780,11 @@ function renderOverperformance() {
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
       <div>
-        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;">Model Loves</div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;" class="info-tip">Model Loves<span class="tip-text">Players where the model ranks them significantly higher than their raw skill position. The model sees a course fit or form edge.</span></div>
         ${renderSide(loves, true)}
       </div>
       <div>
-        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;">Model Fades</div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;" class="info-tip">Model Fades<span class="tip-text">Players the model ranks lower than their raw skill suggests. Possible poor course fit or recent form concerns.</span></div>
         ${renderSide(fades, false)}
       </div>
     </div>
@@ -2790,18 +2811,39 @@ function renderMomentum() {
   function miniSparkline(trend) {
     if (!trend || trend.length < 2) return '';
     const probs = trend.map(t => t.prob);
-    const min = Math.min(...probs);
-    const max = Math.max(...probs);
-    const range = max - min || 1;
-    const w = 60, h = 20;
-    const points = probs.map((v, i) => {
-      const x = (i / (probs.length - 1)) * w;
-      const y = h - ((v - min) / range) * h;
-      return `${x},${y}`;
-    }).join(' ');
+    const min = Math.min(...probs) * 0.9;  // Add some visual padding
+    const max = Math.max(...probs) * 1.1 || 0.01;
+    const range = max - min || 0.001;
+    const w = 72, h = 28;
+    const points = probs.map((v, i) => ({
+      x: (i / (probs.length - 1)) * w,
+      y: h - 3 - ((v - min) / range) * (h - 6)  // 3px padding top/bottom
+    }));
     const isRising = probs[probs.length - 1] > probs[0];
     const color = isRising ? '#5BBF85' : '#E76F51';
-    return `<svg width="${w}" height="${h}" style="vertical-align: middle;"><polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    
+    // Build smooth bezier path
+    let d = `M ${points[0].x},${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const cpx1 = prev.x + (curr.x - prev.x) * 0.4;
+      const cpx2 = prev.x + (curr.x - prev.x) * 0.6;
+      d += ` C ${cpx1},${prev.y} ${cpx2},${curr.y} ${curr.x},${curr.y}`;
+    }
+    
+    // Area fill under the line
+    const areaD = d + ` L ${points[points.length-1].x},${h} L ${points[0].x},${h} Z`;
+    
+    return `<svg width="${w}" height="${h}" style="vertical-align: middle;">
+      <defs><linearGradient id="sparkFill_${isRising?'up':'dn'}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="${areaD}" fill="url(#sparkFill_${isRising?'up':'dn'})"/>
+      <path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="${points[points.length-1].x}" cy="${points[points.length-1].y}" r="2.5" fill="${color}"/>
+    </svg>`; 
   }
   
   function renderSide(players, isRising) {
@@ -2983,13 +3025,8 @@ function renderFieldBreakdown() {
   
   const total = field.length;
   
-  // Season averages (estimated baseline for a typical 144-player PGA Tour field)
-  // Elite (SG 2.0+): ~3-4 players in most fields, higher in signature events
-  // Strong (1.0-2.0): ~15-20 players
-  // Above Avg (0.5-1.0): ~25-30 players
-  // Average (0.0-0.5): ~40-45 players
-  // Below Avg (<0.0): ~50-55 players
-  const seasonAvg = { elite: 4, strong: 18, aboveAvg: 28, average: 42, belowAvg: 52 };
+  // Season averages (estimated baseline for a typical ~123-player PGA Tour field)
+  const seasonAvg = { elite: 1, strong: 18, aboveAvg: 25, average: 37, belowAvg: 42 };
   const seasonTotal = seasonAvg.elite + seasonAvg.strong + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
   
   function bar(items, itemTotal, label) {
@@ -3068,8 +3105,17 @@ function renderPredictionTimeline() {
     return;
   }
   
-  // Show last 6 events (most recent first)
-  const recent = events.slice(-6).reverse();
+  // Show last 6 events (most recent first), filter out metadata entries
+  const validEvents = events.filter(e => {
+    const name = (e.event_name || '').toLowerCase();
+    // Skip metadata keys that aren't real events
+    if (name === 'models_available' || name === 'year' || name === 'event_name') return false;
+    // Must have parseable predictions
+    const preds = e.baseline_history_fit || e.predictions || e.baseline || [];
+    return Array.isArray(preds) && preds.length > 0 && preds[0] && preds[0].player_name;
+  });
+  
+  const recent = validEvents.slice(-6).reverse();
   
   const cards = recent.map(event => {
     const eventName = event.event_name || 'Unknown Event';
