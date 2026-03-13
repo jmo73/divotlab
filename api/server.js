@@ -899,19 +899,30 @@ app.get('/api/lab-data', async (req, res) => {
 
     // Fetch all needed data in parallel (including rankings for complete skill coverage)
     // Archive + approach-skill are new for advanced analytics — they fail gracefully
-    const [skillRatings, preTournament, fieldUpdates, schedule, dgRankings, archiveRaw, approachRaw] = await Promise.all([
+    const [skillRatings, preTournament, fieldUpdates, schedule, dgRankings, approachRaw] = await Promise.all([
       fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`),
-      // New: Pre-tournament archive for momentum + prediction tracking
-      fetchDataGolfDirect(`/preds/pre-tournament-archive?year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`)
-        .catch(err => { console.warn('⚠️ Archive fetch failed (non-fatal):', err.message); return null; }),
       // New: Detailed approach-skill breakdown
       fetchDataGolfDirect(`/preds/approach-skill?period=l24&file_format=json&key=${DATAGOLF_API_KEY}`)
         .catch(err => { console.warn('⚠️ Approach-skill fetch failed (non-fatal):', err.message); return null; })
     ]);
+
+    // Now fetch the archive using the current PGA event's event_id so we don't get opposite-field events
+    let archiveRaw = null;
+    const currentEventId = fieldUpdates.event_id || preTournament.event_id;
+    if (currentEventId) {
+      try {
+        archiveRaw = await fetchDataGolfDirect(`/preds/pre-tournament-archive?event_id=${currentEventId}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`);
+        console.log(`  Archive fetched for event_id=${currentEventId}`);
+      } catch (err) {
+        console.warn('⚠️ Archive fetch failed (non-fatal):', err.message);
+      }
+    } else {
+      console.warn('⚠️ No event_id available — skipping archive fetch');
+    }
 
     // Filter players to PGA Tour only
     const allPlayers = skillRatings.skill_ratings || skillRatings.players || [];
