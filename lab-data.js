@@ -2669,22 +2669,22 @@ function renderCourseFit() {
   const w = globalCourseWeights;
   const top15 = globalCourseFitScores.slice(0, 15);
   
-  // Weight profile visualization (horizontal stacked bar)
+  // Weight profile visualization (horizontal stacked bar with centered labels)
   const weightBar = `
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
       <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(250,250,250,0.4); white-space: nowrap;">COURSE DNA</div>
-      <div style="flex: 1; display: flex; height: 6px; border-radius: 3px; overflow: hidden;">
+      <div style="flex: 1; display: flex; height: 8px; border-radius: 4px; overflow: hidden;">
         <div style="width: ${w.ott * 100}%; background: #E76F51;" title="OTT: ${(w.ott*100).toFixed(0)}%"></div>
         <div style="width: ${w.app * 100}%; background: #5A8FA8;" title="APP: ${(w.app*100).toFixed(0)}%"></div>
         <div style="width: ${w.arg * 100}%; background: #5BBF85;" title="ARG: ${(w.arg*100).toFixed(0)}%"></div>
         <div style="width: ${w.putt * 100}%; background: #DDA15E;" title="PUTT: ${(w.putt*100).toFixed(0)}%"></div>
       </div>
     </div>
-    <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-      <span style="font-size: 11px; color: #E76F51;">OTT ${(w.ott*100).toFixed(0)}%</span>
-      <span style="font-size: 11px; color: #5A8FA8;">APP ${(w.app*100).toFixed(0)}%</span>
-      <span style="font-size: 11px; color: #5BBF85;">ARG ${(w.arg*100).toFixed(0)}%</span>
-      <span style="font-size: 11px; color: #DDA15E;">PUTT ${(w.putt*100).toFixed(0)}%</span>
+    <div style="display: flex; margin-left: 95px; margin-bottom: 24px;">
+      <div style="width: ${w.ott * 100}%; text-align: center;"><span style="font-size: 11px; color: #E76F51;">OTT ${(w.ott*100).toFixed(0)}%</span></div>
+      <div style="width: ${w.app * 100}%; text-align: center;"><span style="font-size: 11px; color: #5A8FA8;">APP ${(w.app*100).toFixed(0)}%</span></div>
+      <div style="width: ${w.arg * 100}%; text-align: center;"><span style="font-size: 11px; color: #5BBF85;">ARG ${(w.arg*100).toFixed(0)}%</span></div>
+      <div style="width: ${w.putt * 100}%; text-align: center;"><span style="font-size: 11px; color: #DDA15E;">PUTT ${(w.putt*100).toFixed(0)}%</span></div>
     </div>
   `;
   
@@ -2800,8 +2800,14 @@ function renderMomentum() {
   const container = document.getElementById('momentum-container');
   if (!container) return;
   
-  if (!globalMomentumScores || globalMomentumScores.length === 0) {
-    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Momentum data not available — needs prediction archive</div>';
+  if (!globalMomentumScores || globalMomentumScores.length < 3) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 28px 20px;">
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">
+          Momentum tracking requires prediction data from multiple past events. This feature will fully activate as the season progresses and more event data accumulates.
+        </div>
+        <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25);">Tracks win probability trends over 4-6 events to identify rising and falling players</div>
+      </div>`;
     return;
   }
   
@@ -2814,10 +2820,11 @@ function renderMomentum() {
     const min = Math.min(...probs) * 0.9;  // Add some visual padding
     const max = Math.max(...probs) * 1.1 || 0.01;
     const range = max - min || 0.001;
-    const w = 72, h = 28;
+    const w = 76, h = 32;
+    const pad = 4; // padding for dot radius
     const points = probs.map((v, i) => ({
-      x: (i / (probs.length - 1)) * w,
-      y: h - 3 - ((v - min) / range) * (h - 6)  // 3px padding top/bottom
+      x: pad + (i / (probs.length - 1)) * (w - pad * 2),
+      y: pad + (h - pad * 2) - ((v - min) / range) * (h - pad * 2)
     }));
     const isRising = probs[probs.length - 1] > probs[0];
     const color = isRising ? '#5BBF85' : '#E76F51';
@@ -2892,7 +2899,7 @@ function renderPlayerComparison() {
     return;
   }
   
-  // Build player dropdown options
+  // Build player dropdown options sorted by SG Total
   const sortedField = [...field].sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
   const options = sortedField.map(p => `<option value="${p.dg_id}">${p.player_name} (${formatSG(p.sg_total)})</option>`).join('');
   
@@ -2902,24 +2909,62 @@ function renderPlayerComparison() {
   
   container.innerHTML = `
     <div style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
-      <select id="compare-player-a" style="flex: 1; min-width: 140px;">
-        ${options}
-      </select>
+      <div style="flex: 1; min-width: 140px; position: relative;">
+        <input type="text" id="compare-search-a" placeholder="Search player..." autocomplete="off"
+          style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+        <select id="compare-player-a" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+          ${options}
+        </select>
+      </div>
       <div style="font-size: 14px; font-weight: 600; color: #C9A84C; letter-spacing: .1em;">VS</div>
-      <select id="compare-player-b" style="flex: 1; min-width: 140px;">
-        ${options}
-      </select>
+      <div style="flex: 1; min-width: 140px; position: relative;">
+        <input type="text" id="compare-search-b" placeholder="Search player..." autocomplete="off"
+          style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+        <select id="compare-player-b" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+          ${options}
+        </select>
+      </div>
     </div>
     <div id="comparison-result"></div>
   `;
   
   // Set defaults
-  document.getElementById('compare-player-a').value = defaultA;
-  document.getElementById('compare-player-b').value = defaultB;
+  const selA = document.getElementById('compare-player-a');
+  const selB = document.getElementById('compare-player-b');
+  const inputA = document.getElementById('compare-search-a');
+  const inputB = document.getElementById('compare-search-b');
   
-  // Event listeners
-  document.getElementById('compare-player-a').addEventListener('change', updateComparison);
-  document.getElementById('compare-player-b').addEventListener('change', updateComparison);
+  selA.value = defaultA;
+  selB.value = defaultB;
+  inputA.value = sortedField[0]?.player_name || '';
+  inputB.value = sortedField[1]?.player_name || '';
+  
+  // Sync select → input display
+  function syncSelect(sel, input) {
+    sel.addEventListener('change', function() {
+      const opt = sel.options[sel.selectedIndex];
+      input.value = opt ? opt.text.split(' (')[0] : '';
+      updateComparison();
+    });
+  }
+  syncSelect(selA, inputA);
+  syncSelect(selB, inputB);
+  
+  // Search filter — filter options as user types
+  function setupSearch(input, sel) {
+    input.addEventListener('focus', function() { input.select(); });
+    input.addEventListener('input', function() {
+      const query = input.value.toLowerCase();
+      const allOpts = sortedField;
+      const match = allOpts.find(p => p.player_name.toLowerCase().startsWith(query));
+      if (match) {
+        sel.value = match.dg_id;
+        sel.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+  setupSearch(inputA, selA);
+  setupSearch(inputB, selB);
   
   // Initial render
   updateComparison();
@@ -2957,22 +3002,25 @@ function updateComparison() {
     if (winner === 'a') aWins++;
     if (winner === 'b') bWins++;
     
-    const maxAbs = Math.max(Math.abs(aVal), Math.abs(bVal), 0.01);
-    const aPct = Math.max(5, (Math.abs(aVal) / maxAbs) * 50);
-    const bPct = Math.max(5, (Math.abs(bVal) / maxAbs) * 50);
+    // Use absolute values for bar width, handle negatives properly
+    const absA = Math.abs(aVal);
+    const absB = Math.abs(bVal);
+    const maxAbs = Math.max(absA, absB, 0.01);
+    const aPct = Math.max(8, (absA / maxAbs) * 48);
+    const bPct = Math.max(8, (absB / maxAbs) * 48);
     
-    const aColor = winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.15)';
-    const bColor = winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.15)';
+    const aColor = winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.12)';
+    const bColor = winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.12)';
     
     return `
-      <div style="margin-bottom: 12px;">
+      <div style="margin-bottom: 14px;">
         <div style="text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .08em; color: rgba(250,250,250,0.4); text-transform: uppercase; margin-bottom: 6px;">${cat.label}</div>
         <div style="display: flex; align-items: center; gap: 8px;">
           <div style="width: 55px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(aVal)}</div>
-          <div style="flex: 1; display: flex; height: 6px; border-radius: 3px; overflow: hidden;">
-            <div style="width: ${aPct}%; background: ${aColor}; margin-left: auto; border-radius: 3px 0 0 3px;"></div>
-            <div style="width: 2px; background: rgba(255,255,255,0.1);"></div>
-            <div style="width: ${bPct}%; background: ${bColor}; border-radius: 0 3px 3px 0;"></div>
+          <div style="flex: 1; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.03);">
+            <div style="width: ${aPct}%; background: ${aColor}; margin-left: auto; border-radius: 4px 0 0 4px;"></div>
+            <div style="width: 4px; background: rgba(255,255,255,0.08); flex-shrink: 0;"></div>
+            <div style="width: ${bPct}%; background: ${bColor}; border-radius: 0 4px 4px 0;"></div>
           </div>
           <div style="width: 55px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(bVal)}</div>
         </div>
@@ -3009,10 +3057,10 @@ function renderFieldBreakdown() {
     return;
   }
   
-  // Tier definitions
+  // Tier definitions (aligned with Field Strength calculation)
   const tiers = [
-    { name: 'Elite', min: 2.0, max: Infinity, color: '#C9A84C' },
-    { name: 'Strong', min: 1.0, max: 2.0, color: '#5BBF85' },
+    { name: 'Elite', min: 1.5, max: Infinity, color: '#C9A84C' },
+    { name: 'Top Tier', min: 1.0, max: 1.5, color: '#5BBF85' },
     { name: 'Above Avg', min: 0.5, max: 1.0, color: '#5A8FA8' },
     { name: 'Average', min: 0.0, max: 0.5, color: 'rgba(250,250,250,0.3)' },
     { name: 'Below Avg', min: -Infinity, max: 0.0, color: 'rgba(250,250,250,0.15)' }
@@ -3026,7 +3074,7 @@ function renderFieldBreakdown() {
   const total = field.length;
   
   // Season averages (estimated baseline for a typical ~123-player PGA Tour field)
-  const seasonAvg = { elite: 1, strong: 18, aboveAvg: 25, average: 37, belowAvg: 42 };
+  const seasonAvg = { elite: 6, topTier: 14, aboveAvg: 25, average: 37, belowAvg: 41 };
   const seasonTotal = seasonAvg.elite + seasonAvg.strong + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
   
   function bar(items, itemTotal, label) {
@@ -3046,13 +3094,14 @@ function renderFieldBreakdown() {
   
   const seasonCounts = [
     { ...tiers[0], count: seasonAvg.elite },
-    { ...tiers[1], count: seasonAvg.strong },
+    { ...tiers[1], count: seasonAvg.topTier },
     { ...tiers[2], count: seasonAvg.aboveAvg },
     { ...tiers[3], count: seasonAvg.average },
     { ...tiers[4], count: seasonAvg.belowAvg }
   ];
   
   container.innerHTML = `
+    <div style="display: flex; flex-direction: column; justify-content: center; min-height: 100%;">
     ${bar(counts, total, 'This Week (' + total + ' players)')}
     ${bar(seasonCounts, seasonTotal, 'Season Average (est.)')}
     <div style="display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;">
@@ -3064,7 +3113,8 @@ function renderFieldBreakdown() {
       `).join('')}
     </div>
     <div style="margin-top: 12px; font-size: 11px; color: rgba(250,250,250,0.2);">
-      ${counts[0].count} elite players (SG 2.0+) · ${counts[1].count} strong contenders (SG 1.0+)
+      ${counts[0].count} elite players (SG 1.5+) · ${counts[0].count + counts[1].count} top-tier contenders (SG 1.0+)
+    </div>
     </div>
   `;
 }
@@ -3100,8 +3150,14 @@ function renderPredictionTimeline() {
     }
   }
   
-  if (events.length === 0) {
-    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">No events in prediction archive</div>';
+  if (events.length === 0 || validEvents.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 28px 20px;">
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">
+          The timeline will populate as the season progresses, showing the model's top pre-tournament picks for each event and how they performed.
+        </div>
+        <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25);">Tracks model accuracy across the full PGA Tour season</div>
+      </div>`;
     return;
   }
   
