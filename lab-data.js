@@ -353,6 +353,14 @@ let globalPredictionEventName = ''; // Which event the predictions are for (stal
 let globalFieldStrengthResult = null; // Cached field strength calculation (shared across card + intelligence)
 let globalFieldForStrength = [];      // The actual player list used for field strength
 
+// ── Advanced Analytics State ──
+let globalCourseWeights = null;        // Course-specific SG weights from server
+let globalPredictionArchive = [];      // Historical predictions for the season (momentum + accuracy)
+let globalApproachDetail = null;       // Detailed approach-skill distance breakdown
+let globalCourseFitScores = [];        // Computed: course fit rankings for current field
+let globalOverperformanceIndex = [];   // Computed: model edge per player
+let globalMomentumScores = [];         // Computed: trending up/down per player
+
 // ============================================
 // MAIN LOADER
 // ============================================
@@ -389,7 +397,8 @@ async function loadAllData() {
     const labData = await labDataResponse.json();
     
     if (labData.success && labData.data) {
-      const { players, enriched_field, top_rankings, predictions, tournament, field_list, prediction_event_name } = labData.data;
+      const { players, enriched_field, top_rankings, predictions, tournament, field_list, prediction_event_name,
+              course_weights, prediction_archive, approach_detail } = labData.data;
       
       globalPlayers = players || [];
       globalPredictions = predictions || [];
@@ -399,6 +408,11 @@ async function loadAllData() {
       globalEnrichedField = enriched_field || []; // Server-resolved field with best skill data
       globalDGRankings = top_rankings || [];       // Top 20 PGA players by skill estimate
       
+      // ── New: Advanced Analytics Data ──
+      globalCourseWeights = course_weights || null;
+      globalPredictionArchive = prediction_archive || [];
+      globalApproachDetail = approach_detail || null;
+      
       console.log('✓ Loaded', globalPlayers.length, 'skill-rated players');
       console.log('✓ Loaded', globalEnrichedField.length, 'enriched field players');
       console.log('✓ Loaded', globalDGRankings.length, 'top rankings');
@@ -407,6 +421,9 @@ async function loadAllData() {
       console.log('✓ Predictions for:', globalPredictionEventName);
       console.log('✓ Field list:', globalFieldList.length, 'players');
       console.log('✓ Tournament state:', getTournamentState(globalTournamentInfo));
+      if (globalCourseWeights) console.log('✓ Course weights:', globalCourseWeights.match_name, '(matched:', globalCourseWeights.matched + ')');
+      if (globalPredictionArchive.length) console.log('✓ Prediction archive:', Array.isArray(globalPredictionArchive) ? globalPredictionArchive.length + ' events' : 'loaded');
+      if (globalApproachDetail) console.log('✓ Approach detail: loaded');
       
       // Log enrichment sources
       const sources = globalEnrichedField.reduce((acc, p) => { acc[p._source] = (acc[p._source] || 0) + 1; return acc; }, {});
@@ -479,6 +496,14 @@ async function loadAllData() {
     renderTop10();
     renderPredictions();
     renderCharts();
+    
+    // ── Advanced Analytics (new — runs after all existing renders) ──
+    try {
+      computeAdvancedAnalytics();
+      renderAdvancedAnalytics();
+    } catch (analyticsErr) {
+      console.warn('⚠️ Advanced analytics error (non-fatal):', analyticsErr);
+    }
     
   } catch (error) {
     console.error('❌ Error loading data:', error);
@@ -2305,4 +2330,688 @@ async function initTournamentIntelligence() {
   
   console.log('✓ Initializing Tournament Intelligence...');
   renderTournamentIntelligence();
+}
+// ============================================
+// ADVANCED ANALYTICS — Computation Engine
+// ============================================
+
+/**
+ * Compute all advanced analytics from global data.
+ * This runs AFTER all existing renders, so globals are fully populated.
+ * Each computation is independent — one failing doesn't block others.
+ */
+function computeAdvancedAnalytics() {
+  console.log('📊 Computing advanced analytics...');
+  
+  const field = buildTournamentField();
+  if (field.length === 0) {
+    console.warn('⚠️ No field data — skipping analytics');
+    return;
+  }
+  
+  // 1. Course Fit Scores
+  try {
+    globalCourseFitScores = computeCourseFit(field);
+    console.log('  ✓ Course Fit:', globalCourseFitScores.length, 'players scored');
+  } catch (e) { console.warn('  ⚠️ Course Fit error:', e.message); }
+  
+  // 2. Overperformance Index
+  try {
+    globalOverperformanceIndex = computeOverperformance(field);
+    console.log('  ✓ Overperformance:', globalOverperformanceIndex.length, 'players indexed');
+  } catch (e) { console.warn('  ⚠️ Overperformance error:', e.message); }
+  
+  // 3. Momentum Scores
+  try {
+    globalMomentumScores = computeMomentum(field);
+    console.log('  ✓ Momentum:', globalMomentumScores.length, 'players tracked');
+  } catch (e) { console.warn('  ⚠️ Momentum error:', e.message); }
+}
+
+// ── 1. COURSE FIT SCORE ──────────────────────────────────────
+
+function computeCourseFit(field) {
+  if (!globalCourseWeights) return [];
+  
+  const w = globalCourseWeights;
+  
+  // Only score players who have full SG breakdown
+  const scoreable = field.filter(p => p.sg_ott != null && p.sg_app != null && p.sg_arg != null && p.sg_putt != null);
+  
+  const scored = scoreable.map(p => {
+    const rawFit = (p.sg_ott * w.ott) + (p.sg_app * w.app) + (p.sg_arg * w.arg) + (p.sg_putt * w.putt);
+    
+    // Also compute which skill contributes most to their fit
+    const contributions = [
+      { skill: 'OTT', contrib: p.sg_ott * w.ott, sg: p.sg_ott, weight: w.ott },
+      { skill: 'APP', contrib: p.sg_app * w.app, sg: p.sg_app, weight: w.app },
+      { skill: 'ARG', contrib: p.sg_arg * w.arg, sg: p.sg_arg, weight: w.arg },
+      { skill: 'PUTT', contrib: p.sg_putt * w.putt, sg: p.sg_putt, weight: w.putt }
+    ];
+    const bestSkill = contributions.sort((a, b) => b.contrib - a.contrib)[0];
+    
+    return {
+      ...p,
+      course_fit_raw: rawFit,
+      best_skill: bestSkill.skill,
+      best_skill_contrib: bestSkill.contrib,
+      contributions: contributions.sort((a, b) => b.contrib - a.contrib)
+    };
+  });
+  
+  // Sort by course fit score descending
+  scored.sort((a, b) => b.course_fit_raw - a.course_fit_raw);
+  
+  // Add rank
+  scored.forEach((p, i) => { p.fit_rank = i + 1; });
+  
+  // Also compute their skill rank (overall SG total) for comparison
+  const bySkill = [...scored].sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
+  bySkill.forEach((p, i) => { p.skill_rank = i + 1; });
+  
+  // Merge skill_rank back into scored array
+  const skillRankMap = {};
+  bySkill.forEach(p => { skillRankMap[p.dg_id] = p.skill_rank; });
+  scored.forEach(p => { p.skill_rank = skillRankMap[p.dg_id] || 0; });
+  
+  // Fit delta: how much better/worse they rank on fit vs. raw skill
+  // Positive = they rank HIGHER on fit than skill (course suits them)
+  scored.forEach(p => { p.fit_delta = p.skill_rank - p.fit_rank; });
+  
+  return scored;
+}
+
+// ── 2. OVERPERFORMANCE INDEX ─────────────────────────────────
+
+function computeOverperformance(field) {
+  if (!globalPredictions || globalPredictions.length === 0) return [];
+  
+  // Build a map of dg_id → win probability from predictions
+  const predMap = {};
+  globalPredictions.forEach(p => {
+    if (p.dg_id && p.win != null) {
+      predMap[p.dg_id] = p.win;
+    }
+  });
+  
+  // Only include players who are in the field AND have both skill + prediction data
+  const withBoth = field
+    .filter(p => p.sg_total != null && predMap[p.dg_id] != null)
+    .map(p => ({ ...p, win_prob: predMap[p.dg_id] }));
+  
+  if (withBoth.length === 0) return [];
+  
+  // Rank by skill (SG Total)
+  const bySkill = [...withBoth].sort((a, b) => b.sg_total - a.sg_total);
+  bySkill.forEach((p, i) => { p.skill_rank = i + 1; });
+  
+  // Rank by model (win probability)
+  const byModel = [...withBoth].sort((a, b) => b.win_prob - a.win_prob);
+  byModel.forEach((p, i) => { p.model_rank = i + 1; });
+  
+  // Merge ranks and compute index
+  const rankMap = {};
+  bySkill.forEach(p => { rankMap[p.dg_id] = { skill_rank: p.skill_rank }; });
+  byModel.forEach(p => {
+    if (rankMap[p.dg_id]) rankMap[p.dg_id].model_rank = p.model_rank;
+  });
+  
+  const indexed = withBoth.map(p => {
+    const ranks = rankMap[p.dg_id] || {};
+    const skillRank = ranks.skill_rank || 0;
+    const modelRank = ranks.model_rank || 0;
+    // Positive = model likes them MORE than raw skill suggests
+    const overperf = skillRank - modelRank;
+    
+    return {
+      ...p,
+      skill_rank: skillRank,
+      model_rank: modelRank,
+      overperformance: overperf
+    };
+  });
+  
+  // Sort by overperformance descending (most "loved by model" first)
+  indexed.sort((a, b) => b.overperformance - a.overperformance);
+  
+  return indexed;
+}
+
+// ── 3. MOMENTUM SCORE ────────────────────────────────────────
+
+function computeMomentum(field) {
+  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive) || globalPredictionArchive.length === 0) {
+    console.log('  ℹ️ No prediction archive available for momentum calculation');
+    return [];
+  }
+  
+  // The archive structure varies — it could be an array of event objects
+  // each containing predictions, or a flat structure. Let's handle both.
+  let events = [];
+  if (Array.isArray(globalPredictionArchive)) {
+    events = globalPredictionArchive;
+  } else if (globalPredictionArchive.events) {
+    events = globalPredictionArchive.events;
+  }
+  
+  if (events.length === 0) return [];
+  
+  // Build a map: dg_id → [{event_name, win_prob, event_index}]
+  const playerHistory = {};
+  
+  events.forEach((event, eventIdx) => {
+    const eventName = event.event_name || `Event ${eventIdx + 1}`;
+    const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
+    
+    preds.forEach(p => {
+      if (!p.dg_id || p.win == null) return;
+      if (!playerHistory[p.dg_id]) {
+        playerHistory[p.dg_id] = { name: p.player_name, entries: [] };
+      }
+      playerHistory[p.dg_id].entries.push({
+        event: eventName,
+        event_index: eventIdx,
+        win_prob: p.win
+      });
+    });
+  });
+  
+  // For each player in the current field, compute momentum from their history
+  const fieldIds = new Set(field.map(p => p.dg_id));
+  const momentumResults = [];
+  
+  fieldIds.forEach(dgId => {
+    const history = playerHistory[dgId];
+    if (!history || history.entries.length < 2) return;
+    
+    // Sort by event index (chronological)
+    const sorted = history.entries.sort((a, b) => a.event_index - b.event_index);
+    
+    // Take last 6 events max
+    const recent = sorted.slice(-6);
+    
+    if (recent.length < 2) return;
+    
+    // Simple linear regression: slope of win_prob over event indices
+    const n = recent.length;
+    const xMean = recent.reduce((s, _, i) => s + i, 0) / n;
+    const yMean = recent.reduce((s, e) => s + e.win_prob, 0) / n;
+    
+    let num = 0, den = 0;
+    recent.forEach((e, i) => {
+      num += (i - xMean) * (e.win_prob - yMean);
+      den += (i - xMean) * (i - xMean);
+    });
+    
+    const slope = den !== 0 ? num / den : 0;
+    
+    // Scale: multiply by 100 so it reads as "percentage points per event"
+    const momentum = slope * 100;
+    
+    // Find corresponding field player for full data
+    const fieldPlayer = field.find(p => p.dg_id === dgId);
+    
+    momentumResults.push({
+      ...(fieldPlayer || {}),
+      dg_id: dgId,
+      player_name: history.name || (fieldPlayer && fieldPlayer.player_name) || 'Unknown',
+      momentum_score: momentum,
+      momentum_trend: recent.map(e => ({ event: e.event, prob: e.win_prob })),
+      events_tracked: recent.length,
+      latest_prob: recent[recent.length - 1].win_prob,
+      earliest_prob: recent[0].win_prob,
+      prob_change: recent[recent.length - 1].win_prob - recent[0].win_prob
+    });
+  });
+  
+  // Sort by momentum descending
+  momentumResults.sort((a, b) => b.momentum_score - a.momentum_score);
+  
+  return momentumResults;
+}
+
+
+// ============================================
+// ADVANCED ANALYTICS — Renderers
+// ============================================
+
+function renderAdvancedAnalytics() {
+  console.log('🎨 Rendering advanced analytics...');
+  
+  renderCourseFit();
+  renderOverperformance();
+  renderMomentum();
+  renderPlayerComparison();
+  renderFieldBreakdown();
+  renderPredictionTimeline();
+}
+
+// ── 1. COURSE FIT RANKINGS ───────────────────────────────────
+
+function renderCourseFit() {
+  const container = document.getElementById('course-fit-container');
+  if (!container) return;
+  
+  if (!globalCourseFitScores || globalCourseFitScores.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Course fit data not available</div>';
+    return;
+  }
+  
+  const w = globalCourseWeights;
+  const top15 = globalCourseFitScores.slice(0, 15);
+  
+  // Weight profile visualization (horizontal stacked bar)
+  const weightBar = `
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(250,250,250,0.4); white-space: nowrap;">COURSE DNA</div>
+      <div style="flex: 1; display: flex; height: 6px; border-radius: 3px; overflow: hidden;">
+        <div style="width: ${w.ott * 100}%; background: #E76F51;" title="OTT: ${(w.ott*100).toFixed(0)}%"></div>
+        <div style="width: ${w.app * 100}%; background: #5A8FA8;" title="APP: ${(w.app*100).toFixed(0)}%"></div>
+        <div style="width: ${w.arg * 100}%; background: #5BBF85;" title="ARG: ${(w.arg*100).toFixed(0)}%"></div>
+        <div style="width: ${w.putt * 100}%; background: #DDA15E;" title="PUTT: ${(w.putt*100).toFixed(0)}%"></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+      <span style="font-size: 11px; color: #E76F51;">OTT ${(w.ott*100).toFixed(0)}%</span>
+      <span style="font-size: 11px; color: #5A8FA8;">APP ${(w.app*100).toFixed(0)}%</span>
+      <span style="font-size: 11px; color: #5BBF85;">ARG ${(w.arg*100).toFixed(0)}%</span>
+      <span style="font-size: 11px; color: #DDA15E;">PUTT ${(w.putt*100).toFixed(0)}%</span>
+    </div>
+  `;
+  
+  // Skill color map
+  const skillColors = { OTT: '#E76F51', APP: '#5A8FA8', ARG: '#5BBF85', PUTT: '#DDA15E' };
+  
+  const rows = top15.map((p, i) => {
+    const fitDeltaStr = p.fit_delta > 0 ? `<span style="color: #5BBF85;">▲${p.fit_delta}</span>` :
+                        p.fit_delta < 0 ? `<span style="color: #E76F51;">▼${Math.abs(p.fit_delta)}</span>` :
+                        `<span style="color: rgba(250,250,250,0.3);">—</span>`;
+    
+    const bestColor = skillColors[p.best_skill] || '#5BBF85';
+    
+    return `
+      <div style="display: flex; align-items: center; padding: 10px 0; ${i < top15.length - 1 ? 'border-bottom: 1px solid rgba(255,255,255,0.04);' : ''}">
+        <div style="width: 32px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${i < 3 ? '#C9A84C' : i < 5 ? '#5BBF85' : 'rgba(250,250,250,0.3)'};">${String(i + 1).padStart(2, '0')}</div>
+        <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+          ${getFlagImg(p.country)}
+          <span style="font-size: 14px; font-weight: 500; color: #FAFAFA;">${p.player_name}</span>
+        </div>
+        <div style="width: 50px; text-align: center; font-size: 12px;">${fitDeltaStr}</div>
+        <div style="width: 60px; text-align: right;">
+          <span style="font-size: 10px; font-weight: 600; letter-spacing: .05em; color: ${bestColor}; background: ${bestColor}15; padding: 2px 6px; border-radius: 3px;">${p.best_skill}</span>
+        </div>
+        <div style="width: 65px; text-align: right; font-family: var(--mono); font-size: 15px; font-weight: 500; color: #5BBF85;">${p.course_fit_raw >= 0 ? '+' : ''}${p.course_fit_raw.toFixed(2)}</div>
+      </div>`;
+  }).join('');
+  
+  const matchNote = w.matched
+    ? `<span style="color: #5BBF85;">●</span> ${w.notes || 'Course-specific weights active'}`
+    : `<span style="color: #C9A84C;">●</span> Default weights — no course profile available`;
+  
+  container.innerHTML = `
+    ${weightBar}
+    <div style="display: flex; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <div style="width: 32px; font-size: 10px; color: rgba(250,250,250,0.3);">#</div>
+      <div style="flex: 1; font-size: 10px; font-weight: 600; letter-spacing: .1em; color: rgba(250,250,250,0.3); text-transform: uppercase;">Player</div>
+      <div style="width: 50px; text-align: center; font-size: 10px; color: rgba(250,250,250,0.3);" title="Fit rank vs skill rank delta">±SK</div>
+      <div style="width: 60px; text-align: right; font-size: 10px; color: rgba(250,250,250,0.3);">Edge</div>
+      <div style="width: 65px; text-align: right; font-size: 10px; color: rgba(250,250,250,0.3);">Fit</div>
+    </div>
+    ${rows}
+    <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25); line-height: 1.5;">
+      ${matchNote}<br>
+      <span style="color: rgba(250,250,250,0.2);">±SK = fit rank vs overall skill rank · ▲ = course suits them better than raw skill suggests</span>
+    </div>
+  `;
+}
+
+// ── 2. OVERPERFORMANCE (MODEL EDGE) ──────────────────────────
+
+function renderOverperformance() {
+  const container = document.getElementById('overperformance-container');
+  if (!container) return;
+  
+  if (!globalOverperformanceIndex || globalOverperformanceIndex.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Model edge data not available</div>';
+    return;
+  }
+  
+  const data = globalOverperformanceIndex;
+  const loves = data.filter(p => p.overperformance > 0).slice(0, 5);
+  const fades = [...data].sort((a, b) => a.overperformance - b.overperformance).filter(p => p.overperformance < 0).slice(0, 5);
+  
+  function renderSide(players, isLoves) {
+    if (players.length === 0) return '<div style="padding: 12px; color: rgba(250,250,250,0.3); font-size: 13px;">No data</div>';
+    return players.map(p => {
+      const delta = Math.abs(p.overperformance);
+      const arrow = isLoves ? '▲' : '▼';
+      const color = isLoves ? '#5BBF85' : '#E76F51';
+      return `
+        <div style="display: flex; align-items: center; padding: 8px 0; gap: 10px;">
+          <div style="flex: 1;">
+            <div style="font-size: 14px; font-weight: 500; color: #FAFAFA;">${p.player_name}</div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.35);">Skill #${p.skill_rank} → Model #${p.model_rank}</div>
+          </div>
+          <div style="font-family: var(--mono); font-size: 16px; font-weight: 500; color: ${color};">${arrow}${delta}</div>
+        </div>`;
+    }).join('');
+  }
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;">Model Loves</div>
+        ${renderSide(loves, true)}
+      </div>
+      <div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;">Model Fades</div>
+        ${renderSide(fades, false)}
+      </div>
+    </div>
+    <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
+      Compares model win probability rank vs. raw skill rank · Positive = model sees a course/form edge the rankings don't
+    </div>
+  `;
+}
+
+// ── 3. MOMENTUM (WHO'S HOT / WHO'S NOT) ─────────────────────
+
+function renderMomentum() {
+  const container = document.getElementById('momentum-container');
+  if (!container) return;
+  
+  if (!globalMomentumScores || globalMomentumScores.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Momentum data not available — needs prediction archive</div>';
+    return;
+  }
+  
+  const rising = globalMomentumScores.filter(p => p.momentum_score > 0).slice(0, 5);
+  const falling = [...globalMomentumScores].sort((a, b) => a.momentum_score - b.momentum_score).filter(p => p.momentum_score < 0).slice(0, 5);
+  
+  function miniSparkline(trend) {
+    if (!trend || trend.length < 2) return '';
+    const probs = trend.map(t => t.prob);
+    const min = Math.min(...probs);
+    const max = Math.max(...probs);
+    const range = max - min || 1;
+    const w = 60, h = 20;
+    const points = probs.map((v, i) => {
+      const x = (i / (probs.length - 1)) * w;
+      const y = h - ((v - min) / range) * h;
+      return `${x},${y}`;
+    }).join(' ');
+    const isRising = probs[probs.length - 1] > probs[0];
+    const color = isRising ? '#5BBF85' : '#E76F51';
+    return `<svg width="${w}" height="${h}" style="vertical-align: middle;"><polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+  
+  function renderSide(players, isRising) {
+    if (players.length === 0) return '<div style="padding: 12px; color: rgba(250,250,250,0.3); font-size: 13px;">No data</div>';
+    return players.map(p => {
+      const sign = p.momentum_score >= 0 ? '+' : '';
+      const color = isRising ? '#5BBF85' : '#E76F51';
+      return `
+        <div style="display: flex; align-items: center; padding: 8px 0; gap: 10px;">
+          <div style="flex: 1;">
+            <div style="font-size: 14px; font-weight: 500; color: #FAFAFA;">${p.player_name}</div>
+            <div style="font-size: 11px; color: rgba(250,250,250,0.35);">${p.events_tracked} events tracked</div>
+          </div>
+          <div style="width: 64px;">${miniSparkline(p.momentum_trend)}</div>
+          <div style="font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${color}; width: 50px; text-align: right;">${sign}${p.momentum_score.toFixed(2)}</div>
+        </div>`;
+    }).join('');
+  }
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;">Rising</div>
+        ${renderSide(rising, true)}
+      </div>
+      <div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;">Falling</div>
+        ${renderSide(falling, false)}
+      </div>
+    </div>
+    <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
+      Win probability trend over recent events · Captures form that raw skill ratings (150-round averages) are slow to reflect
+    </div>
+  `;
+}
+
+// ── 4. PLAYER COMPARISON TOOL ────────────────────────────────
+
+function renderPlayerComparison() {
+  const container = document.getElementById('player-comparison-container');
+  if (!container) return;
+  
+  const field = buildTournamentField().filter(p => p.sg_ott != null);
+  if (field.length < 2) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Need at least 2 players with full data</div>';
+    return;
+  }
+  
+  // Build player dropdown options
+  const sortedField = [...field].sort((a, b) => (b.sg_total || 0) - (a.sg_total || 0));
+  const options = sortedField.map(p => `<option value="${p.dg_id}">${p.player_name} (${formatSG(p.sg_total)})</option>`).join('');
+  
+  // Default to top 2 players
+  const defaultA = sortedField[0]?.dg_id || '';
+  const defaultB = sortedField[1]?.dg_id || '';
+  
+  container.innerHTML = `
+    <div style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;">
+      <select id="compare-player-a" style="flex: 1; min-width: 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+        ${options}
+      </select>
+      <div style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #C9A84C; letter-spacing: .1em;">VS</div>
+      <select id="compare-player-b" style="flex: 1; min-width: 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+        ${options}
+      </select>
+    </div>
+    <div id="comparison-result"></div>
+  `;
+  
+  // Set defaults
+  document.getElementById('compare-player-a').value = defaultA;
+  document.getElementById('compare-player-b').value = defaultB;
+  
+  // Event listeners
+  document.getElementById('compare-player-a').addEventListener('change', updateComparison);
+  document.getElementById('compare-player-b').addEventListener('change', updateComparison);
+  
+  // Initial render
+  updateComparison();
+}
+
+function updateComparison() {
+  const aId = parseInt(document.getElementById('compare-player-a').value);
+  const bId = parseInt(document.getElementById('compare-player-b').value);
+  const result = document.getElementById('comparison-result');
+  if (!result) return;
+  
+  const field = buildTournamentField();
+  const a = field.find(p => p.dg_id === aId);
+  const b = field.find(p => p.dg_id === bId);
+  
+  if (!a || !b || !a.sg_ott || !b.sg_ott) {
+    result.innerHTML = '<div style="color: rgba(250,250,250,0.3); padding: 12px;">Select two players with full skill data</div>';
+    return;
+  }
+  
+  const categories = [
+    { label: 'Off-the-Tee', key: 'sg_ott', color: '#E76F51' },
+    { label: 'Approach', key: 'sg_app', color: '#5A8FA8' },
+    { label: 'Around Green', key: 'sg_arg', color: '#5BBF85' },
+    { label: 'Putting', key: 'sg_putt', color: '#DDA15E' },
+    { label: 'SG Total', key: 'sg_total', color: '#FAFAFA' }
+  ];
+  
+  let aWins = 0, bWins = 0;
+  
+  const bars = categories.map(cat => {
+    const aVal = a[cat.key] || 0;
+    const bVal = b[cat.key] || 0;
+    const winner = aVal > bVal ? 'a' : bVal > aVal ? 'b' : 'tie';
+    if (winner === 'a') aWins++;
+    if (winner === 'b') bWins++;
+    
+    const maxAbs = Math.max(Math.abs(aVal), Math.abs(bVal), 0.01);
+    const aPct = Math.max(5, (Math.abs(aVal) / maxAbs) * 50);
+    const bPct = Math.max(5, (Math.abs(bVal) / maxAbs) * 50);
+    
+    const aColor = winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.15)';
+    const bColor = winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.15)';
+    
+    return `
+      <div style="margin-bottom: 12px;">
+        <div style="text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .08em; color: rgba(250,250,250,0.4); text-transform: uppercase; margin-bottom: 6px;">${cat.label}</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 55px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(aVal)}</div>
+          <div style="flex: 1; display: flex; height: 6px; border-radius: 3px; overflow: hidden;">
+            <div style="width: ${aPct}%; background: ${aColor}; margin-left: auto; border-radius: 3px 0 0 3px;"></div>
+            <div style="width: 2px; background: rgba(255,255,255,0.1);"></div>
+            <div style="width: ${bPct}%; background: ${bColor}; border-radius: 0 3px 3px 0;"></div>
+          </div>
+          <div style="width: 55px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(bVal)}</div>
+        </div>
+      </div>`;
+  }).join('');
+  
+  const verdict = aWins > bWins
+    ? `${a.player_name} has the edge in ${aWins} of 5 categories`
+    : bWins > aWins
+      ? `${b.player_name} has the edge in ${bWins} of 5 categories`
+      : `Even matchup — split across categories`;
+  
+  result.innerHTML = `
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+      <div style="font-size: 16px; font-weight: 600; color: #FAFAFA;">${a.player_name}</div>
+      <div style="font-size: 16px; font-weight: 600; color: #FAFAFA;">${b.player_name}</div>
+    </div>
+    ${bars}
+    <div style="text-align: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <div style="font-family: var(--display); font-size: 18px; font-weight: 600; color: #FAFAFA;">${verdict}</div>
+    </div>
+  `;
+}
+
+// ── 5. FIELD STRENGTH BREAKDOWN ──────────────────────────────
+
+function renderFieldBreakdown() {
+  const container = document.getElementById('field-breakdown-container');
+  if (!container) return;
+  
+  const field = buildTournamentField().filter(p => p.sg_total != null);
+  if (field.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">No field data available</div>';
+    return;
+  }
+  
+  // Tier definitions
+  const tiers = [
+    { name: 'Elite', min: 2.0, max: Infinity, color: '#C9A84C' },
+    { name: 'Strong', min: 1.0, max: 2.0, color: '#5BBF85' },
+    { name: 'Above Avg', min: 0.5, max: 1.0, color: '#5A8FA8' },
+    { name: 'Average', min: 0.0, max: 0.5, color: 'rgba(250,250,250,0.3)' },
+    { name: 'Below Avg', min: -Infinity, max: 0.0, color: 'rgba(250,250,250,0.15)' }
+  ];
+  
+  const counts = tiers.map(t => ({
+    ...t,
+    count: field.filter(p => p.sg_total >= t.min && p.sg_total < t.max).length
+  }));
+  
+  const total = field.length;
+  
+  // Season averages (hardcoded baseline — refine over time)
+  const seasonAvg = { elite: 8, strong: 22, aboveAvg: 30, average: 40, belowAvg: 44 };
+  const seasonTotal = seasonAvg.elite + seasonAvg.strong + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
+  
+  function bar(items, itemTotal, label) {
+    return `
+      <div style="margin-bottom: 8px;">
+        <div style="font-size: 10px; color: rgba(250,250,250,0.3); margin-bottom: 4px;">${label}</div>
+        <div style="display: flex; height: 20px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.02);">
+          ${items.map(t => {
+            const pct = (t.count / itemTotal) * 100;
+            return pct > 0 ? `<div style="width: ${pct}%; background: ${t.color}; display: flex; align-items: center; justify-content: center;" title="${t.name}: ${t.count}">
+              ${pct > 8 ? `<span style="font-size: 9px; font-weight: 600; color: ${t.color === 'rgba(250,250,250,0.15)' ? 'rgba(250,250,250,0.4)' : '#0A0A0A'};">${t.count}</span>` : ''}
+            </div>` : '';
+          }).join('')}
+        </div>
+      </div>`;
+  }
+  
+  const seasonCounts = [
+    { ...tiers[0], count: seasonAvg.elite },
+    { ...tiers[1], count: seasonAvg.strong },
+    { ...tiers[2], count: seasonAvg.aboveAvg },
+    { ...tiers[3], count: seasonAvg.average },
+    { ...tiers[4], count: seasonAvg.belowAvg }
+  ];
+  
+  container.innerHTML = `
+    ${bar(counts, total, 'This Week (' + total + ' players)')}
+    ${bar(seasonCounts, seasonTotal, 'Season Average (est.)')}
+    <div style="display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;">
+      ${counts.map(t => `
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <div style="width: 8px; height: 8px; border-radius: 2px; background: ${t.color};"></div>
+          <span style="font-size: 11px; color: rgba(250,250,250,0.5);">${t.name} <span style="color: rgba(250,250,250,0.3);">(${t.count})</span></span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top: 12px; font-size: 11px; color: rgba(250,250,250,0.2);">
+      ${counts[0].count} elite players (SG 2.0+) · ${counts[1].count} strong contenders (SG 1.0+)
+    </div>
+  `;
+}
+
+// ── 6. PREDICTION ACCURACY TIMELINE ──────────────────────────
+
+function renderPredictionTimeline() {
+  const container = document.getElementById('prediction-timeline-container');
+  if (!container) return;
+  
+  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive) || globalPredictionArchive.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Prediction archive not available</div>';
+    return;
+  }
+  
+  const events = globalPredictionArchive;
+  
+  // Show last 6 events (most recent first)
+  const recent = events.slice(-6).reverse();
+  
+  const cards = recent.map(event => {
+    const eventName = event.event_name || 'Unknown Event';
+    const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
+    const top5 = [...preds].sort((a, b) => (b.win || 0) - (a.win || 0)).slice(0, 5);
+    
+    const playerList = top5.map((p, i) => `
+      <div style="display: flex; align-items: center; gap: 6px; padding: 3px 0;">
+        <span style="font-family: var(--mono); font-size: 11px; color: ${i === 0 ? '#C9A84C' : 'rgba(250,250,250,0.3)'}; width: 16px;">${i + 1}</span>
+        <span style="font-size: 12px; color: rgba(250,250,250,0.7); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name}</span>
+        <span style="font-family: var(--mono); font-size: 11px; color: #5BBF85;">${(p.win * 100).toFixed(1)}%</span>
+      </div>
+    `).join('');
+    
+    return `
+      <div style="min-width: 200px; max-width: 220px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px; flex-shrink: 0;">
+        <div style="font-size: 13px; font-weight: 600; color: #FAFAFA; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${eventName}">${eventName}</div>
+        <div style="font-size: 10px; color: rgba(250,250,250,0.3); margin-bottom: 12px;">Model Top 5</div>
+        ${playerList}
+      </div>
+    `;
+  }).join('');
+  
+  container.innerHTML = `
+    <div style="display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch;">
+      ${cards}
+    </div>
+    <div style="margin-top: 12px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
+      Pre-tournament model picks for recent events · Actual result tracking coming soon
+    </div>
+  `;
 }

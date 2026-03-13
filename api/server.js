@@ -26,6 +26,57 @@ if (!ADMIN_SECRET) {
 // Lab Picks password from env (fallback for backward compat, but move to env var)
 const LAB_PICKS_PASSWORD = process.env.LAB_PICKS_PASSWORD || 'lab2026picks';
 
+// ============================================
+// COURSE FIT WEIGHTS — Divot Lab Original Analysis
+// Each course gets a weight profile for the 4 SG categories.
+// Weights sum to 1.0. These represent editorial judgment about
+// what skills matter most at each venue.
+// ============================================
+const COURSE_WEIGHTS = {
+  // Majors
+  'masters tournament': { ott: 0.25, app: 0.30, arg: 0.25, putt: 0.20, notes: 'Length + approach to slopes, elite short game around Augusta greens' },
+  'pga championship': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Venue rotates — balanced profile, adjust per year' },
+  'u.s. open': { ott: 0.20, app: 0.35, arg: 0.25, putt: 0.20, notes: 'Accuracy premium, brutal rough punishes misses' },
+  'the open championship': { ott: 0.30, app: 0.25, arg: 0.25, putt: 0.20, notes: 'Links — driving lines and creativity critical' },
+  // Signature Events
+  'the players championship': { ott: 0.15, app: 0.40, arg: 0.20, putt: 0.25, notes: 'TPC Sawgrass — iron precision, water on 6 holes, Poa greens' },
+  'genesis invitational': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Riviera — complete game test, kikuyu rough' },
+  'arnold palmer invitational presented by mastercard': { ott: 0.20, app: 0.35, arg: 0.20, putt: 0.25, notes: 'Bay Hill — water, approach precision, firm greens' },
+  'the memorial tournament presented by workday': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Muirfield Village — Nicklaus design, complete test' },
+  'wm phoenix open': { ott: 0.20, app: 0.35, arg: 0.20, putt: 0.25, notes: 'TPC Scottsdale — scoring event, iron play separates' },
+  'rbc heritage': { ott: 0.15, app: 0.35, arg: 0.25, putt: 0.25, notes: 'Harbour Town — short, precise, shotmaking' },
+  'at&t pebble beach pro-am': { ott: 0.20, app: 0.35, arg: 0.25, putt: 0.20, notes: 'Pebble Beach — approach play dominates on small greens' },
+  'travelers championship': { ott: 0.20, app: 0.30, arg: 0.20, putt: 0.30, notes: 'TPC River Highlands — scoring, putting surface quality' },
+  'rocket mortgage classic': { ott: 0.25, app: 0.25, arg: 0.20, putt: 0.30, notes: 'Detroit GC — scoring event, putting premium' },
+  'the sentry': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25, notes: 'Kapalua — balanced, wide fairways, scoring event' },
+  'farmers insurance open': { ott: 0.30, app: 0.25, arg: 0.20, putt: 0.25, notes: 'Torrey Pines South — length matters, marine layer' },
+  // Default for unlisted events
+  '_default': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25, notes: 'Balanced profile — no course-specific weights available' }
+};
+
+/**
+ * Look up course weights for an event. Tries exact match, then partial match, then default.
+ */
+function getCourseWeights(eventName) {
+  if (!eventName) return { ...COURSE_WEIGHTS['_default'], matched: false, match_name: 'Default' };
+  const normalized = eventName.toLowerCase().trim();
+  
+  // Exact match
+  if (COURSE_WEIGHTS[normalized]) {
+    return { ...COURSE_WEIGHTS[normalized], matched: true, match_name: eventName };
+  }
+  
+  // Partial match — check if event name contains a key or vice versa
+  for (const [key, weights] of Object.entries(COURSE_WEIGHTS)) {
+    if (key === '_default') continue;
+    if (normalized.includes(key) || key.includes(normalized)) {
+      return { ...weights, matched: true, match_name: key };
+    }
+  }
+  
+  return { ...COURSE_WEIGHTS['_default'], matched: false, match_name: 'Default (no course profile)' };
+}
+
 // Caching with intelligent TTL
 const cache = new NodeCache({
   stdTTL: 3600,
@@ -847,12 +898,19 @@ app.get('/api/lab-data', async (req, res) => {
     await updatePGATourPlayerIds();
 
     // Fetch all needed data in parallel (including rankings for complete skill coverage)
-    const [skillRatings, preTournament, fieldUpdates, schedule, dgRankings] = await Promise.all([
+    // Archive + approach-skill are new for advanced analytics — they fail gracefully
+    const [skillRatings, preTournament, fieldUpdates, schedule, dgRankings, archiveRaw, approachRaw] = await Promise.all([
       fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/preds/pre-tournament?tour=pga&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`)
+      fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`),
+      // New: Pre-tournament archive for momentum + prediction tracking
+      fetchDataGolfDirect(`/preds/pre-tournament-archive?year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`)
+        .catch(err => { console.warn('⚠️ Archive fetch failed (non-fatal):', err.message); return null; }),
+      // New: Detailed approach-skill breakdown
+      fetchDataGolfDirect(`/preds/approach-skill?period=l24&file_format=json&key=${DATAGOLF_API_KEY}`)
+        .catch(err => { console.warn('⚠️ Approach-skill fetch failed (non-fatal):', err.message); return null; })
     ]);
 
     // Filter players to PGA Tour only
@@ -986,6 +1044,30 @@ app.get('/api/lab-data', async (req, res) => {
     // Extract the event name that predictions are actually FOR (may differ from field-updates event)
     const predictionEventName = preTournament.event_name || null;
 
+    // ── Advanced Analytics Data ──────────────────────────────────────
+    // Course weights for the current event
+    const courseWeights = getCourseWeights(eventName);
+    console.log(`  Course weights: ${courseWeights.match_name} (matched: ${courseWeights.matched})`);
+
+    // Pre-tournament archive — array of past event predictions this season
+    // Each entry has: event_name, event_id, year, and an array of player predictions
+    const predictionArchive = archiveRaw || [];
+    if (archiveRaw) {
+      const archiveEvents = Array.isArray(archiveRaw) ? archiveRaw.length : Object.keys(archiveRaw).length;
+      console.log(`  Archive: ${archiveEvents} entries loaded`);
+    } else {
+      console.log('  Archive: not available');
+    }
+
+    // Approach skill detail — detailed distance-bucket breakdown per player
+    const approachDetail = approachRaw || null;
+    if (approachRaw) {
+      const approachPlayers = approachRaw.players || approachRaw || [];
+      console.log(`  Approach detail: ${Array.isArray(approachPlayers) ? approachPlayers.length : 0} players`);
+    } else {
+      console.log('  Approach detail: not available');
+    }
+
     const compositeData = {
       players: pgaPlayers, // PGA-filtered skill ratings (full breakdown)
       enriched_field: enrichedField, // Every field player with best-available skill data
@@ -1004,6 +1086,10 @@ app.get('/api/lab-data', async (req, res) => {
         status: currentEvent.status || 'unknown',
         event_completed: fieldUpdates.event_completed || false
       },
+      // ── New: Advanced Analytics ──
+      course_weights: courseWeights,
+      prediction_archive: predictionArchive,
+      approach_detail: approachDetail,
       timestamp: new Date().toISOString(),
       pga_filtered: true
     };

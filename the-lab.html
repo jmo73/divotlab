@@ -864,10 +864,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <div class="section-nav">
   <a href="#events" class="active">Events</a>
   <a href="#leaderboard">Leaderboard</a>
+  <a href="#divotlab-analytics">DL Analytics</a>
   <a href="#intelligence">Intelligence</a>
   <a href="#predictions">Predictions</a>
   <a href="#rankings">Rankings</a>
-  <a href="#analytics">Analytics</a>
+  <a href="#analytics">Charts</a>
 </div>
 
 <!-- HERO -->
@@ -899,6 +900,86 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     <div id="leaderboard-live-indicator" style="margin-bottom: 16px; text-align: center; font-size: 13px; color: rgba(250,250,250,0.45);"></div>
     <div id="leaderboard-table">
       <div class="loading-msg">Leaderboard available when tournament is live</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIVOT LAB ANALYTICS — Original Analysis -->
+<section class="lab-section" id="divotlab-analytics">
+  <div class="section-header">
+    <h2>Divot Lab Analytics</h2>
+    <div class="section-toggle">▼</div>
+  </div>
+  <div class="section-body">
+    <div style="margin-bottom: 28px; text-align: center;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--green-light); margin-bottom: 6px;">ORIGINAL ANALYSIS</div>
+      <div style="font-size: 13px; color: rgba(250,250,250,0.35);">Derived metrics built on DataGolf skill data · Not available anywhere else</div>
+    </div>
+
+    <!-- Row 1: Course Fit (full width hero) -->
+    <div class="intel-card" style="margin-bottom: 20px;">
+      <h3>Course Fit Rankings</h3>
+      <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+        How each player's skill profile matches this course's demands
+      </div>
+      <div id="course-fit-container">
+        <div class="loading-msg" style="padding: 20px;">Computing course fit scores...</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Model Edge + Momentum (side by side) -->
+    <div class="intelligence-grid" style="margin-bottom: 20px;">
+      <div class="intel-card">
+        <h3>Model Edge</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Where the model diverges from raw skill rankings
+        </div>
+        <div id="overperformance-container">
+          <div class="loading-msg" style="padding: 20px;">Loading...</div>
+        </div>
+      </div>
+      <div class="intel-card">
+        <h3>Momentum Tracker</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Win probability trend over recent events
+        </div>
+        <div id="momentum-container">
+          <div class="loading-msg" style="padding: 20px;">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Player Comparison (full width interactive) -->
+    <div class="intel-card" style="margin-bottom: 20px;">
+      <h3>Player Comparison</h3>
+      <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+        Head-to-head skill breakdown · Select any two players in the field
+      </div>
+      <div id="player-comparison-container">
+        <div class="loading-msg" style="padding: 20px;">Loading field data...</div>
+      </div>
+    </div>
+
+    <!-- Row 4: Field Breakdown + Prediction Timeline (side by side) -->
+    <div class="intelligence-grid">
+      <div class="intel-card">
+        <h3>Field Strength Breakdown</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Talent distribution by tier vs season average
+        </div>
+        <div id="field-breakdown-container">
+          <div class="loading-msg" style="padding: 20px;">Loading...</div>
+        </div>
+      </div>
+      <div class="intel-card">
+        <h3>Model Picks Timeline</h3>
+        <div style="font-size: 12px; color: rgba(250,250,250,0.4); margin-bottom: 16px;">
+          Pre-tournament predictions from recent events
+        </div>
+        <div id="prediction-timeline-container">
+          <div class="loading-msg" style="padding: 20px;">Loading...</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
