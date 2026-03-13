@@ -2701,10 +2701,23 @@ function renderCourseFit() {
     // Mini contribution bar — shows how each SG category contributes to this player's fit
     const contribs = p.contributions || [];
     const totalContrib = contribs.reduce((s, c) => s + Math.max(0, c.edge), 0) || 1;
-    const miniBar = contribs.map(c => {
+    
+    const barSegments = contribs.map(c => {
       const pct = Math.max(2, (Math.max(0, c.edge) / totalContrib) * 100);
-      return `<div style="width:${pct}%;background:${skillColors[c.skill] || '#5BBF85'};height:100%;border-radius:2px;" title="${c.skill}: ${c.sg >= 0 ? '+' : ''}${c.sg.toFixed(2)} × ${(c.weight * 100).toFixed(0)}%"></div>`;
+      return `<div style="width:${pct}%;background:${skillColors[c.skill] || '#5BBF85'};height:100%;border-radius:2px;"></div>`;
     }).join('');
+    
+    // Build tooltip content showing all contributions
+    const tipContent = contribs.map(c => {
+      const skillName = {OTT:'Off-the-Tee', APP:'Approach', ARG:'Around Green', PUTT:'Putting'}[c.skill] || c.skill;
+      return `${skillName}: ${c.sg >= 0 ? '+' : ''}${c.sg.toFixed(2)} × ${(c.weight * 100).toFixed(0)}%`;
+    }).join('<br>');
+    
+    const miniBar = `
+      <div class="info-tip" style="display:block; cursor:default;">
+        <div style="display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden;">${barSegments}</div>
+        <span class="tip-text" style="width: 240px; bottom: calc(100% + 4px);">${tipContent}</span>
+      </div>`;
     
     return `
       <div style="display: flex; align-items: center; padding: 10px 0; ${i < top15.length - 1 ? 'border-bottom: 1px solid rgba(255,255,255,0.04);' : ''}">
@@ -2714,7 +2727,7 @@ function renderCourseFit() {
           <span style="font-size: 14px; font-weight: 500; color: #FAFAFA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name}</span>
         </div>
         <div style="flex: 1; padding: 0 16px;">
-          <div style="display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden;">${miniBar}</div>
+          ${miniBar}
         </div>
         <div style="width: 50px; text-align: center; font-size: 12px;">${fitDeltaStr}</div>
         <div style="width: 50px; text-align: right;">
@@ -2909,64 +2922,18 @@ function renderPlayerComparison() {
   
   container.innerHTML = `
     <div style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
-      <div style="flex: 1; min-width: 140px; position: relative;">
-        <input type="text" id="compare-search-a" placeholder="Search player..." autocomplete="off"
-          style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
-        <select id="compare-player-a" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
-          ${options}
-        </select>
-      </div>
+      <select id="compare-player-a" style="flex: 1; min-width: 160px;">${options}</select>
       <div style="font-size: 14px; font-weight: 600; color: #C9A84C; letter-spacing: .1em;">VS</div>
-      <div style="flex: 1; min-width: 140px; position: relative;">
-        <input type="text" id="compare-search-b" placeholder="Search player..." autocomplete="off"
-          style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
-        <select id="compare-player-b" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
-          ${options}
-        </select>
-      </div>
+      <select id="compare-player-b" style="flex: 1; min-width: 160px;">${options}</select>
     </div>
     <div id="comparison-result"></div>
   `;
   
-  // Set defaults
-  const selA = document.getElementById('compare-player-a');
-  const selB = document.getElementById('compare-player-b');
-  const inputA = document.getElementById('compare-search-a');
-  const inputB = document.getElementById('compare-search-b');
+  document.getElementById('compare-player-a').value = defaultA;
+  document.getElementById('compare-player-b').value = defaultB;
+  document.getElementById('compare-player-a').addEventListener('change', updateComparison);
+  document.getElementById('compare-player-b').addEventListener('change', updateComparison);
   
-  selA.value = defaultA;
-  selB.value = defaultB;
-  inputA.value = sortedField[0]?.player_name || '';
-  inputB.value = sortedField[1]?.player_name || '';
-  
-  // Sync select → input display
-  function syncSelect(sel, input) {
-    sel.addEventListener('change', function() {
-      const opt = sel.options[sel.selectedIndex];
-      input.value = opt ? opt.text.split(' (')[0] : '';
-      updateComparison();
-    });
-  }
-  syncSelect(selA, inputA);
-  syncSelect(selB, inputB);
-  
-  // Search filter — filter options as user types
-  function setupSearch(input, sel) {
-    input.addEventListener('focus', function() { input.select(); });
-    input.addEventListener('input', function() {
-      const query = input.value.toLowerCase();
-      const allOpts = sortedField;
-      const match = allOpts.find(p => p.player_name.toLowerCase().startsWith(query));
-      if (match) {
-        sel.value = match.dg_id;
-        sel.dispatchEvent(new Event('change'));
-      }
-    });
-  }
-  setupSearch(inputA, selA);
-  setupSearch(inputB, selB);
-  
-  // Initial render
   updateComparison();
 }
 
@@ -3002,27 +2969,35 @@ function updateComparison() {
     if (winner === 'a') aWins++;
     if (winner === 'b') bWins++;
     
-    // Use absolute values for bar width, handle negatives properly
+    // Bars grow outward from center. Each side is 50% of the bar width.
+    // Scale relative to the max absolute value so the largest bar fills its half.
     const absA = Math.abs(aVal);
     const absB = Math.abs(bVal);
-    const maxAbs = Math.max(absA, absB, 0.01);
-    const aPct = Math.max(8, (absA / maxAbs) * 48);
-    const bPct = Math.max(8, (absB / maxAbs) * 48);
+    const maxVal = Math.max(absA, absB, 0.01);
     
-    const aColor = winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.12)';
-    const bColor = winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.12)';
+    // Percentage of its half (0-100%)
+    const aPct = (absA / maxVal) * 100;
+    const bPct = (absB / maxVal) * 100;
+    
+    // Color: winner gets green, loser gets dim. Negative values get red.
+    const aBarColor = aVal < 0 ? '#E76F51' : (winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.12)');
+    const bBarColor = bVal < 0 ? '#E76F51' : (winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.12)');
     
     return `
       <div style="margin-bottom: 14px;">
         <div style="text-align: center; font-size: 11px; font-weight: 500; letter-spacing: .08em; color: rgba(250,250,250,0.4); text-transform: uppercase; margin-bottom: 6px;">${cat.label}</div>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 55px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'a' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(aVal)}</div>
+          <div style="width: 55px; text-align: right; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'a' ? '#5BBF85' : (aVal < 0 ? '#E76F51' : 'rgba(250,250,250,0.5)')};">${formatSG(aVal)}</div>
           <div style="flex: 1; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.03);">
-            <div style="width: ${aPct}%; background: ${aColor}; margin-left: auto; border-radius: 4px 0 0 4px;"></div>
-            <div style="width: 4px; background: rgba(255,255,255,0.08); flex-shrink: 0;"></div>
-            <div style="width: ${bPct}%; background: ${bColor}; border-radius: 0 4px 4px 0;"></div>
+            <div style="width: 50%; display: flex; justify-content: flex-end;">
+              <div style="width: ${aPct}%; background: ${aBarColor}; border-radius: 4px 0 0 4px; min-width: ${aPct > 0 ? '3px' : '0'};"></div>
+            </div>
+            <div style="width: 2px; background: rgba(255,255,255,0.15); flex-shrink: 0;"></div>
+            <div style="width: 50%; display: flex; justify-content: flex-start;">
+              <div style="width: ${bPct}%; background: ${bBarColor}; border-radius: 0 4px 4px 0; min-width: ${bPct > 0 ? '3px' : '0'};"></div>
+            </div>
           </div>
-          <div style="width: 55px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'b' ? '#5BBF85' : 'rgba(250,250,250,0.5)'};">${formatSG(bVal)}</div>
+          <div style="width: 55px; font-family: var(--mono); font-size: 14px; font-weight: 500; color: ${winner === 'b' ? '#5BBF85' : (bVal < 0 ? '#E76F51' : 'rgba(250,250,250,0.5)')};">${formatSG(bVal)}</div>
         </div>
       </div>`;
   }).join('');
@@ -3075,7 +3050,7 @@ function renderFieldBreakdown() {
   
   // Season averages (estimated baseline for a typical ~123-player PGA Tour field)
   const seasonAvg = { elite: 6, topTier: 14, aboveAvg: 25, average: 37, belowAvg: 41 };
-  const seasonTotal = seasonAvg.elite + seasonAvg.strong + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
+  const seasonTotal = seasonAvg.elite + seasonAvg.topTier + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
   
   function bar(items, itemTotal, label) {
     return `
@@ -3130,77 +3105,60 @@ function renderPredictionTimeline() {
     return;
   }
   
-  // Normalize archive to array of events (same logic as momentum)
-  let events = [];
-  if (Array.isArray(globalPredictionArchive)) {
-    events = globalPredictionArchive;
-  } else if (typeof globalPredictionArchive === 'object' && globalPredictionArchive !== null) {
-    if (globalPredictionArchive.data && Array.isArray(globalPredictionArchive.data)) {
-      events = globalPredictionArchive.data;
-    } else if (globalPredictionArchive.events && Array.isArray(globalPredictionArchive.events)) {
-      events = globalPredictionArchive.events;
-    } else {
-      const keys = Object.keys(globalPredictionArchive).filter(k => k !== 'event_name' && k !== 'year');
-      events = keys.map(key => {
-        const val = globalPredictionArchive[key];
-        if (Array.isArray(val)) return { event_name: key, predictions: val };
-        if (val && typeof val === 'object') return { event_name: val.event_name || key, predictions: val.baseline_history_fit || val.predictions || val.baseline || [] };
-        return null;
-      }).filter(Boolean);
-    }
+  // The archive for the current plan returns data for one event at a time.
+  // It has keys like: baseline_history_fit, baseline, event_name, event_id, etc.
+  // We'll show the two model variants (baseline + course-fit) for this event as cards.
+  const archive = globalPredictionArchive;
+  const eventName = archive.event_name || globalTournamentInfo.event_name || 'Current Event';
+  
+  const models = [];
+  
+  // Course-fit model (baseline_history_fit) — the primary model
+  if (archive.baseline_history_fit && Array.isArray(archive.baseline_history_fit) && archive.baseline_history_fit.length > 0) {
+    models.push({ name: 'Course Fit Model', key: 'baseline_history_fit', preds: archive.baseline_history_fit });
   }
   
-  if (events.length === 0 || validEvents.length === 0) {
+  // Baseline model
+  if (archive.baseline && Array.isArray(archive.baseline) && archive.baseline.length > 0) {
+    models.push({ name: 'Baseline Model', key: 'baseline', preds: archive.baseline });
+  }
+  
+  if (models.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; padding: 28px 20px;">
         <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">
-          The timeline will populate as the season progresses, showing the model's top pre-tournament picks for each event and how they performed.
+          The timeline will show pre-tournament model picks as the season progresses.
         </div>
-        <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25);">Tracks model accuracy across the full PGA Tour season</div>
       </div>`;
     return;
   }
   
-  // Show last 6 events (most recent first), filter out metadata entries
-  const validEvents = events.filter(e => {
-    const name = (e.event_name || '').toLowerCase();
-    // Skip metadata keys that aren't real events
-    if (name === 'models_available' || name === 'year' || name === 'event_name') return false;
-    // Must have parseable predictions
-    const preds = e.baseline_history_fit || e.predictions || e.baseline || [];
-    return Array.isArray(preds) && preds.length > 0 && preds[0] && preds[0].player_name;
-  });
-  
-  const recent = validEvents.slice(-6).reverse();
-  
-  const cards = recent.map(event => {
-    const eventName = event.event_name || 'Unknown Event';
-    const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
-    const top5 = [...preds].sort((a, b) => (b.win || 0) - (a.win || 0)).slice(0, 5);
+  const cards = models.map(model => {
+    const top5 = [...model.preds].sort((a, b) => (b.win || 0) - (a.win || 0)).slice(0, 5);
     
     const playerList = top5.map((p, i) => `
-      <div style="display: flex; align-items: center; gap: 6px; padding: 3px 0;">
-        <span style="font-family: var(--mono); font-size: 11px; color: ${i === 0 ? '#C9A84C' : 'rgba(250,250,250,0.3)'}; width: 16px;">${i + 1}</span>
-        <span style="font-size: 12px; color: rgba(250,250,250,0.7); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name}</span>
-        <span style="font-family: var(--mono); font-size: 11px; color: #5BBF85;">${(p.win * 100).toFixed(1)}%</span>
+      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 0;">
+        <span style="font-family: var(--mono); font-size: 12px; color: ${i === 0 ? '#C9A84C' : 'rgba(250,250,250,0.3)'}; width: 18px;">${i + 1}</span>
+        <span style="font-size: 13px; color: rgba(250,250,250,0.7); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name || 'Unknown'}</span>
+        <span style="font-family: var(--mono); font-size: 12px; color: #5BBF85;">${((p.win || 0) * 100).toFixed(1)}%</span>
       </div>
     `).join('');
     
     return `
-      <div style="min-width: 200px; max-width: 220px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px; flex-shrink: 0;">
-        <div style="font-size: 13px; font-weight: 600; color: #FAFAFA; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${eventName}">${eventName}</div>
-        <div style="font-size: 10px; color: rgba(250,250,250,0.3); margin-bottom: 12px;">Model Top 5</div>
+      <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px;">
+        <div style="font-size: 14px; font-weight: 600; color: #FAFAFA; margin-bottom: 4px;">${model.name}</div>
+        <div style="font-size: 11px; color: rgba(250,250,250,0.3); margin-bottom: 14px;">${eventName} · Top 5 Win Probability</div>
         ${playerList}
       </div>
     `;
   }).join('');
   
   container.innerHTML = `
-    <div style="display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch;">
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
       ${cards}
     </div>
-    <div style="margin-top: 12px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
-      Pre-tournament model picks for recent events · Actual result tracking coming soon
+    <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;" class="info-tip" style="display: inline;">
+      Course Fit Model adjusts for course-specific skill demands · Baseline uses overall skill only
     </div>
   `;
 }
