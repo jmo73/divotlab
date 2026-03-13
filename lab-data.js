@@ -422,7 +422,15 @@ async function loadAllData() {
       console.log('✓ Field list:', globalFieldList.length, 'players');
       console.log('✓ Tournament state:', getTournamentState(globalTournamentInfo));
       if (globalCourseWeights) console.log('✓ Course weights:', globalCourseWeights.match_name, '(matched:', globalCourseWeights.matched + ')');
-      if (globalPredictionArchive.length) console.log('✓ Prediction archive:', Array.isArray(globalPredictionArchive) ? globalPredictionArchive.length + ' events' : 'loaded');
+      if (globalPredictionArchive) {
+        const archiveType = Array.isArray(globalPredictionArchive) ? 'array(' + globalPredictionArchive.length + ')' : 'object(' + Object.keys(globalPredictionArchive).length + ' keys)';
+        console.log('✓ Prediction archive:', archiveType);
+        if (typeof globalPredictionArchive === 'object' && !Array.isArray(globalPredictionArchive)) {
+          console.log('  Archive keys:', Object.keys(globalPredictionArchive).slice(0, 10).join(', '));
+        }
+      } else {
+        console.log('⚠️ Prediction archive: null/undefined');
+      }
       if (globalApproachDetail) console.log('✓ Approach detail: loaded');
       
       // Log enrichment sources
@@ -2368,6 +2376,14 @@ function computeAdvancedAnalytics() {
   } catch (e) { console.warn('  ⚠️ Momentum error:', e.message); }
 }
 
+// ── HELPER: Median ───────────────────────────────────────────
+function getMedian(arr) {
+  const sorted = [...arr].filter(v => v != null).sort((a, b) => a - b);
+  if (sorted.length === 0) return 0;
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 // ── 1. COURSE FIT SCORE ──────────────────────────────────────
 
 function computeCourseFit(field) {
@@ -2381,21 +2397,31 @@ function computeCourseFit(field) {
   const scored = scoreable.map(p => {
     const rawFit = (p.sg_ott * w.ott) + (p.sg_app * w.app) + (p.sg_arg * w.arg) + (p.sg_putt * w.putt);
     
-    // Also compute which skill contributes most to their fit
+    // Determine the player's relative edge: where are they strongest in a category
+    // that this course values? We want the skill where (player_sg / field_avg_sg) is highest
+    // AND the course weight is meaningful. Use "sg_value × weight" but normalize by 
+    // comparing to field median in that category, so approach doesn't always win.
+    const fieldMedians = {
+      ott: getMedian(scoreable.map(x => x.sg_ott)),
+      app: getMedian(scoreable.map(x => x.sg_app)),
+      arg: getMedian(scoreable.map(x => x.sg_arg)),
+      putt: getMedian(scoreable.map(x => x.sg_putt))
+    };
+    
     const contributions = [
-      { skill: 'OTT', contrib: p.sg_ott * w.ott, sg: p.sg_ott, weight: w.ott },
-      { skill: 'APP', contrib: p.sg_app * w.app, sg: p.sg_app, weight: w.app },
-      { skill: 'ARG', contrib: p.sg_arg * w.arg, sg: p.sg_arg, weight: w.arg },
-      { skill: 'PUTT', contrib: p.sg_putt * w.putt, sg: p.sg_putt, weight: w.putt }
+      { skill: 'OTT', edge: (p.sg_ott - fieldMedians.ott) * w.ott, sg: p.sg_ott, weight: w.ott },
+      { skill: 'APP', edge: (p.sg_app - fieldMedians.app) * w.app, sg: p.sg_app, weight: w.app },
+      { skill: 'ARG', edge: (p.sg_arg - fieldMedians.arg) * w.arg, sg: p.sg_arg, weight: w.arg },
+      { skill: 'PUTT', edge: (p.sg_putt - fieldMedians.putt) * w.putt, sg: p.sg_putt, weight: w.putt }
     ];
-    const bestSkill = contributions.sort((a, b) => b.contrib - a.contrib)[0];
+    const bestSkill = contributions.sort((a, b) => b.edge - a.edge)[0];
     
     return {
       ...p,
       course_fit_raw: rawFit,
       best_skill: bestSkill.skill,
-      best_skill_contrib: bestSkill.contrib,
-      contributions: contributions.sort((a, b) => b.contrib - a.contrib)
+      best_skill_edge: bestSkill.edge,
+      contributions: contributions.sort((a, b) => b.edge - a.edge)
     };
   });
   
@@ -2480,19 +2506,50 @@ function computeOverperformance(field) {
 // ── 3. MOMENTUM SCORE ────────────────────────────────────────
 
 function computeMomentum(field) {
-  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive) || globalPredictionArchive.length === 0) {
+  if (!globalPredictionArchive) {
     console.log('  ℹ️ No prediction archive available for momentum calculation');
     return [];
   }
   
-  // The archive structure varies — it could be an array of event objects
-  // each containing predictions, or a flat structure. Let's handle both.
+  // The DataGolf pre-tournament-archive endpoint can return data in several formats:
+  // 1. Array of event objects: [{event_name, baseline_history_fit: [...]}]
+  // 2. Object with event keys: { "event_id_1": [...], "event_id_2": [...] }
+  // 3. Object with a wrapping key: { data: [...], events: [...] }
+  // We need to normalize to: [{event_name, predictions: [...]}]
   let events = [];
+  
   if (Array.isArray(globalPredictionArchive)) {
+    // Format 1: direct array of event objects
     events = globalPredictionArchive;
-  } else if (globalPredictionArchive.events) {
-    events = globalPredictionArchive.events;
+  } else if (typeof globalPredictionArchive === 'object' && globalPredictionArchive !== null) {
+    // Check for common wrapper keys
+    if (globalPredictionArchive.data && Array.isArray(globalPredictionArchive.data)) {
+      events = globalPredictionArchive.data;
+    } else if (globalPredictionArchive.events && Array.isArray(globalPredictionArchive.events)) {
+      events = globalPredictionArchive.events;
+    } else {
+      // Format 2: object with event IDs as keys, each containing prediction arrays
+      // or each containing an object with predictions
+      const keys = Object.keys(globalPredictionArchive).filter(k => k !== 'event_name' && k !== 'year');
+      if (keys.length > 0) {
+        events = keys.map((key, idx) => {
+          const val = globalPredictionArchive[key];
+          if (Array.isArray(val)) {
+            return { event_name: key, predictions: val, _index: idx };
+          } else if (val && typeof val === 'object') {
+            return {
+              event_name: val.event_name || key,
+              predictions: val.baseline_history_fit || val.predictions || val.baseline || [],
+              _index: idx
+            };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+    }
   }
+  
+  console.log('  Momentum: parsed', events.length, 'events from archive');
   
   if (events.length === 0) return [];
   
@@ -2502,6 +2559,8 @@ function computeMomentum(field) {
   events.forEach((event, eventIdx) => {
     const eventName = event.event_name || `Event ${eventIdx + 1}`;
     const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
+    
+    if (!Array.isArray(preds)) return;
     
     preds.forEach(p => {
       if (!p.dg_id || p.win == null) return;
@@ -2800,12 +2859,12 @@ function renderPlayerComparison() {
   const defaultB = sortedField[1]?.dg_id || '';
   
   container.innerHTML = `
-    <div style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;">
-      <select id="compare-player-a" style="flex: 1; min-width: 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+    <div style="display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+      <select id="compare-player-a" style="flex: 1; min-width: 140px;">
         ${options}
       </select>
-      <div style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #C9A84C; letter-spacing: .1em;">VS</div>
-      <select id="compare-player-b" style="flex: 1; min-width: 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; color: #FAFAFA; font-family: var(--body); font-size: 13px; outline: none;">
+      <div style="font-size: 14px; font-weight: 600; color: #C9A84C; letter-spacing: .1em;">VS</div>
+      <select id="compare-player-b" style="flex: 1; min-width: 140px;">
         ${options}
       </select>
     </div>
@@ -2924,8 +2983,13 @@ function renderFieldBreakdown() {
   
   const total = field.length;
   
-  // Season averages (hardcoded baseline — refine over time)
-  const seasonAvg = { elite: 8, strong: 22, aboveAvg: 30, average: 40, belowAvg: 44 };
+  // Season averages (estimated baseline for a typical 144-player PGA Tour field)
+  // Elite (SG 2.0+): ~3-4 players in most fields, higher in signature events
+  // Strong (1.0-2.0): ~15-20 players
+  // Above Avg (0.5-1.0): ~25-30 players
+  // Average (0.0-0.5): ~40-45 players
+  // Below Avg (<0.0): ~50-55 players
+  const seasonAvg = { elite: 4, strong: 18, aboveAvg: 28, average: 42, belowAvg: 52 };
   const seasonTotal = seasonAvg.elite + seasonAvg.strong + seasonAvg.aboveAvg + seasonAvg.average + seasonAvg.belowAvg;
   
   function bar(items, itemTotal, label) {
@@ -2974,12 +3038,35 @@ function renderPredictionTimeline() {
   const container = document.getElementById('prediction-timeline-container');
   if (!container) return;
   
-  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive) || globalPredictionArchive.length === 0) {
+  if (!globalPredictionArchive) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Prediction archive not available</div>';
     return;
   }
   
-  const events = globalPredictionArchive;
+  // Normalize archive to array of events (same logic as momentum)
+  let events = [];
+  if (Array.isArray(globalPredictionArchive)) {
+    events = globalPredictionArchive;
+  } else if (typeof globalPredictionArchive === 'object' && globalPredictionArchive !== null) {
+    if (globalPredictionArchive.data && Array.isArray(globalPredictionArchive.data)) {
+      events = globalPredictionArchive.data;
+    } else if (globalPredictionArchive.events && Array.isArray(globalPredictionArchive.events)) {
+      events = globalPredictionArchive.events;
+    } else {
+      const keys = Object.keys(globalPredictionArchive).filter(k => k !== 'event_name' && k !== 'year');
+      events = keys.map(key => {
+        const val = globalPredictionArchive[key];
+        if (Array.isArray(val)) return { event_name: key, predictions: val };
+        if (val && typeof val === 'object') return { event_name: val.event_name || key, predictions: val.baseline_history_fit || val.predictions || val.baseline || [] };
+        return null;
+      }).filter(Boolean);
+    }
+  }
+  
+  if (events.length === 0) {
+    container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">No events in prediction archive</div>';
+    return;
+  }
   
   // Show last 6 events (most recent first)
   const recent = events.slice(-6).reverse();

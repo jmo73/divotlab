@@ -503,8 +503,8 @@ nav {
   margin: 0 auto;
 }
 .chart-card {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px;
   padding: 24px;
 }
@@ -518,7 +518,7 @@ nav {
   justify-content: center;
 }
 .chart-card:hover {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.06);
 }
 .chart-title {
   font-size: 15px;
@@ -576,17 +576,44 @@ footer {
   font-size: 14px;
 }
 
+/* GLOBAL SELECT/DROPDOWN STYLING */
+select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #FAFAFA;
+  font-family: var(--body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(250,250,250,0.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+select:focus {
+  border-color: var(--green-light);
+  background-color: rgba(255,255,255,0.08);
+}
+select option {
+  background: #1a1a1a;
+  color: #FAFAFA;
+  padding: 8px;
+}
+
 /* TOURNAMENT INTELLIGENCE */
 .intelligence-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  max-width: 1100px;
   margin: 0 auto;
 }
 .intel-card {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px;
   padding: 24px 28px;
 }
@@ -1048,6 +1075,19 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   </div>
 </section>
 
+<!-- PREDICTIONS -->
+<section class="lab-section" id="predictions">
+  <div class="section-header">
+    <h2>Predictions</h2>
+    <div class="section-toggle">▼</div>
+  </div>
+  <div class="section-body">
+    <div id="predictions-table">
+      <div class="loading-msg">Loading predictions...</div>
+    </div>
+  </div>
+</section>
+
 <!-- RANKINGS -->
 <section class="lab-section" id="rankings">
   <div class="section-header">
@@ -1067,7 +1107,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <!-- ANALYTICS -->
 <section class="lab-section" id="analytics">
   <div class="section-header">
-    <h2>Analytics Dashboard</h2>
+    <h2>Charts</h2>
     <div class="section-toggle">▼</div>
   </div>
   <div class="section-body">
@@ -1182,6 +1222,35 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
         drawer.classList.remove('open');
       });
     });
+  }
+
+  // Section nav scroll spy
+  var sectionNav = document.querySelector('.section-nav');
+  if (sectionNav) {
+    var navLinks = sectionNav.querySelectorAll('a[href^="#"]');
+    var sections = [];
+    navLinks.forEach(function(link) {
+      var id = link.getAttribute('href').substring(1);
+      var section = document.getElementById(id);
+      if (section) sections.push({ el: section, link: link, id: id });
+    });
+
+    if (sections.length > 0) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            navLinks.forEach(function(l) { l.classList.remove('active'); });
+            var match = sections.find(function(s) { return s.el === entry.target; });
+            if (match) match.link.classList.add('active');
+          }
+        });
+      }, {
+        rootMargin: '-140px 0px -60% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(function(s) { observer.observe(s.el); });
+    }
   }
 })();
 </script>
