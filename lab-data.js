@@ -3021,11 +3021,11 @@ function renderFieldBreakdown() {
     return `
       <div style="margin-bottom: 8px;">
         <div style="font-size: 10px; color: rgba(250,250,250,0.3); margin-bottom: 4px;">${label}</div>
-        <div style="display: flex; height: 20px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.02);">
+        <div style="display: flex; height: 40px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,0.02);">
           ${items.map(t => {
             const pct = (t.count / itemTotal) * 100;
             return pct > 0 ? `<div style="width: ${pct}%; background: ${t.color}; display: flex; align-items: center; justify-content: center;" title="${t.name}: ${t.count}">
-              ${pct > 8 ? `<span style="font-size: 9px; font-weight: 600; color: ${t.color === 'rgba(250,250,250,0.15)' ? 'rgba(250,250,250,0.4)' : '#0A0A0A'};">${t.count}</span>` : ''}
+              ${pct > 8 ? `<span style="font-size: 11px; font-weight: 600; color: ${t.color === 'rgba(250,250,250,0.15)' ? 'rgba(250,250,250,0.4)' : '#0A0A0A'};">${t.count}</span>` : ''}
             </div>` : '';
           }).join('')}
         </div>
