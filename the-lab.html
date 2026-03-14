@@ -651,6 +651,8 @@ select option {
   border: 1px solid rgba(255,255,255,0.11);
   border-radius: 10px;
   padding: 24px 28px;
+  min-width: 0; /* Allow grid children to shrink below content size */
+  overflow: hidden; /* Contain scrollable children */
 }
 .intel-card h3 {
   font-size: 14px;
