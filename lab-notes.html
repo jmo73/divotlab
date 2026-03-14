@@ -178,7 +178,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   position:fixed;
   top:68px; left:0; right:0;
   z-index:99;
-  background:rgba(10,10,10,0.92);
+  background:rgba(10,10,10,0.95);
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
   border-bottom:1px solid rgba(255,255,255,0.07);
@@ -190,12 +190,14 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   max-height:0;
   overflow:hidden;
   opacity:0;
+  pointer-events: none;
   transition:max-height .38s cubic-bezier(.22,1,.36,1),
              opacity .28s ease;
 }
 .nav-drawer.open {
-  max-height:260px;
+  max-height:320px;
   opacity:1;
+  pointer-events: auto;
 }
 
 .nav-drawer a {
@@ -211,6 +213,40 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   margin-top:8px;
   width:auto; padding:10px 32px;
   border-radius:5px;
+}
+
+/* =============================================
+   STICKY MOBILE CTA BAR
+   ============================================= */
+.mobile-cta-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 98;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 20px;
+  gap: 10px;
+}
+.mobile-cta-bar a {
+  flex: 1;
+  text-align: center;
+  padding: 13px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.2s;
+}
+.mobile-cta-bar .mcta-pro {
+  background: var(--gold);
+  color: var(--black);
+}
+.mobile-cta-bar .mcta-notes {
+  background: var(--green);
+  color: var(--white);
 }
 
 /* =============================================
@@ -338,6 +374,16 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   border-color: rgba(255,255,255,0.25);
   color: var(--white);
   background: rgba(255,255,255,0.03);
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--black);
+}
+.btn-gold:hover {
+  background: #D4B45E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,0.2);
 }
 
 .hero-note {
@@ -1124,15 +1170,20 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   nav { padding: 0 22px; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
+  .mobile-cta-bar { display: flex; }
+  body { padding-bottom: 72px; }
   .hero { padding: 90px 20px 70px; }
   .section { padding: 64px 20px; }
   .content-grid { grid-template-columns: 1fr; }
   .hero-ctas { flex-direction: column; align-items: center; }
+  .hero-ctas .btn { width: 100%; max-width: 320px; justify-content: center; }
   .proof-section { padding: 60px 20px; }
   .faq-section { padding: 64px 20px; }
   .final-cta { padding: 80px 20px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   footer { padding: 48px 22px 28px; }
+  .pick-row { grid-template-columns: 1fr 60px; }
+  .pick-book { display: none; }
 }
 
 /* FOOTER */
@@ -1207,65 +1258,111 @@ footer {
   <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
+<!-- STICKY MOBILE CTA -->
+<div class="mobile-cta-bar">
+  <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="mcta-pro">Pro · Free Week</a>
+  <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="mcta-notes">Notes · Free Week</a>
+</div>
+
 <!-- ========== HERO ========== -->
 <section class="hero">
   <div class="hero-eyebrow">Introducing Lab Notes</div>
   <h1>Data-driven analysis.<br>Every <em>tournament.</em></h1>
   <p class="hero-sub">Course-fit models. Odds comparison across every major sportsbook. Plus weekly analysis, practice drills, and the stats that actually move the needle. One subscription for a major edge.</p>
   <div class="hero-ctas">
-    <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-green">Start Your Free Week →</a>
-    <a href="#picks" class="btn btn-ghost">See a sample pick sheet</a>
+    <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-gold">Start Pro · Free Week →</a>
+    <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="btn btn-green">Start Notes · Free Week →</a>
   </div>
-  <p class="hero-note">Cancel anytime. First week free. Tiers starting at $4.99/mo.</p>
-  <div class="scroll-hint">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
+  <p class="hero-note">Cancel anytime. First week free. Starting at $4.99/mo.</p>
+</section>
+
+<!-- ========== TRUST BAR ========== -->
+<div style="padding: 28px 32px; text-align: center; font-size: 13px; color: var(--steel-dim); border-bottom: 1px solid var(--border); background: var(--black-mid); letter-spacing: 0.01em;">
+  Built on <strong style="color: var(--green-light); font-weight: 600;">strokes gained models</strong> and <strong style="color: var(--green-light); font-weight: 600;">PGA Tour data</strong> · Delivered every tournament week · Two tiers to fit how you follow the game
+</div>
+
+<!-- ========== PRICING — early for conversion ========== -->
+<section class="section pricing-section" id="pricing">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Pick your tier</h2>
+    <p class="section-desc">Both plans include a free first week. Cancel anytime from your account.</p>
   </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card gold reveal">
+      <div class="pricing-tier">Lab Notes Pro</div>
+      <div class="pricing-price">
+        <span class="pricing-dollar">$9.99</span>
+        <span class="pricing-period">/mo</span>
+      </div>
+      <p class="pricing-annual"><a href="https://buy.stripe.com/3cIeVc8oq0fu0PhgYA1ZS06" style="color:var(--gold); border-bottom:1px solid rgba(201,168,76,0.3); padding-bottom:1px;">$99.99/year (save 16%)</a></p>
+      <p class="pricing-desc">The full package. Weekly analysis plus data-backed tournament picks with odds comparison across every major sportsbook.</p>
+      <ul class="pricing-features">
+        <li>Everything in Lab Notes</li>
+        <li>Lab Picks — weekly betting breakdown (Wed)</li>
+        <li>Course-fit model scores per player</li>
+        <li>Best odds comparison (6+ sportsbooks)</li>
+        <li>Outright, top 10, top 20, matchup picks</li>
+        <li>Longshot value plays</li>
+        <li>Season-long pick tracking & ROI</li>
+        <li>Priority access to new features</li>
+      </ul>
+      <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="pricing-btn pricing-btn-gold">Start Free Week →</a>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Lab Notes</div>
+      <div class="pricing-price">
+        <span class="pricing-dollar">$4.99</span>
+        <span class="pricing-period">/mo</span>
+      </div>
+      <p class="pricing-annual"><a href="https://buy.stripe.com/bJedR82024vK2XpbEg1ZS04" style="color:var(--green-light); border-bottom:1px solid rgba(91,191,133,0.3); padding-bottom:1px;">$49.99/year (save 16%)</a></p>
+      <p class="pricing-desc">Weekly analysis, tournament coverage, and practice plans — without the betting picks.</p>
+      <ul class="pricing-features">
+        <li>Weekly tournament preview & recap (Tue)</li>
+        <li>Strokes gained breakdowns</li>
+        <li>Practice Lab — drills by handicap range</li>
+        <li>Deep dive analysis pieces</li>
+        <li>Stat of the week</li>
+        <li>Gear & tech spotlights</li>
+        <li>Full archive access</li>
+      </ul>
+      <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="pricing-btn pricing-btn-green">Start Free Week →</a>
+    </div>
+  </div>
+
+  <p class="pricing-note">Annual plans billed once per year. Cancel anytime. No refund needed — you keep access through the end of your term.</p>
 </section>
 
 <!-- ========== WHAT YOU GET ========== -->
 <section class="section what-you-get" id="what">
   <div class="section-header reveal">
-    <div class="section-eyebrow">What You Get</div>
-    <h2 class="section-title">Every insight, built on data</h2>
-    <p class="section-desc">Lab Notes isn't hot takes or recycled ESPN clips. It's original analysis, practice strategy, and tournament coverage built from the numbers.</p>
+    <div class="section-eyebrow">What's Inside</div>
+    <h2 class="section-title">Three pillars, every week</h2>
+    <p class="section-desc">Not hot takes. Not recycled ESPN clips. Original analysis built from the numbers.</p>
   </div>
 
   <div class="content-grid">
     <div class="content-card reveal">
+      <div class="card-tag" style="color: var(--green-light); background: var(--green-glow);">Both Tiers</div>
       <div class="card-icon">&#9971;</div>
-      <h3>Tournament Preview</h3>
-      <p>Course breakdown, field strength analysis, key stats to watch, and which players' games fit the week. Built from strokes gained models and historical course data.</p>
+      <h3>Tournament Intelligence</h3>
+      <p>Course breakdown, field strength analysis, key stats to watch, and which players' games fit the week. Weekend recap with strokes gained leaders and the numbers behind the result. Deep dives and stat of the week included.</p>
     </div>
 
     <div class="content-card reveal">
-      <div class="card-icon">&#128202;</div>
-      <h3>Weekend Recap & Stats</h3>
-      <p>What actually happened and why. Strokes gained breakdowns for the top 10, the key stat swings, and what the leaderboard doesn't tell you.</p>
-    </div>
-
-    <div class="content-card reveal">
+      <div class="card-tag" style="color: var(--green-light); background: var(--green-glow);">Both Tiers</div>
       <div class="card-icon">&#127919;</div>
       <h3>Practice Lab</h3>
-      <p>One drill, one stat, one focus area. Structured practice plans based on strokes gained data — specific to your handicap range. 15-minute and 45-minute sessions.</p>
+      <p>One drill, one stat, one focus area. Structured practice based on strokes gained data — calibrated to your handicap range (0-10, 10-20, 20+). 15-minute and 45-minute sessions. Plus gear and tech spotlights when warranted.</p>
     </div>
 
     <div class="content-card reveal">
-      <div class="card-icon">&#128218;</div>
-      <h3>Deep Dives</h3>
-      <p>Long-form analysis pieces. "Why putting stats lie." "The approach shot myth." Original research that changes how you think about the game.</p>
-    </div>
-
-    <div class="content-card reveal">
-      <div class="card-icon">&#9881;&#65039;</div>
-      <h3>Gear & Tech</h3>
-      <p>Data-driven equipment analysis. Launch monitor comparisons. What the numbers actually say about that new driver — not what the marketing says.</p>
-    </div>
-
-    <div class="content-card reveal">
-      <div class="card-icon">&#128200;</div>
-      <h3>Stat of the Week</h3>
-      <p>One number, explained. A single data point from the PGA Tour or your handicap range that reframes how you should think about improvement.</p>
+      <div class="card-tag" style="color: var(--gold); background: var(--gold-dim);">Pro Tier</div>
+      <div class="card-icon" style="background: var(--gold-dim);">&#128200;</div>
+      <h3>Lab Picks</h3>
+      <p>Data-backed betting picks for every tournament. Course-fit model scores, best odds across 6+ sportsbooks, outright winners, top 10/20 finishes, and matchup plays. Picks from a model, not a gut feeling.</p>
     </div>
   </div>
 </section>
@@ -1368,60 +1465,6 @@ footer {
   </div>
 </section>
 
-<!-- ========== PRICING ========== -->
-<section class="section pricing-section" id="pricing">
-  <div class="section-header reveal">
-    <div class="section-eyebrow">Pricing</div>
-    <h2 class="section-title">Pick your tier</h2>
-    <p class="section-desc">Both plans include a free first week. Cancel anytime from your account.</p>
-  </div>
-
-  <div class="pricing-grid">
-    <div class="pricing-card gold reveal">
-      <div class="pricing-tier">Lab Notes Pro</div>
-      <div class="pricing-price">
-        <span class="pricing-dollar">$9.99</span>
-        <span class="pricing-period">/mo</span>
-      </div>
-      <p class="pricing-annual"><a href="https://buy.stripe.com/3cIeVc8oq0fu0PhgYA1ZS06" style="color:var(--gold); border-bottom:1px solid rgba(201,168,76,0.3); padding-bottom:1px;">$99.99/year (save 16%)</a></p>
-      <p class="pricing-desc">The full package. Weekly analysis plus data-backed tournament picks with odds comparison across every major sportsbook.</p>
-      <ul class="pricing-features">
-        <li>Everything in Lab Notes</li>
-        <li>Lab Picks — weekly betting breakdown (Wed)</li>
-        <li>Course-fit model scores per player</li>
-        <li>Best odds comparison (6+ sportsbooks)</li>
-        <li>Outright, top 10, top 20, matchup picks</li>
-        <li>Longshot value plays</li>
-        <li>Season-long pick tracking & ROI</li>
-        <li>Priority access to new features</li>
-      </ul>
-      <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="pricing-btn pricing-btn-gold">Start Free Week →</a>
-    </div>
-
-    <div class="pricing-card reveal">
-      <div class="pricing-tier">Lab Notes</div>
-      <div class="pricing-price">
-        <span class="pricing-dollar">$4.99</span>
-        <span class="pricing-period">/mo</span>
-      </div>
-      <p class="pricing-annual"><a href="https://buy.stripe.com/bJedR82024vK2XpbEg1ZS04" style="color:var(--green-light); border-bottom:1px solid rgba(91,191,133,0.3); padding-bottom:1px;">$49.99/year (save 16%)</a></p>
-      <p class="pricing-desc">Weekly analysis, tournament coverage, and practice plans — without the betting picks.</p>
-      <ul class="pricing-features">
-        <li>Weekly tournament preview & recap (Tue)</li>
-        <li>Strokes gained breakdowns</li>
-        <li>Practice Lab — drills by handicap range</li>
-        <li>Deep dive analysis pieces</li>
-        <li>Stat of the week</li>
-        <li>Gear & tech spotlights</li>
-        <li>Full archive access</li>
-      </ul>
-      <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="pricing-btn pricing-btn-green">Start Free Week →</a>
-    </div>
-  </div>
-
-  <p class="pricing-note">Annual plans billed once per year. Cancel anytime. No refund needed — you keep access through the end of your term.</p>
-</section>
-
 <!-- ========== SOCIAL PROOF ========== -->
 <div class="proof-section">
   <div class="proof-grid">
@@ -1457,7 +1500,10 @@ footer {
   <div class="section-eyebrow reveal">Ready?</div>
   <h2 class="section-title reveal">Your inbox. <em>Upgraded.</em></h2>
   <p class="section-desc reveal">First week free. See if the numbers change how you watch the game.</p>
-  <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-green reveal">Start Your Free Week →</a>
+  <div class="reveal" style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 8px;">
+    <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-gold">Start Pro · Free Week →</a>
+    <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="btn btn-green">Start Notes · Free Week →</a>
+  </div>
 </section>
 
 <!-- ========== FAQ ========== -->
@@ -1589,6 +1635,21 @@ footer {
         drawer.classList.remove('open');
       });
     });
+  }
+
+  // Hide mobile CTA bar when pricing section is visible (avoid double CTAs)
+  var mobileBar = document.querySelector('.mobile-cta-bar');
+  if (mobileBar) {
+    var pricingEl = document.getElementById('pricing');
+    if (pricingEl) {
+      var barObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          mobileBar.style.transform = e.isIntersecting ? 'translateY(100%)' : 'translateY(0)';
+          mobileBar.style.transition = 'transform 0.3s ease';
+        });
+      }, { threshold: 0.15 });
+      barObs.observe(pricingEl);
+    }
   }
 })();
 </script>
