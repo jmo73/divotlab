@@ -926,11 +926,22 @@ app.get('/api/lab-data', async (req, res) => {
       
       // Find completed PGA events this season using the status field from DataGolf schedule
       // (schedule has no end_date — only start_date and status)
+      // Also find the current event's start_date to filter opposite-field events
+      const currentScheduleEntry = fullSchedule.find(e => String(e.event_id) === String(currentEventId));
+      const currentStartDate = currentScheduleEntry ? new Date(currentScheduleEntry.start_date + 'T00:00:00') : null;
+      
       const completedEvents = fullSchedule.filter(e => {
         if (!e.event_id) return false;
         if (e.status !== 'completed') return false;
         // Skip if it's the current event (we fetch that separately below)
         if (String(e.event_id) === String(currentEventId)) return false;
+        // Skip opposite-field events running the same week as the current event
+        // (e.g. Puerto Rico Open running alongside The Players Championship)
+        if (currentStartDate && e.start_date) {
+          const evtStart = new Date(e.start_date + 'T00:00:00');
+          const daysDiff = Math.abs((evtStart - currentStartDate) / 86400000);
+          if (daysDiff <= 3) return false; // same tournament week
+        }
         return true;
       });
       

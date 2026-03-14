@@ -3070,8 +3070,10 @@ function renderPredictionTimeline() {
     return;
   }
   
-  // Filter to events with actual predictions
-  const events = globalPredictionArchive.filter(e => e.predictions && e.predictions.length > 0);
+  // Filter to events with actual predictions, then reverse so most recent is first
+  const events = globalPredictionArchive
+    .filter(e => e.predictions && e.predictions.length > 0)
+    .reverse();
   
   if (events.length === 0) {
     container.innerHTML = `
