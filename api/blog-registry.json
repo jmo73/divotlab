@@ -181,6 +181,20 @@
   "hero_alt": "Rory hitting driver at the BMW Championship",
   "hero_credit": "",
   "featured": false
+},
+{
+  "slug": "the-150-yard-number-that-predicts-your-handicap-within-2-strokes",
+  "title": "The 150-Yard Number That Predicts Your Handicap (Within 2 Strokes)",
+  "category": "Strokes Gained",
+  "category_class": "sg",
+  "date": "Mar 14, 2026",
+  "date_iso": "2026-03-14",
+  "read_time": "6 min read",
+  "meta_description": "One distance reveals everything about your game. We analyzed thousands of golfers and found the 150-yard proximity number that predicts handicap with stunning accuracy.",
+  "hero_image": "/golf_course.jpg",
+  "hero_alt": "Golf course",
+  "hero_credit": "",
+  "featured": false
 }
   ]
 }
