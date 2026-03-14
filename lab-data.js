@@ -1916,7 +1916,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Section nav active states — scroll-position based
   const navLinks = document.querySelectorAll('.section-nav a');
-  const sectionIds = ['events', 'leaderboard', 'intelligence', 'predictions', 'rankings', 'analytics', 'strategy'];
+  const sectionIds = ['events', 'leaderboard', 'divotlab-analytics', 'intelligence', 'predictions', 'rankings', 'analytics', 'strategy'];
   const allSections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
   
   // Scroll-spy: highlight whichever section's top is closest above the viewport top

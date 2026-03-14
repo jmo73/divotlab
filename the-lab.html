@@ -1341,38 +1341,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     });
   }
 
-  // Section nav scroll spy — scroll-position based for reliability
-  var sectionNav = document.querySelector('.section-nav');
-  if (sectionNav) {
-    var navLinks = sectionNav.querySelectorAll('a[href^="#"]');
-    var sectionEls = [];
-    navLinks.forEach(function(link) {
-      var id = link.getAttribute('href').substring(1);
-      var section = document.getElementById(id);
-      if (section) sectionEls.push({ el: section, link: link });
-    });
-
-    if (sectionEls.length > 0) {
-      var scrollTicking = false;
-      window.addEventListener('scroll', function() {
-        if (!scrollTicking) {
-          requestAnimationFrame(function() {
-            var scrollPos = window.scrollY + 160; // offset for sticky nav height
-            var current = sectionEls[0];
-            for (var i = 0; i < sectionEls.length; i++) {
-              if (sectionEls[i].el.offsetTop <= scrollPos) {
-                current = sectionEls[i];
-              }
-            }
-            navLinks.forEach(function(l) { l.classList.remove('active'); });
-            current.link.classList.add('active');
-            scrollTicking = false;
-          });
-          scrollTicking = true;
-        }
-      });
-    }
-  }
+  // Section nav scroll spy handled by lab-data.js
 })();
 </script>
 </body>
