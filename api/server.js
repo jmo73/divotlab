@@ -106,7 +106,8 @@ const vercelPreviewPattern = /^https:\/\/divotlab[a-z0-9-]*\.vercel\.app$/;
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (server-to-server, curl in dev)
-    if (!origin) return callback(null, true);
+    // Also allow 'null' origin from file:// pages (local admin panel)
+    if (!origin || origin === 'null') return callback(null, true);
     if (allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
       return callback(null, true);
     }
