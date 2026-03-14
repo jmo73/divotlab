@@ -652,6 +652,7 @@ select option {
   border-radius: 10px;
   padding: 24px 28px;
   min-width: 0; /* Allow grid children to shrink below content size */
+  overflow: hidden; /* Prevent child content from spilling out on narrow screens */
 }
 .intel-card--scroll {
   overflow: hidden; /* Only on cards with horizontally scrollable content */
@@ -870,6 +871,22 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   .value-player, .profile-bar, .fit-stat {
     max-width: 100%;
     overflow: hidden;
+  }
+  
+  /* Stack momentum tracker columns on mobile */
+  #momentum-container > div {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  /* Ensure sparkline rows don't overflow */
+  #momentum-container [style*="display: flex"] {
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+  #momentum-container [style*="flex: 1"] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   /* Limit leaderboard rows on mobile */
