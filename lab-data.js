@@ -3086,13 +3086,16 @@ function renderPredictionTimeline() {
   // Helper to shorten event names for cards
   function shortName(name) {
     if (!name) return 'Event';
-    // Remove common prefixes/suffixes
     return name
       .replace(/^the\s+/i, '')
       .replace(/\s+presented by.*$/i, '')
       .replace(/\s+invitational$/i, ' Inv.')
       .replace(/\s+championship$/i, ' Champ.')
-      .replace(/\s+tournament$/i, ' Tourn.');
+      .replace(/\s+tournament$/i, ' Tourn.')
+      .replace(/\s+in the palm beaches$/i, '')
+      .replace(/\s+in hawaii$/i, '')
+      .replace(/\s+pro-am$/i, '')
+      .replace(/\s+open$/i, ' Open');
   }
   
   // Build a card for each event
@@ -3119,9 +3122,9 @@ function renderPredictionTimeline() {
     `).join('');
     
     return `
-      <div style="flex: 0 0 220px; background: rgba(255,255,255,0.04); border: 1px solid ${borderColor}; border-radius: 10px; padding: 16px; scroll-snap-align: start;">
-        <div style="display: flex; align-items: center; margin-bottom: 2px;">
-          <div style="font-size: 13px; font-weight: 600; color: #FAFAFA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName(evt.event_name)}${badge}</div>
+      <div style="flex: 0 0 220px; max-width: 220px; background: rgba(255,255,255,0.04); border: 1px solid ${borderColor}; border-radius: 10px; padding: 16px; scroll-snap-align: start; overflow: hidden;">
+        <div style="display: flex; align-items: center; margin-bottom: 2px; max-width: 100%;">
+          <div style="font-size: 13px; font-weight: 600; color: #FAFAFA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: ${isCurrent ? '140px' : '188px'};">${shortName(evt.event_name)}</div>${badge}
         </div>
         <div style="font-size: 11px; color: rgba(250,250,250,0.3); margin-bottom: 12px;">${dateStr}${dateStr ? ' · ' : ''}Top 5 Win Prob</div>
         ${playerList}
