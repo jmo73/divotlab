@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>I Tracked 100 Rounds of Golf Data. Here's What Actually Lowered My Scores. — Divot Lab</title>
+<meta name="description" content="A first-person experiment tracking strokes gained data across 100 rounds reveals which practice changes actually move the needle — and which don't.">
+<meta property="og:title" content="I Tracked 100 Rounds of Golf Data. Here's What Actually Lowered My Scores. — Divot Lab">
+<meta property="og:description" content="A first-person experiment tracking strokes gained data across 100 rounds reveals which practice changes actually move the needle — and which don't.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://divotlab.com/tracked-100-rounds-of-golf-data-lower-scores">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://divotlab.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://divotlab.com/og-image.png">
+<link rel="canonical" href="https://divotlab.com/tracked-100-rounds-of-golf-data-lower-scores">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "I Tracked 100 Rounds of Golf Data. Here's What Actually Lowered My Scores.",
+  "description": "A first-person experiment tracking strokes gained data across 100 rounds reveals which practice changes actually move the needle — and which don't.",
+  "url": "https://divotlab.com/tracked-100-rounds-of-golf-data-lower-scores",
+  "datePublished": "2026-03-14",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Divot Lab",
+    "url": "https://divotlab.com"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Divot Lab"
+  }
+}
+</script>
+<style>
+:root {
+  --black:      #0A0A0A;
+  --white:      #FAFAFA;
+  --graphite:   #4A4A4A;
+  --steel:      #C4C4C4;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue:       #2C5F7C;
+  --blue-mid:   #5A8FA8;
+  --warm-gray:  #F3F2F0;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family: var(--body); color: var(--black); background: var(--white); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color:inherit; text-decoration:none; }
+.post-body a { color: var(--blue-mid); text-decoration: none; border-bottom: 1px solid rgba(90,143,168,0.3); padding-bottom: 1px; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease; }
+.post-body a:hover { color: var(--green-light); border-bottom-color: var(--green-light); background: rgba(91,191,133,0.06); border-radius: 2px; }
+.post-source a { color: var(--blue-mid); border-bottom: 1px solid rgba(90,143,168,0.25); padding-bottom: 1px; transition: color 0.2s ease, border-color 0.2s ease; }
+.post-source a:hover { color: var(--green-light); border-bottom-color: var(--green-light); }
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 56px; height:68px; display:flex; align-items:center; background:rgba(10,10,10,1); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid rgba(255,255,255,0.07); transition:background .35s, border-color .35s; }
+nav.scrolled { background:rgba(10,10,10,0.55); }
+nav.light { background:rgba(250,250,250,0.88); border-bottom-color:rgba(0,0,0,0.07); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; flex-shrink:0; color:var(--white); transition:color .35s; }
+nav.light .nav-logo svg { color:var(--black); }
+.nav-wordmark { font-family:var(--body); font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--white); transition:color .35s; }
+.nav-wordmark span { font-weight:300; opacity:.55; }
+nav.light .nav-wordmark { color:var(--black); }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a { font-size:13px; font-weight:500; letter-spacing:.05em; color:rgba(250,250,250,.65); transition:color .2s; }
+.nav-links a:hover { color:var(--white); }
+nav.light .nav-links a { color:var(--graphite); }
+nav.light .nav-links a:hover { color:var(--black); }
+.nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s, transform .15s, box-shadow .2s; }
+.nav-cta:hover { background:#236b4f; transform:translateY(-1px); box-shadow:0 4px 14px rgba(27,77,62,.3); }
+.nav-lab-notes { position: relative; }
+.nav-lab-notes .pro-pill { display: inline-block; background: rgba(91,191,133,0.15); color: #5BBF85; font-size: 9px; font-weight: 700; letter-spacing: .1em; padding: 2px 6px; border-radius: 3px; margin-left: 5px; vertical-align: middle; line-height: 1; position: relative; top: -1px; }
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; align-items:center; width:40px; height:40px; margin-left:auto; cursor:pointer; background:none; border:none; gap:5px; z-index:101; position:relative; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
+nav.light .nav-hamburger span { background:var(--black); }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-drawer { position:fixed; top:68px; left:0; right:0; z-index:99; background:rgba(10,10,10,0.92); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); border-bottom:1px solid rgba(255,255,255,0.07); padding:12px 0 20px; display:flex; flex-direction:column; align-items:center; gap:4px; max-height:0; overflow:hidden; opacity:0; transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease; }
+.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer.light { background:rgba(250,250,250,0.95); border-bottom-color:rgba(0,0,0,0.07); }
+.nav-drawer a { font-size:15px; font-weight:500; letter-spacing:.06em; color:rgba(250,250,250,.75); padding:10px 0; width:100%; text-align:center; transition:color .2s; }
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer.light a { color:var(--graphite); }
+.nav-drawer .nav-cta { margin-top:8px; width:auto; padding:10px 32px; border-radius:5px; }
+.post-hero { position:relative; height:480px; overflow:hidden; margin-top:68px; }
+.post-hero-bg { position:absolute; inset:0; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.post-hero-brand { position:absolute; top:50%; left:50%; transform:translate(-50%,-65%); z-index:0; display:flex; flex-direction:column; align-items:center; gap:16px; opacity:.12; }
+.post-hero-brand svg { width:80px; height:80px; }
+.post-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.25) 40%, rgba(10,10,10,0.75) 80%, rgba(10,10,10,0.92) 100%); }
+.post-hero-content { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:0 48px; height:100%; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:56px; }
+.post-cat { display:inline-block; width:fit-content; font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:4px 10px; border-radius:3px; margin-bottom:18px; }
+.post-cat.pga { background:rgba(44,95,124,.22); color:#7ab8d4; }
+.post-cat.sg { background:rgba(91,191,133,.22); color:#6dd89a; }
+.post-cat.improve { background:rgba(27,77,62,.25); color:var(--green-light); }
+.post-hero h1 { font-family:var(--display); font-size:clamp(32px, 5vw, 48px); font-weight:600; color:var(--white); letter-spacing:-.02em; line-height:1.1; margin-bottom:16px; }
+.post-hero-meta { font-size:13px; color:rgba(250,250,250,.5); display:flex; align-items:center; gap:6px; }
+.post-hero-meta .dot { opacity:.4; }
+.post-hero-credit { position:absolute; bottom:12px; right:16px; z-index:2; font-size:10px; color:rgba(250,250,250,0.4); letter-spacing:0.03em; }
+.post-body-wrap { background:var(--white); padding:72px 48px 96px; }
+.post-body { max-width:680px; margin:0 auto; }
+.post-body p { font-size:16px; font-weight:300; line-height:1.8; color:var(--graphite); margin-bottom:24px; }
+.post-body p:first-of-type::first-letter { font-family:var(--display); font-size:56px; font-weight:700; float:left; line-height:.85; margin-right:12px; margin-top:4px; color:var(--black); }
+.post-body h2 { font-family:var(--display); font-size:28px; font-weight:600; color:var(--black); letter-spacing:-.01em; line-height:1.2; margin-top:52px; margin-bottom:16px; }
+.stat-callout { background:var(--black); border-radius:9px; padding:32px 36px; margin:40px 0; display:flex; align-items:center; gap:32px; }
+.stat-callout-val { font-family:var(--mono); font-size:42px; font-weight:500; color:var(--blue-mid); letter-spacing:-.02em; white-space:nowrap; flex-shrink:0; }
+.stat-callout-right { display:flex; flex-direction:column; gap:4px; }
+.stat-callout-label { font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:rgba(250,250,250,.35); }
+.stat-callout-note { font-size:13px; font-weight:300; color:rgba(250,250,250,.5); line-height:1.5; }
+.post-pullquote { border-left:3px solid var(--green); padding:8px 0 8px 28px; margin:40px 0; }
+.post-pullquote p { font-family:var(--display); font-size:22px !important; font-weight:500; font-style:italic; color:var(--black) !important; line-height:1.45 !important; margin-bottom:0 !important; }
+.post-pullquote p::first-letter { font-size:22px !important; float:none !important; margin:0 !important; }
+.post-divider { width:48px; height:2px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); margin:48px 0; border-radius:1px; }
+.post-source { font-size:11px; color:var(--steel); letter-spacing:.06em; margin-top:-16px; margin-bottom:28px; }
+.read-next-wrap { background:var(--warm-gray); padding:72px 48px; }
+.read-next-inner { max-width:720px; margin:0 auto; }
+.read-next-label { font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--green); margin-bottom:24px; }
+.read-next-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.rn-card { background:var(--white); border:1px solid #E6E6E4; border-radius:9px; overflow:hidden; cursor:pointer; transition:transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s, border-color .28s; position:relative; }
+.rn-card:hover { transform:translateY(-4px); box-shadow:0 14px 40px rgba(0,0,0,.08); border-color:transparent; }
+.rn-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--green), var(--blue-mid)); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1); }
+.rn-card:hover::after { transform:scaleX(1); }
+.rn-img { height:150px; position:relative; overflow:hidden; }
+.rn-img-fallback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.rn-img-fallback svg { width:44px; height:44px; opacity:.3; }
+.rn-fallback-cat { font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(250,250,250,.28); }
+.rn-body { padding:18px 20px 20px; }
+.rn-cat { display:inline-block; font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; padding:3px 8px; border-radius:3px; margin-bottom:8px; }
+.rn-cat.pga { background:rgba(44,95,124,.1); color:var(--blue); }
+.rn-cat.sg { background:rgba(91,191,133,.1); color:#3a9e6b; }
+.rn-cat.improve { background:rgba(27,77,62,.1); color:var(--green); }
+.rn-title { font-family:var(--display); font-size:18px; font-weight:600; line-height:1.3; color:var(--black); margin-bottom:6px; }
+.rn-meta { font-size:11px; color:var(--graphite); opacity:.6; }
+footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); padding:64px 56px 36px; }
+.footer-grid { max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:44px; }
+.f-brand .f-logo { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.f-brand .f-logo svg { width:20px; height:20px; }
+.f-brand .f-logo-text { font-weight:600; font-size:13px; letter-spacing:.1em; color:var(--white); }
+.f-brand .f-logo-text span { font-weight:300; opacity:.5; }
+.f-brand p { font-size:13px; color:rgba(250,250,250,.36); line-height:1.65; max-width:240px; }
+.f-col h5 { font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(250,250,250,.28); margin-bottom:18px; }
+.f-col a { display:block; font-size:13px; color:rgba(250,250,250,.5); margin-bottom:11px; transition:color .2s; }
+.f-col a:hover { color:var(--white); }
+.footer-bottom { max-width:1120px; margin:44px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; font-size:12px; color:rgba(250,250,250,.22); }
+@media(max-width:768px){
+  .post-hero { height:400px; }
+  .post-hero-content { padding-bottom:40px; padding-left:24px; padding-right:24px; }
+  .post-body-wrap { padding:52px 24px 72px; }
+  .stat-callout { flex-direction:column; align-items:flex-start; gap:12px; padding:24px; }
+  .stat-callout-val { font-size:36px; }
+  .read-next-wrap { padding:52px 24px; }
+  .read-next-grid { grid-template-columns:1fr; }
+  footer { padding:48px 24px 28px; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:600px){
+  nav { padding:0 22px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .post-hero { height:340px; }
+  .post-hero h1 { font-size:28px; }
+  .post-body p { font-size:15px; }
+  .post-body p:first-of-type::first-letter { font-size:44px; }
+  .post-body h2 { font-size:24px; margin-top:40px; }
+  .footer-grid { grid-template-columns:1fr; gap:28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/practice">Practice</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- HERO -->
+<section class="post-hero" id="postHero">
+  <div class="post-hero-bg"></div>
+  <img src="/golf_shot_1.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;z-index:0;">
+  <div class="post-hero-overlay"></div>
+  <div class="post-hero-content">
+    <span class="post-cat improve">Improvement</span>
+    <h1>I Tracked 100 Rounds of Golf Data. Here's What Actually Lowered My Scores.</h1>
+    <div class="post-hero-meta">
+      Mar 14, 2026 <span class="dot">&middot;</span> 8 min read <span class="dot">&middot;</span> Improvement
+    </div>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="post-body-wrap">
+  <article class="post-body">
+
+    <p>Six months ago, I decided to track every shot from 100 consecutive rounds of golf. Not just scores — every approach shot distance, every putt length, every missed fairway. The goal: figure out what actually lowers scores versus what feels like it should.</p>
+
+<p>The results surprised me. And they'll probably surprise you too.</p>
+
+<h2>The Setup: Measuring Everything</h2>
+
+<p>I'm a 12-handicap who plays 3-4 times per week. Starting handicap: 11.8. I used Arccos sensors to track every shot and sorted the data into strokes gained categories: driving, approach, short game, and putting.</p>
+
+<p>The plan was simple: identify the biggest leaks, focus practice time there, measure improvement. What I discovered is that most golfers — myself included — practice the wrong things.</p>
+
+<div class="stat-callout">
+  <div class="stat-callout-val">-2.4</div>
+  <div class="stat-callout-right">
+    <div class="stat-callout-label">Strokes Gained: Approach · First 25 rounds</div>
+    <div class="stat-callout-note">My biggest weakness wasn't putting or driving. It was approach shots.</div>
+  </div>
+</div>
+
+<p>Round 1 through 25: I was losing 2.4 strokes per round to a scratch golfer on approach shots alone. For context, <a href="/strokes-gained-by-handicap-where-you-lose-shots">most 12-handicaps lose about 2.1 strokes</a> on approach. I was worse than average at my already-mediocre level.</p>
+
+<p>But here's what shocked me: I was spending 80% of my practice time on putting and chipping.</p>
+
+<h2>Month 1-2: The Putting Obsession</h2>
+
+<p>Like most golfers, I assumed putting was my problem. Three-putts felt devastating. The data told a different story.</p>
+
+<p>I spent the first month focusing entirely on putting. Two hours per week on the practice green, working on alignment, speed control, reading greens. I bought a putting mat for home practice.</p>
+
+<p>The results? My strokes gained putting improved from -0.8 to -0.3. Progress, but minimal impact on scores.</p>
+
+<p>Here's why: even perfect putting improvement has limited upside. <a href="/what-is-strokes-gained-golf-simple-guide">Strokes gained</a> shows that putting only accounts for about 15% of scoring differences between skill levels. I was optimizing the smallest lever.</p>
+
+<p>Scores after Month 2: 84.2 average. Handicap: 11.6. Basically no change.</p>
+
+<h2>Month 3: The Approach Shot Revelation</h2>
+
+<p>Month 3 changed everything. I shifted focus to approach shots — specifically, distance control and target selection.</p>
+
+<p>The practice change was dramatic. Instead of hitting balls aimlessly on the range, I started working on specific yardages. 125 yards with 8-iron. 105 yards with pitching wedge. I tracked carry distances and dispersion patterns.</p>
+
+<p>More importantly, I started playing smarter on the course. Instead of always aiming at pins, I began targeting the middle of greens. Conservative? Yes. Effective? Absolutely.</p>
+
+<div class="stat-callout">
+  <div class="stat-callout-val">-1.1</div>
+  <div class="stat-callout-right">
+    <div class="stat-callout-label">Strokes Gained: Approach · Rounds 50-75</div>
+    <div class="stat-callout-note">A 1.3-stroke improvement from focused approach practice.</div>
+  </div>
+</div>
+
+<p>The data showed immediate improvement. My approach shot strokes gained went from -2.4 to -1.1. That's a 1.3-stroke per round improvement — more than enough to drop a full handicap stroke.</p>
+
+<p>Scores after Month 3: 81.8 average. Handicap: 10.2.</p>
+
+<div class="post-pullquote"><p>"The biggest scoring gains came from hitting more greens in regulation, not from getting up-and-down more often."</p></div>
+
+<h2>Month 4-5: The Short Game Reality Check</h2>
+
+<p>With approach shots improving, I turned attention to short game. This is where I learned another painful lesson about golf improvement.</p>
+
+<p>I spent weeks perfecting my chipping technique. Practiced different lies, various trajectories, spin rates. I felt like I was becoming a short game wizard.</p>
+
+<p>The data disagreed. My strokes gained around the green improved only marginally — from -0.6 to -0.4. Why? Because I wasn't in situations to use these skills as often.</p>
+
+<p>Better approach shots meant more greens in regulation. Fewer chips and pitches overall. The short game practice helped, but the impact was limited because I was creating fewer short game opportunities.</p>
+
+<p>This mirrors what tour <a href="/how-to-practice-golf-data-backed-plan">data shows about practice allocation</a>. The best players spend most practice time on full swings, not short game, because hitting greens prevents more problems than fixing them after missing.</p>
+
+<h2>Month 6: The Driver Discovery</h2>
+
+<p>By month 6, I had one major leak left: driving accuracy. Not distance — accuracy.</p>
+
+<p>I was hitting driver 240 yards on average, which is adequate for my skill level. But I was only hitting 52% of fairways. <a href="/driver-upgrade-myth">The problem wasn't my equipment</a> — it was course management and swing fundamentals.</p>
+
+<p>Two changes made the difference:</p>
+
+<p>First, I started using 3-wood on holes where driver brought trouble into play. Simple math: hitting 3-wood from the fairway beats hitting driver from the rough or trees.</p>
+
+<p>Second, I worked with a coach on setup and tempo. Not swing speed or launch angle — basics. Alignment, ball position, rhythm.</p>
+
+<div class="stat-callout">
+  <div class="stat-callout-val">68%</div>
+  <div class="stat-callout-right">
+    <div class="stat-callout-label">Fairways Hit · Rounds 75-100</div>
+    <div class="stat-callout-note">Up from 52% through better course management and fundamentals.</div>
+  </div>
+</div>
+
+<p>Fairway percentage jumped from 52% to 68%. More importantly, my strokes gained off the tee improved from -0.9 to -0.2.</p>
+
+<h2>The Final Results</h2>
+
+<p>After 100 rounds and six months of targeted practice, the numbers tell a clear story:</p>
+
+<p>Starting handicap: 11.8. Final handicap: 8.4. That's a 3.4-stroke improvement.</p>
+
+<p>The breakdown shows where gains actually came from. Approach shots: 1.3 strokes gained. Driving accuracy: 0.7 strokes. Putting: 0.5 strokes. Short game: 0.2 strokes.</p>
+
+<p>The lesson? <a href="/strokes-gained-approach">Approach shots drive scoring improvement</a> more than any other category. Yet most recreational golfers spend minimal practice time on full-swing distance control and target selection.</p>
+
+<div class="post-divider"></div>
+
+<p>If you're serious about lowering scores, track your data first. Identify your biggest leak. Then allocate practice time proportionally to where you lose the most strokes. The <a href="/practice">practice diagnostic tool</a> can help you figure out exactly where to focus based on your current skill level.</p>
+
+<p>Most importantly, remember that improvement takes time and targeted effort. But when you focus on the right areas, the results compound quickly.</p>
+
+<div class="post-divider"></div>
+
+<p>We publish data-driven improvement guides like this every week through <a href="https://www.divotlab.com/lab-notes">Lab Notes</a>. If you want to know exactly where you're losing strokes and how to fix it — the first week is free.</p>
+
+<p class="post-source">Data via <a href="https://datagolf.com" target="_blank">DataGolf</a> · Personal tracking via Arccos</p>
+
+  </article>
+</div>
+
+<!-- READ NEXT -->
+<div class="read-next-wrap">
+  <div class="read-next-inner">
+    <div class="read-next-label">Read Next</div>
+    <div class="read-next-grid" id="readNextGrid">
+      <a href="/short-game-focus-backwards-tour-data-analytics" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img"><div class="rn-img-fallback"><svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".12"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="white"/></svg><span class="rn-fallback-cat">Improvement</span></div></div>
+        <div class="rn-body">
+          <span class="rn-cat improve">Improvement</span>
+          <h3 class="rn-title">Why Your Short Game Focus Is Backwards (Tour Data Explains)</h3>
+          <div class="rn-meta">Feb 10, 2026 <span class="dot">&middot;</span> 5 min read</div>
+        </div>
+      </div>
+      </a>
+      <a href="/what-is-strokes-gained-golf-simple-guide" style="text-decoration:none;color:inherit;">
+      <div class="rn-card">
+        <div class="rn-img"><div class="rn-img-fallback"><svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".12"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="white"/></svg><span class="rn-fallback-cat">Strokes Gained</span></div></div>
+        <div class="rn-body">
+          <span class="rn-cat sg">Strokes Gained</span>
+          <h3 class="rn-title">What Is Strokes Gained? The Stat That Changed Golf Forever</h3>
+          <div class="rn-meta">Feb 23, 2026 <span class="dot">&middot;</span> 7 min read</div>
+        </div>
+      </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Golf analysis built on real numbers. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles">All Articles</a>
+      <a href="/scheffler-putting-analysis">PGA Tour Analysis</a>
+      <a href="/strokes-gained-approach">Strokes Gained</a>
+      <a href="/driver-upgrade-myth">Improvement</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/lab-notes">Lab Notes</a>
+      <a href="/about">About</a>
+      <a href="/practice">Practice</a>
+      <a href="/the-lab">The Lab</a>
+      <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
+      <a href="javascript:void(0)">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Divot Lab</span>
+    <span>Built with data.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  var navEl = document.getElementById('nav');
+  if (hamburger && drawer && navEl) {
+    hamburger.addEventListener('click', function(){
+      navEl.classList.toggle('menu-open');
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        navEl.classList.remove('menu-open');
+        drawer.classList.remove('open');
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

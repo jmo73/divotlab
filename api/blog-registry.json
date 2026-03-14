@@ -195,6 +195,20 @@
   "hero_alt": "Golf course",
   "hero_credit": "",
   "featured": false
+},
+{
+  "slug": "tracked-100-rounds-of-golf-data-lower-scores",
+  "title": "I Tracked 100 Rounds of Golf Data. Here's What Actually Lowered My Scores.",
+  "category": "Improvement",
+  "category_class": "improve",
+  "date": "Mar 14, 2026",
+  "date_iso": "2026-03-14",
+  "read_time": "8 min read",
+  "meta_description": "A first-person experiment tracking strokes gained data across 100 rounds reveals which practice changes actually move the needle — and which don't.",
+  "hero_image": "/golf_shot_1.jpg",
+  "hero_alt": "",
+  "hero_credit": "",
+  "featured": false
 }
   ]
 }
