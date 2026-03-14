@@ -2750,11 +2750,11 @@ function renderOverperformance() {
   container.innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
       <div>
-        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;" class="info-tip">Model Loves<span class="tip-text">Players where the model ranks them significantly higher than their raw skill position. The model sees a course fit or form edge.</span></div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #5BBF85; text-transform: uppercase; margin-bottom: 12px;">Model Loves <span class="info-tip" style="border-bottom: none; cursor: help; color: rgba(250,250,250,0.3); font-weight: 400;">ⓘ<span class="tip-text" style="bottom: auto; top: calc(100% + 8px); text-transform: none; letter-spacing: normal;">Players where the model ranks them significantly higher than their raw skill position. The model sees a course fit or form edge.</span></span></div>
         ${renderSide(loves, true)}
       </div>
       <div>
-        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;" class="info-tip">Model Fades<span class="tip-text">Players the model ranks lower than their raw skill suggests. Possible poor course fit or recent form concerns.</span></div>
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #E76F51; text-transform: uppercase; margin-bottom: 12px;">Model Fades <span class="info-tip" style="border-bottom: none; cursor: help; color: rgba(250,250,250,0.3); font-weight: 400;">ⓘ<span class="tip-text" style="bottom: auto; top: calc(100% + 8px); text-transform: none; letter-spacing: normal;">Players the model ranks lower than their raw skill suggests. Possible poor course fit or recent form concerns.</span></span></div>
         ${renderSide(fades, false)}
       </div>
     </div>
