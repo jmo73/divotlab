@@ -924,19 +924,18 @@ app.get('/api/lab-data', async (req, res) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
-      // Find completed PGA main-field events this season (exclude opposite-field / non-sig)
-      // We identify "main" events by checking if they have an event_id and completed status
+      // Find completed PGA events this season using the status field from DataGolf schedule
+      // (schedule has no end_date — only start_date and status)
       const completedEvents = fullSchedule.filter(e => {
         if (!e.event_id) return false;
-        const endDate = e.end_date ? new Date(e.end_date + 'T23:59:59') : null;
-        if (!endDate || endDate >= today) return false; // not yet completed
+        if (e.status !== 'completed') return false;
         // Skip if it's the current event (we fetch that separately below)
         if (String(e.event_id) === String(currentEventId)) return false;
         return true;
       });
       
-      // Sort by date descending (most recent first), take last 6
-      completedEvents.sort((a, b) => new Date(b.end_date) - new Date(a.end_date));
+      // Sort by start_date descending (most recent first), take last 6
+      completedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
       const recentCompleted = completedEvents.slice(0, 6);
       
       console.log(`  Archive pipeline: ${completedEvents.length} completed events found, fetching ${recentCompleted.length} most recent`);
@@ -995,11 +994,12 @@ app.get('/api/lab-data', async (req, res) => {
               `/preds/pre-tournament-archive?event_id=${currentEventId}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`
             );
             const preds = raw.baseline_history_fit || raw.baseline || [];
+            // Find the current event in the schedule to get its start_date
+            const currentScheduleEvent = fullSchedule.find(e => String(e.event_id) === String(currentEventId));
             currentArchive = {
               event_id: currentEventId,
               event_name: raw.event_name || currentEventName,
-              start_date: null,
-              end_date: null,
+              start_date: (currentScheduleEvent && currentScheduleEvent.start_date) || null,
               predictions: Array.isArray(preds) ? preds : [],
               models_available: raw.models_available || [],
               event_completed: raw.event_completed != null ? raw.event_completed : false,
