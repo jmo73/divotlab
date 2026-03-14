@@ -926,24 +926,51 @@ app.get('/api/lab-data', async (req, res) => {
       
       // Find completed PGA events this season using the status field from DataGolf schedule
       // (schedule has no end_date — only start_date and status)
-      // Also find the current event's start_date to filter opposite-field events
-      const currentScheduleEntry = fullSchedule.find(e => String(e.event_id) === String(currentEventId));
-      const currentStartDate = currentScheduleEntry ? new Date(currentScheduleEntry.start_date + 'T00:00:00') : null;
-      
-      const completedEvents = fullSchedule.filter(e => {
+      const allCompleted = fullSchedule.filter(e => {
         if (!e.event_id) return false;
         if (e.status !== 'completed') return false;
         // Skip if it's the current event (we fetch that separately below)
         if (String(e.event_id) === String(currentEventId)) return false;
-        // Skip opposite-field events running the same week as the current event
-        // (e.g. Puerto Rico Open running alongside The Players Championship)
-        if (currentStartDate && e.start_date) {
-          const evtStart = new Date(e.start_date + 'T00:00:00');
-          const daysDiff = Math.abs((evtStart - currentStartDate) / 86400000);
-          if (daysDiff <= 3) return false; // same tournament week
-        }
         return true;
       });
+      
+      // Deduplicate opposite-field events: when two events share the same week
+      // (start_dates within 3 days), keep the main event.
+      // Main event = one that matches our COURSE_WEIGHTS config (signature/major events).
+      // If neither or both match, keep the one that appears first in the schedule.
+      const completedEvents = [];
+      const used = new Set();
+      
+      // Sort chronologically first for consistent pairing
+      allCompleted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+      
+      for (let i = 0; i < allCompleted.length; i++) {
+        if (used.has(allCompleted[i].event_id)) continue;
+        
+        // Check if the next event is in the same week
+        let mainEvent = allCompleted[i];
+        for (let j = i + 1; j < allCompleted.length; j++) {
+          if (used.has(allCompleted[j].event_id)) continue;
+          const daysDiff = Math.abs(
+            (new Date(allCompleted[j].start_date) - new Date(allCompleted[i].start_date)) / 86400000
+          );
+          if (daysDiff <= 3) {
+            // Same week — pick the main event (one in COURSE_WEIGHTS)
+            const iHasWeights = getCourseWeights(allCompleted[i].event_name).matched;
+            const jHasWeights = getCourseWeights(allCompleted[j].event_name).matched;
+            if (jHasWeights && !iHasWeights) {
+              mainEvent = allCompleted[j];
+            }
+            // Mark the opposite-field event as used
+            used.add(allCompleted[i].event_id);
+            used.add(allCompleted[j].event_id);
+            break;
+          }
+        }
+        
+        used.add(mainEvent.event_id);
+        completedEvents.push(mainEvent);
+      }
       
       // Sort by start_date descending (most recent first), take last 6
       completedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
