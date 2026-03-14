@@ -422,14 +422,13 @@ async function loadAllData() {
       console.log('✓ Field list:', globalFieldList.length, 'players');
       console.log('✓ Tournament state:', getTournamentState(globalTournamentInfo));
       if (globalCourseWeights) console.log('✓ Course weights:', globalCourseWeights.match_name, '(matched:', globalCourseWeights.matched + ')');
-      if (globalPredictionArchive) {
-        const archiveType = Array.isArray(globalPredictionArchive) ? 'array(' + globalPredictionArchive.length + ')' : 'object(' + Object.keys(globalPredictionArchive).length + ' keys)';
-        console.log('✓ Prediction archive:', archiveType);
-        if (typeof globalPredictionArchive === 'object' && !Array.isArray(globalPredictionArchive)) {
-          console.log('  Archive keys:', Object.keys(globalPredictionArchive).slice(0, 10).join(', '));
-        }
+      if (globalPredictionArchive && Array.isArray(globalPredictionArchive) && globalPredictionArchive.length > 0) {
+        console.log(`✓ Prediction archive: ${globalPredictionArchive.length} events`);
+        globalPredictionArchive.forEach(e => {
+          console.log(`  - ${e.event_name}: ${e.predictions?.length || 0} predictions${e.is_current ? ' (current)' : ''}`);
+        });
       } else {
-        console.log('⚠️ Prediction archive: null/undefined');
+        console.log('⚠️ Prediction archive: empty or not available');
       }
       if (globalApproachDetail) console.log('✓ Approach detail: loaded');
       
@@ -2506,73 +2505,31 @@ function computeOverperformance(field) {
 // ── 3. MOMENTUM SCORE ────────────────────────────────────────
 
 function computeMomentum(field) {
-  if (!globalPredictionArchive) {
+  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive)) {
     console.log('  ℹ️ No prediction archive available for momentum calculation');
     return [];
   }
   
-  // The DataGolf pre-tournament-archive endpoint can return data in several formats:
-  // 1. Array of event objects: [{event_name, baseline_history_fit: [...]}]
-  // 2. Object with event keys: { "event_id_1": [...], "event_id_2": [...] }
-  // 3. Object with a wrapping key: { data: [...], events: [...] }
-  // We need to normalize to: [{event_name, predictions: [...]}]
-  let events = [];
+  // Archive is now a clean array from the server: [{event_name, event_id, predictions: [...], is_current}]
+  // Already sorted chronologically by the server
+  const events = globalPredictionArchive.filter(e => 
+    e.predictions && Array.isArray(e.predictions) && e.predictions.length > 0
+  );
   
-  if (Array.isArray(globalPredictionArchive)) {
-    // Format 1: direct array of event objects
-    events = globalPredictionArchive;
-  } else if (typeof globalPredictionArchive === 'object' && globalPredictionArchive !== null) {
-    // Check for common wrapper keys
-    if (globalPredictionArchive.data && Array.isArray(globalPredictionArchive.data)) {
-      events = globalPredictionArchive.data;
-    } else if (globalPredictionArchive.events && Array.isArray(globalPredictionArchive.events)) {
-      events = globalPredictionArchive.events;
-    } else {
-      // Format 2: object with event IDs as keys, each containing prediction arrays
-      // or each containing an object with predictions
-      const keys = Object.keys(globalPredictionArchive).filter(k => k !== 'event_name' && k !== 'year');
-      if (keys.length > 0) {
-        events = keys.map((key, idx) => {
-          const val = globalPredictionArchive[key];
-          if (Array.isArray(val)) {
-            return { event_name: key, predictions: val, _index: idx };
-          } else if (val && typeof val === 'object') {
-            return {
-              event_name: val.event_name || key,
-              predictions: val.baseline_history_fit || val.predictions || val.baseline || [],
-              _index: idx
-            };
-          }
-          return null;
-        }).filter(Boolean);
-      }
-    }
+  console.log('  Momentum:', events.length, 'events with predictions');
+  
+  if (events.length < 2) {
+    console.log('  ℹ️ Need at least 2 events for momentum — have', events.length);
+    return [];
   }
-  
-  console.log('  Momentum: parsed', events.length, 'events from archive');
-  
-  // Filter out metadata entries that aren't real events
-  const validEvents = events.filter(e => {
-    const name = (e.event_name || '').toLowerCase();
-    if (name === 'models_available' || name === 'year' || name === 'event_name' || name === '') return false;
-    const preds = e.baseline_history_fit || e.predictions || e.baseline || [];
-    return Array.isArray(preds) && preds.length > 0;
-  });
-  
-  console.log('  Momentum: ', validEvents.length, 'valid events after filtering metadata');
-  
-  if (validEvents.length === 0) return [];
   
   // Build a map: dg_id → [{event_name, win_prob, event_index}]
   const playerHistory = {};
   
-  validEvents.forEach((event, eventIdx) => {
+  events.forEach((event, eventIdx) => {
     const eventName = event.event_name || `Event ${eventIdx + 1}`;
-    const preds = event.baseline_history_fit || event.predictions || event.baseline || [];
     
-    if (!Array.isArray(preds)) return;
-    
-    preds.forEach(p => {
+    event.predictions.forEach(p => {
       if (!p.dg_id || p.win == null) return;
       if (!playerHistory[p.dg_id]) {
         playerHistory[p.dg_id] = { name: p.player_name, entries: [] };
@@ -2813,12 +2770,17 @@ function renderMomentum() {
   const container = document.getElementById('momentum-container');
   if (!container) return;
   
+  // Count how many events we have in the archive
+  const archiveEventCount = Array.isArray(globalPredictionArchive) ? 
+    globalPredictionArchive.filter(e => e.predictions && e.predictions.length > 0).length : 0;
+  
   if (!globalMomentumScores || globalMomentumScores.length < 3) {
+    const reason = archiveEventCount < 2 
+      ? `Only ${archiveEventCount} event${archiveEventCount === 1 ? '' : 's'} in the archive so far this season. Momentum requires at least 2 past events to calculate trends.`
+      : 'Not enough players with data across multiple events to compute momentum trends yet.';
     container.innerHTML = `
       <div style="text-align: center; padding: 28px 20px;">
-        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">
-          Momentum tracking requires prediction data from multiple past events. This feature will fully activate as the season progresses and more event data accumulates.
-        </div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">${reason}</div>
         <div style="margin-top: 16px; font-size: 11px; color: rgba(250,250,250,0.25);">Tracks win probability trends over 4-6 events to identify rising and falling players</div>
       </div>`;
     return;
@@ -2830,11 +2792,11 @@ function renderMomentum() {
   function miniSparkline(trend) {
     if (!trend || trend.length < 2) return '';
     const probs = trend.map(t => t.prob);
-    const min = Math.min(...probs) * 0.9;  // Add some visual padding
+    const min = Math.min(...probs) * 0.9;
     const max = Math.max(...probs) * 1.1 || 0.01;
     const range = max - min || 0.001;
     const w = 76, h = 32;
-    const pad = 4; // padding for dot radius
+    const pad = 4;
     const points = probs.map((v, i) => ({
       x: pad + (i / (probs.length - 1)) * (w - pad * 2),
       y: pad + (h - pad * 2) - ((v - min) / range) * (h - pad * 2)
@@ -2855,12 +2817,15 @@ function renderMomentum() {
     // Area fill under the line
     const areaD = d + ` L ${points[points.length-1].x},${h} L ${points[0].x},${h} Z`;
     
+    // Unique gradient ID per player to avoid SVG conflicts
+    const gradId = `sparkFill_${isRising?'up':'dn'}_${Math.random().toString(36).slice(2, 6)}`;
+    
     return `<svg width="${w}" height="${h}" style="vertical-align: middle;">
-      <defs><linearGradient id="sparkFill_${isRising?'up':'dn'}" x1="0" y1="0" x2="0" y2="1">
+      <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="${color}" stop-opacity="0.2"/>
         <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
       </linearGradient></defs>
-      <path d="${areaD}" fill="url(#sparkFill_${isRising?'up':'dn'})"/>
+      <path d="${areaD}" fill="url(#${gradId})"/>
       <path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="${points[points.length-1].x}" cy="${points[points.length-1].y}" r="2.5" fill="${color}"/>
     </svg>`; 
@@ -2895,7 +2860,7 @@ function renderMomentum() {
       </div>
     </div>
     <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
-      Win probability trend over recent events · Captures form that raw skill ratings (150-round averages) are slow to reflect
+      Based on ${archiveEventCount} events · Win probability trend captures form that raw skill ratings (150-round averages) are slow to reflect
     </div>
   `;
 }
@@ -3100,65 +3065,76 @@ function renderPredictionTimeline() {
   const container = document.getElementById('prediction-timeline-container');
   if (!container) return;
   
-  if (!globalPredictionArchive) {
+  if (!globalPredictionArchive || !Array.isArray(globalPredictionArchive) || globalPredictionArchive.length === 0) {
     container.innerHTML = '<div class="loading-msg" style="padding: 20px; text-align: center; color: rgba(250,250,250,0.4);">Prediction archive not available</div>';
     return;
   }
   
-  // The archive for the current plan returns data for one event at a time.
-  // It has keys like: baseline_history_fit, baseline, event_name, event_id, etc.
-  // We'll show the two model variants (baseline + course-fit) for this event as cards.
-  const archive = globalPredictionArchive;
-  const eventName = archive.event_name || globalTournamentInfo.event_name || 'Current Event';
+  // Filter to events with actual predictions
+  const events = globalPredictionArchive.filter(e => e.predictions && e.predictions.length > 0);
   
-  const models = [];
-  
-  // Course-fit model (baseline_history_fit) — the primary model
-  if (archive.baseline_history_fit && Array.isArray(archive.baseline_history_fit) && archive.baseline_history_fit.length > 0) {
-    models.push({ name: 'Course Fit Model', key: 'baseline_history_fit', preds: archive.baseline_history_fit });
-  }
-  
-  // Baseline model
-  if (archive.baseline && Array.isArray(archive.baseline) && archive.baseline.length > 0) {
-    models.push({ name: 'Baseline Model', key: 'baseline', preds: archive.baseline });
-  }
-  
-  if (models.length === 0) {
+  if (events.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; padding: 28px 20px;">
         <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.7;">
-          The timeline will show pre-tournament model picks as the season progresses.
+          No prediction data available yet for this season.
         </div>
       </div>`;
     return;
   }
   
-  const cards = models.map(model => {
-    const top5 = [...model.preds].sort((a, b) => (b.win || 0) - (a.win || 0)).slice(0, 5);
+  // Helper to shorten event names for cards
+  function shortName(name) {
+    if (!name) return 'Event';
+    // Remove common prefixes/suffixes
+    return name
+      .replace(/^the\s+/i, '')
+      .replace(/\s+presented by.*$/i, '')
+      .replace(/\s+invitational$/i, ' Inv.')
+      .replace(/\s+championship$/i, ' Champ.')
+      .replace(/\s+tournament$/i, ' Tourn.');
+  }
+  
+  // Build a card for each event
+  const cards = events.map((evt, idx) => {
+    const top5 = [...evt.predictions]
+      .sort((a, b) => (b.win || 0) - (a.win || 0))
+      .slice(0, 5);
+    
+    const isCurrent = evt.is_current;
+    const borderColor = isCurrent ? 'rgba(91,191,133,0.3)' : 'rgba(255,255,255,0.08)';
+    const badge = isCurrent 
+      ? '<span style="font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; background: rgba(91,191,133,0.15); color: #5BBF85; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">LIVE</span>'
+      : '';
+    
+    // Format date if available
+    const dateStr = evt.start_date ? new Date(evt.start_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
     
     const playerList = top5.map((p, i) => `
-      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 0;">
-        <span style="font-family: var(--mono); font-size: 12px; color: ${i === 0 ? '#C9A84C' : 'rgba(250,250,250,0.3)'}; width: 18px;">${i + 1}</span>
-        <span style="font-size: 13px; color: rgba(250,250,250,0.7); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name || 'Unknown'}</span>
-        <span style="font-family: var(--mono); font-size: 12px; color: #5BBF85;">${((p.win || 0) * 100).toFixed(1)}%</span>
+      <div style="display: flex; align-items: center; gap: 6px; padding: 3px 0;">
+        <span style="font-family: var(--mono); font-size: 11px; color: ${i === 0 ? '#C9A84C' : 'rgba(250,250,250,0.3)'}; width: 16px;">${i + 1}</span>
+        <span style="font-size: 12px; color: rgba(250,250,250,0.7); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.player_name || 'Unknown'}</span>
+        <span style="font-family: var(--mono); font-size: 11px; color: #5BBF85;">${((p.win || 0) * 100).toFixed(1)}%</span>
       </div>
     `).join('');
     
     return `
-      <div style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px;">
-        <div style="font-size: 14px; font-weight: 600; color: #FAFAFA; margin-bottom: 4px;">${model.name}</div>
-        <div style="font-size: 11px; color: rgba(250,250,250,0.3); margin-bottom: 14px;">${eventName} · Top 5 Win Probability</div>
+      <div style="flex: 0 0 220px; background: rgba(255,255,255,0.04); border: 1px solid ${borderColor}; border-radius: 10px; padding: 16px; scroll-snap-align: start;">
+        <div style="display: flex; align-items: center; margin-bottom: 2px;">
+          <div style="font-size: 13px; font-weight: 600; color: #FAFAFA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName(evt.event_name)}${badge}</div>
+        </div>
+        <div style="font-size: 11px; color: rgba(250,250,250,0.3); margin-bottom: 12px;">${dateStr}${dateStr ? ' · ' : ''}Top 5 Win Prob</div>
         ${playerList}
       </div>
     `;
   }).join('');
   
   container.innerHTML = `
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+    <div style="display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
       ${cards}
     </div>
-    <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;" class="info-tip" style="display: inline;">
-      Course Fit Model adjusts for course-specific skill demands · Baseline uses overall skill only
+    <div style="margin-top: 14px; font-size: 11px; color: rgba(250,250,250,0.2); line-height: 1.5;">
+      Pre-tournament model picks across ${events.length} events this season · Scroll to see past events
     </div>
   `;
 }

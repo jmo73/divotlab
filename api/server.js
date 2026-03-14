@@ -910,18 +910,128 @@ app.get('/api/lab-data', async (req, res) => {
         .catch(err => { console.warn('⚠️ Approach-skill fetch failed (non-fatal):', err.message); return null; })
     ]);
 
-    // Now fetch the archive using the current PGA event's event_id so we don't get opposite-field events
-    let archiveRaw = null;
+    // ── MULTI-EVENT ARCHIVE PIPELINE ──────────────────────────────
+    // Fetch prediction archives for the last N completed PGA Tour events
+    // plus the current event. Each event needs its own API call with event_id.
+    // Results are cached individually (7 days) so repeated /api/lab-data calls
+    // only fetch new events, not the whole season again.
     const currentEventId = fieldUpdates.event_id || preTournament.event_id;
-    if (currentEventId) {
-      try {
-        archiveRaw = await fetchDataGolfDirect(`/preds/pre-tournament-archive?event_id=${currentEventId}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`);
-        console.log(`  Archive fetched for event_id=${currentEventId}`);
-      } catch (err) {
-        console.warn('⚠️ Archive fetch failed (non-fatal):', err.message);
+    const currentEventName = fieldUpdates.event_name || preTournament.event_name || '';
+    
+    let multiEventArchive = [];
+    try {
+      const fullSchedule = schedule.schedule || [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Find completed PGA main-field events this season (exclude opposite-field / non-sig)
+      // We identify "main" events by checking if they have an event_id and completed status
+      const completedEvents = fullSchedule.filter(e => {
+        if (!e.event_id) return false;
+        const endDate = e.end_date ? new Date(e.end_date + 'T23:59:59') : null;
+        if (!endDate || endDate >= today) return false; // not yet completed
+        // Skip if it's the current event (we fetch that separately below)
+        if (String(e.event_id) === String(currentEventId)) return false;
+        return true;
+      });
+      
+      // Sort by date descending (most recent first), take last 6
+      completedEvents.sort((a, b) => new Date(b.end_date) - new Date(a.end_date));
+      const recentCompleted = completedEvents.slice(0, 6);
+      
+      console.log(`  Archive pipeline: ${completedEvents.length} completed events found, fetching ${recentCompleted.length} most recent`);
+      
+      // Fetch each event's archive (with per-event caching)
+      const archiveFetches = recentCompleted.map(async (evt) => {
+        const archiveCacheKey = `archive-event-${evt.event_id}-2026`;
+        const cached = cache.get(archiveCacheKey);
+        if (cached) {
+          return cached;
+        }
+        
+        try {
+          const raw = await fetchDataGolfDirect(
+            `/preds/pre-tournament-archive?event_id=${evt.event_id}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`
+          );
+          // Normalize: extract the prediction array and event metadata
+          const preds = raw.baseline_history_fit || raw.baseline || [];
+          const entry = {
+            event_id: evt.event_id,
+            event_name: raw.event_name || evt.event_name,
+            start_date: evt.start_date,
+            end_date: evt.end_date,
+            predictions: Array.isArray(preds) ? preds : [],
+            models_available: raw.models_available || [],
+            event_completed: raw.event_completed != null ? raw.event_completed : true
+          };
+          // Cache completed event archives for 7 days (they won't change)
+          cache.set(archiveCacheKey, entry, 604800);
+          return entry;
+        } catch (err) {
+          console.warn(`  ⚠️ Archive fetch failed for ${evt.event_name} (${evt.event_id}):`, err.message);
+          return null;
+        }
+      });
+      
+      // Execute fetches in batches of 3 to respect rate limits (45 req/min)
+      const batchSize = 3;
+      for (let i = 0; i < archiveFetches.length; i += batchSize) {
+        const batch = archiveFetches.slice(i, i + batchSize);
+        const results = await Promise.all(batch);
+        multiEventArchive.push(...results.filter(Boolean));
+        // Small delay between batches if more than one batch
+        if (i + batchSize < archiveFetches.length) {
+          await new Promise(r => setTimeout(r, 500));
+        }
       }
-    } else {
-      console.warn('⚠️ No event_id available — skipping archive fetch');
+      
+      // Also fetch the current event's archive
+      if (currentEventId) {
+        const currentArchiveCacheKey = `archive-event-${currentEventId}-2026`;
+        let currentArchive = cache.get(currentArchiveCacheKey);
+        if (!currentArchive) {
+          try {
+            const raw = await fetchDataGolfDirect(
+              `/preds/pre-tournament-archive?event_id=${currentEventId}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`
+            );
+            const preds = raw.baseline_history_fit || raw.baseline || [];
+            currentArchive = {
+              event_id: currentEventId,
+              event_name: raw.event_name || currentEventName,
+              start_date: null,
+              end_date: null,
+              predictions: Array.isArray(preds) ? preds : [],
+              models_available: raw.models_available || [],
+              event_completed: raw.event_completed != null ? raw.event_completed : false,
+              is_current: true
+            };
+            // Cache current event archive for only 6 hours (predictions may update)
+            cache.set(currentArchiveCacheKey, currentArchive, 21600);
+          } catch (err) {
+            console.warn('  ⚠️ Current event archive fetch failed:', err.message);
+          }
+        }
+        if (currentArchive) {
+          currentArchive.is_current = true;
+          multiEventArchive.push(currentArchive);
+        }
+      }
+      
+      // Sort chronologically (oldest first) for momentum calculation
+      multiEventArchive.sort((a, b) => {
+        if (a.start_date && b.start_date) return new Date(a.start_date) - new Date(b.start_date);
+        if (a.is_current) return 1;
+        if (b.is_current) return -1;
+        return 0;
+      });
+      
+      console.log(`  ✓ Multi-event archive: ${multiEventArchive.length} events loaded`);
+      multiEventArchive.forEach(e => {
+        console.log(`    - ${e.event_name}: ${e.predictions.length} predictions${e.is_current ? ' (current)' : ''}`);
+      });
+      
+    } catch (err) {
+      console.warn('⚠️ Multi-event archive pipeline failed (non-fatal):', err.message);
     }
 
     // Filter players to PGA Tour only
@@ -1061,14 +1171,9 @@ app.get('/api/lab-data', async (req, res) => {
     console.log(`  Course weights: ${courseWeights.match_name} (matched: ${courseWeights.matched})`);
 
     // Pre-tournament archive — array of past event predictions this season
-    // Each entry has: event_name, event_id, year, and an array of player predictions
-    const predictionArchive = archiveRaw || [];
-    if (archiveRaw) {
-      const archiveEvents = Array.isArray(archiveRaw) ? archiveRaw.length : Object.keys(archiveRaw).length;
-      console.log(`  Archive: ${archiveEvents} entries loaded`);
-    } else {
-      console.log('  Archive: not available');
-    }
+    // Each entry has: event_name, event_id, predictions: [...], is_current: bool
+    const predictionArchive = multiEventArchive;
+    console.log(`  Archive: ${predictionArchive.length} events in multi-event archive`);
 
     // Approach skill detail — detailed distance-bucket breakdown per player
     const approachDetail = approachRaw || null;

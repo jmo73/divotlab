@@ -885,6 +885,12 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 @media (max-width: 1024px) and (min-width: 769px) {
   .field-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
+
+/* Timeline scroll area — subtle dark scrollbar */
+#prediction-timeline-container ::-webkit-scrollbar { height: 6px; }
+#prediction-timeline-container ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+#prediction-timeline-container ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+#prediction-timeline-container ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 </style>
 </head>
 <body>
