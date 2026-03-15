@@ -144,10 +144,12 @@ function getTournamentState(tournament) {
   if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
     // Check if final round is complete — if so, tournament is done.
     // DataGolf increments current_round when a round finishes, so:
+    //   - During R3: current_round = 3, not all finished → live
+    //   - After R3:  current_round = 4, all finished (thru=F from R3) → still live (NOT completed)
     //   - During R4: current_round = 4, not all finished → live
-    //   - After R4:  current_round = 5 (or stays 4), all finished → completed
-    // We use >= 4 but also require allFinished, so R3-complete (current_round=4, 
-    // but thru values reset) won't false-positive.
+    //   - After R4:  current_round = 5, all finished → completed
+    // KEY: completedRound = currentRound - 1 when allFinished.
+    // Only mark 'completed' when completedRound >= 4 (i.e. R4 is actually done).
     const currentRound = tournament.current_round || 0;
     if (currentRound >= 4) {
       const activePlayers = globalLeaderboard.filter(p => {
@@ -159,7 +161,13 @@ function getTournamentState(tournament) {
         return thru === 18 || thru === '18' || thru === 'F' || thru === 'f';
       });
       if (allFinished) {
-        return 'completed';
+        // current_round is already the NEXT round, so the completed round is current_round - 1
+        const completedRound = currentRound - 1;
+        if (completedRound >= 4) {
+          return 'completed';
+        }
+        // Otherwise (e.g. R3 just finished, current_round=4, completedRound=3),
+        // fall through to return 'live' — getEventStatus will handle "Round 3 Complete"
       }
     }
     return 'live';
