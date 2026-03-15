@@ -1180,34 +1180,23 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     requestAnimationFrame(step);
   }
 
-  // Stat animation coordination:
-  // Two things must be true before we animate: (1) stat bar is in viewport, (2) data is ready.
-  // Either can happen first — whichever comes second triggers the animation.
+  // Observe stat bar — trigger counters when visible
   var statBar = document.querySelector('.stat-bar');
   var statsAnimated = false;
-  var statsDataReady = false;
-  var statBarVisible = false;
-
-  function runStatAnimations() {
-    if (statsAnimated || !statsDataReady || !statBarVisible) return;
-    statsAnimated = true;
-    var statEls = statBar.querySelectorAll('.stat-val[data-target]');
-    statEls.forEach(function(el, i) {
-      var target = parseFloat(el.getAttribute('data-target'));
-      if (!isNaN(target)) {
-        setTimeout(function() {
-          animateCounter(el, target, 1200);
-        }, i * 150);
-      }
-    });
-  }
-
   if (statBar) {
     var statObs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          statBarVisible = true;
-          runStatAnimations();
+        if (e.isIntersecting && !statsAnimated) {
+          statsAnimated = true;
+          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+          statEls.forEach(function(el, i) {
+            var target = parseFloat(el.getAttribute('data-target'));
+            if (!isNaN(target)) {
+              setTimeout(function() {
+                animateCounter(el, target, 1200);
+              }, i * 150);
+            }
+          });
         }
       });
     }, { threshold: 0.3 });
@@ -1448,15 +1437,32 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
         document.getElementById('stat-ott-name').textContent = formatPlayerName(stats.sgOTT.player);
         document.getElementById('stat-app-name').textContent = formatPlayerName(stats.sgApp.player);
         document.getElementById('stat-putt-name').textContent = formatPlayerName(stats.sgPutt.player);
+        
+        // If stat bar already scrolled into view before API loaded, animate now
+        if (statsAnimated) {
+          statsAnimated = false;
+          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+          statEls.forEach(function(el, i) {
+            var target = parseFloat(el.getAttribute('data-target'));
+            if (!isNaN(target)) {
+              setTimeout(function() {
+                animateCounter(el, target, 1200);
+              }, i * 150);
+            }
+          });
+          statsAnimated = true;
+        }
       }
     } catch (error) {
       console.warn('Could not load homepage stats:', error);
-      // Placeholders in data-target will be used as fallback
+      // Fall back to placeholder values — animate those instead
+      if (!statsAnimated && statBar) {
+        var statEls = statBar.querySelectorAll('.stat-val[data-target]');
+        statEls.forEach(function(el) {
+          el.textContent = el.getAttribute('data-target');
+        });
+      }
     }
-    
-    // Signal data ready (even on failure — animate the fallback placeholders)
-    statsDataReady = true;
-    runStatAnimations();
   })();
   
 })();
