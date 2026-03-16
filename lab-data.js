@@ -56,7 +56,6 @@ function getEventStatus(tournament) {
     const currentRound = tournament.current_round || 0;
     
     // Check if the current round is complete (all active players finished)
-    // and if the tournament itself is done (round 4 complete)
     if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
       const activePlayers = globalLeaderboard.filter(p => {
         // Exclude WD/CUT/DQ players
@@ -71,17 +70,26 @@ function getEventStatus(tournament) {
       });
       
       if (allFinished) {
-        // DataGolf increments current_round as soon as a round finishes,
-        // so current_round is already pointing to the NEXT round.
-        // Subtract 1 to get the round that was actually just completed.
-        const completedRound = currentRound - 1;
-        if (completedRound >= 4) {
-          // Tournament over — final round complete
-          return { label: 'Final', sublabel: '', color: '#5A8FA8' };
-        } else {
-          // Round complete but more rounds to play
-          return { label: `Round ${completedRound}`, sublabel: 'Complete', color: '#5BBF85' };
-        }
+        // If getTournamentState returned 'live' (not 'completed') and allFinished is true,
+        // it means this is a mid-tournament round completion (e.g. R1, R2, or R3).
+        // Determine which round actually just finished.
+        // 
+        // DataGolf may or may not increment current_round after a round finishes:
+        //   - R3 done, current_round=4 → completed round is 3
+        //   - R3 done, current_round=3 → completed round is 3
+        // Heuristic: if current_round > 1 and we're mid-tournament, the completed round
+        // is whichever is lower: current_round or current_round-1 (capped to not exceed 3,
+        // since getTournamentState would have returned 'completed' for R4).
+        // Since state is 'live', we know the tournament isn't over, so completed round ≤ 3.
+        // 
+        // Best guess: if current_round was incremented to point at the next round,
+        // completed = current_round - 1. If not, completed = current_round.
+        // We can't know for sure, but current_round - 1 is the safer bet when current_round >= 2
+        // since DG typically increments. Cap at 3 since we're in 'live' state.
+        let completedRound = currentRound >= 2 ? currentRound - 1 : currentRound;
+        if (completedRound > 3) completedRound = 3; // Safety: live state means tournament isn't over
+        
+        return { label: `Round ${completedRound}`, sublabel: 'Complete', color: '#5BBF85' };
       }
     }
     
@@ -112,7 +120,7 @@ function getEventStatus(tournament) {
 function getTournamentState(tournament) {
   if (!tournament) return 'upcoming';
   
-  // Check completed first
+  // Check completed first (explicit API flag)
   if (tournament.event_completed || tournament.status === 'completed') {
     return 'completed';
   }
@@ -129,9 +137,10 @@ function getTournamentState(tournament) {
       return 'upcoming';
     }
     
-    // Past end date = completed
+    // Past end date = completed (use midnight comparison so end_date day itself triggers completed at end)
     if (tournament.end_date) {
-      const endDate = new Date(tournament.end_date + 'T23:59:59');
+      const endDate = new Date(tournament.end_date + 'T00:00:00');
+      endDate.setHours(0, 0, 0, 0);
       if (today > endDate) {
         return 'completed';
       }
@@ -142,14 +151,18 @@ function getTournamentState(tournament) {
   // Only report 'live' if we have actual live scoring data.
   // globalLeaderboard is populated ONLY when the live-tournament API returns real scores.
   if (typeof globalLeaderboard !== 'undefined' && globalLeaderboard.length > 0) {
-    // Check if final round is complete — if so, tournament is done.
-    // DataGolf increments current_round when a round finishes, so:
-    //   - During R3: current_round = 3, not all finished → live
-    //   - After R3:  current_round = 4, all finished (thru=F from R3) → still live (NOT completed)
-    //   - During R4: current_round = 4, not all finished → live
-    //   - After R4:  current_round = 5, all finished → completed
-    // KEY: completedRound = currentRound - 1 when allFinished.
-    // Only mark 'completed' when completedRound >= 4 (i.e. R4 is actually done).
+    // Check if the final round is complete — if so, tournament is done.
+    // DataGolf behavior for current_round is inconsistent:
+    //   - After R3 finishes: current_round may jump to 4 (next round)
+    //   - After R4 finishes: current_round may stay at 4 OR jump to 5
+    // So we can't rely on current_round alone. Instead:
+    //   If current_round >= 4 AND all active players are finished → completed.
+    //   This catches both "R4 done, current_round=4" and "R4 done, current_round=5".
+    //   It also catches "R3 done, current_round=4" — but that's handled below
+    //   in getEventStatus which distinguishes mid-tournament from final.
+    //
+    // To avoid falsely marking R3-complete as tournament-completed, we also
+    // check if today is the final day of the tournament.
     const currentRound = tournament.current_round || 0;
     if (currentRound >= 4) {
       const activePlayers = globalLeaderboard.filter(p => {
@@ -161,13 +174,20 @@ function getTournamentState(tournament) {
         return thru === 18 || thru === '18' || thru === 'F' || thru === 'f';
       });
       if (allFinished) {
-        // current_round is already the NEXT round, so the completed round is current_round - 1
-        const completedRound = currentRound - 1;
-        if (completedRound >= 4) {
+        // Determine if this is genuinely the final round or a mid-tournament round.
+        // If it's the last scheduled day, this is the final.
+        // If current_round >= 5, DataGolf has incremented past R4, so it's definitely final.
+        const isFinalDay = tournament.end_date && (function() {
+          const today = new Date(); today.setHours(0,0,0,0);
+          const endDate = new Date(tournament.end_date + 'T00:00:00'); endDate.setHours(0,0,0,0);
+          return today.getTime() === endDate.getTime();
+        })();
+        
+        if (currentRound >= 5 || isFinalDay) {
           return 'completed';
         }
-        // Otherwise (e.g. R3 just finished, current_round=4, completedRound=3),
-        // fall through to return 'live' — getEventStatus will handle "Round 3 Complete"
+        // current_round=4, allFinished, but NOT the final day → R3 just ended.
+        // Fall through to return 'live'; getEventStatus handles "Round 3 Complete".
       }
     }
     return 'live';
