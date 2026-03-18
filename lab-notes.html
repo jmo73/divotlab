@@ -323,6 +323,38 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   color: var(--green-light);
 }
 
+/* Rotating hero words */
+.hero-rotate {
+  display: block;
+  position: relative;
+  height: 1.25em;
+  overflow: hidden;
+  padding-bottom: 0.05em;
+}
+.hero-word {
+  display: block;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(80%) scale(0.97);
+  filter: blur(4px);
+  transition: opacity 0.85s cubic-bezier(.22,1,.36,1),
+              transform 0.85s cubic-bezier(.22,1,.36,1),
+              filter 0.85s cubic-bezier(.22,1,.36,1);
+}
+.hero-word.active {
+  position: relative;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+.hero-word.exit {
+  opacity: 0;
+  transform: translateY(-80%) scale(0.97);
+  filter: blur(4px);
+}
+
 .hero-sub {
   font-size: 17px;
   color: var(--steel-dim);
@@ -421,6 +453,67 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   height: 28px;
   background: linear-gradient(to bottom, var(--green-light), transparent);
   animation: scrollPulse 2s infinite;
+}
+
+/* Hero free signup form */
+.hero-signup {
+  display: flex;
+  gap: 10px;
+  max-width: 440px;
+  width: 100%;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 0.5s forwards;
+}
+.hero-signup input {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.hero-signup input::placeholder { color: rgba(250,250,250,0.3); }
+.hero-signup input:focus { border-color: var(--green-light); background: rgba(255,255,255,0.1); }
+.hero-signup button {
+  background: var(--green);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s;
+}
+.hero-signup button:hover { background: #236b4f; transform: translateY(-1px); }
+
+/* Free tier pricing card */
+.pricing-card.free-tier {
+  border-color: rgba(255,255,255,0.1);
+  background: var(--black-card);
+}
+.pricing-card.free-tier .pricing-tier { color: var(--green-light); }
+.pricing-card.free-tier .pricing-features li.locked {
+  opacity: 0.3;
+}
+.pricing-card.free-tier .pricing-features li.locked::before {
+  content: '—';
+  color: rgba(250,250,250,0.15);
+}
+.pricing-btn-outline {
+  background: rgba(255,255,255,0.12);
+  color: var(--white);
+  border: none;
+}
+.pricing-btn-outline:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
 }
 
 /* =============================================
@@ -800,9 +893,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 820px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1020px;
   margin: 0 auto;
 }
 
@@ -1193,7 +1286,9 @@ footer {
   .content-grid { grid-template-columns: 1fr 1fr; }
   .sample-layout,
   .picks-layout { grid-template-columns: 1fr; gap: 40px; }
+  .picks-text { order: -1; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .pricing-card.gold { order: -1; }
   .proof-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
@@ -1209,6 +1304,8 @@ footer {
   .content-grid { grid-template-columns: 1fr; }
   .hero-ctas { flex-direction: column; align-items: center; }
   .hero-ctas .btn { width: 100%; max-width: 320px; justify-content: center; }
+  .hero-signup { flex-direction: column; }
+  .hero-signup button { width: 100%; }
   .proof-section { padding: 60px 20px; }
   .faq-section { padding: 64px 20px; }
   .final-cta { padding: 80px 20px; }
@@ -1260,36 +1357,66 @@ footer {
 
 <!-- STICKY MOBILE CTA -->
 <div class="mobile-cta-bar">
-  <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="mcta-pro">Pro · Free Week</a>
-  <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="mcta-notes">Notes · Free Week</a>
+  <a href="#freeSignup" class="mcta-notes" onclick="document.getElementById('heroEmail').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('heroEmail').focus();},400);return false;">Free Signup</a>
+  <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="mcta-pro">Start Pro</a>
 </div>
 
 <!-- ========== HERO ========== -->
 <section class="hero">
-  <div class="hero-eyebrow">Introducing Lab Notes</div>
-  <h1>Data-driven analysis.<br>Every <em>tournament.</em></h1>
-  <p class="hero-sub">Course-fit models. Odds comparison across every major sportsbook. Plus weekly analysis, practice drills, and the stats that actually move the needle. One subscription for a major edge.</p>
-  <div class="hero-ctas">
-    <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-gold">Start Pro · Free Week →</a>
-    <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="btn btn-green">Start Notes · Free Week →</a>
+  <div class="hero-eyebrow">Lab Notes</div>
+  <h1>Golf analysis for<br><em class="hero-rotate"><span class="hero-word active">players.</span><span class="hero-word">fans.</span><span class="hero-word">bettors.</span><span class="hero-word">everyone.</span></em></h1>
+  <p class="hero-sub">Tournament recaps. Key stats explained. What to watch next week. Free every Tuesday. Upgrade for the full breakdown, course-fit models, and betting picks.</p>
+  
+  <!-- Free signup is the primary action -->
+  <form class="hero-signup" id="freeSignup" autocomplete="off">
+    <input type="email" placeholder="your@email.com" required id="heroEmail" autocomplete="email">
+    <button type="submit" id="heroBtn">Subscribe Free</button>
+  </form>
+  <p class="hero-note">Free forever. No credit card. <a href="#pricing" style="color:var(--green-light);border-bottom:1px solid rgba(91,191,133,0.3);padding-bottom:1px;">See paid tiers →</a></p>
+  
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
   </div>
-  <p class="hero-note">Cancel anytime. First week free. Starting at $4.99/mo.</p>
 </section>
 
 <!-- ========== TRUST BAR ========== -->
 <div style="padding: 28px 32px; text-align: center; font-size: 13px; color: var(--steel-dim); border-bottom: 1px solid var(--border); background: var(--black-mid); letter-spacing: 0.01em;">
-  Built on <strong style="color: var(--green-light); font-weight: 600;">strokes gained models</strong> and <strong style="color: var(--green-light); font-weight: 600;">PGA Tour data</strong> · Delivered every tournament week · Two tiers to fit how you follow the game
+  Built on <strong style="color: var(--green-light); font-weight: 600;">strokes gained models</strong> and <strong style="color: var(--green-light); font-weight: 600;">PGA Tour data</strong> · Free every Tuesday · Upgrade for the full breakdown
 </div>
 
 <!-- ========== PRICING — early for conversion ========== -->
 <section class="section pricing-section" id="pricing">
   <div class="section-header reveal">
     <div class="section-eyebrow">Pricing</div>
-    <h2 class="section-title">Pick your tier</h2>
-    <p class="section-desc">Both plans include a free first week. Cancel anytime from your account.</p>
+    <h2 class="section-title">Start free. Upgrade when<br>you want the <em>edge.</em></h2>
+    <p class="section-desc">Everyone gets the free Tuesday email. Paid tiers unlock the full analysis.</p>
   </div>
 
   <div class="pricing-grid">
+    <!-- FREE TIER -->
+    <div class="pricing-card free-tier reveal">
+      <div class="pricing-tier">Free</div>
+      <div class="pricing-price">
+        <span class="pricing-dollar">$0</span>
+        <span class="pricing-period">/mo</span>
+      </div>
+      <p class="pricing-annual">Free forever</p>
+      <p class="pricing-desc">The highlights. Every Tuesday. Enough to stay sharp without paying a dime.</p>
+      <ul class="pricing-features">
+        <li>Stat of the Week</li>
+        <li>Tournament recap</li>
+        <li>Player to Watch for next week</li>
+        <li>Links to latest articles + content</li>
+        <li class="locked">Course-fit model scores</li>
+        <li class="locked">Full SG breakdown</li>
+        <li class="locked">Practice drills by handicap</li>
+        <li class="locked">Betting picks + odds</li>
+      </ul>
+      <a href="#freeSignup" class="pricing-btn pricing-btn-outline" onclick="document.getElementById('heroEmail').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('heroEmail').focus();},400);return false;">Subscribe Free</a>
+    </div>
+
+    <!-- PRO TIER -->
     <div class="pricing-card gold reveal">
       <div class="pricing-tier">Lab Notes Pro</div>
       <div class="pricing-price">
@@ -1499,10 +1626,10 @@ footer {
 <section class="final-cta">
   <div class="section-eyebrow reveal">Ready?</div>
   <h2 class="section-title reveal">Your inbox. <em>Upgraded.</em></h2>
-  <p class="section-desc reveal">First week free. See if the numbers change how you watch the game.</p>
+  <p class="section-desc reveal">Start free. Upgrade when you're ready. Every tier includes the Tuesday email.</p>
   <div class="reveal" style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 8px;">
+    <a href="#freeSignup" class="btn btn-green" onclick="document.getElementById('heroEmail').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('heroEmail').focus();},400);return false;">Subscribe Free →</a>
     <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="btn btn-gold">Start Pro · Free Week →</a>
-    <a href="https://buy.stripe.com/9B64gy5ce2nC7dFcIk1ZS03" class="btn btn-green">Start Notes · Free Week →</a>
   </div>
 </section>
 
@@ -1514,6 +1641,22 @@ footer {
   </div>
 
   <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        What do I get for free?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Every Tuesday you get the Stat of the Week, a quick tournament recap, a Player to Watch for the upcoming event, and links to our latest content. It's a complete read on its own — not a teaser.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        What's the difference between free and paid?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Free gives you the highlights. Lab Notes ($4.99/mo) adds the full tournament preview with course-fit model scores, 3 detailed players to watch with SG profiles, practice drills by handicap range, and the weekend deep-dive recap. Lab Notes Pro ($9.99/mo) adds everything above plus a Wednesday betting email with picks, odds comparison across 6+ sportsbooks, and a season tracker.</div>
+    </div>
+
     <div class="faq-item">
       <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
         When do emails go out?
@@ -1532,6 +1675,14 @@ footer {
 
     <div class="faq-item">
       <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Do I need a credit card to sign up?
+        <span class="ic">+</span>
+      </button>
+      <div class="faq-a">Not for the free tier — just your email. Paid tiers are handled through Stripe and require a card. You can start free and upgrade whenever you're ready.</div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
         Is this gambling advice?
         <span class="ic">+</span>
       </button>
@@ -1540,10 +1691,10 @@ footer {
 
     <div class="faq-item">
       <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
-        Can I upgrade from Lab Notes to Pro?
+        Can I upgrade or downgrade anytime?
         <span class="ic">+</span>
       </button>
-      <div class="faq-a">Yes — upgrade anytime from your account. You'll be prorated for the remainder of your current billing cycle. Downgrading works the same way.</div>
+      <div class="faq-a">Yes. Upgrade from free to paid or switch between tiers anytime. Downgrade or cancel with one click — you keep access through the end of your billing period. No contracts, no fees.</div>
     </div>
 
     <div class="faq-item">
@@ -1552,14 +1703,6 @@ footer {
         <span class="ic">+</span>
       </button>
       <div class="faq-a">Every drill includes modifications for three ranges: 0-10, 10-20, and 20+. The strokes gained data behind each drill is calibrated to your level — what matters for a 5 handicap is different than what matters for a 20.</div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
-        Can I cancel anytime?
-        <span class="ic">+</span>
-      </button>
-      <div class="faq-a">Yes. One click from your account settings. No contracts, no fees. If you cancel, you keep access through the end of your billing period.</div>
     </div>
   </div>
 </section>
@@ -1650,6 +1793,39 @@ footer {
       }, { threshold: 0.15 });
       barObs.observe(pricingEl);
     }
+  }
+
+  // Free signup form → Beehiiv
+  // REPLACE this URL with your Beehiiv publication subscribe URL
+  var BEEHIIV_URL = 'https://divotlab.beehiiv.com/subscribe';
+
+  var freeForm = document.getElementById('freeSignup');
+  if (freeForm) {
+    freeForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('heroEmail').value.trim();
+      if (!email) return;
+      var btn = document.getElementById('heroBtn');
+      btn.disabled = true;
+      btn.textContent = 'Subscribing...';
+      // Redirect to Beehiiv with email pre-filled
+      window.location.href = BEEHIIV_URL + '?email=' + encodeURIComponent(email);
+    });
+  }
+
+  // Hero rotating words
+  var words = document.querySelectorAll('.hero-word');
+  if (words.length > 1) {
+    var current = 0;
+    setInterval(function() {
+      var prev = current;
+      current = (current + 1) % words.length;
+      words[prev].classList.remove('active');
+      words[prev].classList.add('exit');
+      words[current].classList.add('active');
+      words[current].classList.remove('exit');
+      setTimeout(function() { words[prev].classList.remove('exit'); }, 900);
+    }, 2500);
   }
 })();
 </script>
