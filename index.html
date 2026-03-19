@@ -209,7 +209,69 @@ nav.light .nav-links a:hover { color:var(--black); }
   opacity:0;
   animation: riseIn .65s cubic-bezier(.22,1,.36,1) .3s forwards;
 }
-.hero h1 em { font-style:italic; color: var(--green-light); font-weight:500; }
+.hero h1 em { font-style:italic; color: var(--green-light); font-weight:500; position:relative; display:inline-block; }
+.hero h1 em::after {
+  content:'';
+  position:absolute;
+  bottom:-4px; left:5%; right:5%;
+  height:2px;
+  background:linear-gradient(90deg, var(--green-light), var(--blue-mid));
+  border-radius:1px;
+  transform:scaleX(0);
+  transform-origin:left;
+  animation: lineIn 0.8s cubic-bezier(.22,1,.36,1) 1.1s forwards;
+}
+@keyframes lineIn {
+  to { transform:scaleX(1); }
+}
+
+/* Hero email signup */
+.hero-email {
+  margin-top:28px;
+  display:flex;
+  gap:10px;
+  max-width:400px;
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  opacity:0;
+  animation: riseIn .6s cubic-bezier(.22,1,.36,1) .85s forwards;
+}
+.hero-email input {
+  flex:1;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:5px;
+  padding:12px 18px;
+  font-family:var(--body);
+  font-size:13px;
+  color:var(--white);
+  outline:none;
+  transition:border-color .2s, background .2s;
+}
+.hero-email input::placeholder { color:rgba(250,250,250,.28); }
+.hero-email input:focus { border-color:var(--green-light); background:rgba(255,255,255,.09); }
+.hero-email button {
+  background:rgba(255,255,255,.1);
+  color:var(--white);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:5px;
+  padding:12px 22px;
+  font-family:var(--body);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .2s, border-color .2s;
+}
+.hero-email button:hover { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.25); }
+.hero-email-note {
+  margin-top:10px;
+  font-size:11px;
+  color:rgba(250,250,250,.2);
+  opacity:0;
+  animation: riseIn .5s cubic-bezier(.22,1,.36,1) .95s forwards;
+}
 
 .hero-sub {
   margin-top:24px;
@@ -864,6 +926,8 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   .stat-bar { flex-direction:column; gap:24px; }
   .stat-sep { width:36px; height:1px; }
   .email-row { flex-direction:column; }
+  .hero-email { flex-direction:column; }
+  .hero-email button { width:100%; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
 }
 </style>
@@ -919,6 +983,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="/the-lab" class="btn-fill">Visit The Lab</a>
       <a href="/articles" class="btn-text">Read the Latest</a>
     </div>
+    <form class="hero-email" id="homeSignup" autocomplete="off">
+      <input type="email" placeholder="your@email.com" required id="homeEmail" autocomplete="email">
+      <button type="submit" id="homeBtn">Free Newsletter</button>
+    </form>
+    <p class="hero-email-note">Free weekly golf analysis. Every Tuesday.</p>
   </div>
   <div class="scroll-cue">
     <span>Scroll</span>
@@ -1464,6 +1533,53 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       }
     }
   })();
+
+  // ====================================
+  // HERO EMAIL SIGNUP → Beehiiv via API proxy
+  // ====================================
+  var homeApiBase = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+  var homeForm = document.getElementById('homeSignup');
+  if (homeForm) {
+    homeForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('homeEmail').value.trim();
+      if (!email) return;
+      var btn = document.getElementById('homeBtn');
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Subscribing...';
+
+      fetch(homeApiBase + '/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, utm_source: 'homepage-hero' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          btn.textContent = '✓ You\'re in!';
+          btn.style.background = 'var(--green)';
+          btn.style.borderColor = 'var(--green)';
+          document.getElementById('homeEmail').value = '';
+          setTimeout(function() {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.disabled = false;
+          }, 3000);
+        } else {
+          btn.textContent = 'Try again';
+          btn.disabled = false;
+          setTimeout(function() { btn.textContent = originalText; }, 2000);
+        }
+      })
+      .catch(function() {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = originalText; }, 2000);
+      });
+    });
+  }
   
 })();
 </script>
