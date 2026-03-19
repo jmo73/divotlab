@@ -1326,6 +1326,58 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================
+// BEEHIIV SUBSCRIBE PROXY
+// Accepts email from lab-notes page, subscribes via Beehiiv API
+// Env vars: BEEHIIV_API_KEY, BEEHIIV_PUB_ID
+// ============================================
+app.post('/api/subscribe', async (req, res) => {
+  try {
+    const apiKey = process.env.BEEHIIV_API_KEY;
+    const pubId = process.env.BEEHIIV_PUB_ID;
+
+    if (!apiKey || !pubId) {
+      return res.status(500).json({ success: false, error: 'Beehiiv not configured' });
+    }
+
+    const { email, utm_source } = req.body || {};
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email required' });
+    }
+
+    const response = await fetch(`https://api.beehiiv.com/v2/publications/${pubId}/subscriptions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        utm_source: utm_source || 'lab-notes-page',
+        referring_site: 'divotlab.com/lab-notes'
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      res.json({ success: true, message: 'Subscribed successfully' });
+    } else {
+      // Beehiiv returns 409 if already subscribed — treat as success
+      if (response.status === 409) {
+        res.json({ success: true, message: 'Already subscribed' });
+      } else {
+        console.error('Beehiiv API error:', data);
+        res.status(response.status).json({ success: false, error: data.message || 'Subscribe failed' });
+      }
+    }
+  } catch (error) {
+    console.error('Subscribe proxy error:', error);
+    res.status(500).json({ success: false, error: 'Internal error' });
+  }
+});
+
+// ============================================
 // PRACTICE PLAN — PERSONALIZED INSIGHT (Claude Haiku)
 // ============================================
 app.post('/api/personalize-insight', aiLimiter, async (req, res) => {

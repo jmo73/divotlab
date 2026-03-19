@@ -1795,9 +1795,8 @@ footer {
     }
   }
 
-  // Free signup form → Beehiiv
-  // REPLACE this URL with your Beehiiv publication subscribe URL
-  var BEEHIIV_URL = 'https://divotlab.beehiiv.com/subscribe';
+  // Free signup form → Beehiiv via Vercel API proxy
+  var API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
 
   var freeForm = document.getElementById('freeSignup');
   if (freeForm) {
@@ -1806,10 +1805,39 @@ footer {
       var email = document.getElementById('heroEmail').value.trim();
       if (!email) return;
       var btn = document.getElementById('heroBtn');
+      var originalText = btn.textContent;
       btn.disabled = true;
       btn.textContent = 'Subscribing...';
-      // Redirect to Beehiiv with email pre-filled
-      window.location.href = BEEHIIV_URL + '?email=' + encodeURIComponent(email);
+
+      fetch(API_BASE + '/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, utm_source: 'lab-notes-page' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          btn.textContent = '✓ You\'re in!';
+          btn.style.background = '#1B4D3E';
+          document.getElementById('heroEmail').value = '';
+          // Reset after 3 seconds
+          setTimeout(function() {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+          }, 3000);
+        } else {
+          btn.textContent = 'Try again';
+          btn.style.background = '';
+          btn.disabled = false;
+          setTimeout(function() { btn.textContent = originalText; }, 2000);
+        }
+      })
+      .catch(function() {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = originalText; }, 2000);
+      });
     });
   }
 
