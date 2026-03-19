@@ -209,20 +209,20 @@ nav.light .nav-links a:hover { color:var(--black); }
   opacity:0;
   animation: riseIn .65s cubic-bezier(.22,1,.36,1) .3s forwards;
 }
-.hero h1 em { font-style:italic; color: var(--green-light); font-weight:500; position:relative; display:inline-block; }
-.hero h1 em::after {
-  content:'';
-  position:absolute;
-  bottom:-4px; left:5%; right:5%;
-  height:2px;
-  background:linear-gradient(90deg, var(--green-light), var(--blue-mid));
-  border-radius:1px;
-  transform:scaleX(0);
-  transform-origin:left;
-  animation: lineIn 0.8s cubic-bezier(.22,1,.36,1) 1.1s forwards;
+.hero h1 em {
+  font-style:italic;
+  font-weight:500;
+  display:inline-block;
+  background: linear-gradient(90deg, var(--green-light) 50%, rgba(91,191,133,0.15) 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textReveal 1.8s cubic-bezier(.22,1,.36,1) 0.9s forwards;
 }
-@keyframes lineIn {
-  to { transform:scaleX(1); }
+@keyframes textReveal {
+  to { background-position: 0% 0; }
 }
 
 /* Hero email signup */
