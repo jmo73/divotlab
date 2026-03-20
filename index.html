@@ -194,18 +194,18 @@ nav.light .nav-links a:hover { color:var(--black); }
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 64px;
-  max-width: 1140px;
+  justify-content: center;
+  gap: 48px;
+  max-width: 1200px;
   width: 100%;
 }
 
-.hero-inner { position:relative; z-index:1; text-align:center; max-width:540px; flex-shrink: 0; }
+.hero-inner { position:relative; z-index:1; text-align:center; flex: 1; max-width: 600px; }
 
 /* ---- Hero Panel ---- */
 .hero-panel {
-  flex: 1;
-  min-width: 0;
-  max-width: 380px;
+  flex-shrink: 0;
+  width: 340px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px;
@@ -310,6 +310,17 @@ nav.light .nav-links a:hover { color:var(--black); }
 }
 .hero-panel-value.green { color: var(--green-light); }
 .hero-panel-value.blue { color: var(--blue-mid); }
+.hero-panel-value.red { color: #E76F51; }
+.hero-panel-value.muted { color: rgba(250,250,250,0.4); }
+
+.hero-panel-thru {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(250,250,250,0.2);
+  flex-shrink: 0;
+  min-width: 20px;
+  text-align: right;
+}
 
 .hero-panel-footer {
   padding: 10px 20px 14px;
@@ -341,10 +352,10 @@ nav.light .nav-links a:hover { color:var(--black); }
   .hero-layout {
     flex-direction: column;
     align-items: center;
-    gap: 48px;
+    gap: 40px;
   }
   .hero-inner { max-width: 740px; }
-  .hero-panel { max-width: 400px; width: 100%; }
+  .hero-panel { width: 100%; max-width: 400px; }
 }
 @media(max-width: 600px) {
   .hero-panel { max-width: 100%; }
@@ -2069,7 +2080,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   })();
   
   // ====================================
-  // HERO PANEL — Model Favorites / Top Ranked
+  // HERO PANEL — Live Leaders / Model Favorites / Top Ranked
   // ====================================
   (async function initHeroPanel() {
     var panelTitle = document.getElementById('heroPanelTitle');
@@ -2097,118 +2108,226 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       if (p.length === 2) return p[1].charAt(0) + p[0].charAt(0);
       return n.substring(0, 2).toUpperCase();
     }
-    // Convert "Last, First" to a headshot filename: lowercase last name
-    // Must match the lastName field used in fetch-headshots-v3.js
     function pHeadshotFile(playerName) {
       if (!playerName) return null;
       var parts = playerName.split(', ');
       var last = parts[0] || '';
-      // Special cases matching fetch-headshots-v3.js lastName field
       var full = pFmtName(playerName);
       var specials = {
-        'Si Woo Kim': 'siwookim',
-        'Cameron Smith': 'camsmith',
-        'Dustin Johnson': 'djohnson',
-        'Nicolai Hojgaard': 'nhojgaard',
-        'Rasmus Hojgaard': 'rhojgaard',
-        'Cam Davis': 'camdavis',
-        'Michael Kim': 'michaelkim',
-        'K.H. Lee': 'khlee',
-        'Cameron Young': 'young',
-        'Carson Young': 'carsonyoung',
-        'Patrick Reed': 'reed',
-        'Dan Brown': 'danbrown',
+        'Si Woo Kim': 'siwookim', 'Cameron Smith': 'camsmith',
+        'Dustin Johnson': 'djohnson', 'Nicolai Hojgaard': 'nhojgaard',
+        'Rasmus Hojgaard': 'rhojgaard', 'Cam Davis': 'camdavis',
+        'Michael Kim': 'michaelkim', 'K.H. Lee': 'khlee',
+        'Cameron Young': 'young', 'Carson Young': 'carsonyoung',
+        'Patrick Reed': 'reed', 'Dan Brown': 'danbrown',
         'Shane McCarthy': 'shanemccarthy',
       };
       if (specials[full]) return specials[full];
       return last.toLowerCase().replace(/[^a-z]/g, '');
     }
+    function pFmtScore(s) {
+      if (s === 'E' || s === 0 || s === '0') return 'E';
+      var n = parseInt(s, 10);
+      if (isNaN(n)) return s || '-';
+      return n > 0 ? '+' + n : String(n);
+    }
+    function pScoreClass(s) {
+      if (s === 'E' || s === 0 || s === '0') return 'muted';
+      var n = parseInt(s, 10);
+      if (isNaN(n)) return 'muted';
+      return n < 0 ? 'green' : n > 0 ? 'red' : 'muted';
+    }
+    function pFmtThru(t) {
+      if (t === 18 || t === '18' || t === 'F' || t === 'f') return 'F';
+      if (t == null || t === '' || t === '-' || t === 0) return '';
+      return String(t);
+    }
 
-    function renderPanel(title, eventName, players, valueKey, valueLabel, valueClass) {
-      panelTitle.textContent = title;
+    function avatarHTML(playerName) {
+      var headshot = pHeadshotFile(playerName);
+      var initials = pInitials(playerName);
+      var shortName = pShortName(playerName);
+      if (headshot) {
+        return '<img src="/headshots/' + headshot + '.png" alt="' + shortName + '" onerror="this.parentElement.innerHTML=\'<div class=hero-panel-initials>' + initials + '</div>\'">';
+      }
+      return '<div class="hero-panel-initials">' + initials + '</div>';
+    }
+
+    // Assign tie-aware positions
+    function assignPanelPositions(sorted, scoreKey) {
+      var i = 0;
+      while (i < sorted.length) {
+        var score = sorted[i][scoreKey];
+        var j = i + 1;
+        while (j < sorted.length && sorted[j][scoreKey] === score) j++;
+        var count = j - i;
+        var pos = i + 1;
+        var label = count > 1 ? 'T' + pos : String(pos);
+        for (var k = i; k < j; k++) sorted[k]._posLabel = label;
+        i = j;
+      }
+    }
+
+    // ---- RENDER: Live Leaderboard ----
+    function renderLive(eventName, players) {
+      panelTitle.textContent = 'Leaderboard';
       panelEvent.textContent = eventName || '';
+      var sorted = players.slice().sort(function(a, b) {
+        var sa = a.current_score != null ? a.current_score : a.total;
+        var sb = b.current_score != null ? b.current_score : b.total;
+        if (sa === 'E' || sa === 0) sa = 0; else sa = parseInt(sa, 10) || 999;
+        if (sb === 'E' || sb === 0) sb = 0; else sb = parseInt(sb, 10) || 999;
+        return sa - sb;
+      }).slice(0, 5);
+      // Compute numeric scores for tie detection
+      sorted.forEach(function(p) {
+        var s = p.current_score != null ? p.current_score : p.total;
+        p._numScore = (s === 'E' || s === 0) ? 0 : (parseInt(s, 10) || 999);
+      });
+      assignPanelPositions(sorted, '_numScore');
 
       var html = '';
-      players.forEach(function(p, i) {
-        var name = pFmtName(p.player_name);
-        var shortName = pShortName(p.player_name);
-        var initials = pInitials(p.player_name);
-        var headshot = pHeadshotFile(p.player_name);
-        var val = p._displayValue || '';
-        var stat = p._displayStat || '';
-
+      sorted.forEach(function(p) {
+        var sc = p.current_score != null ? p.current_score : p.total;
+        var thru = pFmtThru(p.thru);
         html += '<div class="hero-panel-row">'
-          + '<span class="hero-panel-rank">' + (i + 1) + '</span>'
-          + '<div class="hero-panel-avatar">'
-          + (headshot
-            ? '<img src="/headshots/' + headshot + '.png" alt="' + shortName + '" onerror="this.parentElement.innerHTML=\'<div class=hero-panel-initials>' + initials + '</div>\'">'
-            : '<div class="hero-panel-initials">' + initials + '</div>')
-          + '</div>'
+          + '<span class="hero-panel-rank">' + (p._posLabel || '') + '</span>'
+          + '<div class="hero-panel-avatar">' + avatarHTML(p.player_name) + '</div>'
           + '<div class="hero-panel-info">'
-          + '<div class="hero-panel-name">' + name + '</div>'
-          + (stat ? '<div class="hero-panel-stat">' + stat + '</div>' : '')
+          + '<div class="hero-panel-name">' + pFmtName(p.player_name) + '</div>'
+          + '<div class="hero-panel-stat">Thru ' + (thru || '-') + '</div>'
           + '</div>'
-          + '<span class="hero-panel-value ' + (valueClass || 'green') + '">' + val + '</span>'
+          + '<span class="hero-panel-value ' + pScoreClass(sc) + '">' + pFmtScore(sc) + '</span>'
           + '</div>';
       });
       panelList.innerHTML = html;
     }
 
-    try {
-      // Try pre-tournament predictions first (available Tue-Sun of event week)
-      var hasPredictions = false;
-      var eventName = '';
+    // ---- RENDER: Pre-Tournament Odds ----
+    function renderOdds(eventName, predictions) {
+      panelTitle.textContent = 'Model Favorites';
+      panelEvent.textContent = eventName || '';
+      var top5 = predictions
+        .filter(function(p) { return p.win != null && p.win > 0; })
+        .sort(function(a, b) { return (b.win || 0) - (a.win || 0); })
+        .slice(0, 5);
 
+      var html = '';
+      top5.forEach(function(p, i) {
+        var pct = ((p.win || 0) * 100).toFixed(1) + '%';
+        html += '<div class="hero-panel-row">'
+          + '<span class="hero-panel-rank">' + (i + 1) + '</span>'
+          + '<div class="hero-panel-avatar">' + avatarHTML(p.player_name) + '</div>'
+          + '<div class="hero-panel-info">'
+          + '<div class="hero-panel-name">' + pFmtName(p.player_name) + '</div>'
+          + '<div class="hero-panel-stat">Win Probability</div>'
+          + '</div>'
+          + '<span class="hero-panel-value green">' + pct + '</span>'
+          + '</div>';
+      });
+      panelList.innerHTML = html;
+    }
+
+    // ---- RENDER: Rankings Fallback ----
+    function renderRankings(rankings) {
+      panelTitle.textContent = 'Top Ranked';
+      panelEvent.textContent = 'DataGolf Skill Rating';
+      var top5 = rankings.slice(0, 5);
+      var html = '';
+      top5.forEach(function(p, i) {
+        var val = p.dg_skill_estimate != null ? '+' + p.dg_skill_estimate.toFixed(2) : '#' + (i + 1);
+        html += '<div class="hero-panel-row">'
+          + '<span class="hero-panel-rank">' + (i + 1) + '</span>'
+          + '<div class="hero-panel-avatar">' + avatarHTML(p.player_name) + '</div>'
+          + '<div class="hero-panel-info">'
+          + '<div class="hero-panel-name">' + pFmtName(p.player_name) + '</div>'
+          + '<div class="hero-panel-stat">SG Total · DG #' + (i + 1) + '</div>'
+          + '</div>'
+          + '<span class="hero-panel-value blue">' + val + '</span>'
+          + '</div>';
+      });
+      panelList.innerHTML = html;
+    }
+
+    // ---- MAIN DATA FETCH ----
+    try {
+      var eventName = '';
+      var currentRound = 0;
+
+      // 1. Get event info
       try {
         var fieldRes = await fetch(panelApi + '/api/field-updates');
         var fieldData = await fieldRes.json();
         if (fieldData.success && fieldData.data) {
           eventName = fieldData.data.event_name || '';
+          currentRound = fieldData.data.current_round || 0;
         }
       } catch(e) { /* silent */ }
 
+      // 2. Try live scores first
+      var isLive = false;
       try {
-        var predRes = await fetch(panelApi + '/api/pre-tournament');
-        var predData = await predRes.json();
-
-        if (predData.success && predData.data) {
-          var preds = predData.data.baseline_history_fit || predData.data.baseline || [];
-          if (Array.isArray(preds) && preds.length > 0 && preds[0].win != null) {
-            var topPreds = preds
-              .filter(function(p) { return p.win != null && p.win > 0; })
-              .sort(function(a, b) { return (b.win || 0) - (a.win || 0); })
-              .slice(0, 5);
-
-            if (topPreds.length >= 5) {
-              topPreds.forEach(function(p) {
-                p._displayValue = ((p.win || 0) * 100).toFixed(1) + '%';
-                p._displayStat = 'Win Probability';
-              });
-              renderPanel('Model Favorites', eventName, topPreds, 'win', 'Win %', 'green');
-              hasPredictions = true;
+        var liveRes = await fetch(panelApi + '/api/live-tournament');
+        var liveData = await liveRes.json();
+        if (liveData.success && liveData.data) {
+          var arr = liveData.data.data || liveData.data || [];
+          var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
+          if (match && arr.length > 0) {
+            var hasScores = arr.some(function(p) {
+              return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
+                     (p.current_score != null && p.current_score !== '-');
+            });
+            if (hasScores) {
+              renderLive(eventName, arr);
+              isLive = true;
             }
           }
         }
-      } catch(e) { /* fall through to rankings */ }
+      } catch(e) { /* silent */ }
 
-      // Fallback: top 5 by DataGolf skill rating
-      if (!hasPredictions) {
+      // 3. If not live, try pre-tournament predictions
+      if (!isLive) {
+        var hasPreds = false;
         try {
-          var rankRes = await fetch(panelApi + '/api/rankings?pga_only=true');
-          var rankData = await rankRes.json();
-
-          if (rankData.success && rankData.data && rankData.data.rankings) {
-            var topRanked = rankData.data.rankings.slice(0, 5);
-            topRanked.forEach(function(p, i) {
-              var sg = p.datagolf_rank != null ? '#' + p.datagolf_rank : '';
-              p._displayValue = p.dg_skill_estimate != null ? '+' + p.dg_skill_estimate.toFixed(2) : sg;
-              p._displayStat = 'SG Total · DG Rank ' + (i + 1);
-            });
-            renderPanel('Top Ranked', 'DataGolf Skill Rating', topRanked, 'dg_skill_estimate', 'SG', 'blue');
+          var predRes = await fetch(panelApi + '/api/pre-tournament');
+          var predData = await predRes.json();
+          if (predData.success && predData.data) {
+            var preds = predData.data.baseline_history_fit || predData.data.baseline || [];
+            if (Array.isArray(preds) && preds.length >= 5 && preds[0].win != null) {
+              renderOdds(eventName, preds);
+              hasPreds = true;
+            }
           }
-        } catch(e) {
-          panelList.innerHTML = '<div class="hero-panel-loading">Data unavailable</div>';
+        } catch(e) { /* silent */ }
+
+        // 4. Fallback to rankings
+        if (!hasPreds) {
+          try {
+            var rankRes = await fetch(panelApi + '/api/rankings?pga_only=true');
+            var rankData = await rankRes.json();
+            if (rankData.success && rankData.data && rankData.data.rankings) {
+              renderRankings(rankData.data.rankings);
+            }
+          } catch(e) {
+            panelList.innerHTML = '<div class="hero-panel-loading">Data unavailable</div>';
+          }
         }
+      }
+
+      // Refresh live data every 2 minutes if tournament is live
+      if (isLive) {
+        setInterval(async function() {
+          try {
+            var r = await fetch(panelApi + '/api/live-tournament');
+            var d = await r.json();
+            if (d.success && d.data) {
+              var a = d.data.data || d.data || [];
+              if (a.length > 0) renderLive(eventName, a);
+            }
+          } catch(e) { /* silent */ }
+        }, 120000);
       }
     } catch(err) {
       console.warn('Hero panel error:', err);
