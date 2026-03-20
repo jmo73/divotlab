@@ -2190,12 +2190,15 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       sorted.forEach(function(p) {
         var sc = p.current_score != null ? p.current_score : p.total;
         var thru = pFmtThru(p.thru);
+        var winPct = (p.win != null && p.win > 0) ? ((p.win * 100).toFixed(1) + '%') : '';
+        var thruLabel = thru ? 'Thru ' + thru : '';
+        var statParts = [thruLabel, winPct ? winPct + ' win' : ''].filter(Boolean);
         html += '<div class="hero-panel-row">'
           + '<span class="hero-panel-rank">' + (p._posLabel || '') + '</span>'
           + '<div class="hero-panel-avatar">' + avatarHTML(p.player_name) + '</div>'
           + '<div class="hero-panel-info">'
           + '<div class="hero-panel-name">' + pFmtName(p.player_name) + '</div>'
-          + '<div class="hero-panel-stat">Thru ' + (thru || '-') + '</div>'
+          + '<div class="hero-panel-stat">' + statParts.join(' · ') + '</div>'
           + '</div>'
           + '<span class="hero-panel-value ' + pScoreClass(sc) + '">' + pFmtScore(sc) + '</span>'
           + '</div>';
