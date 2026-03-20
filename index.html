@@ -377,6 +377,16 @@ nav.light .nav-links a:hover { color:var(--black); }
   .hero-panel-row { padding: 8px 16px; gap: 10px; }
   .hero-panel-avatar { width: 32px; height: 32px; }
   .hero-panel-name { font-size: 12px; }
+  @media(max-width: 600px) {
+  .hero { padding: 140px 24px 120px; } /* Adds space at the top (140px) and bottom (120px) */
+  .scroll-cue { bottom: 15px; }        /* Moves the SCROLL text closer to the bottom edge */
+  
+  /* ... keep your existing hero-panel styles below this ... */
+  .hero-panel { max-width: 100%; }
+  .hero-panel-row { padding: 8px 16px; gap: 10px; }
+  .hero-panel-avatar { width: 32px; height: 32px; }
+  .hero-panel-name { font-size: 12px; }
+}
 }
 
 .hero-eyebrow {
