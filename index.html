@@ -372,30 +372,8 @@ nav.light .nav-links a:hover { color:var(--black); }
   .hero-inner { max-width: 740px; }
   .hero-panel { width: 100%; max-width: 400px; }
 }
-/* Clean Mobile Styles — Replace your existing 600px block with this */
 @media(max-width: 600px) {
-  .hero { 
-    padding: 130px 24px 100px; 
-    justify-content: flex-start; /* Prevents content from centering behind the nav */
-    min-height: auto;           /* Allows the page to grow if content is tall */
-  }
-
-  .hero h1 { 
-    font-size: 46px;            /* Shrinks the massive 62px headline to fit mobile */
-  }
-
-  .hero-layout { 
-    gap: 30px; 
-  }
-
-  .scroll-cue { 
-    bottom: 15px;               /* Moves SCROLL text closer to the bottom edge */
-  }
-
-  .hero-panel { 
-    max-width: 100%; 
-  }
-
+  .hero-panel { max-width: 100%; }
   .hero-panel-row { padding: 8px 16px; gap: 10px; }
   .hero-panel-avatar { width: 32px; height: 32px; }
   .hero-panel-name { font-size: 12px; }
