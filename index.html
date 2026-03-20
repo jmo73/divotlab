@@ -2129,13 +2129,28 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       var last = parts[0] || '';
       var full = pFmtName(playerName);
       var specials = {
-        'Si Woo Kim': 'siwookim', 'Cameron Smith': 'camsmith',
-        'Dustin Johnson': 'djohnson', 'Nicolai Hojgaard': 'nhojgaard',
-        'Rasmus Hojgaard': 'rhojgaard', 'Cam Davis': 'camdavis',
-        'Michael Kim': 'michaelkim', 'K.H. Lee': 'khlee',
+        'Si Woo Kim': 'siwookim', 'S.H. Kim': 'shkim', 'Tom Kim': 'kim',
+        'Michael Kim': 'michaelkim', 'Chan Kim': 'chankim',
         'Cameron Young': 'young', 'Carson Young': 'carsonyoung',
-        'Patrick Reed': 'reed', 'Dan Brown': 'danbrown',
-        'Shane McCarthy': 'shanemccarthy',
+        'Cam Davis': 'camdavis', 'Jason Day': 'day',
+        'K.H. Lee': 'khlee', 'Min Woo Lee': 'lee', 'S.T. Lee': 'stlee',
+        'Dan Brown': 'danbrown',
+        'Nicolai Højgaard': 'nhojgaard', 'Nicolai Hojgaard': 'nhojgaard',
+        'Rasmus Højgaard': 'rhojgaard', 'Rasmus Hojgaard': 'rhojgaard',
+        'Adam Scott': 'scott', 'Ben Griffin': 'griffin', 'Lanto Griffin': 'lantogriffin',
+        'Parker Coody': 'parkercoody', 'Pierceson Coody': 'coody',
+        'Davis Thompson': 'thompson', 'Michael Thompson': 'mthompson',
+        'Taylor Moore': 'moore', 'Taylor Montgomery': 'montgomery',
+        'Justin Thomas': 'thomas', 'Justin Rose': 'rose', 'Justin Lower': 'lower',
+        'Ludvig Åberg': 'aberg', 'Ludvig Aberg': 'aberg',
+        'Patrick Rodgers': 'rodgers', 'Brendon Todd': 'todd',
+        'Danny Walker': 'dannywalker', 'Matt Wallace': 'wallace',
+        'Kevin Yu': 'yu', 'Dylan Wu': 'wu',
+        'J.J. Spaun': 'spaun', 'J.T. Poston': 'poston',
+        'C.T. Pan': 'ctpan', 'A.J. Ewart': 'ewart',
+        'Nick Taylor': 'taylor', 'Frankie Capan III': 'capan',
+        'Cameron Smith': 'camsmith', 'Dustin Johnson': 'djohnson',
+        'Patrick Reed': 'reed', 'Shane McCarthy': 'shanemccarthy',
       };
       if (specials[full]) return specials[full];
       return last.toLowerCase().replace(/[^a-z]/g, '');
