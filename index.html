@@ -205,7 +205,7 @@ nav.light .nav-links a:hover { color:var(--black); }
 /* ---- Hero Panel ---- */
 .hero-panel {
   flex-shrink: 0;
-  width: 340px;
+  width: 400px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px;
@@ -321,6 +321,21 @@ nav.light .nav-links a:hover { color:var(--black); }
   min-width: 20px;
   text-align: right;
 }
+.hero-panel-pos {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  flex-shrink: 0;
+  text-align: center;
+  min-width: 36px;
+  line-height: 1;
+}
+.hero-panel-pos.under { color: var(--green-light); border: 1px solid rgba(91,191,133,0.15); }
+.hero-panel-pos.over { color: #E76F51; border: 1px solid rgba(231,111,81,0.15); }
+.hero-panel-pos.even { color: rgba(250,250,250,0.4); border: 1px solid rgba(255,255,255,0.08); }
 
 .hero-panel-footer {
   padding: 10px 20px 14px;
@@ -2170,37 +2185,60 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
     // ---- RENDER: Live Leaderboard ----
     function renderLive(eventName, players) {
-      panelTitle.textContent = 'Leaderboard';
+      panelTitle.textContent = 'Live Win Odds';
       panelEvent.textContent = eventName || '';
-      var sorted = players.slice().sort(function(a, b) {
+
+      // Sort by live win probability (highest first)
+      var byOdds = players.slice()
+        .filter(function(p) { return p.win != null && p.win > 0; })
+        .sort(function(a, b) { return (b.win || 0) - (a.win || 0); })
+        .slice(0, 5);
+
+      // If no win data, fall back to score-sorted leaderboard
+      if (byOdds.length < 3) {
+        byOdds = players.slice().sort(function(a, b) {
+          var sa = a.current_score != null ? a.current_score : a.total;
+          var sb = b.current_score != null ? b.current_score : b.total;
+          if (sa === 'E' || sa === 0) sa = 0; else sa = parseInt(sa, 10) || 999;
+          if (sb === 'E' || sb === 0) sb = 0; else sb = parseInt(sb, 10) || 999;
+          return sa - sb;
+        }).slice(0, 5);
+      }
+
+      // Need score-sorted leaderboard to compute tournament positions
+      var scoreSorted = players.slice().sort(function(a, b) {
         var sa = a.current_score != null ? a.current_score : a.total;
         var sb = b.current_score != null ? b.current_score : b.total;
         if (sa === 'E' || sa === 0) sa = 0; else sa = parseInt(sa, 10) || 999;
         if (sb === 'E' || sb === 0) sb = 0; else sb = parseInt(sb, 10) || 999;
         return sa - sb;
-      }).slice(0, 5);
-      // Compute numeric scores for tie detection
-      sorted.forEach(function(p) {
+      });
+      // Assign tournament positions with ties
+      scoreSorted.forEach(function(p) {
         var s = p.current_score != null ? p.current_score : p.total;
         p._numScore = (s === 'E' || s === 0) ? 0 : (parseInt(s, 10) || 999);
       });
-      assignPanelPositions(sorted, '_numScore');
+      assignPanelPositions(scoreSorted, '_numScore');
+      // Build lookup of position labels by player name
+      var posLookup = {};
+      scoreSorted.forEach(function(p) { posLookup[p.player_name] = p._posLabel; });
 
       var html = '';
-      sorted.forEach(function(p) {
+      byOdds.forEach(function(p, i) {
         var sc = p.current_score != null ? p.current_score : p.total;
-        var thru = pFmtThru(p.thru);
-        var winPct = (p.win != null && p.win > 0) ? ((p.win * 100).toFixed(1) + '%') : '';
-        var thruLabel = thru ? 'Thru ' + thru : '';
-        var statParts = [thruLabel, winPct ? winPct + ' win' : ''].filter(Boolean);
+        var posLabel = posLookup[p.player_name] || '';
+        var winPct = (p.win != null && p.win > 0) ? ((p.win * 100).toFixed(1) + '%') : pFmtScore(sc);
+        var valClass = (p.win != null && p.win > 0) ? 'green' : pScoreClass(sc);
+        var posScoreText = posLabel ? posLabel + ' · ' + pFmtScore(sc) : pFmtScore(sc);
+
         html += '<div class="hero-panel-row">'
-          + '<span class="hero-panel-rank">' + (p._posLabel || '') + '</span>'
+          + '<span class="hero-panel-rank">' + (i + 1) + '</span>'
           + '<div class="hero-panel-avatar">' + avatarHTML(p.player_name) + '</div>'
           + '<div class="hero-panel-info">'
           + '<div class="hero-panel-name">' + pFmtName(p.player_name) + '</div>'
-          + '<div class="hero-panel-stat">' + statParts.join(' · ') + '</div>'
+          + '<div class="hero-panel-stat">' + posScoreText + '</div>'
           + '</div>'
-          + '<span class="hero-panel-value ' + pScoreClass(sc) + '">' + pFmtScore(sc) + '</span>'
+          + '<span class="hero-panel-value ' + valClass + '">' + winPct + '</span>'
           + '</div>';
       });
       panelList.innerHTML = html;
