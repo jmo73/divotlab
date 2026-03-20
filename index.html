@@ -373,11 +373,22 @@ nav.light .nav-links a:hover { color:var(--black); }
   .hero-panel { width: 100%; max-width: 400px; }
 }
 @media(max-width: 600px) {
-  .hero { padding: 140px 24px 120px; } /* Adds space at the top (140px) and bottom (120px) */
-  .scroll-cue { bottom: 15px; }        /* Moves the SCROLL text closer to the bottom edge */
-  
-  /* ... keep your existing hero-panel styles below this ... */
-  .hero-panel { max-width: 100%; }
+  .hero { 
+    padding: 160px 24px 140px; /* More space at top (160) and bottom (140) */
+    justify-content: flex-start; /* Ensures content starts below the nav instead of centering */
+    min-height: auto; /* Allows the section to grow if content is tall */
+  }
+
+  .scroll-cue { 
+    bottom: 10px; /* Moves SCROLL text to the very bottom edge */
+  }
+
+  .hero-panel { 
+    max-width: 100%; 
+    margin-top: 20px; /* Adds a gap between the text and the card */
+  }
+
+  /* Your existing panel adjustments */
   .hero-panel-row { padding: 8px 16px; gap: 10px; }
   .hero-panel-avatar { width: 32px; height: 32px; }
   .hero-panel-name { font-size: 12px; }
