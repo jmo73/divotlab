@@ -188,7 +188,170 @@ nav.light .nav-links a:hover { color:var(--black); }
   pointer-events:none;
 }
 
-.hero-inner { position:relative; z-index:1; text-align:center; max-width:740px; }
+/* Two-column hero layout */
+.hero-layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  max-width: 1140px;
+  width: 100%;
+}
+
+.hero-inner { position:relative; z-index:1; text-align:center; max-width:540px; flex-shrink: 0; }
+
+/* ---- Hero Panel ---- */
+.hero-panel {
+  flex: 1;
+  min-width: 0;
+  max-width: 380px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 0;
+  opacity: 0;
+  animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) 1.1s forwards;
+  overflow: hidden;
+}
+.hero-panel-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hero-panel-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--green-light);
+}
+.hero-panel-event {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(250,250,250,0.3);
+  max-width: 160px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero-panel-list {
+  padding: 6px 0;
+}
+.hero-panel-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 20px;
+  transition: background 0.15s;
+}
+.hero-panel-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+.hero-panel-rank {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(250,250,250,0.25);
+  min-width: 18px;
+  text-align: center;
+}
+.hero-panel-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.hero-panel-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Initials fallback when no headshot */
+.hero-panel-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(250,250,250,0.35);
+  background: rgba(27,77,62,0.3);
+}
+.hero-panel-info {
+  flex: 1;
+  min-width: 0;
+}
+.hero-panel-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(250,250,250,0.85);
+  line-height: 1.2;
+}
+.hero-panel-stat {
+  font-size: 11px;
+  color: rgba(250,250,250,0.35);
+  margin-top: 1px;
+}
+.hero-panel-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+.hero-panel-value.green { color: var(--green-light); }
+.hero-panel-value.blue { color: var(--blue-mid); }
+
+.hero-panel-footer {
+  padding: 10px 20px 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+.hero-panel-footer a {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--green-light);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.hero-panel-footer a:hover { opacity: 0.7; }
+
+/* Loading state */
+.hero-panel-loading {
+  padding: 48px 20px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(250,250,250,0.2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Mobile: stack below hero text */
+@media(max-width: 960px) {
+  .hero-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+  }
+  .hero-inner { max-width: 740px; }
+  .hero-panel { max-width: 400px; width: 100%; }
+}
+@media(max-width: 600px) {
+  .hero-panel { max-width: 100%; }
+  .hero-panel-row { padding: 8px 16px; gap: 10px; }
+  .hero-panel-avatar { width: 32px; height: 32px; }
+  .hero-panel-name { font-size: 12px; }
+}
 
 .hero-eyebrow {
   display:inline-block;
@@ -205,7 +368,7 @@ nav.light .nav-links a:hover { color:var(--black); }
   font-weight: 600;
   color: var(--white);
   letter-spacing: -.025em;
-  line-height: 1.02;
+  line-height: 1.08;
   opacity:0;
   animation: riseIn .65s cubic-bezier(.22,1,.36,1) .3s forwards;
 }
@@ -214,6 +377,7 @@ nav.light .nav-links a:hover { color:var(--black); }
   font-weight:500;
   display:inline-block;
   padding-right:4px;
+  padding-bottom: 4px;
   background: linear-gradient(90deg, var(--green-light) 50%, rgba(91,191,133,0.15) 50%);
   background-size: 200% 100%;
   background-position: 100% 0;
@@ -1162,20 +1326,37 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
 <!-- ========== HERO ========== -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Welcome to the Lab</div>
-    <h1>Golf<br><em>Analyzed</em></h1>
-    <p class="hero-sub">The game of golf, decoded. Stats that actually tell the story. Insights built on data, not opinion.</p>
-    <div class="hero-btns">
-      <a href="/the-lab" class="btn-fill">Visit The Lab</a>
-      <a href="/articles" class="btn-text">Read the Latest</a>
+  <div class="hero-layout">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Welcome to the Lab</div>
+      <h1>Golf<br><em>Analyzed</em></h1>
+      <p class="hero-sub">The game of golf, decoded. Stats that actually tell the story. Insights built on data, not opinion.</p>
+      <div class="hero-btns">
+        <a href="/the-lab" class="btn-fill">Visit The Lab</a>
+        <a href="/articles" class="btn-text">Read the Latest</a>
+      </div>
+      <form class="hero-email" id="homeSignup" autocomplete="off">
+        <input type="email" placeholder="your@email.com" required id="homeEmail" autocomplete="email">
+        <button type="submit" id="homeBtn">Free Newsletter</button>
+      </form>
+      <p class="hero-email-note">Free weekly golf analysis. Every Tuesday.</p>
     </div>
-    <form class="hero-email" id="homeSignup" autocomplete="off">
-      <input type="email" placeholder="your@email.com" required id="homeEmail" autocomplete="email">
-      <button type="submit" id="homeBtn">Free Newsletter</button>
-    </form>
-    <p class="hero-email-note">Free weekly golf analysis. Every Tuesday.</p>
+
+    <!-- Hero Panel — populated by JS -->
+    <div class="hero-panel" id="heroPanel">
+      <div class="hero-panel-header">
+        <span class="hero-panel-title" id="heroPanelTitle">Loading...</span>
+        <span class="hero-panel-event" id="heroPanelEvent"></span>
+      </div>
+      <div class="hero-panel-list" id="heroPanelList">
+        <div class="hero-panel-loading">Loading data...</div>
+      </div>
+      <div class="hero-panel-footer">
+        <a href="/the-lab">View full analytics →</a>
+      </div>
+    </div>
   </div>
+
   <div class="scroll-cue">
     <span>Scroll</span>
     <div class="line"></div>
@@ -1887,6 +2068,154 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     setInterval(loadTickerData, tickerStatusEl.classList.contains('live') ? 60000 : 300000);
   })();
   
+  // ====================================
+  // HERO PANEL — Model Favorites / Top Ranked
+  // ====================================
+  (async function initHeroPanel() {
+    var panelTitle = document.getElementById('heroPanelTitle');
+    var panelEvent = document.getElementById('heroPanelEvent');
+    var panelList = document.getElementById('heroPanelList');
+    if (!panelTitle || !panelList) return;
+
+    var panelApi = window.location.hostname === 'localhost'
+      ? 'http://localhost:3001'
+      : 'https://divotlab-api.vercel.app';
+
+    function pFmtName(n) {
+      if (!n) return '???';
+      var p = n.split(', ');
+      return p.length === 2 ? p[1] + ' ' + p[0] : n;
+    }
+    function pShortName(n) {
+      if (!n) return '???';
+      var p = n.split(', ');
+      return p.length === 2 ? p[1].charAt(0) + '. ' + p[0] : n;
+    }
+    function pInitials(n) {
+      if (!n) return '??';
+      var p = n.split(', ');
+      if (p.length === 2) return p[1].charAt(0) + p[0].charAt(0);
+      return n.substring(0, 2).toUpperCase();
+    }
+    // Convert "Last, First" to a headshot filename: lowercase last name
+    // Must match the lastName field used in fetch-headshots-v3.js
+    function pHeadshotFile(playerName) {
+      if (!playerName) return null;
+      var parts = playerName.split(', ');
+      var last = parts[0] || '';
+      // Special cases matching fetch-headshots-v3.js lastName field
+      var full = pFmtName(playerName);
+      var specials = {
+        'Si Woo Kim': 'siwookim',
+        'Cameron Smith': 'camsmith',
+        'Dustin Johnson': 'djohnson',
+        'Nicolai Hojgaard': 'nhojgaard',
+        'Rasmus Hojgaard': 'rhojgaard',
+        'Cam Davis': 'camdavis',
+        'Michael Kim': 'michaelkim',
+        'K.H. Lee': 'khlee',
+        'Cameron Young': 'young',
+        'Carson Young': 'carsonyoung',
+        'Patrick Reed': 'reed',
+        'Dan Brown': 'danbrown',
+        'Shane McCarthy': 'shanemccarthy',
+      };
+      if (specials[full]) return specials[full];
+      return last.toLowerCase().replace(/[^a-z]/g, '');
+    }
+
+    function renderPanel(title, eventName, players, valueKey, valueLabel, valueClass) {
+      panelTitle.textContent = title;
+      panelEvent.textContent = eventName || '';
+
+      var html = '';
+      players.forEach(function(p, i) {
+        var name = pFmtName(p.player_name);
+        var shortName = pShortName(p.player_name);
+        var initials = pInitials(p.player_name);
+        var headshot = pHeadshotFile(p.player_name);
+        var val = p._displayValue || '';
+        var stat = p._displayStat || '';
+
+        html += '<div class="hero-panel-row">'
+          + '<span class="hero-panel-rank">' + (i + 1) + '</span>'
+          + '<div class="hero-panel-avatar">'
+          + (headshot
+            ? '<img src="/headshots/' + headshot + '.png" alt="' + shortName + '" onerror="this.parentElement.innerHTML=\'<div class=hero-panel-initials>' + initials + '</div>\'">'
+            : '<div class="hero-panel-initials">' + initials + '</div>')
+          + '</div>'
+          + '<div class="hero-panel-info">'
+          + '<div class="hero-panel-name">' + name + '</div>'
+          + (stat ? '<div class="hero-panel-stat">' + stat + '</div>' : '')
+          + '</div>'
+          + '<span class="hero-panel-value ' + (valueClass || 'green') + '">' + val + '</span>'
+          + '</div>';
+      });
+      panelList.innerHTML = html;
+    }
+
+    try {
+      // Try pre-tournament predictions first (available Tue-Sun of event week)
+      var hasPredictions = false;
+      var eventName = '';
+
+      try {
+        var fieldRes = await fetch(panelApi + '/api/field-updates');
+        var fieldData = await fieldRes.json();
+        if (fieldData.success && fieldData.data) {
+          eventName = fieldData.data.event_name || '';
+        }
+      } catch(e) { /* silent */ }
+
+      try {
+        var predRes = await fetch(panelApi + '/api/pre-tournament');
+        var predData = await predRes.json();
+
+        if (predData.success && predData.data) {
+          var preds = predData.data.baseline_history_fit || predData.data.baseline || [];
+          if (Array.isArray(preds) && preds.length > 0 && preds[0].win != null) {
+            var topPreds = preds
+              .filter(function(p) { return p.win != null && p.win > 0; })
+              .sort(function(a, b) { return (b.win || 0) - (a.win || 0); })
+              .slice(0, 5);
+
+            if (topPreds.length >= 5) {
+              topPreds.forEach(function(p) {
+                p._displayValue = ((p.win || 0) * 100).toFixed(1) + '%';
+                p._displayStat = 'Win Probability';
+              });
+              renderPanel('Model Favorites', eventName, topPreds, 'win', 'Win %', 'green');
+              hasPredictions = true;
+            }
+          }
+        }
+      } catch(e) { /* fall through to rankings */ }
+
+      // Fallback: top 5 by DataGolf skill rating
+      if (!hasPredictions) {
+        try {
+          var rankRes = await fetch(panelApi + '/api/rankings?pga_only=true');
+          var rankData = await rankRes.json();
+
+          if (rankData.success && rankData.data && rankData.data.rankings) {
+            var topRanked = rankData.data.rankings.slice(0, 5);
+            topRanked.forEach(function(p, i) {
+              var sg = p.datagolf_rank != null ? '#' + p.datagolf_rank : '';
+              p._displayValue = p.dg_skill_estimate != null ? '+' + p.dg_skill_estimate.toFixed(2) : sg;
+              p._displayStat = 'SG Total · DG Rank ' + (i + 1);
+            });
+            renderPanel('Top Ranked', 'DataGolf Skill Rating', topRanked, 'dg_skill_estimate', 'SG', 'blue');
+          }
+        } catch(e) {
+          panelList.innerHTML = '<div class="hero-panel-loading">Data unavailable</div>';
+        }
+      }
+    } catch(err) {
+      console.warn('Hero panel error:', err);
+      panelList.innerHTML = '<div class="hero-panel-loading">Data unavailable</div>';
+    }
+  })();
+
   // ====================================
   // HOMEPAGE STATS POPULATION
   // ====================================
