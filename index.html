@@ -30,7 +30,7 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
 <style>
 /* =============================================
@@ -83,11 +83,12 @@ nav {
   height: 68px;
   display: flex;
   align-items: center;
-  background: rgba(10,10,10,0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.07);
   transition: background .35s, border-color .35s;
+  will-change: background;
 }
 nav.light {
   background: rgba(250,250,250,0.88);
@@ -1011,9 +1012,9 @@ footer {
   50%     { opacity:1;   transform:scaleY(1.12); }
 }
 
-/* scroll-reveal */
-.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
-.reveal.vis { opacity:1; transform:translateY(0); }
+/* scroll-reveal — disabled for performance, content shows immediately */
+.reveal { opacity:1; transform:none; }
+.reveal.vis { opacity:1; transform:none; }
 
 /* =============================================
    MOBILE NAV – hamburger + drawer
@@ -1441,7 +1442,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-organic-ribbed-neck-t-shirt-dark" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ribbed-tee.webp" alt="Organic Ribbed Tee" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/ribbed-tee.webp" alt="Organic Ribbed Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div><div class="app-name">Organic Ribbed Tee</div></div>
@@ -1452,7 +1453,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-under-armour-athletic-t-shirt-light" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ua-tee.webp" alt="Under Armour Athletic Tee" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/ua-tee.webp" alt="Under Armour Athletic Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div class="app-name">Under Armour® Athletic Tee</div>
@@ -1463,7 +1464,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ua-hat.webp" alt="Under Armour Dad Hat" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/ua-hat.webp" alt="Under Armour Dad Hat" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div class="app-name">Under Armour® Dad Hat</div>
@@ -1609,14 +1610,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     });
   });
 
-  // --- scroll reveal (IntersectionObserver) ---
-  var reveals = document.querySelectorAll('.reveal');
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){ e.target.classList.add('vis'); }
-    });
-  },{ threshold:0.1 });
-  reveals.forEach(function(el){ obs.observe(el); });
+  // --- scroll reveal disabled for performance ---
 
   // --- counter animation for stat values ---
   function animateCounter(el, targetVal, duration) {
@@ -1680,7 +1674,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       grid.innerHTML = posts.map(function(p, i) {
         var imgHTML;
         if (p.hero_image) {
-          imgHTML = '<div class="a-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;"></div>';
+          imgHTML = '<div class="a-img"><img src="' + p.hero_image + '" alt="' + esc(p.hero_alt||p.title) + '" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;"></div>';
         } else {
           imgHTML = '<div class="a-img"><div class="a-img-fallback">' + logoSVG + '<span class="fallback-cat">' + esc(p.category) + '</span></div></div>';
         }
