@@ -931,9 +931,195 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   .hero-email button { width:100%; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
 }
+
+/* =============================================
+   TOURNAMENT TICKER
+   ============================================= */
+.ticker {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 110;
+  height: 36px;
+  background: #0D0D0D;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: var(--body);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.ticker.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.ticker-event {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 0 22px;
+  height: 100%;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.ticker-event:hover { background: rgba(255,255,255,0.04); }
+
+.ticker-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ticker-status.live { background: rgba(239,68,68,0.15); color: #EF4444; }
+.ticker-status.live .ticker-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #EF4444;
+  animation: tickerPulse 1.5s ease-in-out infinite;
+}
+.ticker-status.upcoming { background: rgba(91,191,133,0.12); color: var(--green-light); }
+.ticker-status.complete { background: rgba(90,143,168,0.15); color: var(--blue-mid); }
+
+.ticker-name {
+  font-size: 12px; font-weight: 600;
+  color: rgba(250,250,250,0.85);
+  white-space: nowrap; letter-spacing: 0.01em;
+}
+
+.ticker-scores-wrap {
+  flex: 1; overflow: hidden;
+  position: relative; height: 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 60px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 60px), transparent 100%);
+}
+.ticker-scores {
+  display: flex; align-items: center;
+  gap: 0; height: 100%;
+  animation: tickerScroll var(--ticker-duration, 30s) linear infinite;
+  width: max-content;
+}
+.ticker-scores:hover { animation-play-state: paused; }
+
+.ticker-player {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 18px; height: 100%;
+  white-space: nowrap; cursor: default;
+  transition: background 0.15s;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.ticker-player:hover { background: rgba(255,255,255,0.03); }
+
+.ticker-pos {
+  font-size: 10px; font-weight: 600;
+  color: rgba(250,250,250,0.3);
+  min-width: 16px; font-family: var(--mono);
+}
+.ticker-player-name {
+  font-size: 11.5px; font-weight: 500;
+  color: rgba(250,250,250,0.7);
+}
+.ticker-score { font-family: var(--mono); font-size: 12px; font-weight: 600; }
+.ticker-score.under { color: #5BBF85; }
+.ticker-score.over { color: #E76F51; }
+.ticker-score.even { color: rgba(250,250,250,0.5); }
+.ticker-thru {
+  font-size: 9.5px; color: rgba(250,250,250,0.25);
+  font-family: var(--mono);
+}
+
+.ticker-cta {
+  flex-shrink: 0; display: flex; align-items: center;
+  padding: 0 18px; height: 100%;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+.ticker-cta a {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--green-light);
+  text-decoration: none; transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.ticker-cta a:hover { opacity: 0.7; }
+
+.ticker-info {
+  flex: 1; display: flex; align-items: center;
+  justify-content: center; gap: 24px;
+  height: 100%; padding: 0 20px;
+}
+.ticker-info-item {
+  font-size: 11px; color: rgba(250,250,250,0.35);
+  white-space: nowrap;
+}
+.ticker-info-item strong {
+  color: rgba(250,250,250,0.55); font-weight: 500;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes tickerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Offset nav & drawer when ticker is visible */
+.ticker ~ nav { top: 36px !important; }
+.ticker.hidden ~ nav { top: 0 !important; transition: top 0.4s ease; }
+.ticker ~ .nav-drawer { top: 104px !important; }
+.ticker.hidden ~ .nav-drawer { top: 68px !important; }
+
+@media(max-width:600px){
+  .ticker { height: 32px; }
+  .ticker-event { padding: 0 12px; gap: 6px; }
+  .ticker-name { font-size: 11px; }
+  .ticker-status { font-size: 8px; padding: 2px 6px; }
+  .ticker-player { padding: 0 12px; }
+  .ticker-player-name { font-size: 10.5px; }
+  .ticker-score { font-size: 11px; }
+  .ticker-pos, .ticker-thru { display: none; }
+  .ticker-cta { display: none; }
+  .ticker-info-item { font-size: 10px; }
+  .ticker ~ nav { top: 32px !important; }
+  .ticker.hidden ~ nav { top: 0 !important; }
+  .ticker ~ .nav-drawer { top: 100px !important; }
+  .ticker.hidden ~ .nav-drawer { top: 68px !important; }
+}
 </style>
 </head>
 <body>
+
+<!-- ========== TOURNAMENT TICKER ========== -->
+<div class="ticker hidden" id="tournamentTicker">
+  <a href="/the-lab" class="ticker-event" id="tickerEvent">
+    <span class="ticker-status upcoming" id="tickerStatus">
+      <span class="ticker-dot"></span>
+      <span id="tickerStatusText">UPCOMING</span>
+    </span>
+    <span class="ticker-name" id="tickerName">Loading...</span>
+  </a>
+  <div class="ticker-scores-wrap" id="tickerScoresWrap" style="display:none;">
+    <div class="ticker-scores" id="tickerScores"></div>
+  </div>
+  <div class="ticker-info" id="tickerInfo" style="display:none;">
+    <span class="ticker-info-item" id="tickerCourse"></span>
+    <span class="ticker-info-item" id="tickerDate"></span>
+  </div>
+  <div class="ticker-cta">
+    <a href="/the-lab">Full Analytics →</a>
+  </div>
+</div>
 
 <!-- ========== NAV ========== -->
 <nav id="nav">
@@ -1186,7 +1372,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   var nav = document.getElementById('nav');
   var drawer = document.getElementById('navDrawer');
   var hamburger = document.getElementById('navHamburger');
-  var heroH = document.querySelector('.hero').offsetHeight;
+  var heroH = document.querySelector('.hero').offsetHeight + 36; /* +36 for ticker */
   var ticking = false;
 
   // --- nav glass transition on scroll ---
@@ -1472,6 +1658,206 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   
   // Initialize popup
   showPopup();
+  
+  // ====================================
+  // TOURNAMENT TICKER
+  // ====================================
+  (async function initTicker() {
+    var tickerEl = document.getElementById('tournamentTicker');
+    var tickerNameEl = document.getElementById('tickerName');
+    var tickerStatusEl = document.getElementById('tickerStatus');
+    var tickerStatusText = document.getElementById('tickerStatusText');
+    var tickerScoresWrap = document.getElementById('tickerScoresWrap');
+    var tickerScoresEl = document.getElementById('tickerScores');
+    var tickerInfoEl = document.getElementById('tickerInfo');
+    var tickerCourseEl = document.getElementById('tickerCourse');
+    var tickerDateEl = document.getElementById('tickerDate');
+    
+    if (!tickerEl) return;
+    
+    var tickerApiBase = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001' 
+      : 'https://divotlab-api.vercel.app';
+    
+    function tfmtName(n) {
+      if (!n) return '???';
+      var p = n.split(', ');
+      return p.length === 2 ? p[1].charAt(0) + '. ' + p[0] : n;
+    }
+    function tfmtScore(s) {
+      if (s === 'E' || s === 0 || s === '0') return 'E';
+      var n = parseInt(s, 10);
+      if (isNaN(n)) return s || '-';
+      return n > 0 ? '+' + n : String(n);
+    }
+    function tscoreCls(s) {
+      if (s === 'E' || s === 0 || s === '0') return 'even';
+      var n = parseInt(s, 10);
+      if (isNaN(n)) return 'even';
+      return n < 0 ? 'under' : n > 0 ? 'over' : 'even';
+    }
+    function tfmtThru(t) {
+      if (t === 18 || t === '18' || t === 'F' || t === 'f') return 'F';
+      if (t == null || t === '' || t === '-' || t === 0) return '';
+      return String(t);
+    }
+    function tfmtDate(d) {
+      if (!d) return '';
+      var dt = new Date(d + 'T12:00:00');
+      var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return m[dt.getMonth()] + ' ' + dt.getDate();
+    }
+    
+    function buildTickerPlayers(players) {
+      var h = '';
+      players.forEach(function(p, i) {
+        var sc = p.current_score != null ? p.current_score : p.total;
+        var thru = tfmtThru(p.thru);
+        h += '<div class="ticker-player">'
+          + '<span class="ticker-pos">' + (i + 1) + '</span>'
+          + '<span class="ticker-player-name">' + tfmtName(p.player_name) + '</span>'
+          + '<span class="ticker-score ' + tscoreCls(sc) + '">' + tfmtScore(sc) + '</span>'
+          + (thru ? '<span class="ticker-thru">' + thru + '</span>' : '')
+          + '</div>';
+      });
+      return h;
+    }
+    
+    function tickerShowScores(players, isComplete) {
+      var sorted = players.slice().sort(function(a, b) {
+        var sa = a.current_score != null ? a.current_score : a.total;
+        var sb = b.current_score != null ? b.current_score : b.total;
+        if (sa === 'E' || sa === 0) sa = 0; else sa = parseInt(sa, 10) || 999;
+        if (sb === 'E' || sb === 0) sb = 0; else sb = parseInt(sb, 10) || 999;
+        return sa - sb;
+      }).slice(0, 20);
+      
+      var html = buildTickerPlayers(sorted) + buildTickerPlayers(sorted);
+      tickerScoresEl.innerHTML = html;
+      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(20, sorted.length * 2.2) + 's');
+      tickerScoresWrap.style.display = '';
+      tickerInfoEl.style.display = 'none';
+      
+      var dot = tickerStatusEl.querySelector('.ticker-dot');
+      if (isComplete) {
+        tickerStatusEl.className = 'ticker-status complete';
+        tickerStatusText.textContent = 'FINAL';
+        if (dot) dot.style.display = 'none';
+      } else {
+        tickerStatusEl.className = 'ticker-status live';
+        tickerStatusText.textContent = 'LIVE';
+        if (dot) dot.style.display = '';
+      }
+    }
+    
+    function tickerShowOdds(predictions) {
+      var sorted = predictions.slice()
+        .filter(function(p) { return p.win != null && p.win > 0; })
+        .sort(function(a, b) { return (b.win || 0) - (a.win || 0); })
+        .slice(0, 15);
+      if (sorted.length === 0) return false;
+      
+      var h = '';
+      sorted.forEach(function(p, i) {
+        var pct = ((p.win || 0) * 100).toFixed(1);
+        h += '<div class="ticker-player">'
+          + '<span class="ticker-pos">' + (i + 1) + '</span>'
+          + '<span class="ticker-player-name">' + tfmtName(p.player_name) + '</span>'
+          + '<span class="ticker-score under">' + pct + '%</span>'
+          + '<span class="ticker-thru">win</span>'
+          + '</div>';
+      });
+      tickerScoresEl.innerHTML = h + h;
+      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(20, sorted.length * 2.5) + 's');
+      tickerScoresWrap.style.display = '';
+      tickerInfoEl.style.display = 'none';
+      tickerStatusEl.className = 'ticker-status upcoming';
+      tickerStatusText.textContent = 'ODDS';
+      var dot = tickerStatusEl.querySelector('.ticker-dot');
+      if (dot) dot.style.display = 'none';
+      return true;
+    }
+    
+    function tickerShowUpcoming(course, startDate, endDate) {
+      tickerScoresWrap.style.display = 'none';
+      tickerInfoEl.style.display = '';
+      tickerCourseEl.innerHTML = '<strong>' + (course || '').replace(/;/g, ' · ') + '</strong>';
+      var ds = '';
+      if (startDate && endDate) ds = tfmtDate(startDate) + ' – ' + tfmtDate(endDate);
+      else if (startDate) ds = tfmtDate(startDate);
+      tickerDateEl.textContent = ds;
+      tickerStatusEl.className = 'ticker-status upcoming';
+      tickerStatusText.textContent = 'UPCOMING';
+      var dot = tickerStatusEl.querySelector('.ticker-dot');
+      if (dot) dot.style.display = 'none';
+    }
+    
+    async function loadTickerData() {
+      try {
+        var fieldRes = await fetch(tickerApiBase + '/api/field-updates');
+        var fieldData = await fieldRes.json();
+        if (!fieldData.success || !fieldData.data) { tickerEl.classList.add('hidden'); return; }
+        
+        var tournament = fieldData.data;
+        var eventName = tournament.event_name || 'Upcoming Event';
+        tickerNameEl.textContent = eventName;
+        
+        var hasLive = false;
+        try {
+          var liveRes = await fetch(tickerApiBase + '/api/live-tournament');
+          var liveData = await liveRes.json();
+          if (liveData.success && liveData.data) {
+            var arr = liveData.data.data || liveData.data || [];
+            var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
+            if (match && arr.length > 0) {
+              var hasScores = arr.some(function(p) {
+                return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
+                       (p.current_score != null && p.current_score !== '-');
+              });
+              if (hasScores) {
+                var allDone = arr.every(function(p) {
+                  return p.thru === 18 || p.thru === '18' || p.thru === 'F' || p.thru === 'f' || p.status === 'cut' || p.status === 'wd';
+                });
+                tickerShowScores(arr, allDone && (tournament.current_round || 0) >= 4);
+                hasLive = true;
+              }
+            }
+          }
+        } catch(e) { /* silent */ }
+        
+        if (!hasLive) {
+          try {
+            var predRes = await fetch(tickerApiBase + '/api/pre-tournament');
+            var predData = await predRes.json();
+            if (predData.success && predData.data) {
+              var preds = predData.data.baseline_history_fit || predData.data.baseline || predData.data || [];
+              if (Array.isArray(preds) && preds.length > 0) {
+                if (!tickerShowOdds(preds)) {
+                  tickerShowUpcoming(tournament.course, tournament.start_date, tournament.end_date);
+                }
+              } else {
+                tickerShowUpcoming(tournament.course, tournament.start_date, tournament.end_date);
+              }
+            } else {
+              tickerShowUpcoming(tournament.course, tournament.start_date, tournament.end_date);
+            }
+          } catch(e) {
+            tickerShowUpcoming(tournament.course, tournament.start_date, tournament.end_date);
+          }
+        }
+        
+        tickerEl.classList.remove('hidden');
+      } catch(err) {
+        console.warn('Ticker error:', err);
+        tickerEl.classList.add('hidden');
+      }
+    }
+    
+    await loadTickerData();
+    setInterval(loadTickerData, tickerStatusEl.classList.contains('live') ? 60000 : 300000);
+  })();
   
   // ====================================
   // HOMEPAGE STATS POPULATION
