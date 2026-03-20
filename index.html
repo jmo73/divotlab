@@ -1083,7 +1083,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 @media(max-width:600px){
   .ticker { height: 32px; }
   .ticker-event { padding: 0 12px; gap: 6px; }
-  .ticker-name { font-size: 11px; }
+  .ticker-name { font-size: 11px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
   .ticker-status { font-size: 8px; padding: 2px 6px; }
   .ticker-player { padding: 0 12px; }
   .ticker-player-name { font-size: 10.5px; }
@@ -1710,17 +1710,43 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     
     function buildTickerPlayers(players) {
       var h = '';
-      players.forEach(function(p, i) {
+      players.forEach(function(p) {
         var sc = p.current_score != null ? p.current_score : p.total;
         var thru = tfmtThru(p.thru);
         h += '<div class="ticker-player">'
-          + '<span class="ticker-pos">' + (i + 1) + '</span>'
+          + '<span class="ticker-pos">' + (p._posLabel || '') + '</span>'
           + '<span class="ticker-player-name">' + tfmtName(p.player_name) + '</span>'
           + '<span class="ticker-score ' + tscoreCls(sc) + '">' + tfmtScore(sc) + '</span>'
           + (thru ? '<span class="ticker-thru">' + thru + '</span>' : '')
           + '</div>';
       });
       return h;
+    }
+    
+    // Compute tie-aware position labels: 1, T2, T2, 4, 5, T6, T6, T6, 9...
+    function assignPositions(sorted) {
+      if (sorted.length === 0) return;
+      // Parse scores into comparable numbers
+      function parseScore(p) {
+        var s = p.current_score != null ? p.current_score : p.total;
+        if (s === 'E' || s === 0 || s === '0') return 0;
+        var n = parseInt(s, 10);
+        return isNaN(n) ? 999 : n;
+      }
+      // First pass: group by score to detect ties
+      var i = 0;
+      while (i < sorted.length) {
+        var score = parseScore(sorted[i]);
+        var j = i + 1;
+        while (j < sorted.length && parseScore(sorted[j]) === score) j++;
+        var count = j - i;
+        var pos = i + 1;
+        var label = count > 1 ? 'T' + pos : String(pos);
+        for (var k = i; k < j; k++) {
+          sorted[k]._posLabel = label;
+        }
+        i = j;
+      }
     }
     
     function tickerShowScores(players, isComplete) {
@@ -1732,9 +1758,11 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
         return sa - sb;
       }).slice(0, 20);
       
+      assignPositions(sorted);
+      
       var html = buildTickerPlayers(sorted) + buildTickerPlayers(sorted);
       tickerScoresEl.innerHTML = html;
-      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(20, sorted.length * 2.2) + 's');
+      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(30, sorted.length * 3.2) + 's');
       tickerScoresWrap.style.display = '';
       tickerInfoEl.style.display = 'none';
       
@@ -1768,7 +1796,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
           + '</div>';
       });
       tickerScoresEl.innerHTML = h + h;
-      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(20, sorted.length * 2.5) + 's');
+      tickerScoresEl.style.setProperty('--ticker-duration', Math.max(30, sorted.length * 3.5) + 's');
       tickerScoresWrap.style.display = '';
       tickerInfoEl.style.display = 'none';
       tickerStatusEl.className = 'ticker-status upcoming';
