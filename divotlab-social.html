@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Divot Lab · Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0A;
+  --card: #141614;
+  --card2: #1a1c1a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --white: #FAFAFA;
+  --muted: rgba(250,250,250,0.4);
+  --dim: rgba(250,250,250,0.2);
+  --green: #1B4D3E;
+  --green-lit: #5BBF85;
+  --green-dim: rgba(91,191,133,0.1);
+  --gold: #C9A84C;
+  --gold-dim: rgba(201,168,76,0.08);
+  --red: #E76F51;
+  --blue: #5A8FA8;
+  --mono: 'JetBrains Mono', monospace;
+  --body: 'DM Sans', sans-serif;
+  --r: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:var(--body); background:var(--bg); color:var(--white);
+  min-height:100vh; min-height:100dvh; overscroll-behavior:none;
+}
+
+/* ── Shell ── */
+.shell { max-width:480px; margin:0 auto; padding:0 0 120px; }
+.head {
+  position:sticky; top:0; z-index:50; background:var(--bg);
+  padding:14px 16px 10px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.head svg { width:20px; height:20px; color:var(--white); flex-shrink:0; }
+.head h1 { font-size:14px; font-weight:600; letter-spacing:.08em; flex:1; }
+.head h1 span { font-weight:300; opacity:.5; }
+.head-badge { font-size:8px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:3px 8px; border-radius:3px; color:var(--green-lit); background:var(--green-dim); border:1px solid rgba(91,191,133,0.15); }
+.gear-btn { background:none; border:1px solid var(--border); border-radius:6px; padding:6px 8px; color:var(--muted); cursor:pointer; font-size:14px; }
+.gear-btn:active { background:var(--card); }
+
+/* ── Settings drawer ── */
+.settings { display:none; padding:12px 16px; background:var(--card); border-bottom:1px solid var(--border); }
+.settings.open { display:block; }
+.settings label { font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:3px; margin-top:10px; }
+.settings label:first-child { margin-top:0; }
+.settings input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:10px 12px; color:var(--white); font-family:var(--mono); font-size:12px; }
+.settings input:focus { outline:none; border-color:var(--green-lit); }
+.settings .hint { font-size:9px; color:var(--dim); margin-top:2px; }
+
+/* ── Type picker ── */
+.types { padding:12px 16px; }
+.types-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.type-row {
+  display:flex; align-items:center; gap:12px; padding:14px 16px;
+  background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+  margin-bottom:8px; cursor:pointer; transition:all .15s;
+  -webkit-user-select:none; user-select:none;
+}
+.type-row:active { transform:scale(0.98); }
+.type-row.sel { border-color:var(--green-lit); background:rgba(27,77,62,0.08); }
+.type-icon { font-size:22px; width:36px; text-align:center; flex-shrink:0; }
+.type-info { flex:1; min-width:0; }
+.type-name { font-size:14px; font-weight:600; }
+.type-desc { font-size:11px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.type-tag { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:3px 7px; border-radius:3px; flex-shrink:0; }
+.tag-engagement { color:var(--gold); background:var(--gold-dim); }
+.tag-reach { color:var(--green-lit); background:var(--green-dim); }
+.tag-saves { color:var(--blue); background:rgba(90,143,168,0.1); }
+
+/* ── Compose ── */
+.compose { display:none; padding:0 16px; }
+.compose.open { display:block; }
+.compose-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.compose-back { background:none; border:none; color:var(--muted); font-size:20px; padding:4px 8px; cursor:pointer; }
+.compose-title { font-size:14px; font-weight:600; flex:1; }
+.field { margin-bottom:14px; }
+.field label { font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px; }
+.field input, .field textarea, .field select {
+  width:100%; background:var(--card); border:1px solid var(--border); border-radius:8px;
+  padding:12px 14px; color:var(--white); font-family:var(--body); font-size:15px;
+}
+.field textarea { font-size:14px; resize:vertical; min-height:80px; line-height:1.5; }
+.field select { cursor:pointer; }
+.field input:focus, .field textarea:focus, .field select:focus { outline:none; border-color:var(--green-lit); }
+.field .hint { font-size:9px; color:var(--dim); margin-top:3px; }
+
+/* ── Big generate button ── */
+.gen-btn {
+  width:100%; padding:16px; border:none; border-radius:var(--r);
+  font-family:var(--body); font-size:15px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .15s; color:var(--white); background:var(--green);
+}
+.gen-btn:active { transform:scale(0.98); }
+.gen-btn:disabled { opacity:.4; cursor:not-allowed; }
+.gen-btn.loading { background:var(--card2); }
+
+/* ── Output ── */
+.output { display:none; padding:0 16px; }
+.output.open { display:block; }
+.output-section { margin-bottom:20px; }
+.output-label { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
+.copy-btn {
+  background:var(--card2); border:1px solid var(--border); border-radius:5px;
+  padding:4px 10px; font-size:10px; font-weight:600; color:var(--muted);
+  cursor:pointer; font-family:var(--body);
+}
+.copy-btn:active { background:var(--green); color:var(--white); border-color:var(--green); }
+.copy-btn.copied { background:var(--green-lit); color:var(--bg); border-color:var(--green-lit); }
+.output-box {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+  padding:16px; font-size:14px; line-height:1.7; color:rgba(250,250,250,0.8);
+  white-space:pre-wrap; word-break:break-word; -webkit-user-select:all; user-select:all;
+}
+.output-box.tags { color:var(--blue); font-size:13px; }
+.output-box.reel { font-family:var(--mono); font-size:12px; line-height:1.6; color:rgba(250,250,250,0.7); }
+
+/* ── Slide JSON preview (collapsible) ── */
+.json-toggle {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--r);
+  padding:14px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px;
+}
+.json-toggle span { font-size:12px; font-weight:600; }
+.json-toggle .arrow { font-size:14px; color:var(--muted); transition:transform .2s; }
+.json-toggle.open .arrow { transform:rotate(90deg); }
+.json-body { display:none; }
+.json-body.open { display:block; }
+.json-body textarea {
+  width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:12px; font-family:var(--mono); font-size:11px; line-height:1.5;
+  color:rgba(250,250,250,0.6); resize:vertical; min-height:200px;
+}
+
+/* ── Render section ── */
+.render-section { margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+.render-btn {
+  width:100%; padding:14px; border:none; border-radius:var(--r);
+  font-family:var(--body); font-size:14px; font-weight:600; cursor:pointer;
+  color:var(--white); background:var(--card2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.render-btn:active { background:var(--green); border-color:var(--green); }
+.render-btn:disabled { opacity:.4; }
+.render-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+.render-grid img { width:100%; border-radius:6px; border:1px solid var(--border); }
+
+/* ── New post FAB ── */
+.fab {
+  display:none; position:fixed; bottom:24px; right:24px; z-index:40;
+  width:56px; height:56px; border-radius:50%; border:none;
+  background:var(--green); color:var(--white); font-size:24px;
+  cursor:pointer; box-shadow:0 4px 20px rgba(27,77,62,0.4);
+}
+.fab:active { transform:scale(0.92); }
+.fab.vis { display:flex; align-items:center; justify-content:center; }
+
+/* ── Toast ── */
+.toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--card2); border:1px solid var(--green-lit); color:var(--green-lit);
+  padding:10px 20px; border-radius:8px; font-size:12px; font-weight:600;
+  opacity:0; transition:all .25s; z-index:999; pointer-events:none;
+  white-space:nowrap; max-width:90vw; text-align:center;
+}
+.toast.vis { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.err { border-color:var(--red); color:var(--red); }
+
+/* ── Spinner ── */
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(250,250,250,0.15); border-top-color:var(--white); border-radius:50%; animation:spin .6s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Progress ── */
+.progress { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin:12px 0; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--green-lit)); border-radius:2px; transition:width .3s; width:0; }
+.progress-text { font-size:10px; color:var(--muted); font-family:var(--mono); margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- Header -->
+  <div class="head">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <h1>DIVOT <span>LAB</span></h1>
+    <span class="head-badge">Social</span>
+    <button class="gear-btn" onclick="toggleSettings()" id="gearBtn">⚙️</button>
+  </div>
+
+  <!-- Settings drawer -->
+  <div class="settings" id="settings">
+    <label>Anthropic API Key</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-..." />
+    <label>Node Server (for PNG rendering)</label>
+    <input type="text" id="serverUrl" value="http://localhost:3847" />
+    <div class="hint">Only needed when rendering carousel PNGs from desktop</div>
+    <label>Headshots Folder</label>
+    <input type="text" id="headshotDir" placeholder="C:\Users\jmory\Downloads\carousel-tool\headshots" />
+    <div class="hint">Local path to player headshot PNGs</div>
+    <div style="margin-top:12px;">
+      <button class="gen-btn" style="background:var(--card2);border:1px solid var(--border);font-size:13px;padding:10px;" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Pick type -->
+  <div class="types" id="typesPicker">
+    <div class="types-label">What are you posting?</div>
+
+    <div class="type-row" onclick="pickType('news')">
+      <div class="type-icon">⚡</div>
+      <div class="type-info">
+        <div class="type-name">News / Reaction</div>
+        <div class="type-desc">Tiger, injuries, withdrawals, trades — timely stuff</div>
+      </div>
+      <span class="type-tag tag-reach">REACH</span>
+    </div>
+
+    <div class="type-row" onclick="pickType('hot-take')">
+      <div class="type-icon">🔥</div>
+      <div class="type-info">
+        <div class="type-name">Hot Take / Myth Buster</div>
+        <div class="type-desc">Challenge beliefs, drive comments and debate</div>
+      </div>
+      <span class="type-tag tag-engagement">ENGAGE</span>
+    </div>
+
+    <div class="type-row" onclick="pickType('tournament')">
+      <div class="type-icon">🏌️</div>
+      <div class="type-info">
+        <div class="type-name">Tournament Preview</div>
+        <div class="type-desc">Course profile, players to watch, betting angles</div>
+      </div>
+      <span class="type-tag tag-reach">REACH</span>
+    </div>
+
+    <div class="type-row" onclick="pickType('player')">
+      <div class="type-icon">⚔️</div>
+      <div class="type-info">
+        <div class="type-name">Player Spotlight / Comparison</div>
+        <div class="type-desc">Side-by-side stats, "who ya got?" polls</div>
+      </div>
+      <span class="type-tag tag-engagement">ENGAGE</span>
+    </div>
+
+    <div class="type-row" onclick="pickType('tip')">
+      <div class="type-icon">📌</div>
+      <div class="type-info">
+        <div class="type-name">Practice Tip / Save-Bait</div>
+        <div class="type-desc">Actionable drills, reference cards — high save rate</div>
+      </div>
+      <span class="type-tag tag-saves">SAVES</span>
+    </div>
+
+    <div class="type-row" onclick="pickType('recap')">
+      <div class="type-icon">🏆</div>
+      <div class="type-info">
+        <div class="type-name">Tournament Recap</div>
+        <div class="type-desc">Winner breakdown, surprises, key stats</div>
+      </div>
+      <span class="type-tag tag-reach">REACH</span>
+    </div>
+  </div>
+
+  <!-- Step 2: Compose -->
+  <div class="compose" id="compose">
+    <div class="compose-head">
+      <button class="compose-back" onclick="goBack()">←</button>
+      <div class="compose-title" id="composeTitle">News / Reaction</div>
+    </div>
+
+    <div class="field">
+      <label>Topic</label>
+      <input type="text" id="topic" placeholder="e.g. Tiger Woods withdraws from Masters" />
+    </div>
+
+    <div class="field">
+      <label>Extra Context <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+      <textarea id="context" rows="3" placeholder="Any extra details, stats, or angle you want to include..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Output Format</label>
+      <select id="outputFormat">
+        <option value="caption-carousel">Caption + Carousel Slides</option>
+        <option value="caption-only">Caption + Hashtags Only</option>
+        <option value="reel-script">Reel Script + Text Overlays</option>
+      </select>
+    </div>
+
+    <div class="progress" id="genProgress" style="display:none;">
+      <div class="progress-fill" id="genFill"></div>
+    </div>
+    <div class="progress-text" id="genStatus" style="display:none;"></div>
+
+    <button class="gen-btn" id="genBtn" onclick="generate()">Generate Content</button>
+  </div>
+
+  <!-- Step 3: Output -->
+  <div class="output" id="output">
+    <div class="compose-head">
+      <button class="compose-back" onclick="goBack()">←</button>
+      <div class="compose-title">Output</div>
+    </div>
+
+    <!-- Caption -->
+    <div class="output-section" id="captionSection">
+      <div class="output-label">Caption <button class="copy-btn" onclick="copyText('captionBox', this)">Copy</button></div>
+      <div class="output-box" id="captionBox"></div>
+    </div>
+
+    <!-- Hashtags -->
+    <div class="output-section" id="hashtagSection">
+      <div class="output-label">Hashtags (for first comment) <button class="copy-btn" onclick="copyText('hashtagBox', this)">Copy</button></div>
+      <div class="output-box tags" id="hashtagBox"></div>
+    </div>
+
+    <!-- Reel Script (hidden unless reel format) -->
+    <div class="output-section" id="reelSection" style="display:none;">
+      <div class="output-label">Reel Script <button class="copy-btn" onclick="copyText('reelBox', this)">Copy</button></div>
+      <div class="output-box reel" id="reelBox"></div>
+    </div>
+
+    <!-- Text Overlays (hidden unless reel format) -->
+    <div class="output-section" id="overlaySection" style="display:none;">
+      <div class="output-label">Text Overlays (for CapCut) <button class="copy-btn" onclick="copyText('overlayBox', this)">Copy</button></div>
+      <div class="output-box reel" id="overlayBox"></div>
+    </div>
+
+    <!-- Carousel JSON (collapsible) -->
+    <div id="carouselJsonSection" style="display:none;">
+      <div class="json-toggle" id="jsonToggle" onclick="toggleJSON()">
+        <span>Carousel JSON (for PNG rendering)</span>
+        <span class="arrow">▸</span>
+      </div>
+      <div class="json-body" id="jsonBody">
+        <textarea id="jsonEditor" rows="12"></textarea>
+        <div style="margin-top:8px;">
+          <button class="copy-btn" onclick="copyText('jsonEditor', this)" style="width:100%;padding:10px;text-align:center;font-size:12px;">Copy JSON</button>
+        </div>
+      </div>
+
+      <!-- Render PNGs -->
+      <div class="render-section" id="renderSection">
+        <button class="render-btn" id="renderBtn" onclick="renderPNGs()">🖼 Render PNGs (requires Node server)</button>
+        <div class="progress" id="renderProgress" style="display:none;">
+          <div class="progress-fill" id="renderFill"></div>
+        </div>
+        <div class="progress-text" id="renderStatus" style="display:none;"></div>
+        <div class="render-grid" id="renderGrid"></div>
+      </div>
+    </div>
+
+    <!-- Regenerate -->
+    <div style="margin-top:20px;">
+      <button class="gen-btn" style="background:var(--card2);border:1px solid var(--border);" onclick="regenerate()">🔄 Regenerate</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="newPost()">+</button>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+let currentType = '';
+let currentData = null;
+let lastTopic = '';
+let lastContext = '';
+
+const TYPE_CONFIG = {
+  'news': {
+    title: '⚡ News / Reaction',
+    placeholder: 'e.g. Tiger Woods withdraws, Gary Woodland return, LIV trade rumor...',
+    ctaStyle: 'comment',
+    prompt: (topic, ctx, format) => buildPrompt('news', topic, ctx, format, `This is a TIMELY reaction post. The goal is maximum reach and engagement.
+Rules:
+- Hook must be attention-grabbing and slightly provocative
+- Lead with the news, then add your data-backed analysis
+- End caption with a question to drive comments
+- Carousel (if used): 3-4 slides MAX. Cover + 1-2 data slides + CTA. Keep slides SIMPLE — big text, big numbers, no clutter.`)
+  },
+  'hot-take': {
+    title: '🔥 Hot Take / Myth Buster',
+    placeholder: 'e.g. Putting is overrated, driver distance doesn\'t matter, most golfers practice wrong...',
+    ctaStyle: 'comment',
+    prompt: (topic, ctx, format) => buildPrompt('hot-take', topic, ctx, format, `This is a CONTROVERSIAL take designed to drive comments and debate.
+Rules:
+- Start with a bold, slightly provocative claim
+- Back it up with one or two specific data points
+- Challenge a common belief head-on
+- End with "agree or disagree?" or similar engagement hook
+- Carousel (if used): Cover (bold claim) + Myth vs Data slide + Evidence + CTA. Max 4-5 slides.`)
+  },
+  'tournament': {
+    title: '🏌️ Tournament Preview',
+    placeholder: 'e.g. Valero Texas Open, The Masters, RBC Heritage...',
+    ctaStyle: 'comment',
+    prompt: (topic, ctx, format) => buildPrompt('tournament', topic, ctx, format, `This is a tournament preview post. Mix course info with player analysis.
+Rules:
+- Cover: tournament name + course as hook
+- Include 2-3 players to watch with specific SG data
+- Keep it accessible — most followers are casual fans or bettors
+- Carousel (if used): Cover + Course overview + 1-2 player slides + CTA. 4-6 slides.
+- Use real course data you know (par, yardage, key features). For player stats, use general knowledge or note them as approximate.`)
+  },
+  'player': {
+    title: '⚔️ Player Spotlight / Comparison',
+    placeholder: 'e.g. Scheffler vs McIlroy, Aberg breakout season, Hovland slump...',
+    ctaStyle: 'comment',
+    prompt: (topic, ctx, format) => buildPrompt('player', topic, ctx, format, `This is a player-focused post. Either a spotlight or head-to-head comparison.
+Rules:
+- If comparing: use "who ya got?" framing to drive comments
+- Lead with the most interesting stat or angle
+- Include specific SG numbers (use approximate numbers you know)
+- Carousel (if used): Cover + Versus/stats slide + Key differentiator + CTA. 4-5 slides.`)
+  },
+  'tip': {
+    title: '📌 Practice Tip / Save-Bait',
+    placeholder: 'e.g. Pre-round warm-up, wedge distance chart, how to read SG stats...',
+    ctaStyle: 'save',
+    prompt: (topic, ctx, format) => buildPrompt('tip', topic, ctx, format, `This is a SAVE-BAIT post. The goal is maximum saves and shares.
+Rules:
+- Make it a clear, actionable reference the reader wants to bookmark
+- Use specific numbers, distances, or steps
+- "Save this for your next round" energy
+- Carousel (if used): Cover (clear benefit) + 2-3 content slides + CTA. 4-5 slides. Big readable text.`)
+  },
+  'recap': {
+    title: '🏆 Tournament Recap',
+    placeholder: 'e.g. Valero Texas Open winner breakdown, Masters final round...',
+    ctaStyle: 'share',
+    prompt: (topic, ctx, format) => buildPrompt('recap', topic, ctx, format, `This is a tournament recap post. Analyze what happened with data.
+Rules:
+- Lead with the winner and the key stat that explains the win
+- Include 1-2 surprises or underperformers
+- Keep it timely — post within hours of the finish
+- Carousel (if used): Cover (winner + score) + Key stats + Surprise performer + CTA. 4-5 slides.`)
+  }
+};
+
+const CTA_POOL = {
+  comment: [
+    'Who\'s your pick? Drop it below 👇',
+    'Agree or disagree? Let us know 👇',
+    'What do you think? Comment below 👇',
+    'Drop your take in the comments 👇',
+  ],
+  save: [
+    '📌 Save this for your next round.',
+    '📌 Bookmark this before you forget.',
+    '📌 Save this for the weekend.',
+  ],
+  share: [
+    'Tag a friend who needs to see this 👊',
+    'Send this to your golf buddy.',
+    'Share with your foursome 🏌️',
+  ],
+};
+
+// ============================================================
+//  PROMPT BUILDER
+// ============================================================
+function buildPrompt(type, topic, ctx, format, typeInstructions) {
+  const isCarousel = format === 'caption-carousel';
+  const isReel = format === 'reel-script';
+
+  let prompt = `You are the social media content creator for Divot Lab, a golf analytics brand. Your voice is: smart, slightly irreverent, data-driven, concise. You back up takes with numbers. You don't use filler or hype. You sound like a knowledgeable friend at the bar, not a corporate account.
+
+TOPIC: "${topic}"
+${ctx ? `EXTRA CONTEXT: ${ctx}` : ''}
+
+${typeInstructions}
+
+INSTAGRAM RULES:
+- Caption: 150-300 words MAX. Short paragraphs. No walls of text.
+- First line must be a scroll-stopping hook (all caps, bold claim, or surprising stat)
+- Hashtags: EXACTLY 5 hashtags. Always include #divotlab. Put in first comment, not caption. Mix niche (#strokesgained) with broader (#golf #pgatour).
+- No emojis in the caption body except the CTA line at the end.`;
+
+  if (isCarousel) {
+    prompt += `
+
+OUTPUT FORMAT — Return ONLY valid JSON, no markdown, no backticks:
+{
+  "caption": "The full Instagram caption text. 150-300 words. End with engagement CTA.",
+  "hashtags": "#divotlab #pgatour #golf #strokesgained #golfdata",
+  "slides": [
+    // 3-5 slides. EVERY slide must be one of these types:
+    // "cover" — First slide. Fields: type, template ("center-dark"|"bottom-heavy"|"green-wash"), category (short pill text), title (the hook, use \\n for line breaks), subtitle (optional)
+    // "text" — Key point. Fields: type, category, title, body (2-3 sentences MAX), callout (optional one-liner)
+    // "three-stats" — Big numbers. Fields: type, category, title, stats (array of {value, label, desc}). VALUE must be SHORT: "+1.8" or "73%" — NEVER a sentence.
+    // "callout" — Takeaway. Fields: type, category, label, headline, body
+    // "myth-buster" — Myth vs data. Fields: type, category, myth, reality, stat ({value, label}), source
+    // "versus" — Head to head. Fields: type, category, player_a, player_b, rows [{label, a_value, b_value, a_highlight, b_highlight}], verdict
+    // "ranked-list" — Top N. Fields: type, category, title, subtitle, items [{name, detail, value}], source
+    // "cta" — Final slide (Divot Lab CTA). Fields: type only.
+  ]
+}
+
+SLIDE RULES:
+- MAX 5 slides total (3-4 is ideal for engagement)
+- Cover slide title: MAX 6 words per line, max 2 lines
+- Text slide body: MAX 3 sentences
+- Stats values: SHORT numbers only ("+2.1", "73%", "22 ft"). NEVER a sentence.
+- The "callout" type uses "headline" and "body" — NOT "title" or "text"
+- Every carousel ends with a "cta" slide`;
+  } else if (isReel) {
+    prompt += `
+
+OUTPUT FORMAT — Return ONLY valid JSON, no markdown, no backticks:
+{
+  "caption": "The full Instagram caption text. 100-200 words. End with engagement CTA.",
+  "hashtags": "#divotlab #pgatour #golf #strokesgained #golfdata",
+  "script": "The talking-head script. 30-60 seconds of natural speech. Written like you're telling a friend — not reading a teleprompter. Include [PAUSE] markers for emphasis.",
+  "overlays": ["Text overlay 1 — key stat or hook shown on screen", "Text overlay 2 — supporting data point", "Text overlay 3 — the punchline/CTA"]
+}
+
+SCRIPT RULES:
+- 30-60 seconds when spoken aloud
+- Conversational, not scripted-sounding
+- Open with a hook that stops the scroll in the first 2 seconds
+- Include 1-2 specific data points
+- End with a question or call to comment`;
+  } else {
+    prompt += `
+
+OUTPUT FORMAT — Return ONLY valid JSON, no markdown, no backticks:
+{
+  "caption": "The full Instagram caption text. 150-300 words. End with engagement CTA.",
+  "hashtags": "#divotlab #pgatour #golf #strokesgained #golfdata"
+}`;
+  }
+
+  return prompt;
+}
+
+// ============================================================
+//  SETTINGS
+// ============================================================
+function toggleSettings() {
+  document.getElementById('settings').classList.toggle('open');
+}
+function saveSettings() {
+  const data = {
+    apiKey: document.getElementById('apiKey').value,
+    serverUrl: document.getElementById('serverUrl').value,
+    headshotDir: document.getElementById('headshotDir').value,
+  };
+  localStorage.setItem('divotlab-social', JSON.stringify(data));
+  toast('Settings saved');
+  document.getElementById('settings').classList.remove('open');
+}
+function loadSettings() {
+  try {
+    const d = JSON.parse(localStorage.getItem('divotlab-social') || '{}');
+    if (d.apiKey) document.getElementById('apiKey').value = d.apiKey;
+    if (d.serverUrl) document.getElementById('serverUrl').value = d.serverUrl;
+    if (d.headshotDir) document.getElementById('headshotDir').value = d.headshotDir;
+    // Also try migrating from old carousel-admin keys
+    if (!d.apiKey) {
+      try {
+        const old = JSON.parse(localStorage.getItem('divotlab-carousel-keys') || '{}');
+        if (old.aiKey) document.getElementById('apiKey').value = old.aiKey;
+        if (old.serverUrl) document.getElementById('serverUrl').value = old.serverUrl;
+        if (old.headshotDir) document.getElementById('headshotDir').value = old.headshotDir;
+      } catch(e) {}
+    }
+  } catch(e) {}
+}
+loadSettings();
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function pickType(type) {
+  currentType = type;
+  const cfg = TYPE_CONFIG[type];
+
+  document.querySelectorAll('.type-row').forEach(r => r.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+
+  document.getElementById('typesPicker').style.display = 'none';
+  document.getElementById('compose').classList.add('open');
+  document.getElementById('output').classList.remove('open');
+  document.getElementById('composeTitle').textContent = cfg.title;
+  document.getElementById('topic').placeholder = cfg.placeholder;
+  document.getElementById('topic').value = '';
+  document.getElementById('context').value = '';
+  document.getElementById('genProgress').style.display = 'none';
+  document.getElementById('genStatus').style.display = 'none';
+  document.getElementById('topic').focus();
+}
+
+function goBack() {
+  document.getElementById('compose').classList.remove('open');
+  document.getElementById('output').classList.remove('open');
+  document.getElementById('typesPicker').style.display = 'block';
+  document.getElementById('fab').classList.remove('vis');
+  currentType = '';
+  currentData = null;
+}
+
+function newPost() {
+  document.getElementById('fab').classList.remove('vis');
+  goBack();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+//  GENERATE
+// ============================================================
+async function generate() {
+  const ak = document.getElementById('apiKey').value.trim();
+  if (!ak) {
+    toast('Add your API key in settings ⚙️', true);
+    document.getElementById('settings').classList.add('open');
+    return;
+  }
+
+  const topic = document.getElementById('topic').value.trim();
+  if (!topic) { toast('Enter a topic', true); return; }
+
+  const ctx = document.getElementById('context').value.trim();
+  const format = document.getElementById('outputFormat').value;
+  const cfg = TYPE_CONFIG[currentType];
+
+  lastTopic = topic;
+  lastContext = ctx;
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  btn.classList.add('loading');
+
+  const prog = document.getElementById('genProgress');
+  const fill = document.getElementById('genFill');
+  const status = document.getElementById('genStatus');
+  prog.style.display = 'block';
+  status.style.display = 'block';
+  fill.style.width = '20%';
+  status.textContent = 'Calling Claude...';
+
+  const prompt = cfg.prompt(topic, ctx, format);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ak,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    fill.style.width = '70%';
+    status.textContent = 'Parsing response...';
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API error ' + res.status);
+    }
+
+    const data = await res.json();
+    let raw = data.content[0].text.trim();
+    raw = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '');
+
+    currentData = JSON.parse(raw);
+
+    // Post-process
+    if (currentData.slides) {
+      currentData.slides.forEach(s => {
+        // Fix callout field names
+        if (s.type === 'callout') {
+          if (s.title && !s.headline) { s.headline = s.title; delete s.title; }
+          if (s.text && !s.body) { s.body = s.text; delete s.text; }
+        }
+        // Ensure stat values are short
+        if (s.type === 'three-stats' && s.stats) {
+          s.stats.forEach(st => {
+            if (st.value && st.value.length > 20) {
+              const m = st.value.match(/([+\-]?\d+\.?\d*%?|[\d,]+\s*(ft|yds|mph|shots?))/i);
+              if (m) { if (!st.desc) st.desc = st.value; st.value = m[0]; }
+              else { if (!st.desc) st.desc = st.value; st.value = '—'; }
+            }
+          });
+        }
+        if (s.type === 'big-stat' && s.value && s.value.length > 15) {
+          const m = s.value.match(/([+\-]?\d+\.?\d*%?|[\d,]+\s*(ft|yds|mph))/i);
+          if (m) { if (!s.context) s.context = s.value; s.value = m[0]; }
+        }
+      });
+    }
+
+    // Enforce 5 hashtags
+    if (currentData.hashtags) {
+      const tags = currentData.hashtags.match(/#\w+/g) || [];
+      if (tags.length > 5) {
+        const hasDL = tags.includes('#divotlab');
+        const filtered = tags.filter(t => t !== '#divotlab').slice(0, hasDL ? 4 : 5);
+        if (hasDL) filtered.push('#divotlab');
+        currentData.hashtags = filtered.join(' ');
+      }
+    }
+
+    // Enforce CTA
+    if (currentData.caption) {
+      const text = currentData.caption.trim();
+      const hasCTA = /[👇📌👊🏌️😤🔥]\s*$/.test(text) || /comment|save|tag|share|bookmark|drop|pick/i.test(text.split('\n').pop());
+      if (!hasCTA) {
+        const bucket = CTA_POOL[cfg.ctaStyle || 'comment'];
+        currentData.caption = text + '\n\n' + bucket[Math.floor(Math.random() * bucket.length)];
+      }
+    }
+
+    fill.style.width = '100%';
+    status.textContent = 'Done';
+
+    showOutput(format);
+    toast('Content generated ✓');
+
+  } catch(e) {
+    toast('Error: ' + e.message, true);
+    status.textContent = 'Error: ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Generate Content';
+  btn.classList.remove('loading');
+}
+
+function regenerate() {
+  document.getElementById('output').classList.remove('open');
+  document.getElementById('compose').classList.add('open');
+  document.getElementById('fab').classList.remove('vis');
+  document.getElementById('topic').value = lastTopic;
+  document.getElementById('context').value = lastContext;
+}
+
+// ============================================================
+//  SHOW OUTPUT
+// ============================================================
+function showOutput(format) {
+  document.getElementById('compose').classList.remove('open');
+  document.getElementById('output').classList.add('open');
+  document.getElementById('fab').classList.add('vis');
+
+  // Caption
+  document.getElementById('captionBox').textContent = currentData.caption || '';
+
+  // Hashtags
+  document.getElementById('hashtagBox').textContent = currentData.hashtags || '';
+
+  // Reel
+  const isReel = format === 'reel-script';
+  document.getElementById('reelSection').style.display = isReel ? 'block' : 'none';
+  document.getElementById('overlaySection').style.display = isReel ? 'block' : 'none';
+  if (isReel) {
+    document.getElementById('reelBox').textContent = currentData.script || '';
+    document.getElementById('overlayBox').textContent = (currentData.overlays || []).join('\n');
+  }
+
+  // Carousel JSON
+  const hasSlides = currentData.slides && currentData.slides.length > 0;
+  document.getElementById('carouselJsonSection').style.display = hasSlides ? 'block' : 'none';
+  if (hasSlides) {
+    // Build the full carousel object for the Node server
+    const carouselObj = {
+      title: lastTopic,
+      slug: lastTopic.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 60),
+      slides: currentData.slides,
+      caption: {
+        text: currentData.caption || '',
+        hashtags: currentData.hashtags || ''
+      }
+    };
+    document.getElementById('jsonEditor').value = JSON.stringify(carouselObj, null, 2);
+  }
+
+  // Reset render section
+  document.getElementById('renderGrid').innerHTML = '';
+  document.getElementById('renderProgress').style.display = 'none';
+  document.getElementById('renderStatus').style.display = 'none';
+
+  document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ============================================================
+//  JSON TOGGLE
+// ============================================================
+function toggleJSON() {
+  document.getElementById('jsonToggle').classList.toggle('open');
+  document.getElementById('jsonBody').classList.toggle('open');
+}
+
+// ============================================================
+//  RENDER PNGs
+// ============================================================
+async function renderPNGs() {
+  const server = document.getElementById('serverUrl').value.trim();
+  if (!server) { toast('Set server URL in settings', true); return; }
+
+  let jsonData;
+  try {
+    jsonData = JSON.parse(document.getElementById('jsonEditor').value);
+  } catch(e) {
+    toast('Invalid JSON', true);
+    return;
+  }
+
+  const btn = document.getElementById('renderBtn');
+  btn.disabled = true;
+  btn.textContent = 'Rendering...';
+
+  const prog = document.getElementById('renderProgress');
+  const fill = document.getElementById('renderFill');
+  const status = document.getElementById('renderStatus');
+  prog.style.display = 'block';
+  status.style.display = 'block';
+  fill.style.width = '30%';
+  status.textContent = 'Sending to server...';
+
+  try {
+    const res = await fetch(server + '/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonData)
+    });
+
+    fill.style.width = '80%';
+
+    if (!res.ok) throw new Error(await res.text());
+
+    const result = await res.json();
+    fill.style.width = '100%';
+    status.textContent = result.files.length + ' PNGs rendered ✓';
+
+    const grid = document.getElementById('renderGrid');
+    const outPath = result.outputDir.replace(/\\/g, '/');
+    const bust = Date.now();
+    grid.innerHTML = result.files.map(f => {
+      const url = server + '/' + outPath + '/' + f + '?t=' + bust;
+      return `<img src="${url}" loading="lazy" onclick="window.open(this.src)" />`;
+    }).join('');
+
+    toast('Rendered ' + result.files.length + ' slides');
+
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    toast('Render failed: ' + e.message, true);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🖼 Render PNGs (requires Node server)';
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function copyText(elId, btn) {
+  const el = document.getElementById(elId);
+  const text = el.value !== undefined ? el.value : el.textContent;
+  navigator.clipboard.writeText(text.trim()).then(() => {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function toast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast vis' + (err ? ' err' : '');
+  setTimeout(() => t.classList.remove('vis'), 2500);
+}
+</script>
+</body>
+</html>
