@@ -1393,17 +1393,17 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 <!-- ========== STAT BAR ========== -->
 <div class="stat-bar reveal">
   <div class="stat">
-    <div class="stat-val" id="stat-ott" data-target="+0.89">+0.00</div>
+    <div class="stat-val" id="stat-ott" data-target="+0.89">+0.89</div>
     <div class="stat-lbl">SG: Off-the-Tee · <span id="stat-ott-name">S. Scheffler</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat-app" data-target="+1.25">+0.00</div>
+    <div class="stat-val" id="stat-app" data-target="+1.25">+1.25</div>
     <div class="stat-lbl">SG: Approach · <span id="stat-app-name">S. Scheffler</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
-    <div class="stat-val" id="stat-putt" data-target="+0.55">+0.00</div>
+    <div class="stat-val" id="stat-putt" data-target="+0.55">+0.55</div>
     <div class="stat-lbl">SG: Putting · <span id="stat-putt-name">L. Åberg</span> · DataGolf Model</div>
   </div>
   <div class="stat-sep"></div>
@@ -1613,52 +1613,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   // --- scroll reveal disabled for performance ---
 
   // --- counter animation for stat values ---
-  function animateCounter(el, targetVal, duration) {
-    var isNegative = targetVal < 0;
-    var absTarget = Math.abs(targetVal);
-    var start = 0;
-    var startTime = null;
-    var prefix = targetVal >= 0 ? '+' : '-';
-    var decimals = (absTarget.toString().split('.')[1] || '').length || 2;
-    
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      var progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease out cubic
-      var eased = 1 - Math.pow(1 - progress, 3);
-      var current = eased * absTarget;
-      el.textContent = prefix + current.toFixed(decimals);
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = prefix + absTarget.toFixed(decimals);
-      }
-    }
-    requestAnimationFrame(step);
-  }
-
-  // Observe stat bar — trigger counters when visible
   var statBar = document.querySelector('.stat-bar');
-  var statsAnimated = false;
-  if (statBar) {
-    var statObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting && !statsAnimated) {
-          statsAnimated = true;
-          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
-          statEls.forEach(function(el, i) {
-            var target = parseFloat(el.getAttribute('data-target'));
-            if (!isNaN(target)) {
-              setTimeout(function() {
-                animateCounter(el, target, 1200);
-              }, i * 150);
-            }
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-    statObs.observe(statBar);
-  }
 
   // --- dynamic article cards from blog registry ---
   (function loadArticles(){
@@ -1689,26 +1644,23 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       }).join('');
     }
 
-    // Hardcoded fallback (always works even if API is down)
+    // Hardcoded fallback — render immediately so the section never appears blank
     var fallback = [
       {slug:'scheffler-putting-analysis',title:"Scottie Scheffler's Putting Numbers Don't Make Sense. We Looked Closer.",category:'PGA Tour',category_class:'pga',date:'Feb 1, 2026',read_time:'8 min read',hero_image:'/scheffler.jpg',hero_alt:'Scottie Scheffler putting'},
       {slug:'strokes-gained-approach',title:'The Stat No One Talks About',category:'Strokes Gained',category_class:'sg',date:'Jan 28, 2026',read_time:'6 min read',hero_image:'/fleetwood.jpg',hero_alt:'Tommy Fleetwood approach shot'},
       {slug:'driver-upgrade-myth',title:"Why Your $600 Driver Isn't The Problem",category:'Improvement',category_class:'improve',date:'Jan 24, 2026',read_time:'5 min read',hero_image:'/driver.jpg',hero_alt:'Golf driver'}
     ];
+    renderHomepageCards(fallback);
 
-    // Try API first, fall back to hardcoded
+    // Silently update with API data if available
     fetch(API + '/api/blog-posts/latest?limit=3')
       .then(function(r){ return r.json(); })
       .then(function(data){
         if (data.success && data.posts && data.posts.length > 0) {
           renderHomepageCards(data.posts);
-        } else {
-          renderHomepageCards(fallback);
         }
       })
-      .catch(function(){
-        renderHomepageCards(fallback);
-      });
+      .catch(function(){});
   })();
 
   // ====================================
@@ -2396,7 +2348,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       
       if (data.success && data.data) {
         const stats = data.data;
-        
+
         function formatPlayerName(fullName) {
           if (!fullName) return 'Leader';
           const parts = fullName.split(', ');
@@ -2405,45 +2357,22 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
           }
           return fullName;
         }
-        
-        // Update data-target attributes with live values
-        var ottEl = document.getElementById('stat-ott');
-        var appEl = document.getElementById('stat-app');
-        var puttEl = document.getElementById('stat-putt');
-        
-        ottEl.setAttribute('data-target', stats.sgOTT.value);
-        appEl.setAttribute('data-target', stats.sgApp.value);
-        puttEl.setAttribute('data-target', stats.sgPutt.value);
-        
-        // Update player names
+
+        function formatVal(val) {
+          var n = parseFloat(val);
+          if (isNaN(n)) return val;
+          return (n >= 0 ? '+' : '') + n.toFixed(2);
+        }
+
+        document.getElementById('stat-ott').textContent = formatVal(stats.sgOTT.value);
+        document.getElementById('stat-app').textContent = formatVal(stats.sgApp.value);
+        document.getElementById('stat-putt').textContent = formatVal(stats.sgPutt.value);
         document.getElementById('stat-ott-name').textContent = formatPlayerName(stats.sgOTT.player);
         document.getElementById('stat-app-name').textContent = formatPlayerName(stats.sgApp.player);
         document.getElementById('stat-putt-name').textContent = formatPlayerName(stats.sgPutt.player);
-        
-        // If stat bar already scrolled into view before API loaded, animate now
-        if (statsAnimated) {
-          statsAnimated = false;
-          var statEls = statBar.querySelectorAll('.stat-val[data-target]');
-          statEls.forEach(function(el, i) {
-            var target = parseFloat(el.getAttribute('data-target'));
-            if (!isNaN(target)) {
-              setTimeout(function() {
-                animateCounter(el, target, 1200);
-              }, i * 150);
-            }
-          });
-          statsAnimated = true;
-        }
       }
     } catch (error) {
       console.warn('Could not load homepage stats:', error);
-      // Fall back to placeholder values — animate those instead
-      if (!statsAnimated && statBar) {
-        var statEls = statBar.querySelectorAll('.stat-val[data-target]');
-        statEls.forEach(function(el) {
-          el.textContent = el.getAttribute('data-target');
-        });
-      }
     }
   })();
 
