@@ -1442,7 +1442,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-organic-ribbed-neck-t-shirt-dark" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ribbed-tee.webp" alt="Organic Ribbed Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/assets/images/ribbed-tee.webp" alt="Organic Ribbed Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div><div class="app-name">Organic Ribbed Tee</div></div>
@@ -1453,7 +1453,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-under-armour-athletic-t-shirt-light" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ua-tee.webp" alt="Under Armour Athletic Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/assets/images/ua-tee.webp" alt="Under Armour Athletic Tee" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div class="app-name">Under Armour® Athletic Tee</div>
@@ -1464,7 +1464,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light" style="text-decoration:none;color:inherit;">
       <div class="app-card">
         <div class="app-img">
-          <img src="/ua-hat.webp" alt="Under Armour Dad Hat" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <img src="/assets/images/ua-hat.webp" alt="Under Armour Dad Hat" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         </div>
         <div class="app-body">
           <div class="app-name">Under Armour® Dad Hat</div>
@@ -1646,9 +1646,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 
     // Hardcoded fallback — render immediately so the section never appears blank
     var fallback = [
-      {slug:'scheffler-putting-analysis',title:"Scottie Scheffler's Putting Numbers Don't Make Sense. We Looked Closer.",category:'PGA Tour',category_class:'pga',date:'Feb 1, 2026',read_time:'8 min read',hero_image:'/scheffler.jpg',hero_alt:'Scottie Scheffler putting'},
-      {slug:'strokes-gained-approach',title:'The Stat No One Talks About',category:'Strokes Gained',category_class:'sg',date:'Jan 28, 2026',read_time:'6 min read',hero_image:'/fleetwood.jpg',hero_alt:'Tommy Fleetwood approach shot'},
-      {slug:'driver-upgrade-myth',title:"Why Your $600 Driver Isn't The Problem",category:'Improvement',category_class:'improve',date:'Jan 24, 2026',read_time:'5 min read',hero_image:'/driver.jpg',hero_alt:'Golf driver'}
+      {slug:'tracked-30-rounds-of-golf-data-lower-scores',title:'I Tracked 30 Rounds of Golf Data. Here\'s What Actually Lowered My Scores.',category:'Improvement',category_class:'improve',date:'Mar 14, 2026',read_time:'8 min read',hero_image:'/assets/images/golf_shot_1.jpg',hero_alt:'Golf shot'},
+      {slug:'the-scoring-zone-nobody-practices-why-80120-yards-is-where-youre-bleeding-shots',title:'The Scoring Zone Nobody Practices: Why 80–120 Yards Is Where You\'re Bleeding Shots',category:'Improvement',category_class:'improve',date:'Mar 15, 2026',read_time:'7 min read',hero_image:'/assets/images/taylormade_wedge_58.jpg',hero_alt:'Taylormade Wedge for Approach Shots'},
+      {slug:'driver-swing-breaks-down-during-round',title:'Why Your Driver Gets Worse Every 6 Holes (The Fatigue Data Nobody Tracks)',category:'Improvement',category_class:'improve',date:'Mar 14, 2026',read_time:'7 min read',hero_image:'/assets/images/Rory_McIlroy_8.jpg',hero_alt:'Rory hitting driver at the BMW Championship'}
     ];
     renderHomepageCards(fallback);
 
@@ -1975,38 +1975,41 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     
     async function loadTickerData() {
       try {
-        var fieldRes = await fetch(tickerApiBase + '/api/field-updates');
-        var fieldData = await fieldRes.json();
-        if (!fieldData.success || !fieldData.data) { tickerEl.classList.add('hidden'); return; }
-        
-        var tournament = fieldData.data;
+        // Fetch field info and live scores in parallel
+        var [tickerFieldResult, tickerLiveResult] = await Promise.allSettled([
+          fetch(tickerApiBase + '/api/field-updates').then(function(r){ return r.json(); }),
+          fetch(tickerApiBase + '/api/live-tournament').then(function(r){ return r.json(); })
+        ]);
+
+        if (tickerFieldResult.status !== 'fulfilled' || !tickerFieldResult.value.success || !tickerFieldResult.value.data) {
+          tickerEl.classList.add('hidden'); return;
+        }
+
+        var tournament = tickerFieldResult.value.data;
         var eventName = tournament.event_name || 'Upcoming Event';
         tickerNameEl.textContent = eventName;
-        
+
         var hasLive = false;
-        try {
-          var liveRes = await fetch(tickerApiBase + '/api/live-tournament');
-          var liveData = await liveRes.json();
-          if (liveData.success && liveData.data) {
-            var arr = liveData.data.data || liveData.data || [];
-            var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-            var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
-            if (match && arr.length > 0) {
-              var hasScores = arr.some(function(p) {
-                return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
-                       (p.current_score != null && p.current_score !== '-');
+        if (tickerLiveResult.status === 'fulfilled' && tickerLiveResult.value.success && tickerLiveResult.value.data) {
+          var liveData = tickerLiveResult.value;
+          var arr = liveData.data.data || liveData.data || [];
+          var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
+          if (match && arr.length > 0) {
+            var hasScores = arr.some(function(p) {
+              return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
+                     (p.current_score != null && p.current_score !== '-');
+            });
+            if (hasScores) {
+              var allDone = arr.every(function(p) {
+                return p.thru === 18 || p.thru === '18' || p.thru === 'F' || p.thru === 'f' || p.status === 'cut' || p.status === 'wd';
               });
-              if (hasScores) {
-                var allDone = arr.every(function(p) {
-                  return p.thru === 18 || p.thru === '18' || p.thru === 'F' || p.thru === 'f' || p.status === 'cut' || p.status === 'wd';
-                });
-                tickerShowScores(arr, allDone && (tournament.current_round || 0) >= 4);
-                hasLive = true;
-              }
+              tickerShowScores(arr, allDone && (tournament.current_round || 0) >= 4);
+              hasLive = true;
             }
           }
-        } catch(e) { /* silent */ }
+        }
         
         if (!hasLive) {
           try {
@@ -2124,7 +2127,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       var initials = pInitials(playerName);
       var shortName = pShortName(playerName);
       if (headshot) {
-        return '<img src="/headshots/' + headshot + '.png" alt="' + shortName + '" onerror="this.parentElement.innerHTML=\'<div class=hero-panel-initials>' + initials + '</div>\'">';
+        return '<img src="/assets/images/headshots/' + headshot + '.png" alt="' + shortName + '" onerror="this.parentElement.innerHTML=\'<div class=hero-panel-initials>' + initials + '</div>\'">';
       }
       return '<div class="hero-panel-initials">' + initials + '</div>';
     }
@@ -2256,38 +2259,35 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
       var eventName = '';
       var currentRound = 0;
 
-      // 1. Get event info
-      try {
-        var fieldRes = await fetch(panelApi + '/api/field-updates');
-        var fieldData = await fieldRes.json();
-        if (fieldData.success && fieldData.data) {
-          eventName = fieldData.data.event_name || '';
-          currentRound = fieldData.data.current_round || 0;
-        }
-      } catch(e) { /* silent */ }
-
-      // 2. Try live scores first
+      // 1+2. Fetch event info and live scores in parallel
       var isLive = false;
-      try {
-        var liveRes = await fetch(panelApi + '/api/live-tournament');
-        var liveData = await liveRes.json();
-        if (liveData.success && liveData.data) {
-          var arr = liveData.data.data || liveData.data || [];
-          var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-          var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
-          var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
-          if (match && arr.length > 0) {
-            var hasScores = arr.some(function(p) {
-              return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
-                     (p.current_score != null && p.current_score !== '-');
-            });
-            if (hasScores) {
-              renderLive(eventName, arr);
-              isLive = true;
-            }
+      var [fieldResult, liveResult] = await Promise.allSettled([
+        fetch(panelApi + '/api/field-updates').then(function(r){ return r.json(); }),
+        fetch(panelApi + '/api/live-tournament').then(function(r){ return r.json(); })
+      ]);
+
+      if (fieldResult.status === 'fulfilled' && fieldResult.value.success && fieldResult.value.data) {
+        eventName = fieldResult.value.data.event_name || '';
+        currentRound = fieldResult.value.data.current_round || 0;
+      }
+
+      if (liveResult.status === 'fulfilled' && liveResult.value.success && liveResult.value.data) {
+        var liveData = liveResult.value;
+        var arr = liveData.data.data || liveData.data || [];
+        var liveEvt = (liveData.event_name || liveData.data?.event_name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        var curEvt = eventName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        var match = liveEvt && curEvt && (liveEvt === curEvt || liveEvt.includes(curEvt) || curEvt.includes(liveEvt));
+        if (match && arr.length > 0) {
+          var hasScores = arr.some(function(p) {
+            return (p.thru != null && p.thru !== '-' && p.thru !== '' && p.thru !== 0) ||
+                   (p.current_score != null && p.current_score !== '-');
+          });
+          if (hasScores) {
+            renderLive(eventName, arr);
+            isLive = true;
           }
         }
-      } catch(e) { /* silent */ }
+      }
 
       // 3. If not live, try pre-tournament predictions
       if (!isLive) {
