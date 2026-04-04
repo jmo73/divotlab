@@ -1,0 +1,94 @@
+<!-- SEGMENT: overrated-underrated.html -->
+<!-- Use when the course-fit model has a clear mispricing vs. betting odds. -->
+<!-- One player the market is too high on, one the market is too low on. -->
+<!-- Source: pre-tournament.json (model win probability) vs. betting-odds-win.json (implied odds) -->
+<!-- Calculate: implied_odds = 1/american_odds_as_decimal. Compare to model win probability. -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+
+  <!-- Section label -->
+  <tr>
+    <td style="padding-bottom:12px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#5BBF85;background:rgba(27,77,62,0.18);border:1px solid rgba(91,191,133,0.22);padding:6px 16px;border-radius:20px;">OVERRATED / UNDERRATED</span>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="font-size:14px;color:#6A6A64;padding-bottom:16px;">
+      Where the market and the model disagree this week.
+    </td>
+  </tr>
+
+  <!-- Overrated (red tint) -->
+  <tr>
+    <td style="padding-bottom:12px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-left:3px solid rgba(231,111,81,0.5);border-radius:0 10px 10px 0;">
+        <tr>
+          <td style="padding:18px 20px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td>
+                <span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(231,111,81,0.8);display:block;margin-bottom:6px;">OVERRATED</span>
+                <span style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                  <!-- EDIT: Player name + current odds -->
+                  [Player Name] &mdash; <span style="color:rgba(231,111,81,0.8);"><!-- EDIT -->+000 (market)</span>
+                </span>
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:12px;color:rgba(231,111,81,0.7);white-space:nowrap;vertical-align:top;padding-top:18px;">
+                <!-- EDIT: Model implied odds vs market. E.g., "Model: +1200 / Market: +600" -->
+                Model: [+0000] vs Market: [+0000]
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: Why the model thinks the market is too short on this player.
+                 Specific reasons — course-fit score, recent form vs. expectations, course history, etc.
+                 Source: pre-tournament.json win probability vs. betting-odds-win.json implied probability. -->
+            [Why the model sees this player as overpriced — specific course-fit or form data that conflicts with the market's assessment.]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Underrated (green tint) -->
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-left:3px solid rgba(91,191,133,0.5);border-radius:0 10px 10px 0;">
+        <tr>
+          <td style="padding:18px 20px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td>
+                <span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5BBF85;display:block;margin-bottom:6px;">UNDERRATED</span>
+                <span style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                  [Player Name] &mdash; <span style="color:#5BBF85;"><!-- EDIT -->+0000 (market)</span>
+                </span>
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:12px;color:#5BBF85;white-space:nowrap;vertical-align:top;padding-top:18px;">
+                Model: [+0000] vs Market: [+0000]
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: Why the model likes this player more than the market does.
+                 Specific data reasons — high course-fit score, overlooked form, course history the public is ignoring. -->
+            [Why the model sees this player as underpriced — specific course-fit score, recent form, or course history the market is overlooking.]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding:4px 0 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+</table>

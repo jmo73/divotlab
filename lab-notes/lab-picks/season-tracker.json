@@ -1,0 +1,20 @@
+{
+  "season": "2026",
+  "last_updated": "2026-04-04",
+  "total_picks": 0,
+  "results": {
+    "win":     { "picks": 0, "hits": 0 },
+    "top_5":   { "picks": 0, "hits": 0 },
+    "top_10":  { "picks": 0, "hits": 0 },
+    "top_20":  { "picks": 0, "hits": 0 },
+    "matchup": { "picks": 0, "hits": 0 },
+    "sleeper": { "picks": 0, "hits": 0 }
+  },
+  "units": {
+    "wagered":    0,
+    "returned":   0,
+    "profit_loss": 0,
+    "roi_pct":    0
+  },
+  "weekly_picks": []
+}

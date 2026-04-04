@@ -1,0 +1,340 @@
+<!--
+SUBJECT LINE OPTIONS (pick one):
+1. Lab Picks: [Tournament Name] — [X] bets + a [odds] longshot
+2. [Tournament Name] picks: course-fit model flags a value play
+3. [Specific angle — e.g., "The model disagrees with the market on [Player Name] this week"]
+
+PREVIEW TEXT: [X] bets for [Tournament Name]. Odds compared across [X] sportsbooks. [One hook sentence.]
+-->
+
+<!-- ============================================================ -->
+<!-- CHUNK 1: Banner + Intro + All Picks + Sleeper               -->
+<!-- ============================================================ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+
+  <!-- Pro tier banner -->
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(10,10,10,0));border:1px solid rgba(201,168,76,0.2);border-radius:10px;">
+        <tr>
+          <td style="padding:16px 22px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td>
+                <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.15);padding:4px 10px;border-radius:4px;">LAB PICKS &mdash; PRO TIER</span>
+                <span style="display:block;font-size:13px;color:rgba(250,250,250,0.45);margin-top:6px;"><!-- EDIT: "Tournament Name · Wednesday, Month Day" -->
+                  [Tournament Name] &middot; Wednesday, [Month Day]
+                </span>
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:13px;color:#C9A84C;white-space:nowrap;vertical-align:middle;">
+                <!-- EDIT: X picks this week -->
+                [X] picks
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- This Week's Approach -->
+  <tr>
+    <td style="padding-bottom:6px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">THIS WEEK'S APPROACH</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-size:15px;color:#B8B8B0;line-height:1.7;padding:12px 0 20px;">
+      <!-- EDIT: 2-3 sentences on overall betting strategy for this week.
+           What does the course-fit model show? Where is the value relative to the odds?
+           What's the general approach — fading favorites, targeting mid-range value, etc.? -->
+      [2-3 sentences on the overall betting angle this week. What does the course-fit model suggest? Where does the model see the market mispriced?]
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+  <!-- ── PICK 1 ── -->
+  <!-- EDIT: Duplicate this block for picks 2-5. Aim for 4-5 picks total. Mixed bet types. -->
+  <tr>
+    <td style="padding-bottom:14px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+
+        <!-- Pick header -->
+        <tr>
+          <td style="padding:18px 20px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td>
+                <!-- EDIT: Player name -->
+                <span style="font-size:16px;font-weight:700;color:#FAFAFA;">[Player Name]</span>
+                <!-- EDIT: Bet type label — "Outright Win" / "Top 5" / "Top 10" / "Top 20" / "H2H Matchup" -->
+                <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">[BET TYPE]</span>
+              </td>
+              <!-- EDIT: Confidence — High / Medium / Low -->
+              <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">
+                Confidence:
+                <!-- High = #5BBF85, Medium = #C9A84C, Low = rgba(250,250,250,0.4) -->
+                <span style="color:#5BBF85;font-weight:700;">[High/Medium/Low]</span>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+
+        <!-- Sportsbook odds row -->
+        <!-- EDIT: Fill in odds from betting-odds JSON files. Highlight best line with gold background. -->
+        <!-- Include only books that have this market. Leave out books without this bet type. -->
+        <tr>
+          <td style="padding:10px 20px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <!-- EDIT: Repeat this td for each available sportsbook. Best line gets gold styling. -->
+
+                <!-- Standard book odds chip -->
+                <td style="padding-right:8px;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                    <tr>
+                      <td style="padding:7px 12px;text-align:center;">
+                        <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">[BOOK]</span>
+                        <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">[+000]</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <!-- Best line chip (gold highlight) -->
+                <td style="padding-right:8px;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                    <tr>
+                      <td style="padding:7px 12px;text-align:center;">
+                        <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">[BOOK] &#9733;</span>
+                        <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">[+000]</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+                <!-- Another standard book -->
+                <td style="padding-right:8px;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                    <tr>
+                      <td style="padding:7px 12px;text-align:center;">
+                        <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">[BOOK]</span>
+                        <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">[+000]</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Pick reasoning -->
+        <tr>
+          <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: 3-5 sentences of reasoning grounded in data from this week's JSON files.
+                 Structure: Course-fit score + why → Current form stat → Specific edge (odds mispricing, course history) → One risk/caveat.
+                 ONLY use numbers from data files. -->
+            [Pick reasoning — course-fit score, relevant SG stats from skill-ratings.json, why the odds are wrong. Include one honest caveat about what could go wrong. All numbers must come from data files.]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- ── PICK 2 ── (copy from PICK 1 block above) -->
+  <!-- ── PICK 3 ── -->
+  <!-- ── PICK 4 ── -->
+  <!-- ── PICK 5 ── -->
+
+  <!-- Divider before sleeper -->
+  <tr>
+    <td style="padding:6px 0 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+  <!-- ── SLEEPER OF THE WEEK ── -->
+  <tr>
+    <td style="padding-bottom:6px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#5A8FA8;background:rgba(90,143,168,0.1);border:1px solid rgba(90,143,168,0.2);padding:6px 16px;border-radius:20px;">SLEEPER OF THE WEEK</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="font-size:13px;color:#6A6A64;padding:8px 0 14px;">
+      <!-- EDIT: "One player at [odds] or longer — a specific data case for why." -->
+      One player at [+4000] or longer. A specific data case for why.
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(90,143,168,0.2);border-radius:10px;">
+        <tr>
+          <td style="padding:18px 20px 8px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                <!-- EDIT: Sleeper player name + odds -->
+                [Player Name]
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:16px;font-weight:700;color:#5A8FA8;">
+                <!-- EDIT: Long odds, american format -->
+                [+0000]
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:4px 20px 6px;">
+            <!-- EDIT: Bet type for the sleeper -->
+            <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5A8FA8;background:rgba(90,143,168,0.1);padding:3px 8px;border-radius:4px;">[BET TYPE]</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: The data case for the sleeper. Course-fit score, specific statistical argument.
+                 What specifically makes the model like them at these odds? Keep expectations realistic — this is a longshot for a reason. -->
+            [Sleeper reasoning — what the course-fit model shows, what specific stats support the case, why the public is undervaluing them. Be honest about the longshot nature — this is entertainment with a data edge, not a guarantee.]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+</table>
+
+<!-- ============================================================ -->
+<!-- CHUNK 2: Quick Card + Season Tracker + Disclaimer           -->
+<!-- ============================================================ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+  <!-- Quick Card -->
+  <tr>
+    <td style="padding-bottom:6px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">QUICK CARD</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:14px 0 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+
+        <!-- Header -->
+        <tr>
+          <td style="padding:12px 18px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Player</td>
+          <td style="padding:12px 10px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Bet</td>
+          <td align="right" style="padding:12px 18px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Best Line / Book</td>
+        </tr>
+
+        <!-- EDIT: One row per pick. Repeat the <tr> block for each pick + sleeper. -->
+        <tr>
+          <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">[Player Name]</td>
+          <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">[Bet Type]</td>
+          <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">[+000] / [Book]</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">[Player Name]</td>
+          <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">[Bet Type]</td>
+          <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">[+000] / [Book]</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">[Player Name]</td>
+          <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">[Bet Type]</td>
+          <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">[+000] / [Book]</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">[Player Name]</td>
+          <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">[Bet Type]</td>
+          <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">[+000] / [Book]</td>
+        </tr>
+        <!-- Sleeper row (blue accent) -->
+        <tr>
+          <td style="padding:12px 18px;font-size:13px;color:#5A8FA8;">[Sleeper Name] &#9670;</td>
+          <td style="padding:12px 10px;font-size:13px;color:rgba(90,143,168,0.7);">[Bet Type]</td>
+          <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#5A8FA8;">[+0000] / [Book]</td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+
+  <!-- Season Tracker -->
+  <tr>
+    <td style="padding-bottom:6px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">SEASON TRACKER</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:14px 0 8px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+        <tr>
+          <!-- EDIT: Update all three numbers from season-tracker.json before generating -->
+          <td align="center" style="padding:20px 10px;border-right:1px solid rgba(255,255,255,0.06);">
+            <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#5BBF85;display:block;"><!-- EDIT: hit rate % e.g. "54%" -->[0%]</span>
+            <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">Hit Rate</span>
+            <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;"><!-- EDIT: "X/Y picks" -->[0/0 picks]</span>
+          </td>
+          <td align="center" style="padding:20px 10px;border-right:1px solid rgba(255,255,255,0.06);">
+            <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#C9A84C;display:block;"><!-- EDIT: units profit/loss e.g. "+4.2u" or "-1.8u" -->[+0.0u]</span>
+            <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">Units P/L</span>
+            <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;"><!-- EDIT: season -->[2026 Season]</span>
+          </td>
+          <td align="center" style="padding:20px 10px;">
+            <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#5A8FA8;display:block;"><!-- EDIT: ROI % e.g. "+18%" -->[+0%]</span>
+            <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">ROI</span>
+            <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;"><!-- EDIT: event count "X events" -->[0 events]</span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:4px 0 20px;font-size:12px;color:rgba(250,250,250,0.25);line-height:1.6;">
+      Updated after final results. 1 unit = 1% of bankroll. Picks tracked from first published Lab Picks issue.
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding-bottom:16px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+  <!-- Disclaimer -->
+  <tr>
+    <td style="font-size:12px;color:rgba(250,250,250,0.25);line-height:1.7;padding-bottom:12px;">
+      <strong style="color:rgba(250,250,250,0.35);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td align="center" style="font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;padding:16px 0 8px;">
+      Lab Picks by Divot Lab &middot; <a href="https://divotlab.com" style="color:rgba(250,250,250,0.2);text-decoration:none;">divotlab.com</a><br>
+      Pro tier &middot; Delivered every Wednesday tournament week.<br>
+      <a href="{{ unsubscribe_url }}" style="color:rgba(250,250,250,0.2);text-decoration:underline;">Manage subscription</a>
+    </td>
+  </tr>
+
+</table>

@@ -1,0 +1,130 @@
+<!-- SEGMENT: players-to-watch.html -->
+<!-- 3 player cards. Fill all <!-- EDIT --> fields with real data from skill-ratings.json + betting-odds-win.json -->
+<!-- Course-Fit Score = calculated from COURSE_WEIGHTS in api/server.js using skill-ratings.json data -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+
+  <!-- Section label -->
+  <tr>
+    <td style="padding-bottom:6px;">
+      <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#5BBF85;background:rgba(27,77,62,0.18);border:1px solid rgba(91,191,133,0.22);padding:6px 16px;border-radius:20px;">3 PLAYERS TO WATCH</span>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="font-size:15px;color:#B8B8B0;line-height:1.7;padding:10px 0 16px;">
+      Track these names — and the specific stat next to each one.
+    </td>
+  </tr>
+
+  <!-- ── PLAYER 1 ── -->
+  <tr>
+    <td style="padding-bottom:12px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+        <tr>
+          <td style="padding:20px 22px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                <!-- EDIT: Player Name (Odds) -->
+                [Player Name] (<span style="color:#5BBF85;"><!-- EDIT: american odds -->+0000</span>)
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:12px;color:#5A8FA8;">
+                <!-- EDIT: Course-Fit Score from model -->
+                CF: <strong style="color:#FAFAFA;">00.0</strong>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 22px 14px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: 2-4 sentences. Reference specific stats from the data files. Explain WHY this player fits this course. Include a concrete historical note if available in historical-rounds data. -->
+            [Player analysis — course history, current form stats, specific angle. Only use numbers from data files.]
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 22px 18px;">
+            <span style="display:inline-block;font-family:'Courier New',monospace;font-size:11px;color:#5A8FA8;background:rgba(90,143,168,0.1);border:1px solid rgba(90,143,168,0.2);padding:5px 12px;border-radius:6px;">
+              <!-- EDIT: Specific stat to track during the tournament (e.g., "SG: Approach R1", "Par 5 Scoring", "Driving Accuracy") -->
+              Track: [Stat to Watch]
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- ── PLAYER 2 ── -->
+  <tr>
+    <td style="padding-bottom:12px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+        <tr>
+          <td style="padding:20px 22px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                [Player Name] (<span style="color:#5BBF85;"><!-- EDIT -->+0000</span>)
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:12px;color:#5A8FA8;">
+                CF: <strong style="color:#FAFAFA;">00.0</strong>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 22px 14px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            [Player analysis — course history, current form stats, specific angle.]
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 22px 18px;">
+            <span style="display:inline-block;font-family:'Courier New',monospace;font-size:11px;color:#5A8FA8;background:rgba(90,143,168,0.1);border:1px solid rgba(90,143,168,0.2);padding:5px 12px;border-radius:6px;">
+              Track: [Stat to Watch]
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- ── PLAYER 3 (value/longshot) ── -->
+  <tr>
+    <td style="padding-bottom:20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+        <tr>
+          <td style="padding:20px 22px 6px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="font-size:16px;font-weight:700;color:#FAFAFA;">
+                [Player Name] (<span style="color:#C9A84C;"><!-- EDIT: longer odds, use gold color -->+0000</span>)
+              </td>
+              <td align="right" style="font-family:'Courier New',monospace;font-size:12px;color:#5A8FA8;">
+                CF: <strong style="color:#FAFAFA;">00.0</strong>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:8px 22px 14px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+            <!-- EDIT: Third player should be a value play — higher odds, strong course-fit case -->
+            [Player analysis — why the model likes them more than the odds suggest.]
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 22px 18px;">
+            <span style="display:inline-block;font-family:'Courier New',monospace;font-size:11px;color:#5A8FA8;background:rgba(90,143,168,0.1);border:1px solid rgba(90,143,168,0.2);padding:5px 12px;border-radius:6px;">
+              Track: [Stat to Watch]
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding:4px 0 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td>
+      </tr></table>
+    </td>
+  </tr>
+
+</table>
