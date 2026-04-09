@@ -406,15 +406,62 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   <p>Questions, feedback, or ideas for what we should analyze next? Reach out on <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>.</p>
 </div>
 
-<!-- CTA -->
+<!-- EMAIL CAPTURE -->
 <div class="about-cta">
-  <h2>Want More?</h2>
-  <p>Stick around for up-to-date news on the PGA tour, data analytics, and game improvement.</p>
+  <div style="font-family:'JetBrains Mono','Courier New',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#5BBF85; margin-bottom:16px;">Free Every Tuesday</div>
+  <h2>Get the weekly breakdown<br>in your inbox</h2>
+  <p>Tournament recaps, key stats, and what to watch next — free forever.</p>
+  <form id="aboutEmailForm" autocomplete="off" style="display:flex; gap:10px; max-width:400px; margin:0 auto 12px; flex-wrap:wrap; justify-content:center;">
+    <input type="email" id="aboutEmailInput" placeholder="your@email.com" required autocomplete="email"
+      style="flex:1; min-width:180px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:13px 16px; color:#FAFAFA; font-size:15px; outline:none; font-family:inherit;">
+    <button type="submit" id="aboutEmailBtn"
+      style="background:#1B4D3E; color:#FAFAFA; border:none; border-radius:8px; padding:13px 22px; font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap; font-family:inherit; transition:background 0.2s;">Subscribe Free</button>
+  </form>
+  <p style="font-size:12px; color:rgba(250,250,250,0.25); margin-bottom:28px;">No credit card. No spam. Unsubscribe anytime.</p>
   <div class="about-cta-btns">
     <a href="/articles" class="btn-fill">Read the Latest</a>
     <a href="https://divotlab.printful.me/" class="btn-fill">Visit the Shop</a>
   </div>
 </div>
+<script>
+(function(){
+  var form = document.getElementById('aboutEmailForm');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('aboutEmailInput').value.trim();
+    if (!email) return;
+    var btn = document.getElementById('aboutEmailBtn');
+    var orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Subscribing...';
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+    fetch(API + '/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, utm_source: 'about-page' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        btn.textContent = '\u2713 You\'re in!';
+        btn.style.background = '#236b4f';
+        document.getElementById('aboutEmailInput').value = '';
+        setTimeout(function() { btn.textContent = orig; btn.style.background = '#1B4D3E'; btn.disabled = false; }, 3000);
+      } else {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = orig; }, 2000);
+      }
+    })
+    .catch(function() {
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+      setTimeout(function() { btn.textContent = orig; }, 2000);
+    });
+  });
+})();
+</script>
 
 <!-- FOOTER -->
 <footer>
