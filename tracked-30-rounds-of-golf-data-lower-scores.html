@@ -380,6 +380,62 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   </div>
 </div>
 
+<!-- EMAIL CAPTURE -->
+<div style="background:#0A0A0A; padding:72px 24px; text-align:center; border-top:1px solid rgba(255,255,255,0.06);">
+  <div style="max-width:480px; margin:0 auto;">
+    <div style="font-family:'JetBrains Mono','Courier New',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#5BBF85; margin-bottom:16px;">Free Every Tuesday</div>
+    <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(26px,5vw,36px); font-weight:600; color:#FAFAFA; margin-bottom:12px; line-height:1.2;">Get the weekly breakdown<br>in your inbox</h2>
+    <p style="font-size:15px; color:rgba(250,250,250,0.45); margin-bottom:28px; line-height:1.6; max-width:380px; margin-left:auto; margin-right:auto;">Tournament recaps, key stats, and what to watch next — free forever.</p>
+    <form id="articleEmailForm" autocomplete="off" style="display:flex; gap:10px; max-width:400px; margin:0 auto 12px; flex-wrap:wrap;">
+      <input type="email" id="articleEmailInput" placeholder="your@email.com" required autocomplete="email"
+        style="flex:1; min-width:180px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:13px 16px; color:#FAFAFA; font-size:15px; outline:none; font-family:inherit;">
+      <button type="submit" id="articleEmailBtn"
+        style="background:#1B4D3E; color:#FAFAFA; border:none; border-radius:8px; padding:13px 22px; font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap; font-family:inherit; transition:background 0.2s;">Subscribe Free</button>
+    </form>
+    <p style="font-size:12px; color:rgba(250,250,250,0.2);">No credit card. No spam. Unsubscribe anytime.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var form = document.getElementById('articleEmailForm');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('articleEmailInput').value.trim();
+    if (!email) return;
+    var btn = document.getElementById('articleEmailBtn');
+    var orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Subscribing...';
+    var API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+    var src = window.location.pathname.replace(/^\/|\.html$/g, '') || 'article';
+    fetch(API + '/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, utm_source: src })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        btn.textContent = '✓ You're in!';
+        btn.style.background = '#236b4f';
+        document.getElementById('articleEmailInput').value = '';
+        setTimeout(function() { btn.textContent = orig; btn.style.background = '#1B4D3E'; btn.disabled = false; }, 3000);
+      } else {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = orig; }, 2000);
+      }
+    })
+    .catch(function() {
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+      setTimeout(function() { btn.textContent = orig; }, 2000);
+    });
+  });
+})();
+</script>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
