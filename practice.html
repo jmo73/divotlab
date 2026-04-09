@@ -1435,6 +1435,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <div class="intake-group">
     <label class="intake-label">Email</label>
     <input type="email" class="intake-input" id="intakeEmail" placeholder="your@email.com" autocomplete="email">
+    <p style="font-size:11px; color:rgba(250,250,250,.22); margin-top:6px; line-height:1.5;">We'll email your plan here and add you to our free weekly Lab Notes newsletter. Unsubscribe anytime.</p>
   </div>
 
   <div class="intake-group">
@@ -1925,6 +1926,14 @@ function handleIntakeSubmit() {
   // Save to sessionStorage now so it persists through Stripe redirect
   sessionStorage.setItem('dl_answers', JSON.stringify(answers));
   sessionStorage.setItem('dl_email', email);
+
+  // Capture email to Beehiiv immediately — before payment, so abandoners are still on the list
+  var API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+  fetch(API + '/api/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, utm_source: 'practice-plan' })
+  }).catch(function() { /* non-blocking — don't interrupt the flow */ });
 
   showTeaser();
 }
