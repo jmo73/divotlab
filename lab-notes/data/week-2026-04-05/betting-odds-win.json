@@ -1,0 +1,1270 @@
+{
+  "books_offering": [
+    "bet365",
+    "betcris",
+    "betonline",
+    "betmgm",
+    "betway",
+    "bovada",
+    "caesars",
+    "draftkings",
+    "fanduel",
+    "pinnacle",
+    "pointsbet",
+    "williamhill",
+    "unibet",
+    "skybet"
+  ],
+  "event_name": "Valero Texas Open",
+  "last_updated": "2026-04-05 02:35:17 UTC",
+  "market": "win",
+  "notes": "Tournament is live, baseline model not available.",
+  "odds": [
+    {
+      "bet365": "-137",
+      "betcris": "-130",
+      "betmgm": "-125",
+      "betonline": "-125",
+      "betway": "-120",
+      "bovada": "-135",
+      "caesars": "-125",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-101"
+      },
+      "dg_id": 23323,
+      "draftkings": "-116",
+      "fanduel": "-135",
+      "pinnacle": "-123",
+      "player_name": "MacIntyre, Robert",
+      "pointsbet": "-115",
+      "unibet": "-172",
+      "williamhill": "-125"
+    },
+    {
+      "bet365": "+250",
+      "betcris": "+250",
+      "betmgm": "+225",
+      "betonline": "+250",
+      "betway": "+200",
+      "bovada": "+200",
+      "caesars": "+240",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+283"
+      },
+      "dg_id": 23950,
+      "draftkings": "+220",
+      "fanduel": "+260",
+      "pinnacle": "+235",
+      "player_name": "Aberg, Ludvig",
+      "pointsbet": "+280",
+      "unibet": "+200",
+      "williamhill": "+188"
+    },
+    {
+      "bet365": "+1200",
+      "betcris": "+1351",
+      "betmgm": "+1200",
+      "betonline": "+1400",
+      "betway": "+1200",
+      "bovada": "+1400",
+      "caesars": "+1200",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1996"
+      },
+      "dg_id": 22760,
+      "draftkings": "+1375",
+      "fanduel": "+1300",
+      "pinnacle": "+1605",
+      "player_name": "Hisatsune, Ryo",
+      "pointsbet": "+1400",
+      "unibet": "+1300",
+      "williamhill": "+1200"
+    },
+    {
+      "bet365": "+2200",
+      "betcris": "+2252",
+      "betmgm": "+2000",
+      "betonline": "+2200",
+      "betway": "+2000",
+      "bovada": "+1800",
+      "caesars": "+1900",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2808"
+      },
+      "dg_id": 11676,
+      "draftkings": "+2400",
+      "fanduel": "+2500",
+      "pinnacle": "+2598",
+      "player_name": "Finau, Tony",
+      "pointsbet": "+2500",
+      "unibet": "+2000",
+      "williamhill": "+2000"
+    },
+    {
+      "bet365": "+3500",
+      "betcris": "+5054",
+      "betmgm": "+4000",
+      "betonline": "+4500",
+      "betway": "+3300",
+      "bovada": "+5000",
+      "caesars": "+4000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5409"
+      },
+      "dg_id": 20706,
+      "draftkings": "+5800",
+      "fanduel": "+4000",
+      "pinnacle": "+4933",
+      "player_name": "Wallace, Matt",
+      "pointsbet": "+4000",
+      "unibet": "+4000",
+      "williamhill": "+3300"
+    },
+    {
+      "bet365": "+3500",
+      "betcris": "+5054",
+      "betmgm": "+4000",
+      "betonline": "+4000",
+      "betway": "+3300",
+      "bovada": "+4500",
+      "caesars": "+4000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+6058"
+      },
+      "dg_id": 12423,
+      "draftkings": "+4200",
+      "fanduel": "+4000",
+      "pinnacle": "+5043",
+      "player_name": "Kirk, Chris",
+      "pointsbet": "+4000",
+      "unibet": "+4000",
+      "williamhill": "+3300"
+    },
+    {
+      "bet365": "+2800",
+      "betcris": "+3353",
+      "betmgm": "+3000",
+      "betonline": "+3000",
+      "betway": "+2500",
+      "bovada": "+2800",
+      "caesars": "+3000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+6930"
+      },
+      "dg_id": 18474,
+      "draftkings": "+2600",
+      "fanduel": "+3000",
+      "pinnacle": "+3970",
+      "player_name": "Smalley, Alex",
+      "pointsbet": "+2800",
+      "unibet": "+2800",
+      "williamhill": "+2500"
+    },
+    {
+      "bet365": "+6600",
+      "betcris": "+7550",
+      "betmgm": "+7000",
+      "betonline": "+7000",
+      "betway": "+5000",
+      "bovada": "+7500",
+      "caesars": "+6500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+6955"
+      },
+      "dg_id": 17543,
+      "draftkings": "+5700",
+      "fanduel": "+7000",
+      "pinnacle": "+6134",
+      "player_name": "Kim, Michael",
+      "pointsbet": "+7000",
+      "unibet": "+6600",
+      "williamhill": "+6600"
+    },
+    {
+      "bet365": "+8000",
+      "betcris": "+8057",
+      "betmgm": "+7000",
+      "betonline": "+7000",
+      "betway": "+5000",
+      "bovada": "+7000",
+      "caesars": "+8000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+8114"
+      },
+      "dg_id": 18424,
+      "draftkings": "+7400",
+      "fanduel": "+8000",
+      "pinnacle": "+7618",
+      "player_name": "Roy, Kevin",
+      "pointsbet": "+8000",
+      "unibet": "+6000",
+      "williamhill": "+6600"
+    },
+    {
+      "bet365": "+7000",
+      "betcris": "+7557",
+      "betmgm": "+6000",
+      "betonline": "+7000",
+      "betway": "+5000",
+      "bovada": "+6500",
+      "caesars": "+6500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+9851"
+      },
+      "dg_id": 14704,
+      "draftkings": "+9200",
+      "fanduel": "+7000",
+      "pinnacle": "+8871",
+      "player_name": "Putnam, Andrew",
+      "pointsbet": "+7000",
+      "unibet": "+6000",
+      "williamhill": "+5000"
+    },
+    {
+      "bet365": "+6600",
+      "betcris": "+8057",
+      "betmgm": "+5500",
+      "betonline": "+6000",
+      "betway": "+5000",
+      "bovada": "+8000",
+      "caesars": "+7000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+12718"
+      },
+      "dg_id": 22465,
+      "draftkings": "+14500",
+      "fanduel": "+7000",
+      "pinnacle": "+9821",
+      "player_name": "Penge, Marco",
+      "pointsbet": "+7000",
+      "unibet": "+6600",
+      "williamhill": "+4000"
+    },
+    {
+      "bet365": "+11000",
+      "betcris": "+15065",
+      "betmgm": "+10000",
+      "betonline": "+11000",
+      "betway": "+10000",
+      "bovada": "+10000",
+      "caesars": "+10000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+13273"
+      },
+      "dg_id": 27164,
+      "draftkings": "+12500",
+      "fanduel": "+10000",
+      "pinnacle": "+11591",
+      "player_name": "Phillips, Chandler",
+      "pointsbet": "+12500",
+      "unibet": "+12500",
+      "williamhill": "+10000"
+    },
+    {
+      "bet365": "+10000",
+      "betcris": "+14064",
+      "betmgm": "+10000",
+      "betonline": "+12500",
+      "betway": "+8000",
+      "bovada": "+7500",
+      "caesars": "+10000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+15193"
+      },
+      "dg_id": 27364,
+      "draftkings": "+14500",
+      "fanduel": "+10000",
+      "pinnacle": "+13253",
+      "player_name": "Thompson, Davis",
+      "pointsbet": "+10000",
+      "unibet": "+12000",
+      "williamhill": "+10000"
+    },
+    {
+      "bet365": "+10000",
+      "betcris": "+12061",
+      "betmgm": "+10000",
+      "betonline": "+7000",
+      "betway": "+10000",
+      "bovada": "+12500",
+      "caesars": "+10000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+16122"
+      },
+      "dg_id": 17536,
+      "draftkings": "+12000",
+      "fanduel": "+10000",
+      "pinnacle": "+12690",
+      "player_name": "Spaun, J.J.",
+      "pointsbet": "+10000",
+      "unibet": "+10000",
+      "williamhill": "+10000"
+    },
+    {
+      "bet365": "+12500",
+      "betcris": "+10059",
+      "betmgm": "+10000",
+      "betonline": "+12500",
+      "betway": "+10000",
+      "bovada": "+12500",
+      "caesars": "+10000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+18350"
+      },
+      "dg_id": 14502,
+      "draftkings": "+13000",
+      "fanduel": "+12500",
+      "pinnacle": "+14305",
+      "player_name": "Cauley, Bud",
+      "pointsbet": "+15000",
+      "unibet": "+10000",
+      "williamhill": "+10000"
+    },
+    {
+      "bet365": "+10000",
+      "betcris": "+14064",
+      "betmgm": "+10000",
+      "betonline": "+12500",
+      "betway": "+8000",
+      "bovada": "+10000",
+      "caesars": "+9000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+19197"
+      },
+      "dg_id": 12294,
+      "draftkings": "+17000",
+      "fanduel": "+10000",
+      "pinnacle": "+15699",
+      "player_name": "Fleetwood, Tommy",
+      "pointsbet": "+10000",
+      "unibet": "+12000",
+      "williamhill": "+8000"
+    },
+    {
+      "bet365": "+17500",
+      "betcris": "+25076",
+      "betmgm": "+15000",
+      "betonline": "+15000",
+      "betway": "+15000",
+      "bovada": "+20000",
+      "caesars": "+17500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+20406"
+      },
+      "dg_id": 17881,
+      "draftkings": "+22000",
+      "fanduel": "+17500",
+      "pinnacle": "+17810",
+      "player_name": "Yu, Kevin",
+      "pointsbet": "+20000",
+      "unibet": "+20000",
+      "williamhill": "+15000"
+    },
+    {
+      "bet365": "+15000",
+      "betcris": "+16066",
+      "betmgm": "+12500",
+      "betonline": "+15000",
+      "betway": "+12500",
+      "bovada": "+15000",
+      "caesars": "+15000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+25852"
+      },
+      "dg_id": 26657,
+      "draftkings": "+14000",
+      "fanduel": "+17500",
+      "pinnacle": "+19525",
+      "player_name": "Fisk, Steven",
+      "pointsbet": "+20000",
+      "unibet": "+13000",
+      "williamhill": "+12500"
+    },
+    {
+      "bet365": "+20000",
+      "betcris": "+18068",
+      "betmgm": "+15000",
+      "betonline": "+15000",
+      "betway": "+12500",
+      "bovada": "+15000",
+      "caesars": "+17500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+32368"
+      },
+      "dg_id": 13412,
+      "draftkings": "+22500",
+      "fanduel": "+17500",
+      "pinnacle": "+19751",
+      "player_name": "Olesen, Thorbjorn",
+      "pointsbet": "+20000",
+      "unibet": "+15000",
+      "williamhill": "+15000"
+    },
+    {
+      "bet365": "+22500",
+      "betcris": "+25076",
+      "betmgm": "+20000",
+      "betonline": "+20000",
+      "betway": "+20000",
+      "bovada": "+20000",
+      "caesars": "+17500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+36231"
+      },
+      "dg_id": 16715,
+      "draftkings": "+23000",
+      "fanduel": "+17500",
+      "pinnacle": "+24859",
+      "player_name": "Ryder, Sam",
+      "pointsbet": "+30000",
+      "unibet": "+25000",
+      "williamhill": "+25000"
+    },
+    {
+      "bet365": "+25000",
+      "betcris": "+25076",
+      "betmgm": "+20000",
+      "betway": "+15000",
+      "bovada": "+20000",
+      "caesars": "+27500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+36710"
+      },
+      "dg_id": 16394,
+      "draftkings": "+38000",
+      "fanduel": "+22500",
+      "pinnacle": "+26040",
+      "player_name": "Jaeger, Stephan",
+      "pointsbet": "+30000",
+      "unibet": "+22500",
+      "williamhill": "+25000"
+    },
+    {
+      "bet365": "+35000",
+      "betmgm": "+30000",
+      "betway": "+30000",
+      "bovada": "+50000",
+      "caesars": "+32500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+41617"
+      },
+      "dg_id": 21407,
+      "draftkings": "+55000",
+      "fanduel": "+35000",
+      "player_name": "Reitan, Kristoffer",
+      "pointsbet": "+35000",
+      "unibet": "+42500",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+40000",
+      "betmgm": "+40000",
+      "betway": "+35000",
+      "bovada": "+50000",
+      "caesars": "+47500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+57261"
+      },
+      "dg_id": 13764,
+      "draftkings": "+48000",
+      "fanduel": "+50000",
+      "player_name": "Parry, John",
+      "pointsbet": "+40000",
+      "unibet": "+50000",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+35000",
+      "betcris": "+25076",
+      "betmgm": "+40000",
+      "betway": "+30000",
+      "bovada": "+50000",
+      "caesars": "+40000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+66902"
+      },
+      "dg_id": 18634,
+      "draftkings": "+77500",
+      "fanduel": "+35000",
+      "player_name": "McNealy, Maverick",
+      "pointsbet": "+35000",
+      "unibet": "+32500",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+40000",
+      "betmgm": "+40000",
+      "betway": "+30000",
+      "bovada": "+35000",
+      "caesars": "+32500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+77245"
+      },
+      "dg_id": 22985,
+      "draftkings": "+70000",
+      "fanduel": "+35000",
+      "player_name": "Smotherman, Austin",
+      "pointsbet": "+35000",
+      "unibet": "+50000",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+60000",
+      "betmgm": "+50000",
+      "betway": "+50000",
+      "bovada": "+100000",
+      "caesars": "+75000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+94425"
+      },
+      "dg_id": 26653,
+      "draftkings": "+110000",
+      "fanduel": "+100000",
+      "player_name": "Eckroat, Austin",
+      "pointsbet": "+40000",
+      "unibet": "+80000",
+      "williamhill": "+50000"
+    },
+    {
+      "bet365": "+60000",
+      "betmgm": "+50000",
+      "betway": "+50000",
+      "bovada": "+75000",
+      "caesars": "+47500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+97979"
+      },
+      "dg_id": 13562,
+      "draftkings": "+200000",
+      "fanduel": "+100000",
+      "player_name": "Matsuyama, Hideki",
+      "pointsbet": "+40000",
+      "unibet": "+65000",
+      "williamhill": "+50000"
+    },
+    {
+      "bet365": "+75000",
+      "betmgm": "+30000",
+      "betway": "+50000",
+      "bovada": "+100000",
+      "caesars": "+75000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+108892"
+      },
+      "dg_id": 24550,
+      "draftkings": "+200000",
+      "fanduel": "+100000",
+      "player_name": "Ghim, Doug",
+      "pointsbet": "+40000",
+      "unibet": "+80000",
+      "williamhill": "+50000"
+    },
+    {
+      "bet365": "+100000",
+      "betmgm": "+75000",
+      "betway": "+40000",
+      "bovada": "+200000",
+      "caesars": "+50000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+121296"
+      },
+      "dg_id": 14609,
+      "draftkings": "+250000",
+      "fanduel": "+100000",
+      "player_name": "Kim, Si Woo",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+150000",
+      "betmgm": "+100000",
+      "betway": "+50000",
+      "bovada": "+150000",
+      "caesars": "+50000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+265093"
+      },
+      "dg_id": 11276,
+      "draftkings": "+350000",
+      "fanduel": "+100000",
+      "player_name": "Horschel, Billy",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+150000",
+      "betmgm": "+100000",
+      "betway": "+50000",
+      "bovada": "+125000",
+      "caesars": "+75000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+349245"
+      },
+      "dg_id": 21756,
+      "draftkings": "+225000",
+      "fanduel": "+100000",
+      "player_name": "Cole, Eric",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+250000",
+      "betmgm": "+100000",
+      "betway": "+100000",
+      "bovada": "+200000",
+      "caesars": "+200000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+359720"
+      },
+      "dg_id": 19846,
+      "draftkings": "+450000",
+      "fanduel": "+100000",
+      "player_name": "Bauchou, Zach",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+100000",
+      "betmgm": "+75000",
+      "betway": "+75000",
+      "bovada": "+150000",
+      "caesars": "+75000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+371993"
+      },
+      "dg_id": 29925,
+      "draftkings": "+275000",
+      "fanduel": "+100000",
+      "player_name": "Yellamaraju, Sudarshan",
+      "pointsbet": "+40000",
+      "unibet": "+80000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+150000",
+      "betmgm": "+75000",
+      "betway": "+50000",
+      "bovada": "+35000",
+      "caesars": "+125000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+390144"
+      },
+      "dg_id": 21943,
+      "draftkings": "+275000",
+      "fanduel": "+100000",
+      "player_name": "Lebioda, Hank",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+30000"
+    },
+    {
+      "bet365": "+150000",
+      "betmgm": "+100000",
+      "betway": "+75000",
+      "bovada": "+40000",
+      "caesars": "+125000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+424679"
+      },
+      "dg_id": 28159,
+      "draftkings": "+400000",
+      "fanduel": "+100000",
+      "player_name": "Meissner, Mac",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+40000"
+    },
+    {
+      "bet365": "+100000",
+      "betmgm": "+100000",
+      "betway": "+50000",
+      "bovada": "+200000",
+      "caesars": "+50000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+432332"
+      },
+      "dg_id": 10419,
+      "draftkings": "+225000",
+      "fanduel": "+100000",
+      "player_name": "Noren, Alex",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+200000",
+      "betmgm": "+100000",
+      "betway": "+100000",
+      "bovada": "+200000",
+      "caesars": "+200000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+497825"
+      },
+      "dg_id": 23816,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Valimaki, Sami",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+20000"
+    },
+    {
+      "bet365": "+150000",
+      "betmgm": "+100000",
+      "betway": "+75000",
+      "bovada": "+250000",
+      "caesars": "+200000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+555456"
+      },
+      "dg_id": 23475,
+      "draftkings": "+450000",
+      "fanduel": "+100000",
+      "player_name": "Novak, Andrew",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+500000",
+      "betmgm": "+200000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+607495"
+      },
+      "dg_id": 12426,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Waring, Paul",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betmgm": "+200000",
+      "betway": "+150000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+675956"
+      },
+      "dg_id": 11082,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Burgoon, Bronson",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+75000"
+    },
+    {
+      "bet365": "+250000",
+      "betmgm": "+100000",
+      "betway": "+50000",
+      "bovada": "+50000",
+      "caesars": "+50000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+915931"
+      },
+      "dg_id": 15470,
+      "draftkings": "+450000",
+      "fanduel": "+100000",
+      "player_name": "Hossler, Beau",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+50000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+100000",
+      "bovada": "+200000",
+      "caesars": "+125000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+922977"
+      },
+      "dg_id": 22002,
+      "draftkings": "+450000",
+      "fanduel": "+100000",
+      "player_name": "Dumont De Chassart, Adrien",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+250000",
+      "bovada": "+40000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1170632"
+      },
+      "dg_id": 18103,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Bezuidenhout, Christiaan",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+40000"
+    },
+    {
+      "bet365": "+500000",
+      "betmgm": "+100000",
+      "betway": "+150000",
+      "bovada": "+250000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1230669"
+      },
+      "dg_id": 8825,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Harman, Brian",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+50000"
+    },
+    {
+      "bet365": "+500000",
+      "betmgm": "+200000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1411665"
+      },
+      "dg_id": 21688,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Kim, S.H.",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+200000",
+      "betway": "+150000",
+      "bovada": "+200000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1454445"
+      },
+      "dg_id": 21554,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Poston, J.T.",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+250000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1454445"
+      },
+      "dg_id": 13997,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Svensson, Adam",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1599900"
+      },
+      "dg_id": 28635,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "McCarty, Matt",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1655072"
+      },
+      "dg_id": 14636,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Spieth, Jordan",
+      "pointsbet": "+40000",
+      "unibet": "+80000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+250000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1999900"
+      },
+      "dg_id": 32330,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Clanton, Luke",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+300000",
+      "bovada": "+200000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1999900"
+      },
+      "dg_id": 17550,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Van Rooyen, Erik",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betmgm": "+200000",
+      "bovada": "+250000",
+      "caesars": "+200000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1999900"
+      },
+      "dg_id": 8480,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Streelman, Kevin",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+150000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2666567"
+      },
+      "dg_id": 25908,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Whaley, Vince",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+200000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2666567"
+      },
+      "dg_id": 23504,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Hoey, Rico",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+300000",
+      "bovada": "+200000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+3199900"
+      },
+      "dg_id": 19477,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Schenk, Adam",
+      "pointsbet": "+40000",
+      "unibet": "+100000",
+      "williamhill": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+250000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+3999900"
+      },
+      "dg_id": 28469,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Highsmith, Joe",
+      "pointsbet": "+45000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5999900"
+      },
+      "dg_id": 21883,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Ewart, A.J.",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+6857043"
+      },
+      "dg_id": 19840,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Ramey, Chad",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+7999900"
+      },
+      "dg_id": 21889,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Kang, Jeffrey",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+7999900"
+      },
+      "dg_id": 24343,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Lamprecht, Christo",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+8888789"
+      },
+      "dg_id": 31343,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Ford, David",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+150000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+15999900"
+      },
+      "dg_id": 13126,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Taylor, Nick",
+      "pointsbet": "+45000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 14926,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Malnati, Peter",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 16333,
+      "fanduel": "+100000",
+      "player_name": "Hubbard, Mark",
+      "pointsbet": "+90000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 25003,
+      "fanduel": "+100000",
+      "player_name": "Walker, Danny",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 19729,
+      "fanduel": "+100000",
+      "player_name": "Kanaya, Takumi",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+250000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 19428,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Zalatoris, Will",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 30814,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Sargent, Gordon",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "betway": "+300000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 21944,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Moore, Taylor",
+      "pointsbet": "+40000",
+      "skybet": "+125000",
+      "unibet": "+100000"
+    },
+    {
+      "bet365": "+500000",
+      "bovada": "+250000",
+      "caesars": "+400000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 8820,
+      "draftkings": "+500000",
+      "fanduel": "+100000",
+      "player_name": "Snedeker, Brandt",
+      "pointsbet": "+40000",
+      "unibet": "+100000"
+    }
+  ]
+}

@@ -1,0 +1,590 @@
+{
+  "event_name": "Valero Texas Open",
+  "last_updated": "2026-04-04 14:31:00 UTC",
+  "market": "round_matchups",
+  "match_list": [
+    {
+      "odds": {
+        "bet365": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "datagolf": {
+          "p1": "-108",
+          "p2": "+108"
+        }
+      },
+      "p1_dg_id": 17543,
+      "p1_player_name": "Kim, Michael",
+      "p2_dg_id": 26657,
+      "p2_player_name": "Fisk, Steven",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "bet365": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "datagolf": {
+          "p1": "-103",
+          "p2": "+103"
+        }
+      },
+      "p1_dg_id": 12294,
+      "p1_player_name": "Fleetwood, Tommy",
+      "p2_dg_id": 23323,
+      "p2_player_name": "MacIntyre, Robert",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "bet365": {
+          "p1": "-130",
+          "p2": "+110"
+        },
+        "bovada": {
+          "p1": "-130",
+          "p2": "+110"
+        },
+        "datagolf": {
+          "p1": "-113",
+          "p2": "+113"
+        }
+      },
+      "p1_dg_id": 11676,
+      "p1_player_name": "Finau, Tony",
+      "p2_dg_id": 13764,
+      "p2_player_name": "Parry, John",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "bet365": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "bovada": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "datagolf": {
+          "p1": "+103",
+          "p2": "-103"
+        }
+      },
+      "p1_dg_id": 14502,
+      "p1_player_name": "Cauley, Bud",
+      "p2_dg_id": 18474,
+      "p2_player_name": "Smalley, Alex",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "bet365": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "bovada": {
+          "p1": "-110",
+          "p2": "-110"
+        },
+        "datagolf": {
+          "p1": "-108",
+          "p2": "+108"
+        }
+      },
+      "p1_dg_id": 14704,
+      "p1_player_name": "Putnam, Andrew",
+      "p2_dg_id": 18424,
+      "p2_player_name": "Roy, Kevin",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "bet365": {
+          "p1": "+135",
+          "p2": "-160"
+        },
+        "bovada": {
+          "p1": "+135",
+          "p2": "-165"
+        },
+        "datagolf": {
+          "p1": "+137",
+          "p2": "-137"
+        }
+      },
+      "p1_dg_id": 13412,
+      "p1_player_name": "Olesen, Thorbjorn",
+      "p2_dg_id": 23950,
+      "p2_player_name": "Aberg, Ludvig",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betonline": {
+          "p1": "+107",
+          "p2": "-128"
+        },
+        "datagolf": {
+          "p1": "+107",
+          "p2": "-107"
+        }
+      },
+      "p1_dg_id": 17543,
+      "p1_player_name": "Kim, Michael",
+      "p2_dg_id": 18474,
+      "p2_player_name": "Smalley, Alex",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-157",
+          "p2": "+125"
+        },
+        "betonline": {
+          "p1": "-158",
+          "p2": "+131"
+        },
+        "datagolf": {
+          "p1": "-142",
+          "p2": "+142"
+        }
+      },
+      "p1_dg_id": 12294,
+      "p1_player_name": "Fleetwood, Tommy",
+      "p2_dg_id": 22760,
+      "p2_player_name": "Hisatsune, Ryo",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-149",
+          "p2": "+119"
+        },
+        "betonline": {
+          "p1": "-135",
+          "p2": "+113"
+        },
+        "datagolf": {
+          "p1": "-114",
+          "p2": "+114"
+        }
+      },
+      "p1_dg_id": 13126,
+      "p1_player_name": "Taylor, Nick",
+      "p2_dg_id": 28635,
+      "p2_player_name": "McCarty, Matt",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betonline": {
+          "p1": "+109",
+          "p2": "-130"
+        },
+        "datagolf": {
+          "p1": "+111",
+          "p2": "-111"
+        }
+      },
+      "p1_dg_id": 16715,
+      "p1_player_name": "Ryder, Sam",
+      "p2_dg_id": 18424,
+      "p2_player_name": "Roy, Kevin",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betonline": {
+          "p1": "+109",
+          "p2": "-130"
+        },
+        "datagolf": {
+          "p1": "+103",
+          "p2": "-103"
+        }
+      },
+      "p1_dg_id": 13764,
+      "p1_player_name": "Parry, John",
+      "p2_dg_id": 14502,
+      "p2_player_name": "Cauley, Bud",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betonline": {
+          "p1": "-130",
+          "p2": "+109"
+        },
+        "datagolf": {
+          "p1": "-114",
+          "p2": "+114"
+        }
+      },
+      "p1_dg_id": 14704,
+      "p1_player_name": "Putnam, Andrew",
+      "p2_dg_id": 26657,
+      "p2_player_name": "Fisk, Steven",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "+112",
+          "p2": "+134",
+          "tie": "+887"
+        },
+        "pointsbet": {
+          "p1": "+100",
+          "p2": "+105",
+          "tie": "+650"
+        }
+      },
+      "p1_dg_id": 21554,
+      "p1_player_name": "Poston, J.T.",
+      "p2_dg_id": 29925,
+      "p2_player_name": "Yellamaraju, Sudarshan",
+      "ties": "separate bet offered"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-137",
+          "p2": "+107"
+        },
+        "betonline": {
+          "p1": "-132",
+          "p2": "+110"
+        },
+        "bovada": {
+          "p1": "-105",
+          "p2": "-115"
+        },
+        "datagolf": {
+          "p1": "-110",
+          "p2": "+110"
+        },
+        "draftkings": {
+          "p1": "-110",
+          "p2": "-115"
+        }
+      },
+      "p1_dg_id": 21554,
+      "p1_player_name": "Poston, J.T.",
+      "p2_dg_id": 29925,
+      "p2_player_name": "Yellamaraju, Sudarshan",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-113",
+          "p2": "-117"
+        },
+        "betonline": {
+          "p1": "-105",
+          "p2": "-115"
+        },
+        "datagolf": {
+          "p1": "-102",
+          "p2": "+102"
+        },
+        "unibet": {
+          "p1": "-120",
+          "p2": "-107"
+        }
+      },
+      "p1_dg_id": 11676,
+      "p1_player_name": "Finau, Tony",
+      "p2_dg_id": 13412,
+      "p2_player_name": "Olesen, Thorbjorn",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-118",
+          "p2": "-112"
+        },
+        "betonline": {
+          "p1": "-105",
+          "p2": "-115"
+        },
+        "datagolf": {
+          "p1": "-112",
+          "p2": "+112"
+        },
+        "pinnacle": {
+          "p1": "-101",
+          "p2": "-117"
+        },
+        "unibet": {
+          "p1": "-120",
+          "p2": "-107"
+        }
+      },
+      "p1_dg_id": 23323,
+      "p1_player_name": "MacIntyre, Robert",
+      "p2_dg_id": 23950,
+      "p2_player_name": "Aberg, Ludvig",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "+115",
+          "p2": "-115"
+        },
+        "pinnacle": {
+          "p1": "+103",
+          "p2": "-123"
+        }
+      },
+      "p1_dg_id": 18474,
+      "p1_player_name": "Smalley, Alex",
+      "p2_dg_id": 22760,
+      "p2_player_name": "Hisatsune, Ryo",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "-121",
+          "p2": "+121"
+        },
+        "pinnacle": {
+          "p1": "-139",
+          "p2": "+117"
+        }
+      },
+      "p1_dg_id": 14704,
+      "p1_player_name": "Putnam, Andrew",
+      "p2_dg_id": 16715,
+      "p2_player_name": "Ryder, Sam",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-119",
+          "p2": "-111"
+        },
+        "datagolf": {
+          "p1": "-110",
+          "p2": "+110"
+        },
+        "pinnacle": {
+          "p1": "-110",
+          "p2": "-108"
+        }
+      },
+      "p1_dg_id": 13764,
+      "p1_player_name": "Parry, John",
+      "p2_dg_id": 26657,
+      "p2_player_name": "Fisk, Steven",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "-107",
+          "p2": "+107"
+        },
+        "pinnacle": {
+          "p1": "-114",
+          "p2": "-104"
+        }
+      },
+      "p1_dg_id": 13412,
+      "p1_player_name": "Olesen, Thorbjorn",
+      "p2_dg_id": 14502,
+      "p2_player_name": "Cauley, Bud",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "-116",
+          "p2": "+116"
+        },
+        "pinnacle": {
+          "p1": "-127",
+          "p2": "+106"
+        }
+      },
+      "p1_dg_id": 11676,
+      "p1_player_name": "Finau, Tony",
+      "p2_dg_id": 18424,
+      "p2_player_name": "Roy, Kevin",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "-151",
+          "p2": "+151"
+        },
+        "unibet": {
+          "p1": "-186",
+          "p2": "+145"
+        }
+      },
+      "p1_dg_id": 12294,
+      "p1_player_name": "Fleetwood, Tommy",
+      "p2_dg_id": 21407,
+      "p2_player_name": "Reitan, Kristoffer",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "+122",
+          "p2": "-122"
+        },
+        "unibet": {
+          "p1": "+112",
+          "p2": "-143"
+        }
+      },
+      "p1_dg_id": 13764,
+      "p1_player_name": "Parry, John",
+      "p2_dg_id": 22760,
+      "p2_player_name": "Hisatsune, Ryo",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-117",
+          "p2": "-113"
+        },
+        "datagolf": {
+          "p1": "+102",
+          "p2": "-102"
+        },
+        "unibet": {
+          "p1": "-107",
+          "p2": "-120"
+        }
+      },
+      "p1_dg_id": 14704,
+      "p1_player_name": "Putnam, Andrew",
+      "p2_dg_id": 18474,
+      "p2_player_name": "Smalley, Alex",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "+165",
+          "p2": "-110",
+          "tie": "+925"
+        },
+        "pointsbet": {
+          "p1": "+155",
+          "p2": "-150",
+          "tie": "+600"
+        }
+      },
+      "p1_dg_id": 14926,
+      "p1_player_name": "Malnati, Peter",
+      "p2_dg_id": 23504,
+      "p2_player_name": "Hoey, Rico",
+      "ties": "separate bet offered"
+    },
+    {
+      "odds": {
+        "bovada": {
+          "p1": "+145",
+          "p2": "-175"
+        },
+        "datagolf": {
+          "p1": "+139",
+          "p2": "-139"
+        },
+        "draftkings": {
+          "p1": "+144",
+          "p2": "-180"
+        }
+      },
+      "p1_dg_id": 14926,
+      "p1_player_name": "Malnati, Peter",
+      "p2_dg_id": 23504,
+      "p2_player_name": "Hoey, Rico",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-109",
+          "p2": "-121"
+        },
+        "datagolf": {
+          "p1": "+113",
+          "p2": "-113"
+        }
+      },
+      "p1_dg_id": 17543,
+      "p1_player_name": "Kim, Michael",
+      "p2_dg_id": 21407,
+      "p2_player_name": "Reitan, Kristoffer",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-104",
+          "p2": "-126"
+        },
+        "datagolf": {
+          "p1": "-103",
+          "p2": "+103"
+        }
+      },
+      "p1_dg_id": 11082,
+      "p1_player_name": "Burgoon, Bronson",
+      "p2_dg_id": 23504,
+      "p2_player_name": "Hoey, Rico",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "betcris": {
+          "p1": "-122",
+          "p2": "-108"
+        },
+        "datagolf": {
+          "p1": "-108",
+          "p2": "+108"
+        }
+      },
+      "p1_dg_id": 14502,
+      "p1_player_name": "Cauley, Bud",
+      "p2_dg_id": 18424,
+      "p2_player_name": "Roy, Kevin",
+      "ties": "void"
+    },
+    {
+      "odds": {
+        "datagolf": {
+          "p1": "+108",
+          "p2": "-108"
+        },
+        "draftkings": {
+          "p1": "-104",
+          "p2": "-126"
+        }
+      },
+      "p1_dg_id": 11676,
+      "p1_player_name": "Finau, Tony",
+      "p2_dg_id": 22760,
+      "p2_player_name": "Hisatsune, Ryo",
+      "ties": "void"
+    }
+  ],
+  "round_num": 3
+}

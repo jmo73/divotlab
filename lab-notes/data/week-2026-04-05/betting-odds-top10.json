@@ -1,0 +1,673 @@
+{
+  "books_offering": [
+    "betmgm",
+    "draftkings"
+  ],
+  "event_name": "Valero Texas Open",
+  "last_updated": "2026-04-05 02:35:17 UTC",
+  "market": "top_10",
+  "notes": "Tournament is live, baseline model not available.",
+  "odds": [
+    {
+      "betmgm": "-10000",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-2049"
+      },
+      "dg_id": 23323,
+      "draftkings": "-4000",
+      "player_name": "MacIntyre, Robert"
+    },
+    {
+      "betmgm": "-2500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-666"
+      },
+      "dg_id": 23950,
+      "draftkings": "-1400",
+      "player_name": "Aberg, Ludvig"
+    },
+    {
+      "betmgm": "-435",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-157"
+      },
+      "dg_id": 22760,
+      "draftkings": "-290",
+      "player_name": "Hisatsune, Ryo"
+    },
+    {
+      "betmgm": "-250",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-107"
+      },
+      "dg_id": 11676,
+      "draftkings": "-152",
+      "player_name": "Finau, Tony"
+    },
+    {
+      "betmgm": "-175",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "-103"
+      },
+      "dg_id": 20706,
+      "draftkings": "-130",
+      "player_name": "Wallace, Matt"
+    },
+    {
+      "betmgm": "-175",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+135"
+      },
+      "dg_id": 12423,
+      "draftkings": "-126",
+      "player_name": "Kirk, Chris"
+    },
+    {
+      "betmgm": "-213",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+173"
+      },
+      "dg_id": 18474,
+      "draftkings": "-160",
+      "player_name": "Smalley, Alex"
+    },
+    {
+      "betmgm": "-118",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+154"
+      },
+      "dg_id": 17543,
+      "draftkings": "+112",
+      "player_name": "Kim, Michael"
+    },
+    {
+      "betmgm": "+105",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+190"
+      },
+      "dg_id": 18424,
+      "draftkings": "+150",
+      "player_name": "Roy, Kevin"
+    },
+    {
+      "betmgm": "+105",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+184"
+      },
+      "dg_id": 14704,
+      "draftkings": "+140",
+      "player_name": "Putnam, Andrew"
+    },
+    {
+      "betmgm": "+105",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+198"
+      },
+      "dg_id": 22465,
+      "draftkings": "+150",
+      "player_name": "Penge, Marco"
+    },
+    {
+      "betmgm": "+125",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+238"
+      },
+      "dg_id": 27164,
+      "draftkings": "+172",
+      "player_name": "Phillips, Chandler"
+    },
+    {
+      "betmgm": "+110",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+205"
+      },
+      "dg_id": 27364,
+      "draftkings": "+150",
+      "player_name": "Thompson, Davis"
+    },
+    {
+      "betmgm": "+125",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+269"
+      },
+      "dg_id": 17536,
+      "draftkings": "+164",
+      "player_name": "Spaun, J.J."
+    },
+    {
+      "betmgm": "+125",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+321"
+      },
+      "dg_id": 14502,
+      "draftkings": "+210",
+      "player_name": "Cauley, Bud"
+    },
+    {
+      "betmgm": "+110",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+287"
+      },
+      "dg_id": 12294,
+      "draftkings": "+205",
+      "player_name": "Fleetwood, Tommy"
+    },
+    {
+      "betmgm": "+200",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+281"
+      },
+      "dg_id": 17881,
+      "draftkings": "+255",
+      "player_name": "Yu, Kevin"
+    },
+    {
+      "betmgm": "+150",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+388"
+      },
+      "dg_id": 26657,
+      "draftkings": "+200",
+      "player_name": "Fisk, Steven"
+    },
+    {
+      "betmgm": "+200",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+439"
+      },
+      "dg_id": 13412,
+      "draftkings": "+290",
+      "player_name": "Olesen, Thorbjorn"
+    },
+    {
+      "betmgm": "+210",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+507"
+      },
+      "dg_id": 16715,
+      "draftkings": "+280",
+      "player_name": "Ryder, Sam"
+    },
+    {
+      "betmgm": "+200",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+398"
+      },
+      "dg_id": 16394,
+      "draftkings": "+300",
+      "player_name": "Jaeger, Stephan"
+    },
+    {
+      "betmgm": "+375",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+570"
+      },
+      "dg_id": 21407,
+      "draftkings": "+490",
+      "player_name": "Reitan, Kristoffer"
+    },
+    {
+      "betmgm": "+300",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+677"
+      },
+      "dg_id": 13764,
+      "draftkings": "+415",
+      "player_name": "Parry, John"
+    },
+    {
+      "betmgm": "+375",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+638"
+      },
+      "dg_id": 18634,
+      "draftkings": "+530",
+      "player_name": "McNealy, Maverick"
+    },
+    {
+      "betmgm": "+375",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+804"
+      },
+      "dg_id": 22985,
+      "draftkings": "+510",
+      "player_name": "Smotherman, Austin"
+    },
+    {
+      "betmgm": "+450",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+795"
+      },
+      "dg_id": 26653,
+      "draftkings": "+670",
+      "player_name": "Eckroat, Austin"
+    },
+    {
+      "betmgm": "+500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+688"
+      },
+      "dg_id": 13562,
+      "draftkings": "+800",
+      "player_name": "Matsuyama, Hideki"
+    },
+    {
+      "betmgm": "+500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+693"
+      },
+      "dg_id": 24550,
+      "draftkings": "+760",
+      "player_name": "Ghim, Doug"
+    },
+    {
+      "betmgm": "+500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+632"
+      },
+      "dg_id": 14609,
+      "draftkings": "+740",
+      "player_name": "Kim, Si Woo"
+    },
+    {
+      "betmgm": "+800",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1536"
+      },
+      "dg_id": 11276,
+      "draftkings": "+1275",
+      "player_name": "Horschel, Billy"
+    },
+    {
+      "betmgm": "+800",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1567"
+      },
+      "dg_id": 21756,
+      "draftkings": "+1075",
+      "player_name": "Cole, Eric"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2033"
+      },
+      "dg_id": 19846,
+      "draftkings": "+1700",
+      "player_name": "Bauchou, Zach"
+    },
+    {
+      "betmgm": "+800",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2304"
+      },
+      "dg_id": 29925,
+      "draftkings": "+1300",
+      "player_name": "Yellamaraju, Sudarshan"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1435"
+      },
+      "dg_id": 21943,
+      "draftkings": "+990",
+      "player_name": "Lebioda, Hank"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1847"
+      },
+      "dg_id": 28159,
+      "draftkings": "+1400",
+      "player_name": "Meissner, Mac"
+    },
+    {
+      "betmgm": "+500",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+1203"
+      },
+      "dg_id": 10419,
+      "draftkings": "+860",
+      "player_name": "Noren, Alex"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2183"
+      },
+      "dg_id": 23816,
+      "draftkings": "+1850",
+      "player_name": "Valimaki, Sami"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2327"
+      },
+      "dg_id": 23475,
+      "draftkings": "+1550",
+      "player_name": "Novak, Andrew"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+3224"
+      },
+      "dg_id": 12426,
+      "draftkings": "+3100",
+      "player_name": "Waring, Paul"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+4003"
+      },
+      "dg_id": 11082,
+      "draftkings": "+3500",
+      "player_name": "Burgoon, Bronson"
+    },
+    {
+      "betmgm": "+800",
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2410"
+      },
+      "dg_id": 15470,
+      "draftkings": "+1650",
+      "player_name": "Hossler, Beau"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5158"
+      },
+      "dg_id": 22002,
+      "draftkings": "+2000",
+      "player_name": "Dumont De Chassart, Adrien"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+3615"
+      },
+      "dg_id": 18103,
+      "draftkings": "+3800",
+      "player_name": "Bezuidenhout, Christiaan"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+3060"
+      },
+      "dg_id": 8825,
+      "draftkings": "+3100",
+      "player_name": "Harman, Brian"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+4793"
+      },
+      "dg_id": 21688,
+      "draftkings": "+3200",
+      "player_name": "Kim, S.H."
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+4156"
+      },
+      "dg_id": 21554,
+      "draftkings": "+2900",
+      "player_name": "Poston, J.T."
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+4736"
+      },
+      "dg_id": 13997,
+      "draftkings": "+4500",
+      "player_name": "Svensson, Adam"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+7258"
+      },
+      "dg_id": 28635,
+      "draftkings": "+4900",
+      "player_name": "McCarty, Matt"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+9823"
+      },
+      "dg_id": 14636,
+      "draftkings": "+9000",
+      "player_name": "Spieth, Jordan"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+17074"
+      },
+      "dg_id": 32330,
+      "draftkings": "+28000",
+      "player_name": "Clanton, Luke"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+10956"
+      },
+      "dg_id": 17550,
+      "draftkings": "+10000",
+      "player_name": "Van Rooyen, Erik"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5520"
+      },
+      "dg_id": 8480,
+      "draftkings": "+5800",
+      "player_name": "Streelman, Kevin"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+30652"
+      },
+      "dg_id": 25908,
+      "draftkings": "+21000",
+      "player_name": "Whaley, Vince"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+22621"
+      },
+      "dg_id": 23504,
+      "draftkings": "+14000",
+      "player_name": "Hoey, Rico"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5416"
+      },
+      "dg_id": 19477,
+      "draftkings": "+4300",
+      "player_name": "Schenk, Adam"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+12800"
+      },
+      "dg_id": 28469,
+      "draftkings": "+5800",
+      "player_name": "Highsmith, Joe"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+7337"
+      },
+      "dg_id": 21883,
+      "draftkings": "+8000",
+      "player_name": "Ewart, A.J."
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+5491"
+      },
+      "dg_id": 19840,
+      "draftkings": "+4700",
+      "player_name": "Ramey, Chad"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+27175"
+      },
+      "dg_id": 21889,
+      "draftkings": "+21000",
+      "player_name": "Kang, Jeffrey"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+99500"
+      },
+      "dg_id": 24343,
+      "draftkings": "+39000",
+      "player_name": "Lamprecht, Christo"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+14544"
+      },
+      "dg_id": 31343,
+      "draftkings": "+7000",
+      "player_name": "Ford, David"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+13230"
+      },
+      "dg_id": 13126,
+      "draftkings": "+7800",
+      "player_name": "Taylor, Nick"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+51772"
+      },
+      "dg_id": 14926,
+      "draftkings": "+39000",
+      "player_name": "Malnati, Peter"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+2042453"
+      },
+      "dg_id": 16333,
+      "player_name": "Hubbard, Mark"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": null
+      },
+      "dg_id": 25003,
+      "player_name": "Walker, Danny"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+957893"
+      },
+      "dg_id": 19729,
+      "player_name": "Kanaya, Takumi"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+19718"
+      },
+      "dg_id": 19428,
+      "draftkings": "+12000",
+      "player_name": "Zalatoris, Will"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+44398"
+      },
+      "dg_id": 30814,
+      "draftkings": "+27500",
+      "player_name": "Sargent, Gordon"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+19701"
+      },
+      "dg_id": 21944,
+      "draftkings": "+16000",
+      "player_name": "Moore, Taylor"
+    },
+    {
+      "datagolf": {
+        "baseline": null,
+        "baseline_history_fit": "+11346"
+      },
+      "dg_id": 8820,
+      "draftkings": "+8000",
+      "player_name": "Snedeker, Brandt"
+    }
+  ]
+}
