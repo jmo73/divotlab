@@ -1,0 +1,17 @@
+{
+  "pulled_at": "2026-04-12T23:08:39.139Z",
+  "upcoming_event": {
+    "country": "USA",
+    "course": "Augusta National Golf Club",
+    "course_key": "014",
+    "event_id": "14",
+    "event_name": "Masters Tournament",
+    "latitude": 33.5,
+    "location": "Augusta, GA",
+    "longitude": -82.02,
+    "start_date": "2026-04-09",
+    "status": "upcoming",
+    "tour": "pga",
+    "winner": "TBD"
+  }
+}

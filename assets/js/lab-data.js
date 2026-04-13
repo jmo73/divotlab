@@ -177,16 +177,18 @@ function getTournamentState(tournament) {
         // Determine if this is genuinely the final round or a mid-tournament round.
         // If it's the last scheduled day, this is the final.
         // If current_round >= 5, DataGolf has incremented past R4, so it's definitely final.
-        const isFinalDay = tournament.end_date && (function() {
+        // Is today at least the 4th day of the tournament? (Thu=day0, Fri=1, Sat=2, Sun=3+)
+        // More reliable than end_date equality — DataGolf sometimes pads end_date by a day.
+        const isFinalRoundOrLater = tournament.start_date && (function() {
           const today = new Date(); today.setHours(0,0,0,0);
-          const endDate = new Date(tournament.end_date + 'T00:00:00'); endDate.setHours(0,0,0,0);
-          return today.getTime() === endDate.getTime();
+          const startDate = new Date(tournament.start_date + 'T00:00:00'); startDate.setHours(0,0,0,0);
+          return (today - startDate) >= 3 * 86400000;
         })();
-        
-        if (currentRound >= 5 || isFinalDay) {
+
+        if (currentRound >= 5 || isFinalRoundOrLater) {
           return 'completed';
         }
-        // current_round=4, allFinished, but NOT the final day → R3 just ended.
+        // current_round=4, allFinished, but before the final round day → R3 just ended.
         // Fall through to return 'live'; getEventStatus handles "Round 3 Complete".
       }
     }
@@ -390,6 +392,49 @@ let globalOverperformanceIndex = [];   // Computed: model edge per player
 let globalMomentumScores = [];         // Computed: trending up/down per player
 
 // ============================================
+// FINAL RESULTS CACHE (48-hour window)
+// Shows the last completed tournament for 48h before switching to the next preview.
+// ============================================
+const FINAL_CACHE_KEY = 'divotlab_final_result';
+const FINAL_CACHE_TTL_MS = 48 * 60 * 60 * 1000;
+
+function saveCompletedTournament() {
+  if (!globalTournamentInfo.event_name || globalLeaderboard.length === 0) return;
+  try {
+    const existing = getCompletedTournamentCache();
+    // Don't overwrite a valid cache entry with a different (older) event
+    if (existing && existing.tournament.event_name !== globalTournamentInfo.event_name) return;
+    localStorage.setItem(FINAL_CACHE_KEY, JSON.stringify({
+      tournament: globalTournamentInfo,
+      leaderboard: globalLeaderboard,
+      predictions: globalPredictions,
+      enrichedField: globalEnrichedField,
+      predictionEventName: globalPredictionEventName,
+      savedAt: Date.now()
+    }));
+    console.log('✓ Cached final results:', globalTournamentInfo.event_name);
+  } catch (e) {
+    console.warn('Could not cache final results:', e);
+  }
+}
+
+function getCompletedTournamentCache() {
+  try {
+    const raw = localStorage.getItem(FINAL_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    if (!cache || !cache.savedAt || !cache.tournament || !cache.leaderboard) return null;
+    if (Date.now() - cache.savedAt > FINAL_CACHE_TTL_MS) {
+      localStorage.removeItem(FINAL_CACHE_KEY);
+      return null;
+    }
+    return cache;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ============================================
 // MAIN LOADER
 // ============================================
 
@@ -524,7 +569,24 @@ async function loadAllData() {
     // NOW determine tournament state (after live data attempt)
     const tournamentState = getTournamentState(globalTournamentInfo);
     console.log('✓ Final tournament state:', tournamentState);
-    
+
+    // 48-hour final results window:
+    // — When completed: save final results so they survive the API flipping to next event
+    // — When upcoming: check if a recent final result should still be shown
+    if (tournamentState === 'completed' && globalLeaderboard.length > 0) {
+      saveCompletedTournament();
+    } else if (tournamentState === 'upcoming') {
+      const cached = getCompletedTournamentCache();
+      if (cached) {
+        console.log('✓ Showing cached final results for', cached.tournament.event_name, '(within 48h window)');
+        globalTournamentInfo = cached.tournament;
+        globalLeaderboard = cached.leaderboard;
+        globalPredictions = cached.predictions || globalPredictions;
+        globalEnrichedField = cached.enrichedField || globalEnrichedField;
+        globalPredictionEventName = cached.predictionEventName || globalPredictionEventName;
+      }
+    }
+
     renderTournamentBanner();
     renderFieldStrength();
     renderLeaderboard();
