@@ -419,19 +419,19 @@ app.get('/api/skill-ratings', async (req, res) => {
 
 // Normalize team event predictions (e.g. Zurich Classic) so all consumers
 // get consistent dg_id / player_name fields regardless of event format.
+// DataGolf team predictions use team_id + team_name ("M. Fitzpatrick / A. Fitzpatrick")
+// instead of the standard dg_id + player_name fields.
 function normalizeTeamPredictions(preds) {
   if (!Array.isArray(preds) || preds.length === 0) return preds;
-  if (preds[0].dg_id || !preds[0].p1_dg_id) return preds; // already individual format
-  return preds.map(p => {
-    const p1Last = (p.p1_player_name || '').split(', ')[0];
-    const p2Last = (p.p2_player_name || '').split(', ')[0];
-    return {
-      ...p,
-      dg_id: p.p1_dg_id,
-      player_name: p1Last && p2Last ? `${p1Last} / ${p2Last}` : (p.p1_player_name || 'Unknown'),
-      _is_team: true
-    };
-  });
+  const first = preds[0];
+  if (first.dg_id && first.player_name) return preds; // already standard format
+  if (!first.team_id && !first.p1_dg_id) return preds; // unrecognized format, pass through
+  return preds.map(p => ({
+    ...p,
+    dg_id: p.team_id || p.p1_dg_id,
+    player_name: p.team_name || `Team ${p.team_id || p.p1_dg_id}`,
+    _is_team: true
+  }));
 }
 
 // ENDPOINT: Pre-Tournament Predictions
