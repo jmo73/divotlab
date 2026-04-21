@@ -417,6 +417,23 @@ app.get('/api/skill-ratings', async (req, res) => {
   }
 });
 
+// Normalize team event predictions (e.g. Zurich Classic) so all consumers
+// get consistent dg_id / player_name fields regardless of event format.
+function normalizeTeamPredictions(preds) {
+  if (!Array.isArray(preds) || preds.length === 0) return preds;
+  if (preds[0].dg_id || !preds[0].p1_dg_id) return preds; // already individual format
+  return preds.map(p => {
+    const p1Last = (p.p1_player_name || '').split(', ')[0];
+    const p2Last = (p.p2_player_name || '').split(', ')[0];
+    return {
+      ...p,
+      dg_id: p.p1_dg_id,
+      player_name: p1Last && p2Last ? `${p1Last} / ${p2Last}` : (p.p1_player_name || 'Unknown'),
+      _is_team: true
+    };
+  });
+}
+
 // ENDPOINT: Pre-Tournament Predictions
 app.get('/api/pre-tournament', async (req, res) => {
   try {
@@ -433,10 +450,18 @@ app.get('/api/pre-tournament', async (req, res) => {
 
     const result = await fetchDataGolf(endpoint, cacheKey, 21600); // 6hr cache
 
+    // Normalize team event predictions before returning
+    const rawPreds = result.data.baseline_history_fit || result.data.predictions || [];
+    const normalized = normalizeTeamPredictions(rawPreds);
+    const isTeam = normalized.length > 0 && normalized[0]._is_team;
+    const responseData = isTeam
+      ? { ...result.data, baseline_history_fit: normalized, predictions: normalized, _is_team_event: true }
+      : result.data;
+
     res.json({
       success: true,
       fromCache: result.fromCache,
-      data: result.data
+      data: responseData
     });
   } catch (error) {
     console.error('Pre-tournament error:', error);
@@ -1101,7 +1126,9 @@ app.get('/api/lab-data', async (req, res) => {
     const rankingLookup = new Map();
     allRankings.forEach(p => { if (p.dg_id) rankingLookup.set(p.dg_id, p); });
     
-    const predictions = preTournament.baseline_history_fit || preTournament.predictions || [];
+    const predictions = normalizeTeamPredictions(
+      preTournament.baseline_history_fit || preTournament.predictions || []
+    );
     const predictionLookup = new Map();
     predictions.forEach(p => { if (p.dg_id) predictionLookup.set(p.dg_id, p); });
 
