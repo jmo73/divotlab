@@ -719,6 +719,14 @@ function renderFieldStrength() {
         </div>
       `;
     }).join('');
+  } else if (isLive && globalTournamentInfo.is_team_event) {
+    // Team event in progress — no individual leaderboard available
+    leadersContent = `
+      <div style="text-align: center; padding: 8px 0;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 10px;">Team Event · In Progress</div>
+        <div style="font-size: 13px; color: rgba(250,250,250,0.5); line-height: 1.5;">Live scoring not available.<br>See win odds below.</div>
+      </div>
+    `;
   } else {
     // Upcoming state
     leadersContent = `
@@ -775,7 +783,7 @@ function renderFieldStrength() {
       <!-- Leaders Card -->
       <div class="strength-card" style="width: 100%; max-width: 350px;">
         <div class="strength-header">
-          <span class="strength-label">${state === 'completed' ? 'Final Results' : (isRoundComplete ? `${eventStatus.label} Complete` : 'Leaders')}${isActivelyLive ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
+          <span class="strength-label">${state === 'completed' ? 'Final Results' : (globalTournamentInfo.is_team_event && isLive ? 'Team Event' : (isRoundComplete ? `${eventStatus.label} Complete` : 'Leaders'))}${isActivelyLive && !globalTournamentInfo.is_team_event ? ' <span style="margin-left: 6px; font-size: 9px; color: #E76F51; font-weight: 600; letter-spacing: 0.5px;">● LIVE</span>' : ''}</span>
           <span class="strength-value" style="font-size: 18px;">${(isLive || state === 'completed') ? '🏆' : ''}</span>
         </div>
         <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
@@ -917,8 +925,55 @@ function renderLeaderboard() {
     return;
   }
   
+  // LIVE with no scores yet: team event → show team odds; individual → show field
+  if (isLive && globalLeaderboard.length === 0) {
+    const isTeamEvent = globalTournamentInfo.is_team_event;
+    if (isTeamEvent && globalPredictions.length > 0) {
+      const sortedTeams = [...globalPredictions]
+        .filter(p => p.win != null)
+        .sort((a, b) => (b.win || 0) - (a.win || 0));
+      container.innerHTML = `
+        <div style="text-align: center; padding: 12px 0 20px;">
+          <div style="font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5BBF85; margin-bottom: 6px;">Team Event</div>
+          <div style="font-size: 13px; color: rgba(250,250,250,0.45);">Live scoring not available — pre-tournament win odds</div>
+        </div>
+        <div class="table-wrapper leaderboard-scroll" style="max-height: 600px; overflow-y: auto;">
+          <table class="pred-table">
+            <thead style="position: sticky; top: 0; background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); z-index: 1; border-bottom: 1px solid rgba(255,255,255,0.08);">
+              <tr>
+                <th class="rank-col">#</th>
+                <th>Team</th>
+                <th class="prob-col">Win</th>
+                <th class="prob-col">Top 5</th>
+                <th class="prob-col">Top 10</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedTeams.map((p, i) => {
+                const winPct = ((p.win || 0) * 100).toFixed(1) + '%';
+                const top5Pct = p.top_5 != null ? ((p.top_5) * 100).toFixed(0) + '%' : '—';
+                const top10Pct = p.top_10 != null ? ((p.top_10) * 100).toFixed(0) + '%' : '—';
+                return `
+                  <tr>
+                    <td class="rank-col">${i + 1}</td>
+                    <td class="player-col">${p.player_name || p.team_name || 'Unknown'}</td>
+                    <td class="prob-col win">${winPct}</td>
+                    <td class="prob-col">${top5Pct}</td>
+                    <td class="prob-col">${top10Pct}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      return;
+    }
+    // Individual event with no scores yet — fall through to the upcoming field display
+  }
+
   // UPCOMING: show the field list with skill ratings
-  if (state === 'upcoming' || state === 'completed') {
+  if (state === 'upcoming' || state === 'completed' || (isLive && globalLeaderboard.length === 0)) {
     // Build a displayable field — use server-enriched data if available
     let fieldDisplay = [];
     

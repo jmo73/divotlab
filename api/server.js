@@ -1250,6 +1250,8 @@ app.get('/api/lab-data', async (req, res) => {
       console.log('  Approach detail: not available');
     }
 
+    const isTeamEvent = predictions.length > 0 && predictions[0]._is_team === true;
+
     const compositeData = {
       players: pgaPlayers, // PGA-filtered skill ratings (full breakdown)
       enriched_field: enrichedField, // Every field player with best-available skill data
@@ -1260,13 +1262,14 @@ app.get('/api/lab-data', async (req, res) => {
       tournament: {
         event_id: fieldUpdates.event_id || currentEvent.event_id,
         event_name: eventName || 'Upcoming Tournament',
-        course: currentEvent.course || fieldUpdates.course || (fieldUpdates.field && fieldUpdates.field[0]?.course) || '',
+        course: currentEvent.course || fieldUpdates.course || fieldUpdates.course_name || '',
         field_size: fieldUpdates.field?.length || 0,
         current_round: fieldUpdates.current_round || 0,
-        start_date: currentEvent.start_date || null,
-        end_date: currentEvent.end_date || null,
+        start_date: currentEvent.start_date || fieldUpdates.date_start || null,
+        end_date: currentEvent.end_date || fieldUpdates.date_end || null,
         status: currentEvent.status || 'unknown',
-        event_completed: fieldUpdates.event_completed || false
+        event_completed: fieldUpdates.event_completed || false,
+        is_team_event: isTeamEvent
       },
       // ── New: Advanced Analytics ──
       course_weights: courseWeights,
