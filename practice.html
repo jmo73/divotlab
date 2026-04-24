@@ -14,9 +14,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png">
 <title>What Should I Practice? — Divot Lab</title>
-<meta name="description" content="Answer 7 questions about your golf game. Get a data-backed practice plan that tells you exactly where you're losing strokes — and how to fix it.">
+<meta name="description" content="Answer 7 questions about your golf game. Get a free, personalized practice plan built on strokes gained research — tells you exactly where you're losing strokes and how to fix it.">
 <meta property="og:title" content="What Should I Practice? — Divot Lab">
-<meta property="og:description" content="Answer 7 questions about your golf game. Get a personalized, data-backed practice plan built on strokes gained research.">
+<meta property="og:description" content="Answer 7 questions about your golf game. Get a free, personalized practice plan built on strokes gained research.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.divotlab.com/practice">
 <meta property="og:site_name" content="Divot Lab">
@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.divotlab.com/og-image.png">
 <meta name="twitter:title" content="What Should I Practice? — Divot Lab">
-<meta name="twitter:description" content="Answer 7 questions about your golf game. Get a personalized, data-backed practice plan.">
+<meta name="twitter:description" content="Answer 7 questions about your golf game. Get a free, personalized practice plan built on strokes gained research.">
 <link rel="canonical" href="https://www.divotlab.com/practice">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1230,7 +1230,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <span class="nav-wordmark">DIVOT <span>LAB</span></span>
   </a>
   <div class="nav-links">
-    <a href="/practice">Practice</a>
+    <a href="/practice">Practice Plan</a>
+    <a href="/practice-library">Practice Library</a>
     <a href="/articles">Articles</a>
     <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
@@ -1243,7 +1244,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 </nav>
 
 <div class="nav-drawer" id="navDrawer">
-  <a href="/practice">Practice</a>
+  <a href="/practice">Practice Plan</a>
+    <a href="/practice-library">Practice Library</a>
   <a href="/articles">Articles</a>
   <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
@@ -1260,7 +1262,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <div class="hero-start">
       <button onclick="startQuiz()">Start My Diagnosis</button>
     </div>
-    <p class="hero-note" style="margin-top:32px;">Based on USGA handicap benchmarks and strokes gained research</p>
+    <p class="hero-note" style="margin-top:32px;">Free · Based on USGA handicap benchmarks and strokes gained research</p>
   </div>
 </section>
 
@@ -1422,9 +1424,9 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 <!-- ========== INTAKE FORM (after quiz, before payment) ========== -->
 <div class="intake-section" id="intakeSection">
   <div class="intake-header">
-    <div class="teaser-label">Almost There</div>
-    <h2>Tell Us About<br>Your Game</h2>
-    <p>A few details so we can build your personalized 90-day practice plan with the right drills, targets, and benchmarks.</p>
+    <div class="teaser-label">Last Step</div>
+    <h2>Personalize<br>Your Plan</h2>
+    <p>A few details so we can build your personalized 90-day practice plan with the right drills, targets, and benchmarks — free.</p>
   </div>
 
   <div class="intake-group">
@@ -1534,7 +1536,8 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
       <h5>Company</h5>
       <a href="/lab-notes">Lab Notes</a>
       <a href="/about">About</a>
-      <a href="/practice">Practice</a>
+      <a href="/practice">Practice Plan</a>
+    <a href="/practice-library">Practice Library</a>
       <a href="/the-lab">The Lab</a>
       <a href="https://instagram.com/divotlab" target="_blank">Instagram</a>
       <a href="javascript:void(0)">Contact</a>
@@ -1886,7 +1889,7 @@ function getAreaDetails(key, rank, handicap) {
 }
 
 // ============================================
-// HANDLE INTAKE SUBMIT → personalized teaser
+// HANDLE INTAKE SUBMIT → generate plan directly (free)
 // ============================================
 function handleIntakeSubmit() {
   var name = document.getElementById('intakeName').value.trim();
@@ -1935,11 +1938,11 @@ function handleIntakeSubmit() {
     body: JSON.stringify({ email: email, utm_source: 'practice-plan' })
   }).catch(function() { /* non-blocking — don't interrupt the flow */ });
 
-  showTeaser();
+  handleGenerate();
 }
 
 // ============================================
-// TEASER RESULTS (personalized with their data)
+// TEASER RESULTS (kept for reference — no longer shown)
 // ============================================
 function showTeaser() {
   document.getElementById('quizWrap').classList.remove('active');
@@ -2725,23 +2728,16 @@ function retakeQuiz() {
 // INITIALIZATION — runs after all functions defined
 // ============================================
 (function init() {
-  // Check if returning from Stripe payment
+  // Legacy: handle returning from Stripe payment (backward compat for old links)
   var params = new URLSearchParams(window.location.search);
-
   if (params.has('session_id')) {
     var stored = sessionStorage.getItem('dl_answers');
     var storedEmail = sessionStorage.getItem('dl_email');
-    if (stored) {
-      try { answers = JSON.parse(stored); } catch(e) {}
-    }
+    if (stored) { try { answers = JSON.parse(stored); } catch(e) {} }
     if (storedEmail) intakeEmail = storedEmail;
-
-    // We already have all personal details from before payment
     if (answers.exactHandicap !== undefined || answers.miss) {
       document.getElementById('hero').style.display = 'none';
       window.history.replaceState({}, '', window.location.pathname);
-
-      // Go straight to generating PDF
       handleGenerate();
     }
   }
