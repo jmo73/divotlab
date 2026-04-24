@@ -142,7 +142,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   max-height:0; overflow:hidden; opacity:0;
   transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
 }
-.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer.open { max-height:calc(100vh - 68px); overflow-y:auto; opacity:1; }
 .nav-drawer a {
   font-size:15px; font-weight:500; letter-spacing:.06em;
   color:rgba(250,250,250,.75); padding:10px 0;

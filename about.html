@@ -308,7 +308,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   max-height:0; overflow:hidden; opacity:0;
   transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
 }
-.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer.open { max-height:calc(100vh - 68px); overflow-y:auto; opacity:1; }
 .nav-drawer.light { background:rgba(250,250,250,0.95); border-bottom-color:rgba(0,0,0,0.07); }
 .nav-drawer a {
   font-size:15px; font-weight:500; letter-spacing:.06em;
@@ -518,13 +518,16 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   var navEl = document.querySelector('nav');
   if (hamburger && drawer && navEl) {
     hamburger.addEventListener('click', function(){
+      var opening = !drawer.classList.contains('open');
       navEl.classList.toggle('menu-open');
       drawer.classList.toggle('open');
+      document.body.style.overflow = opening ? 'hidden' : '';
     });
     drawer.querySelectorAll('a').forEach(function(link){
       link.addEventListener('click', function(){
         navEl.classList.remove('menu-open');
         drawer.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
   }

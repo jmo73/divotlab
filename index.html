@@ -1070,10 +1070,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
              background .35s,
              border-color .35s;
 }
-.nav-drawer.open {
-  max-height:360px;
-  opacity:1;
-}
+.nav-drawer.open { max-height:calc(100vh - 68px); overflow-y:auto; opacity:1; }
 /* light variant */
 .nav-drawer.light {
   background:rgba(250,250,250,0.95);

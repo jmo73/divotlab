@@ -194,11 +194,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   transition:max-height .38s cubic-bezier(.22,1,.36,1),
              opacity .28s ease;
 }
-.nav-drawer.open {
-  max-height:320px;
-  opacity:1;
-  pointer-events: auto;
-}
+.nav-drawer.open { max-height:calc(100vh - 68px); overflow-y:auto; opacity:1; }
 
 .nav-drawer a {
   font-size:15px; font-weight:500; letter-spacing:.06em;
@@ -1772,13 +1768,16 @@ footer {
   var navEl = document.getElementById('nav');
   if(hamburger && drawer){
     hamburger.addEventListener('click', function(){
+      var opening = !drawer.classList.contains('open');
       navEl.classList.toggle('menu-open');
       drawer.classList.toggle('open');
+      document.body.style.overflow = opening ? 'hidden' : '';
     });
     drawer.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){
         navEl.classList.remove('menu-open');
         drawer.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
   }

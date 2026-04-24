@@ -95,7 +95,7 @@ nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotat
 nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
 nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 .nav-drawer { position:fixed; top:68px; left:0; right:0; z-index:99; background:rgba(10,10,10,0.92); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); border-bottom:1px solid rgba(255,255,255,0.07); padding:12px 0 20px; display:flex; flex-direction:column; align-items:center; gap:4px; max-height:0; overflow:hidden; opacity:0; transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease; }
-.nav-drawer.open { max-height:300px; opacity:1; }
+.nav-drawer.open { max-height:calc(100vh - 68px); overflow-y:auto; opacity:1; }
 .nav-drawer.light { background:rgba(250,250,250,0.95); border-bottom-color:rgba(0,0,0,0.07); }
 .nav-drawer a { font-size:15px; font-weight:500; letter-spacing:.06em; color:rgba(250,250,250,.75); padding:10px 0; width:100%; text-align:center; transition:color .2s; }
 .nav-drawer a:hover { color:var(--white); }
