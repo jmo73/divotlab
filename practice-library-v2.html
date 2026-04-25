@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Library — Divot Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:       #0A0A0A;
+  --card:        #111110;
+  --border:      rgba(255,255,255,0.08);
+  --white:       #FAFAFA;
+  --muted:       #888880;
+  --green:       #1B4D3E;
+  --green-light: #5BBF85;
+  --blue-mid:    #5A8FA8;
+  --gold:        #C9A84C;
+  --red:         #E76F51;
+  --amber:       #DDA15E;
+  --purple:      #9B72CF;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', sans-serif;
+  --mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body.menu-open { overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; padding: 0 48px;
+  display: flex; align-items: center;
+  background: rgba(10,10,10,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--body);
+  font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+}
+.nav-logo span { font-weight: 300; opacity: .45; }
+.nav-links { display: flex; align-items: center; gap: 24px; margin-left: auto; }
+.nav-links a { font-size: 13px; font-weight: 500; color: rgba(250,250,250,.6); transition: color .18s; }
+.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.nav-links a.active { color: var(--green-light); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; margin-left: auto;
+}
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all .2s; }
+.drawer {
+  display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,10,0.97); flex-direction: column; gap: 20px;
+  padding: 32px 28px; z-index: 99;
+}
+.drawer.open { display: flex; }
+.drawer a { font-size: 16px; color: rgba(250,250,250,.75); padding: 4px 0; border-bottom: 1px solid var(--border); }
+
+/* HERO */
+.hero {
+  padding: 120px 48px 64px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--green-light); margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 600; line-height: 1.1;
+  margin-bottom: 20px;
+}
+.hero p {
+  font-size: 16px; line-height: 1.7;
+  color: rgba(250,250,250,.6); max-width: 640px;
+}
+
+/* FILTERS */
+.filters {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 48px 0;
+}
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+}
+.chip {
+  font-family: var(--body); font-size: 12px; font-weight: 500;
+  padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: rgba(250,250,250,.55); cursor: pointer;
+  transition: all .18s;
+}
+.chip:hover { border-color: rgba(255,255,255,.2); color: var(--white); }
+.chip.active { background: var(--white); color: var(--black); border-color: var(--white); }
+
+/* CATEGORY TABS */
+.cat-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-top: 36px; }
+.cat-tab {
+  font-family: var(--body); font-size: 13px; font-weight: 500;
+  padding: 12px 24px; background: none; border: none; cursor: pointer;
+  color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all .18s; text-transform: uppercase; letter-spacing: .08em;
+}
+.cat-tab:hover { color: var(--white); }
+.cat-tab[data-cat="driving"].active  { color: var(--red);        border-bottom-color: var(--red); }
+.cat-tab[data-cat="approach"].active { color: var(--blue-mid);   border-bottom-color: var(--blue-mid); }
+.cat-tab[data-cat="shortgame"].active{ color: var(--gold);       border-bottom-color: var(--gold); }
+.cat-tab[data-cat="putting"].active  { color: var(--green-light);border-bottom-color: var(--green-light); }
+.cat-tab[data-cat="mental"].active   { color: var(--purple);     border-bottom-color: var(--purple); }
+
+/* CONTENT */
+.content { max-width: 1100px; margin: 0 auto; padding: 40px 48px 80px; }
+.cat-panel { display: none; }
+.cat-panel.active { display: block; }
+
+/* FUNDAMENTALS */
+.fundamentals {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-bottom: 40px;
+}
+.fund-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 24px;
+}
+.fund-card h3 {
+  font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.fund-card[data-type="setup"] h3 { color: var(--blue-mid); }
+.fund-card[data-type="feels"] h3 { color: var(--green-light); }
+.fund-card[data-type="avoid"] h3 { color: var(--red); }
+.fund-card ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.fund-card li {
+  font-size: 13px; line-height: 1.5; color: rgba(250,250,250,.7);
+  padding-left: 14px; position: relative;
+}
+.fund-card li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.fund-card[data-type="setup"] li::before { background: var(--blue-mid); }
+.fund-card[data-type="feels"] li::before { background: var(--green-light); }
+.fund-card[data-type="avoid"] li::before { background: var(--red); }
+
+/* SECTION HEADING */
+.section-heading {
+  font-family: var(--display);
+  font-size: 1.5rem; font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ACCORDIONS */
+.accordion-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 48px; }
+.accordion-item {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden; transition: border-color .18s;
+}
+.accordion-item.hidden { display: none; }
+.accordion-trigger {
+  width: 100%; display: flex; align-items: center; gap: 16px;
+  padding: 18px 20px; background: none; border: none; cursor: pointer;
+  text-align: left;
+}
+.accordion-trigger:hover { background: rgba(255,255,255,.03); }
+.drill-name {
+  font-family: var(--body); font-size: 15px; font-weight: 500; color: var(--white);
+  flex: 1;
+}
+.hc-tags { display: flex; gap: 6px; }
+.hc-tag {
+  font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: .06em;
+  padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+}
+.hc-tag.high    { background: rgba(231,111,81,.15);  color: var(--red); }
+.hc-tag.mid     { background: rgba(90,143,168,.15);  color: var(--blue-mid); }
+.hc-tag.low     { background: rgba(201,168,76,.15);  color: var(--gold); }
+.hc-tag.scratch { background: rgba(91,191,133,.15);  color: var(--green-light); }
+.chevron {
+  width: 16px; height: 16px; color: var(--muted); flex-shrink: 0;
+  transition: transform .22s; transform: rotate(0deg);
+}
+.accordion-item.open .chevron { transform: rotate(180deg); }
+.accordion-body { display: none; padding: 0 20px 24px; }
+.accordion-item.open .accordion-body { display: block; }
+
+.drill-meta {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 20px; padding-top: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
+.meta-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted);
+}
+.meta-value { font-size: 13px; font-weight: 500; color: var(--white); }
+
+.drill-description { font-size: 14px; line-height: 1.7; color: rgba(250,250,250,.65); margin-bottom: 20px; }
+
+.drill-steps { margin-bottom: 20px; }
+.drill-steps h4 {
+  font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.drill-steps ol { padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
+.drill-steps li { font-size: 13px; line-height: 1.6; color: rgba(250,250,250,.7); }
+
+.drill-benchmark {
+  background: rgba(91,191,133,.08); border: 1px solid rgba(91,191,133,.2);
+  border-radius: 6px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 12px; color: var(--green-light);
+}
+.drill-benchmark span { font-weight: 500; letter-spacing: .08em; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 6px; opacity: .7; }
+
+.diagram-placeholder {
+  border: 1px dashed rgba(255,255,255,.15); border-radius: 6px;
+  height: 160px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; color: var(--muted);
+  font-family: var(--mono); font-size: 11px;
+}
+
+/* SESSIONS */
+.sessions { margin-bottom: 48px; }
+.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.session-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px;
+}
+.session-card h4 {
+  font-family: var(--display); font-size: 1.1rem; font-weight: 600;
+  margin-bottom: 6px;
+}
+.session-duration {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
+}
+.session-card ol { padding-left: 16px; display: flex; flex-direction: column; gap: 8px; }
+.session-card li { font-size: 13px; color: rgba(250,250,250,.7); line-height: 1.5; }
+
+/* RESOURCES */
+.resources { margin-bottom: 48px; }
+.resources-list { display: flex; gap: 12px; flex-wrap: wrap; }
+.resource-link {
+  font-size: 12px; font-weight: 500; letter-spacing: .04em;
+  padding: 8px 16px; border: 1px solid var(--border); border-radius: 20px;
+  color: var(--muted); transition: all .18s;
+}
+.resource-link:hover { color: var(--white); border-color: rgba(255,255,255,.25); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 48px;
+  text-align: center;
+  font-size: 12px; color: var(--muted);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero, .filters, .content { padding-left: 20px; padding-right: 20px; }
+  .fundamentals { grid-template-columns: 1fr; }
+  .cat-tab { padding: 10px 14px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="nav-logo">Divot <span>Lab</span></a>
+  <div class="nav-links">
+    <a href="/practice-library-v2.html" class="active">Practice Library</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/about.html">About</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="drawer" id="drawer">
+  <a href="/practice-library-v2.html">Practice Library</a>
+  <a href="/blog.html">Blog</a>
+  <a href="/about.html">About</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">Practice Library</p>
+  <h1>Every drill you need.<br>Matched to your game.</h1>
+  <p>26 measurable drills organized by category and handicap level. Each one rooted in strokes gained research with clear benchmarks so you know when you have it.</p>
+</section>
+
+<div class="filters">
+  <p class="filter-label">Handicap Level</p>
+  <div class="filter-row" id="hc-filter">
+    <button class="chip active" data-hc="all">All Levels</button>
+    <button class="chip" data-hc="high">High (18+)</button>
+    <button class="chip" data-hc="mid">Mid (10–17)</button>
+    <button class="chip" data-hc="low">Low (5–9)</button>
+    <button class="chip" data-hc="scratch">Scratch (0–4)</button>
+  </div>
+
+  <div class="cat-tabs" id="cat-tabs">
+    <button class="cat-tab active" data-cat="driving">Driving</button>
+    <button class="cat-tab" data-cat="approach">Approach</button>
+    <button class="cat-tab" data-cat="shortgame">Short Game</button>
+    <button class="cat-tab" data-cat="putting">Putting</button>
+    <button class="cat-tab" data-cat="mental">Mental</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ==================== DRIVING ==================== -->
+  <div class="cat-panel active" id="panel-driving">
+
+    <div class="fundamentals">
+      <div class="fund-card" data-type="setup">
+        <h3>Setup</h3>
+        <ul>
+          <li>Ball position off lead heel, driver teed so equator sits at crown</li>
+          <li>Feet shoulder-width or slightly wider, trail foot flared 15 degrees</li>
+          <li>Spine tilted 5 degrees away from target, weight 55% on trail side</li>
+          <li>Grip pressure 4/10 — firm enough to control, light enough to release</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="feels">
+        <h3>Feels</h3>
+        <ul>
+          <li>Wide takeaway — feel the left shoulder stretching under the chin</li>
+          <li>Pressure shift to trail heel on backswing, then drive into lead heel on downswing</li>
+          <li>Shallow the club in the slot — feel it dropping behind you, not over the top</li>
+          <li>Explode through impact, chest rotating fast to face the target at follow-through</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="avoid">
+        <h3>Avoid</h3>
+        <ul>
+          <li>Early extension — standing up out of posture through impact kills power</li>
+          <li>Over-swinging — speed comes from sequence, not effort</li>
+          <li>Casting from the top — letting the wrists unhinge before the body leads</li>
+          <li>Aiming body at the target instead of parallel left of the target line</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-heading">Drills</p>
+
+    <div class="accordion-list" id="driving-drills">
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Corridor Drill</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span>
+            <span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Place two alignment sticks on the ground 20 yards apart at 200 yards, forming a corridor. Every shot must land inside. Trains a repeatable, controlled start line and removes the urge to go max effort at the expense of direction.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set two alignment rods 20 yards apart at your comfortable carry distance</li>
+              <li>Hit 5 shots focusing only on hitting the corridor, not distance</li>
+              <li>Track how many of 20 balls land between the rods</li>
+              <li>Narrow the corridor by 5 yards once you hit 16/20</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Corridor diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>16 of 20 balls in a 20-yard corridor before narrowing. Scratch: 18/20 in a 12-yard corridor.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Left-Right-Center Block</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span>
+            <span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Pick three distinct targets — left edge, center, right edge. Hit 5 balls at each in sequence. Forces intentional alignment changes and proves you can shape or redirect the start line on demand.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Identify three targets at least 20 yards apart</li>
+              <li>Go through your full pre-shot routine before each ball</li>
+              <li>Hit 5 to the left target, 5 to center, 5 to the right</li>
+              <li>Grade yourself: how many of 15 ended up on the correct side?</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ L / C / R target diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>12 of 15 on the correct side. High HC: 9/15 acceptable to start.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid">
+        <button class="accordion-trigger">
+          <span class="drill-name">The 80% Swing</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span>
+            <span class="hc-tag mid">Mid</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Hit every driver at 80% perceived effort. No tempo rush, no killing it. For high and mid handicaps, the biggest distance gains come from better contact — not more clubhead speed. This drill trains that habit.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Before each swing, say "80%" aloud or to yourself</li>
+              <li>Focus on a smooth transition — no rushing from the top</li>
+              <li>Track carry distance vs. your max-effort average</li>
+              <li>Most players find 80% effort produces 95% of distance with better dispersion</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Effort vs. distance curve ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Consistent contact on 16/20 balls. Less than 10% distance drop vs. max swing.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Feet Together Driver</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span>
+            <span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">12 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Stand with feet together and hit driver at 70% effort. Eliminates the ability to overuse the lower body, forcing sequencing from the core and arms. Any balance loss means you rushed the transition.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Place feet together, touching at the heels</li>
+              <li>Make a controlled backswing — balance is the priority</li>
+              <li>If you fall off balance, slow down more</li>
+              <li>Alternate: 2 feet-together, then 1 normal swing to transfer the feel</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Stance width diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Finish in balance on 13/15 swings. If falling off, reduce swing length before adding effort.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Tee Height Ladder</span>
+          <div class="hc-tags">
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">18</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Hit 6 shots at three tee heights: low (just above turf), normal, and high. Trains attack angle awareness. A low tee demands a shallower path; a high tee rewards an ascending strike. Reveals what your natural swing does.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Tee 6 balls low (1/4 inch), 6 at normal height, 6 at high (1.5 inch)</li>
+              <li>Note where contact lands on the face for each group</li>
+              <li>Low tee: aim for solid strike, not height. High tee: launch it</li>
+              <li>Use launch monitor if available to track attack angle changes</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Tee height vs. attack angle ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Solid contact on 5/6 at each height. Attack angle should shift +2 to +4 degrees from low to high tee.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">3-2-1 Pressure Drill</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span>
+            <span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">18</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">18 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Hit 3 balls in a row to the same target. Then 2 in a row. Then 1 that counts. The single ball carries the weight of the whole set — if you miss, start over from 3. Simulates tee shot pressure in a competition round.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Pick one specific target, not a zone</li>
+              <li>Hit 3 balls with the full routine. All 3 must land on target side</li>
+              <li>Then 2 balls — both must land on target side</li>
+              <li>Then 1 ball. Miss it, restart the whole sequence</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Pressure escalation sequence ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Complete the full 3-2-1 sequence 3 times in a practice session without restarting.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="mid low">
+        <button class="accordion-trigger">
+          <span class="drill-name">Distance Dispersion Map</span>
+          <div class="hc-tags">
+            <span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range + Monitor</span></div>
+          </div>
+          <p class="drill-description">Hit 20 balls with a launch monitor tracking carry distance. Calculate your average, remove the 2 outliers on each end, and find your reliable carry. This becomes your course management number — the distance you can count on 80% of the time.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Record carry distance for all 20 balls</li>
+              <li>Remove the 2 longest and 2 shortest</li>
+              <li>Average the remaining 16 — this is your reliable carry</li>
+              <li>Note your lateral spread: how wide is your miss pattern?</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Dispersion plot ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Lateral dispersion under 30 yards for mid HC. Low HC target: under 20 yards.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Speed Training Contrast Sets</span>
+          <div class="hc-tags">
+            <span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Alternate between maximum effort swings and 80% swings in sets of 3. The contrast trains the nervous system to access higher speed while maintaining mechanics. Used by tour players to build clubhead speed without breaking down the pattern.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Hit 3 balls at absolute maximum effort (ignore direction)</li>
+              <li>Immediately hit 3 balls at 80% — feel how much easier it is</li>
+              <li>Repeat 3 cycles, resting 60 seconds between sets</li>
+              <li>Track peak speed via radar if available</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Speed contrast training cycle ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Max effort swings should be 8–12% faster than baseline. After contrast, 80% swings should feel effortless.</div>
+        </div>
+      </div>
+
+    </div><!-- /driving-drills -->
+
+    <p class="section-heading">Practice Sessions</p>
+    <div class="sessions">
+      <div class="sessions-grid">
+        <div class="session-card">
+          <h4>Quick Warm-Up</h4>
+          <p class="session-duration">30 minutes</p>
+          <ol>
+            <li>Feet Together Driver — 10 balls to calibrate tempo</li>
+            <li>Corridor Drill — 10 balls, 20-yard window</li>
+            <li>3-2-1 Pressure Drill — complete one full sequence</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Full Driving Session</h4>
+          <p class="session-duration">60 minutes</p>
+          <ol>
+            <li>Feet Together Driver — 10 balls (tempo reset)</li>
+            <li>Left-Right-Center Block — 15 balls (alignment)</li>
+            <li>Corridor Drill — 20 balls (dispersion)</li>
+            <li>80% Swing — 20 balls (contact quality)</li>
+            <li>3-2-1 Pressure Drill — 3 complete sequences</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Speed Development</h4>
+          <p class="session-duration">45 minutes — Low/Scratch</p>
+          <ol>
+            <li>Tee Height Ladder — 18 balls (attack angle)</li>
+            <li>Speed Training Contrast Sets — 3 cycles</li>
+            <li>Distance Dispersion Map — 20 balls (data capture)</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="resources">
+      <p class="section-heading">Research &amp; References</p>
+      <div class="resources-list">
+        <a class="resource-link" href="https://www.usga.org" target="_blank" rel="noopener">USGA.org</a>
+        <a class="resource-link" href="https://www.pgatour.com/stats" target="_blank" rel="noopener">PGA Tour Stats</a>
+        <a class="resource-link" href="https://datagolf.com" target="_blank" rel="noopener">Data Golf</a>
+        <a class="resource-link" href="https://arccosgolf.com" target="_blank" rel="noopener">Arccos Golf</a>
+      </div>
+    </div>
+
+  </div><!-- /panel-driving -->
+
+  <!-- Remaining panels to be built out -->
+  <div class="cat-panel" id="panel-approach"><p style="color:var(--muted);padding:40px 0;">Approach drills coming soon.</p></div>
+  <div class="cat-panel" id="panel-shortgame"><p style="color:var(--muted);padding:40px 0;">Short game drills coming soon.</p></div>
+  <div class="cat-panel" id="panel-putting"><p style="color:var(--muted);padding:40px 0;">Putting drills coming soon.</p></div>
+  <div class="cat-panel" id="panel-mental"><p style="color:var(--muted);padding:40px 0;">Mental drills coming soon.</p></div>
+
+</div><!-- /content -->
+
+<footer>
+  <p>Divot Lab — Practice smarter. Score lower.</p>
+</footer>
+
+<script>
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const drawer = document.getElementById('drawer');
+hamburger.addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  document.body.classList.toggle('menu-open', open);
+});
+
+// Category tabs
+const catTabs = document.querySelectorAll('.cat-tab');
+const catPanels = document.querySelectorAll('.cat-panel');
+catTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    catTabs.forEach(t => t.classList.remove('active'));
+    catPanels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.cat).classList.add('active');
+  });
+});
+
+// HC filter
+const hcChips = document.querySelectorAll('#hc-filter .chip');
+hcChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    hcChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    const hc = chip.dataset.hc;
+    document.querySelectorAll('.accordion-item').forEach(item => {
+      if (hc === 'all') {
+        item.classList.remove('hidden');
+      } else {
+        const levels = item.dataset.hc ? item.dataset.hc.split(' ') : [];
+        item.classList.toggle('hidden', !levels.includes(hc));
+      }
+    });
+  });
+});
+
+// Accordions
+document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const item = trigger.closest('.accordion-item');
+    item.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>
