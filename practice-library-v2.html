@@ -10,10 +10,26 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practice Library — Divot Lab</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>Golf Practice Drill Library — Divot Lab</title>
+<meta name="description" content="The most detailed golf practice drill library on the internet. Organized by skill, handicap, and context. Every drill is measurable, specific, and rooted in strokes gained research.">
+<meta property="og:title" content="Golf Practice Drill Library — Divot Lab">
+<meta property="og:description" content="26 specific, measurable golf drills organized by skill category and handicap level. Driving, approach, short game, putting, and mental — with benchmarks for every level.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.divotlab.com/practice-library">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:title" content="Golf Practice Drill Library — Divot Lab">
+<meta name="twitter:description" content="The most detailed golf practice drill library. Measurable drills for every part of the game, organized by handicap level.">
+<link rel="canonical" href="https://www.divotlab.com/practice-library">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 <style>
 :root {
   --black:       #0A0A0A;
@@ -48,73 +64,112 @@ a { color: inherit; text-decoration: none; }
 /* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 64px; padding: 0 48px;
+  height: 68px; padding: 0 56px;
   display: flex; align-items: center;
-  background: rgba(10,10,10,0.9);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
-.nav-logo {
-  font-family: var(--body);
-  font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-}
-.nav-logo span { font-weight: 300; opacity: .45; }
-.nav-links { display: flex; align-items: center; gap: 24px; margin-left: auto; }
-.nav-links a { font-size: 13px; font-weight: 500; color: rgba(250,250,250,.6); transition: color .18s; }
-.nav-links a:hover, .nav-links a.active { color: var(--white); }
+.nav-logo { display: flex; align-items: center; gap: 11px; }
+.nav-logo svg { width: 26px; height: 26px; flex-shrink: 0; color: var(--white); }
+.nav-wordmark { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: .1em; color: var(--white); }
+.nav-wordmark span { font-weight: 300; opacity: .55; }
+.nav-links { display: flex; align-items: center; gap: 28px; margin-left: auto; }
+.nav-links a { font-size: 13px; font-weight: 500; letter-spacing: .04em; color: rgba(250,250,250,.65); transition: color .2s; }
+.nav-links a:hover { color: var(--white); }
 .nav-links a.active { color: var(--green-light); }
-.hamburger {
-  display: none; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 6px; margin-left: auto;
+.nav-cta { background: var(--green); color: var(--white) !important; padding: 9px 22px; border-radius: 5px; font-weight: 500; transition: background .2s; }
+.nav-cta:hover { background: #236b4f; }
+.pro-pill { display: inline-block; font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: rgba(91,191,133,0.15); color: var(--green-light); padding: 2px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; }
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px; margin-left: auto; z-index: 101;
 }
-.hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all .2s; }
-.drawer {
-  display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
-  background: rgba(10,10,10,0.97); flex-direction: column; gap: 20px;
-  padding: 32px 28px; z-index: 99;
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+  background: rgba(10,10,10,0.97); border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 28px; flex-direction: column; align-items: center; gap: 4px;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .4s cubic-bezier(.22,1,.36,1), opacity .3s ease, background .35s;
 }
-.drawer.open { display: flex; }
-.drawer a { font-size: 16px; color: rgba(250,250,250,.75); padding: 4px 0; border-bottom: 1px solid var(--border); }
+.nav-drawer.open { max-height: calc(100vh - 68px); overflow-y: auto; opacity: 1; }
+.nav-drawer a { font-size: 15px; font-weight: 500; letter-spacing: .06em; color: rgba(250,250,250,.75); padding: 10px 0; width: 100%; text-align: center; transition: color .2s; }
+.nav-drawer a:hover { color: var(--white); }
+.nav-drawer .nav-cta { margin-top: 8px; width: auto; padding: 10px 32px; border-radius: 5px; }
 
 /* HERO */
 .hero {
-  padding: 120px 48px 64px;
-  max-width: 860px;
-  margin: 0 auto;
+  background: linear-gradient(165deg, #0a0a0a 0%, #0d1612 100%);
+  position: relative; overflow: hidden;
+  padding: 140px 56px 80px;
+  text-align: center;
 }
+.hero::before {
+  content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse at center, rgba(27,77,62,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 .eyebrow {
-  font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--green-light); margin-bottom: 16px;
+  font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--green-light); margin-bottom: 20px; opacity: .85;
 }
 .hero h1 {
   font-family: var(--display);
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  font-weight: 600; line-height: 1.1;
-  margin-bottom: 20px;
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 600; line-height: 1.08; letter-spacing: -.02em;
+  margin-bottom: 22px;
 }
 .hero p {
-  font-size: 16px; line-height: 1.7;
-  color: rgba(250,250,250,.6); max-width: 640px;
+  font-size: 17px; font-weight: 300; line-height: 1.7;
+  color: rgba(250,250,250,.5);
 }
 
-/* FILTERS */
-.filters {
-  max-width: 1100px; margin: 0 auto;
-  padding: 0 48px 0;
+/* FILTER BAR — sticky below nav */
+.filter-zone {
+  position: sticky; top: 68px; z-index: 90;
+  background: rgba(10,10,10,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,.07);
 }
-.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.filter-label {
-  font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 8px;
+.filter-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 56px;
 }
-.chip {
-  font-family: var(--body); font-size: 12px; font-weight: 500;
-  padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border);
-  background: transparent; color: rgba(250,250,250,.55); cursor: pointer;
-  transition: all .18s;
+/* Category tabs */
+.cat-tabs { display: flex; gap: 0; }
+.cat-tab {
+  font-family: var(--body); font-size: 12px; font-weight: 600;
+  padding: 16px 22px; background: none; border: none; cursor: pointer;
+  color: rgba(250,250,250,.4); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all .18s; text-transform: uppercase; letter-spacing: .1em;
+  white-space: nowrap;
 }
-.chip:hover { border-color: rgba(255,255,255,.2); color: var(--white); }
-.chip.active { background: var(--white); color: var(--black); border-color: var(--white); }
+.cat-tab:hover { color: rgba(250,250,250,.8); }
+.cat-tab[data-cat="driving"].active   { color: var(--red);         border-bottom-color: var(--red); }
+.cat-tab[data-cat="approach"].active  { color: var(--blue-mid);    border-bottom-color: var(--blue-mid); }
+.cat-tab[data-cat="shortgame"].active { color: var(--gold);        border-bottom-color: var(--gold); }
+.cat-tab[data-cat="putting"].active   { color: var(--green-light); border-bottom-color: var(--green-light); }
+.cat-tab[data-cat="mental"].active    { color: var(--purple);      border-bottom-color: var(--purple); }
+/* Level filter — subtle secondary row */
+.level-bar {
+  display: flex; align-items: center; gap: 2px;
+  padding: 7px 0 9px; border-top: 1px solid rgba(255,255,255,.04);
+}
+.level-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(250,250,250,.22); margin-right: 8px;
+}
+.lvl-btn {
+  font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: .05em;
+  background: none; border: none; cursor: pointer; color: rgba(250,250,250,.3);
+  padding: 2px 8px; transition: color .15s; text-transform: uppercase;
+}
+.lvl-btn:hover { color: rgba(250,250,250,.7); }
+.lvl-btn.active { color: var(--white); font-weight: 600; }
 
 /* CATEGORY TABS */
 .cat-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-top: 36px; }
@@ -132,7 +187,7 @@ nav {
 .cat-tab[data-cat="mental"].active   { color: var(--purple);     border-bottom-color: var(--purple); }
 
 /* CONTENT */
-.content { max-width: 1100px; margin: 0 auto; padding: 40px 48px 80px; }
+.content { max-width: 1100px; margin: 0 auto; padding: 48px 56px 96px; }
 .cat-panel { display: none; }
 .cat-panel.active { display: block; }
 
@@ -165,22 +220,61 @@ nav {
 .fund-card[data-type="feels"] li::before { background: var(--green-light); }
 .fund-card[data-type="avoid"] li::before { background: var(--red); }
 
+/* HERO STATS */
+.hero-stats {
+  display: flex; justify-content: center; gap: 40px;
+  margin-top: 36px; padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-family: var(--display); font-size: 2rem; font-weight: 600;
+  color: var(--white); line-height: 1;
+  display: block; margin-bottom: 4px;
+}
+.hero-stat-label {
+  font-family: var(--mono); font-size: 9px; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(250,250,250,.35);
+}
+
 /* SECTION HEADING */
 .section-heading {
   font-family: var(--display);
-  font-size: 1.5rem; font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  font-size: 1.4rem; font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: rgba(250,250,250,.85);
 }
 
+/* DRILL QUICK-NAV */
+.drill-quicknav {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 32px;
+}
+.quicknav-link {
+  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,.08);
+  color: rgba(250,250,250,.45); background: none; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.quicknav-link:hover { color: var(--white); border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.04); }
+
 /* ACCORDIONS */
-.accordion-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 48px; }
+.accordion-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 48px; }
 .accordion-item {
   background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-  overflow: hidden; transition: border-color .18s;
+  overflow: hidden; transition: border-color .2s, box-shadow .2s;
 }
 .accordion-item.hidden { display: none; }
+/* color the open border by category */
+#panel-driving   .accordion-item.open { border-color: rgba(231,111,81,.35); box-shadow: 0 0 0 1px rgba(231,111,81,.1); }
+#panel-approach  .accordion-item.open { border-color: rgba(90,143,168,.35); box-shadow: 0 0 0 1px rgba(90,143,168,.1); }
+#panel-shortgame .accordion-item.open { border-color: rgba(201,168,76,.35); box-shadow: 0 0 0 1px rgba(201,168,76,.1); }
+#panel-putting   .accordion-item.open { border-color: rgba(91,191,133,.35); box-shadow: 0 0 0 1px rgba(91,191,133,.1); }
+#panel-mental    .accordion-item.open { border-color: rgba(155,114,207,.35); box-shadow: 0 0 0 1px rgba(155,114,207,.1); }
+
 .accordion-trigger {
   width: 100%; display: flex; align-items: center; gap: 16px;
   padding: 18px 20px; background: none; border: none; cursor: pointer;
@@ -191,22 +285,29 @@ nav {
   font-family: var(--body); font-size: 15px; font-weight: 500; color: var(--white);
   flex: 1;
 }
-.hc-tags { display: flex; gap: 6px; }
+.hc-tags { display: flex; gap: 5px; flex-shrink: 0; }
 .hc-tag {
-  font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: .06em;
-  padding: 3px 8px; border-radius: 3px; text-transform: uppercase;
+  font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: .05em;
+  padding: 3px 7px; border-radius: 3px; text-transform: uppercase;
 }
-.hc-tag.high    { background: rgba(231,111,81,.15);  color: var(--red); }
-.hc-tag.mid     { background: rgba(90,143,168,.15);  color: var(--blue-mid); }
-.hc-tag.low     { background: rgba(201,168,76,.15);  color: var(--gold); }
-.hc-tag.scratch { background: rgba(91,191,133,.15);  color: var(--green-light); }
+.hc-tag.high    { background: rgba(231,111,81,.12);  color: var(--red); }
+.hc-tag.mid     { background: rgba(90,143,168,.12);  color: var(--blue-mid); }
+.hc-tag.low     { background: rgba(201,168,76,.12);  color: var(--gold); }
+.hc-tag.scratch { background: rgba(91,191,133,.12);  color: var(--green-light); }
 .chevron {
   width: 16px; height: 16px; color: var(--muted); flex-shrink: 0;
-  transition: transform .22s; transform: rotate(0deg);
+  transition: transform .25s cubic-bezier(.22,1,.36,1);
 }
 .accordion-item.open .chevron { transform: rotate(180deg); }
-.accordion-body { display: none; padding: 0 20px 24px; }
-.accordion-item.open .accordion-body { display: block; }
+/* smooth slide */
+.accordion-body {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .38s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+  padding: 0 20px;
+}
+.accordion-item.open .accordion-body {
+  max-height: 1600px; opacity: 1; padding: 0 20px 24px;
+}
 
 .drill-meta {
   display: flex; gap: 24px; flex-wrap: wrap;
@@ -274,65 +375,124 @@ nav {
 
 /* FOOTER */
 footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 48px;
-  text-align: center;
-  font-size: 12px; color: var(--muted);
+  background: var(--black);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 64px 56px 36px;
+}
+.footer-grid {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 44px;
+}
+.f-brand .f-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.f-brand .f-logo svg { width: 20px; height: 20px; }
+.f-logo-text { font-weight: 600; font-size: 13px; letter-spacing: .1em; color: var(--white); }
+.f-logo-text span { font-weight: 300; opacity: .5; }
+.f-brand p { font-size: 13px; color: rgba(250,250,250,.36); line-height: 1.65; max-width: 240px; }
+.f-col h5 { font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(250,250,250,.28); margin-bottom: 18px; }
+.f-col a { display: block; font-size: 13px; color: rgba(250,250,250,.5); margin-bottom: 11px; transition: color .2s; }
+.f-col a:hover { color: var(--white); }
+.footer-bottom {
+  max-width: 1120px; margin: 44px auto 0; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: rgba(250,250,250,.25);
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  nav { padding: 0 20px; }
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats { gap: 24px; }
+}
+@media (max-width: 600px) {
+  nav { padding: 0 22px; }
   .nav-links { display: none; }
-  .hamburger { display: flex; }
-  .hero, .filters, .content { padding-left: 20px; padding-right: 20px; }
+  .nav-hamburger { display: flex; }
+  .hero { padding: 110px 22px 56px; }
+  .hero h1 { font-size: 2.2rem; }
+  .hero-stats { gap: 20px; flex-wrap: wrap; }
+  .hero-stat-num { font-size: 1.6rem; }
+  .filter-inner { padding: 0 16px; }
+  .cat-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .cat-tabs::-webkit-scrollbar { display: none; }
+  .cat-tab { padding: 14px 14px; font-size: 10px; letter-spacing: .06em; flex-shrink: 0; }
+  .content { padding: 28px 16px 80px; }
   .fundamentals { grid-template-columns: 1fr; }
-  .cat-tab { padding: 10px 14px; font-size: 11px; }
+  .sessions-grid { grid-template-columns: 1fr; }
+  .drill-meta { gap: 16px; }
+  .hc-tags { display: none; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  footer { padding: 48px 22px 28px; }
+  .footer-bottom { flex-direction: column; gap: 6px; align-items: center; }
 }
 </style>
 </head>
 <body>
 
 <nav id="nav">
-  <a href="/" class="nav-logo">Divot <span>Lab</span></a>
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
   <div class="nav-links">
-    <a href="/practice-library-v2.html" class="active">Practice Library</a>
-    <a href="/blog.html">Blog</a>
-    <a href="/about.html">About</a>
+    <a href="/practice">Practice Plan</a>
+    <a href="/practice-library" class="active">Practice Library</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
+    <a href="https://divotlab.printful.me/">Shop</a>
+    <a href="/about">About</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
-  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<div class="drawer" id="drawer">
-  <a href="/practice-library-v2.html">Practice Library</a>
-  <a href="/blog.html">Blog</a>
-  <a href="/about.html">About</a>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice Plan</a>
+  <a href="/practice-library">Practice Library</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
+  <a href="https://divotlab.printful.me/">Shop</a>
+  <a href="/about">About</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
 <section class="hero">
-  <p class="eyebrow">Practice Library</p>
-  <h1>Every drill you need.<br>Matched to your game.</h1>
-  <p>26 measurable drills organized by category and handicap level. Each one rooted in strokes gained research with clear benchmarks so you know when you have it.</p>
+  <div class="hero-inner">
+    <p class="eyebrow">Practice Library</p>
+    <h1>Every drill you need.<br>Matched to your game.</h1>
+    <p>26 measurable drills across five categories. Each one rooted in strokes gained research with clear benchmarks so you know when you have it.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-num">26</span><span class="hero-stat-label">Drills</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">5</span><span class="hero-stat-label">Categories</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">4</span><span class="hero-stat-label">Handicap Levels</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">15</span><span class="hero-stat-label">Practice Sessions</span></div>
+    </div>
+  </div>
 </section>
 
-<div class="filters">
-  <p class="filter-label">Handicap Level</p>
-  <div class="filter-row" id="hc-filter">
-    <button class="chip active" data-hc="all">All Levels</button>
-    <button class="chip" data-hc="high">High (18+)</button>
-    <button class="chip" data-hc="mid">Mid (10–17)</button>
-    <button class="chip" data-hc="low">Low (5–9)</button>
-    <button class="chip" data-hc="scratch">Scratch (0–4)</button>
-  </div>
-
-  <div class="cat-tabs" id="cat-tabs">
-    <button class="cat-tab active" data-cat="driving">Driving</button>
-    <button class="cat-tab" data-cat="approach">Approach</button>
-    <button class="cat-tab" data-cat="shortgame">Short Game</button>
-    <button class="cat-tab" data-cat="putting">Putting</button>
-    <button class="cat-tab" data-cat="mental">Mental</button>
+<div class="filter-zone" id="filterZone">
+  <div class="filter-inner">
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="cat-tab active" data-cat="driving">Driving</button>
+      <button class="cat-tab" data-cat="approach">Approach</button>
+      <button class="cat-tab" data-cat="shortgame">Short Game</button>
+      <button class="cat-tab" data-cat="putting">Putting</button>
+      <button class="cat-tab" data-cat="mental">Mental</button>
+    </div>
+    <div class="level-bar">
+      <span class="level-label">Level:</span>
+      <button class="lvl-btn active" data-hc="all">All</button>
+      <button class="lvl-btn" data-hc="high">High (18+)</button>
+      <button class="lvl-btn" data-hc="mid">Mid (10–17)</button>
+      <button class="lvl-btn" data-hc="low">Low (5–9)</button>
+      <button class="lvl-btn" data-hc="scratch">Scratch</button>
+    </div>
   </div>
 </div>
 
@@ -372,6 +532,16 @@ footer {
     </div>
 
     <p class="section-heading">Drills</p>
+    <div class="drill-quicknav">
+      <button class="quicknav-link" data-target="driving-0">Corridor Drill</button>
+      <button class="quicknav-link" data-target="driving-1">Left-Right-Center Block</button>
+      <button class="quicknav-link" data-target="driving-2">The 80% Swing</button>
+      <button class="quicknav-link" data-target="driving-3">Feet Together Driver</button>
+      <button class="quicknav-link" data-target="driving-4">Tee Height Ladder</button>
+      <button class="quicknav-link" data-target="driving-5">3-2-1 Pressure</button>
+      <button class="quicknav-link" data-target="driving-6">Distance Dispersion Map</button>
+      <button class="quicknav-link" data-target="driving-7">Speed Contrast Sets</button>
+    </div>
 
     <div class="accordion-list" id="driving-drills">
 
@@ -672,64 +842,1225 @@ footer {
 
   </div><!-- /panel-driving -->
 
-  <!-- Remaining panels to be built out -->
-  <div class="cat-panel" id="panel-approach"><p style="color:var(--muted);padding:40px 0;">Approach drills coming soon.</p></div>
-  <div class="cat-panel" id="panel-shortgame"><p style="color:var(--muted);padding:40px 0;">Short game drills coming soon.</p></div>
-  <div class="cat-panel" id="panel-putting"><p style="color:var(--muted);padding:40px 0;">Putting drills coming soon.</p></div>
-  <div class="cat-panel" id="panel-mental"><p style="color:var(--muted);padding:40px 0;">Mental drills coming soon.</p></div>
+  <!-- ==================== APPROACH ==================== -->
+  <div class="cat-panel" id="panel-approach">
+
+    <div class="fundamentals">
+      <div class="fund-card" data-type="setup">
+        <h3>Setup</h3>
+        <ul>
+          <li>Ball center to slightly back in stance depending on trajectory needed</li>
+          <li>Hands ahead of the ball at address — shaft lean toward the target</li>
+          <li>Weight 55–60% on the lead side at address; do not shift back</li>
+          <li>Feet square or slightly open to promote rotation through impact</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="feels">
+        <h3>Feels</h3>
+        <ul>
+          <li>Compress the ball — feel the divot starting at or after the ball, never before</li>
+          <li>Maintain shaft lean through impact; lead wrist flat, trail wrist bent</li>
+          <li>Smooth acceleration into the ball — never decelerate or guide</li>
+          <li>Chest rotates to face the target in the follow-through, not just the arms swinging</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="avoid">
+        <h3>Avoid</h3>
+        <ul>
+          <li>Scooping — flipping the trail hand under to "help" the ball up</li>
+          <li>Hanging back on the trail side through impact; kills compression</li>
+          <li>Aiming feet at the flag when trouble short or right demands a different play</li>
+          <li>Ignoring the miss direction — always plan for where your bad shot goes</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-heading">Drills</p>
+    <div class="drill-quicknav" data-auto-nav="approach"></div>
+
+    <div class="accordion-list">
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Yardage Book</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">30+</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">30 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range + Monitor</span></div>
+          </div>
+          <p class="drill-description">Hit 5 balls with every iron and wedge, recording the average carry with each. This is your personal yardage book — the numbers that reflect your actual swing, not the back of the box. Most golfers overestimate their distances by 10–15 yards and it costs them shots every round.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Start with your gap wedge and work through to your longest iron</li>
+              <li>Hit 5 quality shots with each club — discard any that feel clearly mishit</li>
+              <li>Record the average carry (not total distance) for each</li>
+              <li>Note your gaps: each club should be 8–12 yards apart. Identify clubs too close together or too far</li>
+              <li>Repeat quarterly — your numbers change as your swing evolves</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Club distance chart ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Clean 8–12 yard gaps between every club. No two clubs within 5 yards of each other.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">10-Yard Ladder</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Pick one club and hit shots to four targets exactly 10 yards apart: for example, 100 / 110 / 120 / 130. Trains precision distance control rather than swinging at one number repeatedly. The gaps are where you build feel.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Pick a club and identify four targets 10 yards apart on the range</li>
+              <li>Hit 5 balls to each target in sequence — no repeating a distance</li>
+              <li>Use swing length changes, not grip changes: same grip, vary backswing length and pace</li>
+              <li>Grade: how many of 20 balls finish within 5 yards of the target?</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Ladder distance targets ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>14 of 20 balls within 5 yards of target. Mid/low HC target: 16/20.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid">
+        <button class="accordion-trigger">
+          <span class="drill-name">Same Club, 5 Distances</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">25</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Take one wedge and hit it to 5 different distances using only swing length and tempo — no grip adjustments. This is the foundation of wedge feel. High and mid handicap players usually skip this entirely and wonder why their wedge game is inconsistent.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Choose a 52 or 56 degree wedge</li>
+              <li>Set targets at 50%, 60%, 70%, 80%, and 100% of your full carry with that club</li>
+              <li>Hit 5 balls to each distance. Vary only backswing length (9 o'clock, 10 o'clock, full)</li>
+              <li>Count how many balls stop within 10 yards of each target</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Swing length vs. distance ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>18 of 25 balls within 10 yards of target. Builds to 20/25 as feel develops.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Flag Attack</span>
+          <div class="hc-tags">
+            <span class="hc-tag mid">Mid</span><span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Pick the flag as your target — not a zone, not "somewhere on the green." Commit to an exact carry number and execute. This drill removes the comfortable vagueness that mid-handicap players use to protect themselves from expectation. Strokes gained approach rewards proximity to the hole, not proximity to the green.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Select a specific flag at a known distance (use a rangefinder)</li>
+              <li>Commit to your exact carry number before each shot — say it aloud</li>
+              <li>Hit 20 balls, grading each: inside 15 feet / 15–30 feet / 30+ feet</li>
+              <li>Track your "attack number" — how often did your ball finish pin-high?</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Proximity distribution ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>6 of 20 inside 15 feet. Low/scratch target: 8 of 20. Pin-high rate above 60%.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Wind Club Selection</span>
+          <div class="hc-tags">
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">24</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">30 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range (windy day)</span></div>
+          </div>
+          <p class="drill-description">Practice deliberate club selection adjustments in wind. Into a headwind, take more club and swing at 80% — a smooth 7-iron beats a forced 8-iron every time. Downwind, take less club and let the ball run. Crosswind, play the shot shape that rides the wind rather than fighting it.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>On a windy range day, identify wind direction and estimate speed (light / moderate / strong)</li>
+              <li>Hit 8 balls into the wind: club up one full club and swing at 80%</li>
+              <li>Hit 8 balls downwind: club down one, allow for extra run</li>
+              <li>Hit 8 balls in a crosswind: either shape into the wind or ride it — choose intentionally</li>
+              <li>Track which group held the target better</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Wind adjustment matrix ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Carry within 10 yards of intended number in each wind direction. No more mis-clubbing by a full club.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Stock Shot Groove</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">30</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range</span></div>
+          </div>
+          <p class="drill-description">Build one repeatable shot shape with your 7-iron that you trust completely. Tour players don't hit every shot differently — they have a stock flight they default to under pressure. Yours should be a gentle fade or draw with a consistent trajectory. Once you have it, protect it.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Choose a shot shape: gentle fade (most common reliable shape) or controlled draw</li>
+              <li>Set up and aim to produce that shape on every single shot, no exceptions</li>
+              <li>Hit 30 balls with the 7-iron, all intended to produce the same flight</li>
+              <li>Grade: how many produced the intended shape? How tight was the dispersion?</li>
+              <li>Once grooved, repeat with your 6-iron and 8-iron using the same shape</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Shot shape dispersion ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>24 of 30 producing the intended shape. Dispersion pattern should be tight and predictable, not scattered.</div>
+        </div>
+      </div>
+
+    </div><!-- /approach-drills -->
+
+    <p class="section-heading">Practice Sessions</p>
+    <div class="sessions">
+      <div class="sessions-grid">
+        <div class="session-card">
+          <h4>Distance Calibration</h4>
+          <p class="session-duration">40 minutes — All levels</p>
+          <ol>
+            <li>The Yardage Book — 30 balls, build your carry chart</li>
+            <li>10-Yard Ladder — 20 balls with your 9-iron (translate the feel)</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Feel &amp; Commitment</h4>
+          <p class="session-duration">45 minutes — Mid / Low / Scratch</p>
+          <ol>
+            <li>Same Club 5 Distances — 25 balls with 56-degree (feel)</li>
+            <li>Flag Attack — 20 balls with mid-iron (commit to a number)</li>
+            <li>Stock Shot Groove — 15 balls to close (pattern lock)</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Full Approach Session</h4>
+          <p class="session-duration">60 minutes — Low / Scratch</p>
+          <ol>
+            <li>10-Yard Ladder — 20 balls (warm up the distance feel)</li>
+            <li>Flag Attack — 20 balls, track proximity zones</li>
+            <li>Wind Club Selection — 24 balls if conditions allow</li>
+            <li>Stock Shot Groove — 20 balls to close</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="resources">
+      <p class="section-heading">Research &amp; References</p>
+      <div class="resources-list">
+        <a class="resource-link" href="https://www.usga.org" target="_blank" rel="noopener">USGA.org</a>
+        <a class="resource-link" href="https://www.pgatour.com/stats" target="_blank" rel="noopener">PGA Tour Stats</a>
+        <a class="resource-link" href="https://datagolf.com" target="_blank" rel="noopener">Data Golf</a>
+        <a class="resource-link" href="https://arccosgolf.com" target="_blank" rel="noopener">Arccos Golf</a>
+      </div>
+    </div>
+
+  </div><!-- /panel-approach -->
+  <!-- ==================== SHORT GAME ==================== -->
+  <div class="cat-panel" id="panel-shortgame">
+
+    <div class="fundamentals">
+      <div class="fund-card" data-type="setup">
+        <h3>Setup</h3>
+        <ul>
+          <li>Narrow stance, feet 6–8 inches apart; lead foot flared slightly open</li>
+          <li>Weight 60–65% forward at address and keep it there throughout</li>
+          <li>Hands ahead of the ball — shaft lean toward the target at address</li>
+          <li>Ball position varies: center for bump-and-run, slightly back for lower trajectory</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="feels">
+        <h3>Feels</h3>
+        <ul>
+          <li>Arms and shoulders moving as one connected unit — no independent wrist flip</li>
+          <li>Chest rotates through; the club never passes the hands before impact</li>
+          <li>Contact the ball first, then the turf — feel the ball compressing before the brush</li>
+          <li>Follow-through matches backswing length — even tempo, not deceleration</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="avoid">
+        <h3>Avoid</h3>
+        <ul>
+          <li>Scooping — trying to lift the ball by flipping the trail wrist under</li>
+          <li>Decelerating into impact; the most common cause of chunked and thinned chips</li>
+          <li>Excessive wrist hinge — this is an arms-and-shoulders motion, not a wrist motion</li>
+          <li>Using the same shot for every lie; tight lies and fluffy lies demand different setups</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-heading">Drills</p>
+    <div class="drill-quicknav" data-auto-nav="shortgame"></div>
+
+    <div class="accordion-list">
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The 6-Foot Circle</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">6</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Place 6 balls in a circle around a hole at 6 feet — one at each clock position. The goal is to chip all 6 within tap-in range before moving on. The circle removes directional bias and forces you to handle uphill, downhill, and sidehill chips in the same session. The best short game drill in golf.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set 6 balls at 12, 2, 4, 6, 8, and 10 o'clock positions — all 6 feet from the hole</li>
+              <li>Chip each ball; goal is to stop within 3 feet of the hole</li>
+              <li>If you fail two in a row, restart the circle from the beginning</li>
+              <li>Progress: complete the circle without a restart, then move out to 10 feet</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ 6-point circle around hole ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Complete the full circle with all 6 within tap-in range. Progress to 10 feet when you can do it 3 sessions in a row.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Dollar Bill Drill</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Chipping area</span></div>
+          </div>
+          <p class="drill-description">Place a dollar bill flat on the ground directly behind your ball. Your clubhead must not touch the bill on the downswing. It forces the low point of the swing arc forward — past the ball — which is the single most important thing in chipping. If you're chunking chips, this drill fixes it within a session.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Place the ball on the practice green; lay a dollar bill touching the back of the ball</li>
+              <li>Set up with hands forward, weight forward</li>
+              <li>Chip without the club touching the bill on the way down</li>
+              <li>A touched bill means the low point is behind the ball — adjust weight and hand position forward</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Low point arc diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>20 consecutive chips without touching the bill. Once there, remove the bill and feel the same motion carry over.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Clock Chip</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Hit chips from 4 positions around a green — 12, 3, 6, and 9 o'clock — all at the same distance from the hole. Each position presents a different slope, grain, and trajectory challenge. This is how you build an all-around short game instead of only being comfortable from your favorite angle.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set up 4 balls at the same distance (15–20 yards) from a hole, at each clock position</li>
+              <li>Hit 5 chips from each position; adjust for slope and lie as needed</li>
+              <li>Score: 3 points inside 3 feet, 1 point inside 6 feet, 0 outside</li>
+              <li>Target: 40 points out of a possible 60 to pass; 50+ is excellent</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ 4-position clock layout ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>40 of 60 points. Mid/low target: 48 of 60. Identifies your weakest approach direction.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Tight Lie Commitment</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Firm chipping area</span></div>
+          </div>
+          <p class="drill-description">Chip 20 balls from a tight, bare lie using only your 56-degree wedge. Most high handicappers are terrified of tight lies — this drill removes the fear through repetition. The key is committing fully: no deceleration, no scooping. A confident swing from a tight lie is actually more reliable than a tentative swing from rough.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Find a tight, firm lie on the practice area or a worn patch of turf</li>
+              <li>Play ball slightly back, weight forward, hands well ahead</li>
+              <li>Commit to a firm, accelerating stroke — trust the loft on the club</li>
+              <li>Count how many of 20 make clean contact. Chunked or thinned shots = the scoop crept in</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Tight lie setup position ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>16 of 20 clean contacts from a tight lie. Below 12 means the low point is still behind the ball — revisit the Dollar Bill Drill first.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid">
+        <button class="accordion-trigger">
+          <span class="drill-name">One Club, All Distances</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Take only your 56-degree wedge and chip to holes at 5, 10, 20, and 30 yards. No other clubs allowed. Forces you to learn how swing length and trajectory control distance rather than switching clubs. Most high and mid handicappers have too many "chip clubs" and not enough feel with any of them.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Identify four holes at different distances from your chipping area</li>
+              <li>Hit 5 chips to each hole using only the 56-degree</li>
+              <li>Vary trajectory by changing ball position and swing length — same club, different shots</li>
+              <li>Grade proximity: how many stop within 6 feet of each hole?</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Distance variation with one club ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>12 of 20 within 6 feet across all distances. Builds to 15/20 as feel develops over 4–6 sessions.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Variable Lie Circuit</span>
+          <div class="hc-tags">
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice area</span></div>
+          </div>
+          <p class="drill-description">Hit 5 chips from each of four lie types in sequence: thick rough, tight/hardpan, uphill slope, downhill slope. Simulates the variety you face on course where you rarely get a perfect lie. Elite short games are built on handling bad lies well, not perfect lies perfectly.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Find or create four distinct lie conditions in your practice area</li>
+              <li>Hit 5 balls from each lie, same target each time</li>
+              <li>Adjust setup for each: rough = wider stance, more wrist; hardpan = hands forward, firmer grip; uphill = lean into slope; downhill = lean with slope, ball back</li>
+              <li>Track proximity from each lie type — your worst lie reveals your next practice priority</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Lie type circuit ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>All four lie types producing shots within 10 feet. No lie type should be dramatically worse than the others.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Bunker Distance Control</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">18</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice bunker</span></div>
+          </div>
+          <p class="drill-description">Hit 6 bunker shots to each of three distance zones: short (10 yards), medium (20 yards), and long (30 yards). Most players only practice getting out — they never learn to control distance. The key variable is sand entry point and swing speed, not loft changes.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set targets at 10, 20, and 30 yards from the bunker</li>
+              <li>For short shots: enter the sand 3 inches behind the ball, abbreviated follow-through</li>
+              <li>For long shots: enter 2 inches behind, full follow-through, more speed</li>
+              <li>Hit 6 to each target; count balls landing within 5 yards of each zone</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Bunker distance zones ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>4 of 6 within 5 yards of each target zone. Priority: exit the bunker on every single attempt before worrying about distance.</div>
+        </div>
+      </div>
+
+    </div><!-- /shortgame-drills -->
+
+    <p class="section-heading">Practice Sessions</p>
+    <div class="sessions">
+      <div class="sessions-grid">
+        <div class="session-card">
+          <h4>Foundation</h4>
+          <p class="session-duration">30 minutes — All levels</p>
+          <ol>
+            <li>Dollar Bill Drill — 20 balls (lock in low point)</li>
+            <li>The 6-Foot Circle — until complete without a restart</li>
+            <li>Bunker Distance Control — 12 balls to medium zone</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Feel Builder</h4>
+          <p class="session-duration">45 minutes — Mid / Low</p>
+          <ol>
+            <li>Clock Chip — 20 balls, score all 4 positions</li>
+            <li>One Club All Distances — 20 balls with 56-degree</li>
+            <li>Tight Lie Commitment — 15 balls</li>
+            <li>6-Foot Circle — close the session on the green</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Competition Prep</h4>
+          <p class="session-duration">60 minutes — Low / Scratch</p>
+          <ol>
+            <li>Variable Lie Circuit — 20 balls across 4 lie types</li>
+            <li>Bunker Distance Control — all 3 zones, 18 balls</li>
+            <li>Clock Chip — 20 balls, record score for tracking</li>
+            <li>6-Foot Circle — complete twice before finishing</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="resources">
+      <p class="section-heading">Research &amp; References</p>
+      <div class="resources-list">
+        <a class="resource-link" href="https://www.usga.org" target="_blank" rel="noopener">USGA.org</a>
+        <a class="resource-link" href="https://www.pgatour.com/stats" target="_blank" rel="noopener">PGA Tour Stats</a>
+        <a class="resource-link" href="https://datagolf.com" target="_blank" rel="noopener">Data Golf</a>
+        <a class="resource-link" href="https://arccosgolf.com" target="_blank" rel="noopener">Arccos Golf</a>
+      </div>
+    </div>
+
+  </div><!-- /panel-shortgame -->
+  <!-- ==================== PUTTING ==================== -->
+  <div class="cat-panel" id="panel-putting">
+
+    <div class="fundamentals">
+      <div class="fund-card" data-type="setup">
+        <h3>Setup</h3>
+        <ul>
+          <li>Eyes directly over the ball or slightly inside the target line — not outside</li>
+          <li>Putter face square to intended start line at address; grip pressure 3/10</li>
+          <li>Even weight distribution, slight knee flex, back straight — no slouch</li>
+          <li>Ball position slightly forward of center to promote a slightly ascending strike</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="feels">
+        <h3>Feels</h3>
+        <ul>
+          <li>Shoulders rocking like a pendulum — arms and wrists passive, not driving the stroke</li>
+          <li>Backswing and follow-through are the same length; never shorter on the follow-through</li>
+          <li>Feel the putter head weight swinging freely — don't muscle it, let it go</li>
+          <li>Pick a specific entry point on the hole, not "the hole." Roll the ball to that spot</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="avoid">
+        <h3>Avoid</h3>
+        <ul>
+          <li>Steering — guiding the putter toward the hole instead of swinging through</li>
+          <li>Looking up early; wait to hear the putt drop, don't watch it travel</li>
+          <li>Decelerating into short putts — the most common cause of misses inside 6 feet</li>
+          <li>Fixating on hazards or trouble when reading; plan your line, then commit fully</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-heading">Drills</p>
+    <div class="drill-quicknav" data-auto-nav="putting"></div>
+
+    <div class="accordion-list">
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Gate Drill</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Place two tees in the ground just wider than your putter head, about 6 inches in front of the ball on your intended line. Roll putts through the gate without touching either tee. Any contact reveals exactly what's wrong: hitting the lead tee means the face is open, hitting the trail tee means it's closed or the path is off. Instant, objective feedback with no launch monitor needed.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set two tees just wider than your putter head, 6 inches ahead of the ball on your line</li>
+              <li>Putt from 6 feet; the ball must pass through the gate cleanly</li>
+              <li>Track how many of 20 roll through without contact</li>
+              <li>Progress: move gate to 3 inches ahead of ball (harder), then add a second gate near the hole</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Gate tee placement diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>18 of 20 through the gate cleanly from 6 feet. Below 14 means path or face angle needs immediate attention.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The 100-Putt Challenge</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">10</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">30 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Hit 100 putts from 3 feet, tracking how many you make. No free passes, no mulligans — every miss counts. This is the most honest assessment of your short putting stroke available. The goal is to expose what happens when you get tired and when pressure accumulates over a long session. Most golfers never do this and never find out where their stroke actually breaks down.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Mark a spot 3 feet from the hole; use a tee as a consistent marker</li>
+              <li>Hit 10 putts, record how many drop, move to the next ball</li>
+              <li>Repeat 10 rounds for 100 total putts</li>
+              <li>Note when misses cluster — usually putts 60–80 when fatigue sets in</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Make rate over 100 putts ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>85/100 for high HC. Mid: 90/100. Low/scratch: 95/100. Track over time — consistency matters more than one good session.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Around the World</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">8</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Place 8 balls in a circle around the hole at 4 feet — one at each compass point and halfway between each. You must make all 8 consecutively. Miss one, restart from the beginning. This drill exposes every different break you'll face on a real green and trains you to handle pressure on each individual putt — because by putt 7 and 8, you feel it.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set 8 tee markers in a circle 4 feet from the hole</li>
+              <li>Go around in order; all 8 must drop consecutively</li>
+              <li>Miss any putt: restart from putt 1</li>
+              <li>Progress: move to 5 feet once you complete it 3 times per session</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ 8-ball circle layout ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Complete the full circle without a restart. Progress to 5 feet when you can do it twice in one session.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Lag Ladder — 3 Zones</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Hit 5 putts to each of three distance zones — short (15 ft), medium (30 ft), and long (50 ft) — with a goal of finishing every ball within a 3-foot circle of the hole. Lag putting is responsible for more 3-putts than any other factor. Distance control, not line, is the primary skill for putts beyond 20 feet.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Mark three zones at 15, 30, and 50 feet from a hole</li>
+              <li>Hit 5 putts from each zone; goal is stopping within 3 feet of the hole</li>
+              <li>Count how many of 15 total finish inside the 3-foot circle</li>
+              <li>Worst zone becomes your next session's priority</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Lag distance zones ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>12 of 15 inside 3 feet. High HC acceptable start: 9/15. Track your worst zone each session.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid">
+        <button class="accordion-trigger">
+          <span class="drill-name">Pace Clock</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Hit 20-foot putts from 4 clock positions around the hole — 12, 3, 6, and 9 o'clock. Each position presents a different amount of break. The goal isn't to make them; it's to finish every ball within 18 inches of the hole regardless of direction. High and mid handicap players lose the most strokes to 3-putts, and poor pace control from mid-range is the cause.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set markers at 20 feet from a hole in each of 4 directions</li>
+              <li>Hit 5 putts from each position — read the break before each</li>
+              <li>Pace goal: finish within 18 inches. Making it is a bonus</li>
+              <li>Count how many of 20 are inside 18 inches. Track across sessions</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Clock position layout ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>15 of 20 within 18 inches. Below 10 means pace control is the primary issue — prioritize Lag Ladder before this drill.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Breaking Putt Mapping</span>
+          <div class="hc-tags">
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Find a 20-foot breaking putt on the practice green. Before hitting a single ball, map it: where is the apex of the break, what is the entry angle into the hole, and how much speed does this putt require? Write it down. Then hit 15 putts to test your read. This is how tour players build green reading intuition — deliberate analysis before execution, not guessing.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Find a putt with 6+ inches of visible break</li>
+              <li>Walk the line: mark the apex with a tee, estimate entry angle</li>
+              <li>Write down your read before hitting any balls</li>
+              <li>Hit 15 putts; compare outcomes to your initial read — adjust the tee if needed</li>
+              <li>Repeat with a different putt; over time, compare your reads to reality</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Break arc and apex diagram ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Read matches actual break within 1 ball-width on 10 of 15 attempts. Consistent misreads in one direction reveal a systematic bias to correct.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Eyes-Closed Putting</span>
+          <div class="hc-tags">
+            <span class="hc-tag mid">Mid</span><span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">15</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Practice green</span></div>
+          </div>
+          <p class="drill-description">Putt from 8 feet with your eyes closed after committing fully to your line. Close your eyes at address, make the stroke, and listen. If you're steering the putter toward the hole visually, this drill exposes it immediately. The ball flight tells you everything about your true stroke path and face angle, unfiltered by compensations.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Read an 8-foot straight or slightly breaking putt, commit to your line</li>
+              <li>Close your eyes at address before starting your stroke</li>
+              <li>Make your normal stroke without opening your eyes; let the ball go</li>
+              <li>Open eyes only after you hear the result — then assess where the ball finished and why</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Stroke path without visual compensation ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>8 of 15 within 12 inches of the hole. Consistent misses in one direction reveal path or face bias. Compare to eyes-open results for the same putt.</div>
+        </div>
+      </div>
+
+    </div><!-- /putting-drills -->
+
+    <p class="section-heading">Practice Sessions</p>
+    <div class="sessions">
+      <div class="sessions-grid">
+        <div class="session-card">
+          <h4>Pre-Round Warm-Up</h4>
+          <p class="session-duration">20 minutes — All levels</p>
+          <ol>
+            <li>Lag Ladder — 10 balls, calibrate pace on this green</li>
+            <li>Around the World — complete once at 4 feet</li>
+            <li>Gate Drill — 10 balls from 6 feet to confirm path</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Full Putting Session</h4>
+          <p class="session-duration">45 minutes — All levels</p>
+          <ol>
+            <li>Gate Drill — 20 balls (path/face check)</li>
+            <li>Lag Ladder 3 Zones — 15 balls (distance control)</li>
+            <li>100-Putt Challenge — 50 putts from 3 feet (short game confidence)</li>
+            <li>Around the World — close with pressure simulation</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Advanced Green Reading</h4>
+          <p class="session-duration">45 minutes — Low / Scratch</p>
+          <ol>
+            <li>Breaking Putt Mapping — 3 different putts, 15 balls each</li>
+            <li>Eyes-Closed Putting — 15 balls (stroke audit)</li>
+            <li>Pace Clock — 20 balls across 4 directions</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="resources">
+      <p class="section-heading">Research &amp; References</p>
+      <div class="resources-list">
+        <a class="resource-link" href="https://www.usga.org" target="_blank" rel="noopener">USGA.org</a>
+        <a class="resource-link" href="https://www.pgatour.com/stats" target="_blank" rel="noopener">PGA Tour Stats</a>
+        <a class="resource-link" href="https://datagolf.com" target="_blank" rel="noopener">Data Golf</a>
+        <a class="resource-link" href="https://arccosgolf.com" target="_blank" rel="noopener">Arccos Golf</a>
+      </div>
+    </div>
+
+  </div><!-- /panel-putting -->
+
+  <!-- ==================== MENTAL ==================== -->
+  <div class="cat-panel" id="panel-mental">
+
+    <div class="fundamentals">
+      <div class="fund-card" data-type="setup">
+        <h3>Routine</h3>
+        <ul>
+          <li>Pre-shot routine: 2–4 steps maximum, identical every single time</li>
+          <li>Visualize the shot before stepping into your address — see it, then do it</li>
+          <li>Pick one specific target, not a zone or a general area</li>
+          <li>Once committed, execute without re-evaluating — doubt lives in the address position</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="feels">
+        <h3>On-Course Mindset</h3>
+        <ul>
+          <li>Process over outcome — your job on each shot is to execute the process, not control the result</li>
+          <li>One shot at a time; the scorecard doesn't exist until the round is over</li>
+          <li>Trust your practice — course is execution mode, not fix-it mode</li>
+          <li>After a mistake, give yourself 10 seconds then let it go completely</li>
+        </ul>
+      </div>
+      <div class="fund-card" data-type="avoid">
+        <h3>Avoid</h3>
+        <ul>
+          <li>Results-based thinking during execution — you control the process, not the ball</li>
+          <li>Comparing your game to your playing partners mid-round</li>
+          <li>Trying to fix your swing on the course — one simple thought maximum</li>
+          <li>Dwelling on previous holes; what's done is done, this shot is all that matters</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-heading">Drills</p>
+    <div class="drill-quicknav" data-auto-nav="mental"></div>
+
+    <div class="accordion-list">
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">The Round Audit</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">None</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">15 min post-round</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Anywhere</span></div>
+          </div>
+          <p class="drill-description">Within 2 hours of finishing a round, review it by decision quality — not score. For each hole, ask: did I pick the right target? Did I commit? Did I execute my pre-shot routine? Score your decisions 1–3 regardless of outcome. A well-executed shot that produces a bad result still gets a 3. A poorly-executed shot that gets lucky gets a 1. Over time this converts post-round frustration into actionable patterns.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Write down 3 holes where a mental mistake cost you a shot or two</li>
+              <li>Write down 3 holes where your decision-making was sharp, regardless of score</li>
+              <li>Score each decision 1 (poor), 2 (acceptable), 3 (excellent)</li>
+              <li>Calculate your "decision score" — track it over 10 rounds to find patterns</li>
+              <li>Identify one specific habit to change before the next round</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Decision quality scorecard ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Average decision score above 2.2 over 10 rounds. Consistent 1s in the same situation reveal your most important mental pattern to fix.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Pre-Round Hole Mapping</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">None</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">10 min pre-round</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Clubhouse / car</span></div>
+          </div>
+          <p class="drill-description">Before every round on a course you know, spend 10 minutes mapping your intended play on each hole — specifically your miss direction and what shot you'll hit from the fairway if you miss short, long, left, or right. Decision fatigue on the course is real. Players who have pre-planned their responses to bad positions make far better recovery decisions than those who improvise under pressure.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>On each hole, write your primary tee shot target and preferred miss direction</li>
+              <li>Identify the one place you cannot miss — make this your anti-target, not your target</li>
+              <li>For your approach: which side of the green gives the easiest chip or putt if you miss?</li>
+              <li>During the round, execute the plan without re-evaluating unless something unexpected changes</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Hole mapping template ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Stick to your pre-planned decision on 14+ of 18 holes. Track how often deviation from the plan leads to higher scores.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="high mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">One-Shot Reset Protocol</span>
+          <div class="hc-tags">
+            <span class="hc-tag high">High</span><span class="hc-tag mid">Mid</span>
+            <span class="hc-tag low">Low</span><span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">20</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Range or course</span></div>
+          </div>
+          <p class="drill-description">Build a personal 4-step reset protocol for after bad shots: (1) allow a brief emotional reaction — 5 seconds, get it out; (2) take one deep breath and physically release tension by shaking your hands; (3) say your trigger phrase ("next shot" or "reset" — pick one and never change it); (4) execute your full pre-shot routine on the very next shot as if nothing happened. Practice this sequence on the range by deliberately hitting bad shots and resetting.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Choose your personal trigger phrase — one word or two, said consistently</li>
+              <li>On the range, hit a deliberate bad shot (aim way off target, mishit intentionally)</li>
+              <li>Run the full 4-step protocol: react → breathe → trigger word → routine</li>
+              <li>Evaluate: did the next shot quality match your baseline? It should</li>
+              <li>Repeat 10 times per session until the protocol is automatic under pressure</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Reset protocol sequence ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Shot quality after a reset equals your baseline quality on 8 of 10 attempts. The protocol fails if you're still thinking about the previous shot during the next swing.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item" data-hc="mid low scratch">
+        <button class="accordion-trigger">
+          <span class="drill-name">Pressure Simulation Round</span>
+          <div class="hc-tags">
+            <span class="hc-tag mid">Mid</span><span class="hc-tag low">Low</span>
+            <span class="hc-tag scratch">Scratch</span>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="accordion-body">
+          <div class="drill-meta">
+            <div class="meta-item"><span class="meta-label">Balls</span><span class="meta-value">Full bag</span></div>
+            <div class="meta-item"><span class="meta-label">Time</span><span class="meta-value">2–3 hours</span></div>
+            <div class="meta-item"><span class="meta-label">Location</span><span class="meta-value">Course</span></div>
+          </div>
+          <p class="drill-description">Play a 9-hole round with self-imposed stakes and consequences on every shot. Examples: one mulligan for the entire 9 holes, lost ball means a two-stroke penalty played from where it entered trouble, any 3-putt means a push-up or extra chip after the round. Consequences don't have to be dramatic — they just have to be real enough that each shot matters. This is the only way to practice decision-making under actual pressure.</p>
+          <div class="drill-steps">
+            <h4>Steps</h4>
+            <ol>
+              <li>Set your personal consequence before teeing off — write it down</li>
+              <li>Play each hole as if it's the last hole of a match you're 1-up on</li>
+              <li>Apply the One-Shot Reset Protocol after every mistake</li>
+              <li>After the round, complete a Round Audit on decision quality</li>
+              <li>Track your "pressure score" vs. your normal practice round score</li>
+            </ol>
+          </div>
+          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Pressure vs. performance chart ]</text></svg>
+          <div class="drill-benchmark"><span>Benchmark</span>Pressure round score within 3 shots of your normal round average. Greater gap means mental game is the primary area of improvement.</div>
+        </div>
+      </div>
+
+    </div><!-- /mental-drills -->
+
+    <p class="section-heading">Practice Sessions</p>
+    <div class="sessions">
+      <div class="sessions-grid">
+        <div class="session-card">
+          <h4>Weekly Habit</h4>
+          <p class="session-duration">15 min — after every round</p>
+          <ol>
+            <li>Round Audit — 3 decisions that cost you, 3 that worked</li>
+            <li>Identify one specific pattern to address before next round</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Pre-Round Prep</h4>
+          <p class="session-duration">10 min — day of round</p>
+          <ol>
+            <li>Hole Mapping — plan each tee shot miss direction</li>
+            <li>Identify the 3 holes where you most often make mental mistakes on this course</li>
+            <li>Set one process cue word for the day ("smooth," "through," "trust")</li>
+          </ol>
+        </div>
+        <div class="session-card">
+          <h4>Monthly Reset</h4>
+          <p class="session-duration">60 min — Mid / Low / Scratch</p>
+          <ol>
+            <li>Review 4 Round Audits — what pattern keeps showing up?</li>
+            <li>Reset Protocol practice — 10 deliberate bad shots on range</li>
+            <li>Pressure Simulation Round — 9 holes with full consequences</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="resources">
+      <p class="section-heading">Research &amp; References</p>
+      <div class="resources-list">
+        <a class="resource-link" href="https://www.usga.org" target="_blank" rel="noopener">USGA.org</a>
+        <a class="resource-link" href="https://www.pgatour.com/stats" target="_blank" rel="noopener">PGA Tour Stats</a>
+        <a class="resource-link" href="https://datagolf.com" target="_blank" rel="noopener">Data Golf</a>
+        <a class="resource-link" href="https://arccosgolf.com" target="_blank" rel="noopener">Arccos Golf</a>
+      </div>
+    </div>
+
+  </div><!-- /panel-mental -->
 
 </div><!-- /content -->
 
 <footer>
-  <p>Divot Lab — Practice smarter. Score lower.</p>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="f-logo">
+        <svg viewBox="0 0 72 72" fill="none" style="color:var(--white)">
+          <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+          <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+          <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+        </svg>
+        <span class="f-logo-text">DIVOT <span>LAB</span></span>
+      </div>
+      <p>Golf analysis built on real numbers. Smart takes. Real stats. Clothes worth wearing.</p>
+    </div>
+    <div class="f-col">
+      <h5>Read</h5>
+      <a href="/articles">All Articles</a>
+      <a href="/strokes-gained-by-handicap-where-you-lose-shots">Strokes Gained by HC</a>
+      <a href="/the-150-yard-number-that-predicts-your-handicap-within-2-strokes">The 150-Yard Number</a>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="https://divotlab.printful.me/">Tees</a>
+      <a href="https://divotlab.printful.me/product/divot-lab-under-armour-dad-hat-light">Hats</a>
+      <a href="https://divotlab.printful.me/">All Products</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="/lab-notes">Lab Notes</a>
+      <a href="/about">About</a>
+      <a href="/practice">Practice Plan</a>
+      <a href="/practice-library">Practice Library</a>
+      <a href="/the-lab">The Lab</a>
+      <a href="https://instagram.com/divotlab" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Divot Lab</span>
+    <span>Built with data.</span>
+  </div>
 </footer>
 
 <script>
-// Hamburger
-const hamburger = document.getElementById('hamburger');
-const drawer = document.getElementById('drawer');
-hamburger.addEventListener('click', () => {
-  const open = drawer.classList.toggle('open');
-  document.body.classList.toggle('menu-open', open);
-});
+(function () {
+  var nav = document.getElementById('nav');
+  var drawer = document.getElementById('navDrawer');
+  var hamburger = document.getElementById('navHamburger');
+  var filterZone = document.getElementById('filterZone');
 
-// Category tabs
-const catTabs = document.querySelectorAll('.cat-tab');
-const catPanels = document.querySelectorAll('.cat-panel');
-catTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    catTabs.forEach(t => t.classList.remove('active'));
-    catPanels.forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('panel-' + tab.dataset.cat).classList.add('active');
+  // ── Hamburger + scroll lock ──────────────────────────────────
+  hamburger.addEventListener('click', function () {
+    var open = nav.classList.toggle('menu-open');
+    drawer.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
   });
-});
-
-// HC filter
-const hcChips = document.querySelectorAll('#hc-filter .chip');
-hcChips.forEach(chip => {
-  chip.addEventListener('click', () => {
-    hcChips.forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    const hc = chip.dataset.hc;
-    document.querySelectorAll('.accordion-item').forEach(item => {
-      if (hc === 'all') {
-        item.classList.remove('hidden');
-      } else {
-        const levels = item.dataset.hc ? item.dataset.hc.split(' ') : [];
-        item.classList.toggle('hidden', !levels.includes(hc));
-      }
+  drawer.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      nav.classList.remove('menu-open');
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
     });
   });
-});
 
-// Accordions
-document.querySelectorAll('.accordion-trigger').forEach(trigger => {
-  trigger.addEventListener('click', () => {
-    const item = trigger.closest('.accordion-item');
-    item.classList.toggle('open');
+  // ── Auto-build quick-nav pills from drill names ──────────────
+  function buildQuickNav(panelId) {
+    var panel = document.getElementById('panel-' + panelId);
+    if (!panel) return;
+    var nav2 = panel.querySelector('[data-auto-nav]');
+    if (!nav2) return;
+    var items = panel.querySelectorAll('.accordion-item');
+    items.forEach(function (item, i) {
+      var name = item.querySelector('.drill-name');
+      if (!name) return;
+      item.dataset.idx = panelId + '-' + i;
+      var btn = document.createElement('button');
+      btn.className = 'quicknav-link';
+      btn.textContent = name.textContent.trim();
+      btn.dataset.target = panelId + '-' + i;
+      btn.addEventListener('click', function () {
+        item.classList.add('open');
+        item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      nav2.appendChild(btn);
+    });
+  }
+  // also wire the driving panel (manually placed quicknav)
+  document.querySelectorAll('#panel-driving .quicknav-link[data-target]').forEach(function (btn) {
+    var idx = btn.dataset.target;
+    btn.addEventListener('click', function () {
+      var items = document.querySelectorAll('#panel-driving .accordion-item');
+      var num = parseInt(idx.split('-')[1], 10);
+      var item = items[num];
+      if (!item) return;
+      item.classList.add('open');
+      item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
-});
+  ['approach', 'shortgame', 'putting', 'mental'].forEach(buildQuickNav);
+
+  // ── Category tabs ────────────────────────────────────────────
+  var catTabs = document.querySelectorAll('.cat-tab');
+  var catPanels = document.querySelectorAll('.cat-panel');
+
+  function openFirstDrill(panel) {
+    var first = panel.querySelector('.accordion-item:not(.hidden)');
+    if (first && !first.classList.contains('open')) first.classList.add('open');
+  }
+
+  catTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      catTabs.forEach(function (t) { t.classList.remove('active'); });
+      catPanels.forEach(function (p) { p.classList.remove('active'); });
+      tab.classList.add('active');
+      var panel = document.getElementById('panel-' + tab.dataset.cat);
+      panel.classList.add('active');
+      // reset level filter
+      document.querySelectorAll('.lvl-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelector('.lvl-btn[data-hc="all"]').classList.add('active');
+      panel.querySelectorAll('.accordion-item').forEach(function (i) { i.classList.remove('hidden'); });
+      // scroll content into view just below sticky bar
+      var offset = filterZone.offsetTop + filterZone.offsetHeight;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    });
+  });
+
+  // Open first drill on initial load
+  var firstPanel = document.querySelector('.cat-panel.active');
+  if (firstPanel) openFirstDrill(firstPanel);
+
+  // ── Level filter ─────────────────────────────────────────────
+  document.querySelectorAll('.lvl-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.lvl-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var hc = btn.dataset.hc;
+      var activePanel = document.querySelector('.cat-panel.active');
+      activePanel.querySelectorAll('.accordion-item').forEach(function (item) {
+        if (hc === 'all') {
+          item.classList.remove('hidden');
+        } else {
+          var levels = (item.dataset.hc || '').split(' ');
+          var hide = !levels.includes(hc);
+          item.classList.toggle('hidden', hide);
+          if (hide && item.classList.contains('open')) item.classList.remove('open');
+        }
+      });
+    });
+  });
+
+  // ── Accordions ───────────────────────────────────────────────
+  document.querySelectorAll('.accordion-trigger').forEach(function (trigger) {
+    trigger.addEventListener('click', function () {
+      trigger.closest('.accordion-item').classList.toggle('open');
+    });
+  });
+}());
 </script>
 </body>
 </html>
