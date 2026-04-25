@@ -282,13 +282,13 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 
 /* START-HERE callout */
 .start-here {
-  display: flex; align-items: flex-start; gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
   border-radius: 8px; padding: 14px 18px; margin-bottom: 24px;
 }
 .start-here-label {
   font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; white-space: nowrap; flex-shrink: 0; padding-top: 2px;
+  text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
 }
 .start-here-text { font-size: 13px; color: rgba(250,250,250,.6); line-height: 1.5; }
 .start-here-text strong { color: var(--white); font-weight: 500; }
@@ -316,40 +316,73 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 
 /* DRILL QUICK-NAV */
 .drill-quicknav {
-  display: flex; flex-wrap: wrap; gap: 8px;
-  margin-bottom: 32px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 28px;
 }
 .quicknav-link {
   font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em;
   padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,.08);
-  color: rgba(250,250,250,.45); background: none; cursor: pointer;
+  color: rgba(250,250,250,.4); background: none; cursor: pointer;
   transition: all .15s; white-space: nowrap;
 }
-.quicknav-link:hover { color: var(--white); border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.04); }
+.quicknav-link:hover { color: var(--white); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.04); }
+.quicknav-link.done { color: var(--green-light); border-color: rgba(91,191,133,.25); }
 
 /* ACCORDIONS */
-.accordion-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 48px; }
+.accordion-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 52px; }
 .accordion-item {
   background: var(--card); border: 1px solid var(--border); border-radius: 8px;
   overflow: hidden; transition: border-color .2s, box-shadow .2s;
+  position: relative;
 }
 .accordion-item.hidden { display: none; }
-/* color the open border by category */
-#panel-driving   .accordion-item.open { border-color: rgba(231,111,81,.35); box-shadow: 0 0 0 1px rgba(231,111,81,.1); }
-#panel-approach  .accordion-item.open { border-color: rgba(90,143,168,.35); box-shadow: 0 0 0 1px rgba(90,143,168,.1); }
-#panel-shortgame .accordion-item.open { border-color: rgba(201,168,76,.35); box-shadow: 0 0 0 1px rgba(201,168,76,.1); }
-#panel-putting   .accordion-item.open { border-color: rgba(91,191,133,.35); box-shadow: 0 0 0 1px rgba(91,191,133,.1); }
-#panel-mental    .accordion-item.open { border-color: rgba(155,114,207,.35); box-shadow: 0 0 0 1px rgba(155,114,207,.1); }
+/* category-colored left bar when open */
+.accordion-item.open::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 8px 0 0 8px;
+}
+#panel-driving   .accordion-item.open { border-color: rgba(231,111,81,.3); }
+#panel-driving   .accordion-item.open::before { background: var(--red); }
+#panel-approach  .accordion-item.open { border-color: rgba(90,143,168,.3); }
+#panel-approach  .accordion-item.open::before { background: var(--blue-mid); }
+#panel-shortgame .accordion-item.open { border-color: rgba(201,168,76,.3); }
+#panel-shortgame .accordion-item.open::before { background: var(--gold); }
+#panel-putting   .accordion-item.open { border-color: rgba(91,191,133,.3); }
+#panel-putting   .accordion-item.open::before { background: var(--green-light); }
+#panel-mental    .accordion-item.open { border-color: rgba(155,114,207,.3); }
+#panel-mental    .accordion-item.open::before { background: var(--purple); }
+
+/* done state */
+.accordion-item.drill-done { background: rgba(91,191,133,.04); }
+.accordion-item.drill-done .drill-name { color: rgba(250,250,250,.55); }
 
 .accordion-trigger {
-  width: 100%; display: flex; align-items: center; gap: 16px;
-  padding: 18px 20px; background: none; border: none; cursor: pointer;
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; background: none; border: none; cursor: pointer;
   text-align: left;
 }
-.accordion-trigger:hover { background: rgba(255,255,255,.03); }
+.accordion-trigger:hover { background: rgba(255,255,255,.025); }
+
+/* done checkbox */
+.drill-check {
+  width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.15);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all .18s; cursor: pointer; position: relative; z-index: 2;
+}
+.drill-check svg { display: none; width: 10px; height: 10px; color: #0a0a0a; }
+.accordion-item.drill-done .drill-check {
+  background: var(--green-light); border-color: var(--green-light);
+}
+.accordion-item.drill-done .drill-check svg { display: block; }
+
+/* drill number */
+.drill-num {
+  font-family: var(--mono); font-size: 10px; color: rgba(250,250,250,.2);
+  flex-shrink: 0; min-width: 18px; text-align: right;
+}
+
 .drill-name {
   font-family: var(--body); font-size: 15px; font-weight: 500; color: var(--white);
-  flex: 1;
+  flex: 1; transition: color .18s;
 }
 .hc-tags { display: flex; gap: 5px; flex-shrink: 0; }
 .hc-tag {
@@ -361,73 +394,108 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 .hc-tag.low     { background: rgba(201,168,76,.12);  color: var(--gold); }
 .hc-tag.scratch { background: rgba(91,191,133,.12);  color: var(--green-light); }
 .chevron {
-  width: 16px; height: 16px; color: var(--muted); flex-shrink: 0;
+  width: 15px; height: 15px; color: var(--muted); flex-shrink: 0;
   transition: transform .25s cubic-bezier(.22,1,.36,1);
 }
 .accordion-item.open .chevron { transform: rotate(180deg); }
+
 /* smooth slide */
 .accordion-body {
   max-height: 0; overflow: hidden; opacity: 0;
-  transition: max-height .38s cubic-bezier(.22,1,.36,1), opacity .25s ease;
-  padding: 0 20px;
+  transition: max-height .4s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+  padding: 0 18px;
 }
-.accordion-item.open .accordion-body {
-  max-height: 1600px; opacity: 1; padding: 0 20px 24px;
-}
+.accordion-item.open .accordion-body { max-height: 1800px; opacity: 1; padding: 0 18px 24px; }
 
 .drill-meta {
-  display: flex; gap: 24px; flex-wrap: wrap;
-  margin-bottom: 20px; padding-top: 4px;
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
+  display: flex; gap: 28px; flex-wrap: wrap;
+  border-top: 1px solid rgba(255,255,255,.06); padding: 16px 0 18px;
+  margin-bottom: 18px;
 }
-.meta-item { display: flex; flex-direction: column; gap: 4px; }
-.meta-label {
-  font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted);
-}
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .meta-value { font-size: 13px; font-weight: 500; color: var(--white); }
 
-.drill-description { font-size: 14px; line-height: 1.7; color: rgba(250,250,250,.65); margin-bottom: 20px; }
+.drill-description { font-size: 14px; line-height: 1.72; color: rgba(250,250,250,.62); margin-bottom: 18px; }
 
-.drill-steps { margin-bottom: 20px; }
-.drill-steps h4 {
-  font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 12px;
-}
-.drill-steps ol { padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
-.drill-steps li { font-size: 13px; line-height: 1.6; color: rgba(250,250,250,.7); }
+.drill-steps { margin-bottom: 18px; }
+.drill-steps h4 { font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.drill-steps ol { padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+.drill-steps li { font-size: 13px; line-height: 1.6; color: rgba(250,250,250,.68); }
 
 .drill-benchmark {
-  background: rgba(91,191,133,.08); border: 1px solid rgba(91,191,133,.2);
-  border-radius: 6px; padding: 14px 16px;
+  background: rgba(91,191,133,.07); border: 1px solid rgba(91,191,133,.18);
+  border-radius: 6px; padding: 13px 15px; margin-bottom: 16px;
   font-family: var(--mono); font-size: 12px; color: var(--green-light);
 }
-.drill-benchmark span { font-weight: 500; letter-spacing: .08em; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 6px; opacity: .7; }
+.drill-benchmark span { font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 8px; display: block; margin-bottom: 5px; opacity: .6; }
+
+/* share link */
+.drill-share {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 6px;
+  font-family: var(--mono); font-size: 10px; color: rgba(250,250,250,.3);
+  background: none; border: none; cursor: pointer; padding: 0; transition: color .15s;
+}
+.drill-share:hover { color: rgba(250,250,250,.7); }
+.drill-share.copied { color: var(--green-light); }
 
 .diagram-placeholder {
-  border: 1px dashed rgba(255,255,255,.15); border-radius: 6px;
-  height: 160px; display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; color: var(--muted);
-  font-family: var(--mono); font-size: 11px;
+  border: 1px dashed rgba(255,255,255,.1); border-radius: 6px;
+  height: 140px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px; color: rgba(255,255,255,.2);
+  font-family: var(--mono); font-size: 10px;
 }
 
 /* SESSIONS */
-.sessions { margin-bottom: 48px; }
-.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.sessions { margin-bottom: 52px; }
+.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
 .session-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px;
 }
 .session-card h4 {
-  font-family: var(--display); font-size: 1.1rem; font-weight: 600;
-  margin-bottom: 6px;
+  font-family: var(--display); font-size: 1.05rem; font-weight: 600; margin-bottom: 4px;
 }
 .session-duration {
-  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  font-family: var(--mono); font-size: 9px; color: var(--muted);
   text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
 }
-.session-card ol { padding-left: 16px; display: flex; flex-direction: column; gap: 8px; }
-.session-card li { font-size: 13px; color: rgba(250,250,250,.7); line-height: 1.5; }
+.session-card ol { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0; }
+.session-card li {
+  font-size: 13px; color: rgba(250,250,250,.65); line-height: 1.45;
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer;
+  transition: color .15s; display: flex; align-items: center; gap: 8px;
+}
+.session-card li:last-child { border-bottom: none; }
+.session-card li:hover { color: var(--white); }
+.session-card li::before {
+  content: ''; display: block; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0;
+}
+
+/* LAB NOTES NUDGE */
+.labnotes-nudge {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: rgba(91,191,133,.06); border: 1px solid rgba(91,191,133,.15);
+  border-radius: 8px; padding: 16px 20px; margin-bottom: 40px;
+}
+.nudge-text { font-size: 13px; color: rgba(250,250,250,.65); line-height: 1.5; }
+.nudge-text strong { color: var(--white); font-weight: 500; }
+.nudge-btn {
+  font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+  padding: 8px 16px; border-radius: 4px; border: 1px solid rgba(91,191,133,.35);
+  color: var(--green-light); background: none; cursor: pointer; transition: all .15s;
+}
+.nudge-btn:hover { background: rgba(91,191,133,.1); border-color: var(--green-light); }
+
+/* cat-tab badge (done count) */
+.tab-badge {
+  display: inline-block; font-family: var(--mono); font-size: 8px; font-weight: 600;
+  padding: 1px 5px; border-radius: 10px; margin-left: 5px; vertical-align: middle;
+  background: rgba(91,191,133,.15); color: var(--green-light); line-height: 1.4;
+  opacity: 0; transition: opacity .2s;
+}
+.tab-badge.visible { opacity: 1; }
 
 /* RESOURCES */
 .resources { margin-bottom: 48px; }
@@ -1981,6 +2049,11 @@ footer {
 
     </div><!-- /mental-drills -->
 
+    <div class="labnotes-nudge">
+      <span class="nudge-text"><strong>Lab Notes PRO</strong> includes a monthly mental game deep-dive — course management frameworks, pressure strategies, and round-by-round analysis from tour data.</span>
+      <a href="/lab-notes" class="nudge-btn">See Lab Notes &rarr;</a>
+    </div>
+
     <p class="section-heading">Practice Sessions</p>
     <div class="sessions">
       <div class="sessions-grid">
@@ -2194,6 +2267,152 @@ footer {
 function toggleFund(id) {
   document.getElementById(id).classList.toggle('fund-open');
 }
+
+(function () {
+  var STORAGE_KEY = 'divotlab_drills_done';
+
+  // ── Load persisted done state ────────────────────────────────
+  function loadDone() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveDone(map) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(map)); } catch(e) {}
+  }
+
+  // ── Enhance each accordion with: number, checkbox, share btn ─
+  var done = loadDone();
+  var panels = ['driving','approach','shortgame','putting','mental'];
+
+  panels.forEach(function(cat) {
+    var panel = document.getElementById('panel-' + cat);
+    if (!panel) return;
+    var items = panel.querySelectorAll('.accordion-item');
+
+    items.forEach(function(item, i) {
+      var trigger = item.querySelector('.accordion-trigger');
+      var body    = item.querySelector('.accordion-body');
+      var name    = item.querySelector('.drill-name');
+      if (!trigger || !name) return;
+
+      var drillId = cat + '-' + i;
+      item.dataset.drillId = drillId;
+
+      // Number
+      var num = document.createElement('span');
+      num.className = 'drill-num';
+      num.textContent = String(i + 1).padStart(2, '0');
+      trigger.insertBefore(num, trigger.firstChild);
+
+      // Checkbox — click to toggle done, do NOT expand accordion
+      var check = document.createElement('span');
+      check.className = 'drill-check';
+      check.title = 'Mark as done';
+      check.innerHTML = '<svg viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 5 4.5 8.5 11 1"/></svg>';
+      check.addEventListener('click', function(e) {
+        e.stopPropagation(); // don't open accordion
+        var d = loadDone();
+        if (d[drillId]) { delete d[drillId]; } else { d[drillId] = 1; }
+        saveDone(d);
+        applyDone(d);
+      });
+      trigger.insertBefore(check, name);
+
+      // Share button inside body
+      if (body) {
+        var share = document.createElement('button');
+        share.className = 'drill-share';
+        share.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Copy link';
+        share.addEventListener('click', function() {
+          var url = window.location.origin + window.location.pathname + '#drill-' + drillId;
+          navigator.clipboard.writeText(url).then(function() {
+            share.textContent = 'Copied!';
+            share.classList.add('copied');
+            setTimeout(function() {
+              share.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Copy link';
+              share.classList.remove('copied');
+            }, 2000);
+          });
+        });
+        body.appendChild(share);
+        item.id = 'drill-' + drillId;
+      }
+    });
+
+    applyDone(done);
+  });
+
+  function applyDone(d) {
+    document.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
+      var isDone = !!d[item.dataset.drillId];
+      item.classList.toggle('drill-done', isDone);
+    });
+    // Update tab badges
+    panels.forEach(function(cat) {
+      var panel = document.getElementById('panel-' + cat);
+      if (!panel) return;
+      var total = panel.querySelectorAll('.accordion-item[data-drill-id]').length;
+      var doneCount = 0;
+      panel.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
+        if (d[item.dataset.drillId]) doneCount++;
+      });
+      // Update quicknav done state
+      panel.querySelectorAll('.quicknav-link').forEach(function(btn, i) {
+        var id = cat + '-' + i;
+        btn.classList.toggle('done', !!d[id]);
+      });
+      // Tab badge
+      var tab = document.querySelector('.cat-tab[data-cat="' + cat + '"]');
+      if (!tab) return;
+      var badge = tab.querySelector('.tab-badge');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'tab-badge';
+        tab.appendChild(badge);
+      }
+      if (doneCount > 0) {
+        badge.textContent = doneCount + '/' + total;
+        badge.classList.add('visible');
+      } else {
+        badge.classList.remove('visible');
+      }
+    });
+  }
+
+  // ── Session steps: click to jump to drill ───────────────────
+  document.querySelectorAll('.session-card li').forEach(function(li) {
+    var text = li.textContent.trim();
+    // Find matching drill by name
+    var match = null;
+    document.querySelectorAll('.accordion-item .drill-name').forEach(function(dn) {
+      if (!match && text.toLowerCase().indexOf(dn.textContent.trim().toLowerCase()) !== -1) {
+        match = dn.closest('.accordion-item');
+      }
+    });
+    if (match) {
+      li.title = 'Jump to drill';
+      li.addEventListener('click', function(e) {
+        e.stopPropagation();
+        // Switch to the correct category panel first
+        var panel = match.closest('.cat-panel');
+        if (panel && !panel.classList.contains('active')) {
+          var catId = panel.id.replace('panel-', '');
+          document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+          document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
+          var tab = document.querySelector('.cat-tab[data-cat="' + catId + '"]');
+          if (tab) tab.classList.add('active');
+          panel.classList.add('active');
+        }
+        match.classList.add('open');
+        setTimeout(function() {
+          match.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+      });
+    } else {
+      li.style.cursor = 'default';
+    }
+  });
+
+}());
 </script>
 </body>
 </html>
