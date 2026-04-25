@@ -248,6 +248,72 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
   color: rgba(250,250,250,.85);
 }
 
+/* CTA BAND */
+.cta-band {
+  margin: 0 56px 64px;
+  background: linear-gradient(135deg, rgba(27,77,62,.55) 0%, rgba(13,22,18,.8) 100%);
+  border: 1px solid rgba(91,191,133,.18);
+  border-radius: 14px; padding: 56px 64px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-band::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 300px;
+  background: radial-gradient(ellipse, rgba(91,191,133,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cta-band h2 {
+  font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 600; line-height: 1.15; margin-bottom: 16px; position: relative; z-index: 1;
+}
+.cta-band p {
+  font-size: 15px; font-weight: 300; line-height: 1.7;
+  color: rgba(250,250,250,.6); max-width: 520px; margin: 0 auto 32px;
+  position: relative; z-index: 1;
+}
+.cta-btn {
+  display: inline-block; font-family: var(--body); font-size: 14px; font-weight: 500;
+  padding: 14px 32px; border-radius: 6px;
+  background: var(--green-light); color: #0a0a0a;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  position: relative; z-index: 1;
+}
+.cta-btn:hover { background: #4db374; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,191,133,.28); }
+
+/* START-HERE callout */
+.start-here {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 8px; padding: 14px 18px; margin-bottom: 24px;
+}
+.start-here-label {
+  font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; white-space: nowrap; flex-shrink: 0; padding-top: 2px;
+}
+.start-here-text { font-size: 13px; color: rgba(250,250,250,.6); line-height: 1.5; }
+.start-here-text strong { color: var(--white); font-weight: 500; }
+
+/* Fundamentals — collapsible */
+.fundamentals-wrap { margin-bottom: 36px; }
+.fund-toggle {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  background: none; border: none; border-bottom: 1px solid rgba(255,255,255,.06);
+  cursor: pointer; padding: 0 0 12px; margin-bottom: 0; color: var(--white);
+}
+.fund-toggle-label { font-family: var(--display); font-size: 1.1rem; font-weight: 600; color: rgba(250,250,250,.65); }
+.fund-toggle-hint {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); display: flex; align-items: center; gap: 6px;
+}
+.fund-toggle-hint svg { transition: transform .25s; }
+.fund-open .fund-toggle-hint svg { transform: rotate(180deg); }
+.fundamentals {
+  display: none;
+  grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-top: 16px; margin-bottom: 0;
+}
+.fundamentals-wrap.fund-open .fundamentals { display: grid; }
+
 /* DRILL QUICK-NAV */
 .drill-quicknav {
   display: flex; flex-wrap: wrap; gap: 8px;
@@ -420,6 +486,7 @@ footer {
   .sessions-grid { grid-template-columns: 1fr; }
   .drill-meta { gap: 16px; }
   .hc-tags { display: none; }
+  .cta-band { margin: 0 16px 48px; padding: 40px 28px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   footer { padding: 48px 22px 28px; }
   .footer-bottom { flex-direction: column; gap: 6px; align-items: center; }
@@ -501,6 +568,16 @@ footer {
   <!-- ==================== DRIVING ==================== -->
   <div class="cat-panel active" id="panel-driving">
 
+    <div class="start-here">
+      <span class="start-here-label" style="color:var(--red)">Start here</span>
+      <span class="start-here-text">New to this category? Begin with <strong>Feet Together Driver</strong> to calibrate tempo, then move to the <strong>Corridor Drill</strong> once your balance is consistent. High handicaps should spend 80% of driving practice on these two before adding others.</span>
+    </div>
+
+    <div class="fundamentals-wrap" id="fund-driving">
+      <button class="fund-toggle" onclick="toggleFund('fund-driving')">
+        <span class="fund-toggle-label">Fundamentals</span>
+        <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
     <div class="fundamentals">
       <div class="fund-card" data-type="setup">
         <h3>Setup</h3>
@@ -530,6 +607,7 @@ footer {
         </ul>
       </div>
     </div>
+    </div><!-- /fundamentals-wrap driving -->
 
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav">
@@ -845,6 +923,16 @@ footer {
   <!-- ==================== APPROACH ==================== -->
   <div class="cat-panel" id="panel-approach">
 
+    <div class="start-here">
+      <span class="start-here-label" style="color:var(--blue-mid)">Start here</span>
+      <span class="start-here-text">New to this category? Build your <strong>Yardage Book</strong> first — you cannot practice distance control until you know your actual carry numbers. Then move to the <strong>10-Yard Ladder</strong> to develop feel around those numbers.</span>
+    </div>
+
+    <div class="fundamentals-wrap" id="fund-approach">
+      <button class="fund-toggle" onclick="toggleFund('fund-approach')">
+        <span class="fund-toggle-label">Fundamentals</span>
+        <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
     <div class="fundamentals">
       <div class="fund-card" data-type="setup">
         <h3>Setup</h3>
@@ -874,6 +962,7 @@ footer {
         </ul>
       </div>
     </div>
+    </div><!-- /fundamentals-wrap approach -->
 
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="approach"></div>
@@ -1110,6 +1199,16 @@ footer {
   <!-- ==================== SHORT GAME ==================== -->
   <div class="cat-panel" id="panel-shortgame">
 
+    <div class="start-here">
+      <span class="start-here-label" style="color:var(--gold)">Start here</span>
+      <span class="start-here-text">New to this category? Start with the <strong>Dollar Bill Drill</strong> — if your low point is behind the ball, every other short game drill will fail. Once you're hitting it clean, move to the <strong>6-Foot Circle</strong> to build green-side feel.</span>
+    </div>
+
+    <div class="fundamentals-wrap" id="fund-shortgame">
+      <button class="fund-toggle" onclick="toggleFund('fund-shortgame')">
+        <span class="fund-toggle-label">Fundamentals</span>
+        <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
     <div class="fundamentals">
       <div class="fund-card" data-type="setup">
         <h3>Setup</h3>
@@ -1139,6 +1238,7 @@ footer {
         </ul>
       </div>
     </div>
+    </div><!-- /fundamentals-wrap shortgame -->
 
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="shortgame"></div>
@@ -1404,6 +1504,16 @@ footer {
   <!-- ==================== PUTTING ==================== -->
   <div class="cat-panel" id="panel-putting">
 
+    <div class="start-here">
+      <span class="start-here-label" style="color:var(--green-light)">Start here</span>
+      <span class="start-here-text">New to this category? Run the <strong>Gate Drill</strong> first to understand your stroke path and face angle. Then do the <strong>Lag Ladder</strong> — most 3-putts are a distance control problem, not a line problem.</span>
+    </div>
+
+    <div class="fundamentals-wrap" id="fund-putting">
+      <button class="fund-toggle" onclick="toggleFund('fund-putting')">
+        <span class="fund-toggle-label">Fundamentals</span>
+        <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
     <div class="fundamentals">
       <div class="fund-card" data-type="setup">
         <h3>Setup</h3>
@@ -1433,6 +1543,7 @@ footer {
         </ul>
       </div>
     </div>
+    </div><!-- /fundamentals-wrap putting -->
 
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="putting"></div>
@@ -1699,6 +1810,16 @@ footer {
   <!-- ==================== MENTAL ==================== -->
   <div class="cat-panel" id="panel-mental">
 
+    <div class="start-here">
+      <span class="start-here-label" style="color:var(--purple)">Start here</span>
+      <span class="start-here-text">New to this category? Begin with the <strong>Round Audit</strong> — you cannot fix mental patterns you haven't identified yet. Do it after your next 3 rounds before touching any other drill here.</span>
+    </div>
+
+    <div class="fundamentals-wrap" id="fund-mental">
+      <button class="fund-toggle" onclick="toggleFund('fund-mental')">
+        <span class="fund-toggle-label">Fundamentals</span>
+        <span class="fund-toggle-hint">Routine · Mindset · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
     <div class="fundamentals">
       <div class="fund-card" data-type="setup">
         <h3>Routine</h3>
@@ -1728,6 +1849,7 @@ footer {
         </ul>
       </div>
     </div>
+    </div><!-- /fundamentals-wrap mental -->
 
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="mental"></div>
@@ -1905,6 +2027,12 @@ footer {
 
 </div><!-- /content -->
 
+<div class="cta-band">
+  <h2>Want a plan built around your specific weaknesses?</h2>
+  <p>The Practice Plan quiz analyzes your game across all five categories and builds a prioritized plan with the right drills for your handicap level. Free, personalized, and takes five minutes.</p>
+  <a href="/practice" class="cta-btn">Get Your Free Practice Plan &rarr;</a>
+</div>
+
 <footer>
   <div class="footer-grid">
     <div class="f-brand">
@@ -2061,6 +2189,11 @@ footer {
     });
   });
 }());
+
+// Fundamentals toggle (inline onclick — outside IIFE intentionally)
+function toggleFund(id) {
+  document.getElementById(id).classList.toggle('fund-open');
+}
 </script>
 </body>
 </html>
