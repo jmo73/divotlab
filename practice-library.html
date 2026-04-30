@@ -133,7 +133,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 
 /* FILTER BAR — sticky below nav */
 .filter-zone {
-  position: sticky; top: 68px; z-index: 90;
+  position: sticky; top: 68px; z-index: 110;
   background: rgba(10,10,10,0.92); backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255,255,255,.07);
 }
@@ -335,6 +335,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
   background: var(--card); border: 1px solid var(--border); border-radius: 10px;
   overflow: hidden; transition: border-color .2s, box-shadow .2s;
   position: relative;
+  scroll-margin-top: 136px; /* nav 68 + filter-zone ~50 + gap 18 */
 }
 .accordion-item.hidden { display: none; }
 /* category-colored left bar when open */
@@ -445,6 +446,14 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
   height: 140px; display: flex; align-items: center; justify-content: center;
   margin-bottom: 18px; color: rgba(255,255,255,.2);
   font-family: var(--mono); font-size: 10px;
+}
+.drill-diagram {
+  width: 100%; max-height: 180px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.06);
+  display: block;
 }
 
 /* SESSIONS */
@@ -557,11 +566,10 @@ footer {
 .sidebar {
   width: 220px;
   flex-shrink: 0;
-  position: sticky;
-  top: 138px; /* nav (68px) + filter-zone (~54px) + gap (16px) */
   display: flex;
   flex-direction: column;
   gap: 16px;
+  align-self: flex-start;
 }
 
 .sidebar-section {
@@ -973,6 +981,8 @@ html[data-theme="light"] .sidebar-bookmark-name { color: rgba(28,27,24,0.75); }
 html[data-theme="light"] .sidebar-bookmark-cat { color: rgba(28,27,24,0.28); }
 html[data-theme="light"] .drill-bookmark-btn { color: rgba(28,27,24,0.16); }
 html[data-theme="light"] .drill-bookmark-btn:hover { color: rgba(28,27,24,0.52); background: rgba(28,27,24,0.05); }
+html[data-theme="light"] .drill-bookmark-btn.bookmarked { color: var(--gold) !important; }
+html[data-theme="light"] .drill-bookmark-btn.bookmarked:hover { background: rgba(201,168,76,0.1); }
 html[data-theme="light"] .sidebar-reset-btn { border-color: rgba(28,27,24,0.08); color: rgba(28,27,24,0.28); }
 html[data-theme="light"] .sidebar-reset-btn:hover { border-color: rgba(231,111,81,0.4); color: rgba(231,111,81,0.8); background: rgba(231,111,81,0.05); }
 html[data-theme="light"] .search-cat-sep { color: rgba(28,27,24,0.38); border-bottom-color: rgba(28,27,24,0.07); }
@@ -1061,6 +1071,10 @@ html[data-theme="light"] .drill-share:hover { color: rgba(28,27,24,0.7); }
 html[data-theme="light"] .diagram-placeholder {
   border-color: rgba(28,27,24,0.12);
   color: rgba(28,27,24,0.25);
+}
+html[data-theme="light"] .drill-diagram {
+  color: #1C1B18;
+  border-color: rgba(28,27,24,0.07);
 }
 
 /* CTA band — solid dark green, white text */
@@ -1292,7 +1306,38 @@ html[data-theme="light"] .footer-bottom {
               <li>Narrow the corridor by 5 yards once you hit 16/20</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Corridor diagram ]</text></svg>
+          <!-- Corridor Drill diagram -->
+          <svg class="drill-diagram" viewBox="0 0 440 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Corridor Drill setup diagram">
+            <!-- Background -->
+            <rect width="440" height="180" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <!-- Fairway / range ground -->
+            <rect x="20" y="20" width="400" height="140" rx="6" fill="#5BBF85" fill-opacity="0.07"/>
+            <!-- Target zone label -->
+            <text x="220" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" text-transform="uppercase" fill="currentColor" fill-opacity="0.35">TARGET ZONE · 200 yds</text>
+            <!-- Left alignment stick -->
+            <line x1="110" y1="55" x2="110" y2="135" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="110" cy="52" r="5" fill="#5BBF85"/>
+            <text x="95" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">L</text>
+            <!-- Right alignment stick -->
+            <line x1="330" y1="55" x2="330" y2="135" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="330" cy="52" r="5" fill="#5BBF85"/>
+            <text x="345" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">R</text>
+            <!-- Corridor shading -->
+            <rect x="110" y="55" width="220" height="80" fill="#5BBF85" fill-opacity="0.08"/>
+            <!-- 20 yd label -->
+            <line x1="110" y1="145" x2="330" y2="145" stroke="currentColor" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="220" y="158" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.35">20 yards wide</text>
+            <!-- Shot trajectory arrow from tee -->
+            <line x1="220" y1="165" x2="220" y2="130" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-corridor)"/>
+            <defs>
+              <marker id="arrow-corridor" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 Z" fill="#C9A84C"/>
+              </marker>
+            </defs>
+            <!-- Ball at tee -->
+            <circle cx="220" cy="168" r="5" fill="#C9A84C" fill-opacity="0.9"/>
+            <text x="220" y="179" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">TEE</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>16 of 20 balls in a 20-yard corridor before narrowing. Scratch: 18/20 in a 12-yard corridor.</div>
         </div>
       </div>
@@ -1386,7 +1431,33 @@ html[data-theme="light"] .footer-bottom {
               <li>Alternate: 2 feet-together, then 1 normal swing to transfer the feel</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Stance width diagram ]</text></svg>
+          <!-- Feet Together Driver diagram — top-down view of stance and ball position -->
+          <svg class="drill-diagram" viewBox="0 0 440 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Feet Together Driver stance diagram">
+            <rect width="440" height="180" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <!-- Target line (dashed) -->
+            <line x1="220" y1="10" x2="220" y2="170" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" stroke-dasharray="5 4"/>
+            <text x="234" y="22" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">TARGET</text>
+            <!-- Normal stance reference (faded) -->
+            <rect x="162" y="112" width="24" height="12" rx="3" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+            <rect x="254" y="112" width="24" height="12" rx="3" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+            <text x="220" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.2">normal width</text>
+            <!-- Feet together (highlighted) -->
+            <rect x="200" y="112" width="22" height="13" rx="3" fill="#5BBF85" fill-opacity="0.18" stroke="#5BBF85" stroke-width="1.5"/>
+            <text x="200" y="124" font-family="JetBrains Mono, monospace" font-size="7" fill="#5BBF85" fill-opacity="0.7"> L</text>
+            <rect x="220" y="112" width="22" height="13" rx="3" fill="#5BBF85" fill-opacity="0.18" stroke="#5BBF85" stroke-width="1.5"/>
+            <text x="221" y="124" font-family="JetBrains Mono, monospace" font-size="7" fill="#5BBF85" fill-opacity="0.7"> R</text>
+            <text x="220" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" font-weight="600">FEET TOGETHER</text>
+            <!-- Ball position -->
+            <circle cx="220" cy="95" r="7" fill="#C9A84C" fill-opacity="0.9"/>
+            <text x="236" y="99" font-family="JetBrains Mono, monospace" font-size="8" fill="#C9A84C" fill-opacity="0.8">BALL</text>
+            <!-- Shaft suggestion -->
+            <line x1="220" y1="102" x2="213" y2="115" stroke="currentColor" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
+            <!-- Top-of-swing arc suggestion -->
+            <path d="M 170 70 Q 200 30 230 45" stroke="currentColor" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+            <text x="150" y="62" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.25">tempo arc</text>
+            <!-- Balance cue -->
+            <text x="220" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.3">TOP-DOWN VIEW · STANCE DRILL</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Finish in balance on 13/15 swings. If falling off, reduce swing length before adding effort.</div>
         </div>
       </div>
@@ -2807,6 +2878,7 @@ html[data-theme="light"] .footer-bottom {
   catTabs.forEach(function (tab) {
     tab.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       catTabs.forEach(function (t) { t.classList.remove('active'); });
       catPanels.forEach(function (p) { p.classList.remove('active'); });
       tab.classList.add('active');
@@ -2832,11 +2904,7 @@ html[data-theme="light"] .footer-bottom {
       panel.querySelectorAll('.accordion-item').forEach(function (i) { i.classList.remove('hidden'); });
       // update shared state
       if (window._drillLib) { window._drillLib.setPrevCat(cat); window._drillLib.updateLevelCounts(); }
-      // Only scroll if filter zone isn't sticky yet (user hasn't scrolled far enough)
-      var stickPoint = filterZone.offsetTop - 68;
-      if (window.scrollY < stickPoint) {
-        window.scrollTo({ top: stickPoint, behavior: 'smooth' });
-      }
+      // No scroll on category switch — if user can see and click the tabs, they're already there
     });
   });
 
