@@ -102,7 +102,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
 .nav-drawer.light a { color:var(--graphite); }
 .nav-drawer .nav-cta { margin-top:8px; width:auto; padding:10px 32px; border-radius:5px; }
 .post-hero { position:relative; height:480px; overflow:hidden; margin-top:68px; }
-.post-hero-bg { position:absolute; inset:0; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); }
+.post-hero-bg { position:absolute; inset:0; background:linear-gradient(140deg, #0f1a16 0%, #162420 50%, #0a0a0a 100%); background-size:cover; background-position:center; }
 .post-hero-brand { position:absolute; top:50%; left:50%; transform:translate(-50%,-65%); z-index:0; display:flex; flex-direction:column; align-items:center; gap:16px; opacity:.12; }
 .post-hero-brand svg { width:80px; height:80px; }
 .post-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.25) 40%, rgba(10,10,10,0.75) 80%, rgba(10,10,10,0.92) 100%); }
@@ -245,21 +245,13 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
 
 <!-- HERO -->
 <section class="post-hero" id="postHero">
-  <div class="post-hero-bg"></div>
-  <div class="post-hero-brand" id="heroBrand">
-    <svg viewBox="0 0 72 72" fill="none">
-      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="white" stroke-width="3.2"/>
-      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="white" fill-opacity=".15"/>
-      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="white" stroke-width="2.8" fill="none"/>
-      <circle cx="36" cy="20.5" r="9" fill="white"/>
-    </svg>
-  </div>
+  <div class="post-hero-bg" style="background-image:url('/assets/images/NellyKorda.png');background-size:cover;background-position:center 20%;"></div>
   <div class="post-hero-overlay"></div>
   <div class="post-hero-content">
-    <span class="post-cat swing">Swing &amp; Technique</span>
+    <span class="post-cat improve">Improvement</span>
     <h1>Stop Copying Rory. Watch Nelly Korda and Linn Grant Instead.</h1>
     <div class="post-hero-meta">
-      Apr 20, 2026 <span class="dot">&middot;</span> 8 min read <span class="dot">&middot;</span> Swing &amp; Technique
+      Apr 20, 2026 <span class="dot">&middot;</span> 8 min read <span class="dot">&middot;</span> Improvement
     </div>
   </div>
 </section>
