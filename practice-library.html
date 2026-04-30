@@ -448,7 +448,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
   font-family: var(--mono); font-size: 10px;
 }
 .drill-diagram {
-  width: 100%; max-height: 180px;
+  width: 100%;
   border-radius: 8px;
   margin-bottom: 18px;
   color: var(--white);
@@ -1307,36 +1307,33 @@ html[data-theme="light"] .footer-bottom {
             </ol>
           </div>
           <!-- Corridor Drill diagram -->
-          <svg class="drill-diagram" viewBox="0 0 440 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Corridor Drill setup diagram">
-            <!-- Background -->
-            <rect width="440" height="180" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- Fairway / range ground -->
-            <rect x="20" y="20" width="400" height="140" rx="6" fill="#5BBF85" fill-opacity="0.07"/>
-            <!-- Target zone label -->
-            <text x="220" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.12em" text-transform="uppercase" fill="currentColor" fill-opacity="0.35">TARGET ZONE · 200 yds</text>
-            <!-- Left alignment stick -->
-            <line x1="110" y1="55" x2="110" y2="135" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="110" cy="52" r="5" fill="#5BBF85"/>
-            <text x="95" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">L</text>
-            <!-- Right alignment stick -->
-            <line x1="330" y1="55" x2="330" y2="135" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="330" cy="52" r="5" fill="#5BBF85"/>
-            <text x="345" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">R</text>
-            <!-- Corridor shading -->
-            <rect x="110" y="55" width="220" height="80" fill="#5BBF85" fill-opacity="0.08"/>
-            <!-- 20 yd label -->
-            <line x1="110" y1="145" x2="330" y2="145" stroke="currentColor" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="3 3"/>
-            <text x="220" y="158" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.35">20 yards wide</text>
-            <!-- Shot trajectory arrow from tee -->
-            <line x1="220" y1="165" x2="220" y2="130" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-corridor)"/>
-            <defs>
-              <marker id="arrow-corridor" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L6,3 Z" fill="#C9A84C"/>
-              </marker>
-            </defs>
-            <!-- Ball at tee -->
-            <circle cx="220" cy="168" r="5" fill="#C9A84C" fill-opacity="0.9"/>
-            <text x="220" y="179" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">TEE</text>
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Corridor Drill: top-down range view">
+            <defs><marker id="arr-corr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#C9A84C"/></marker></defs>
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <!-- Range surface -->
+            <rect x="24" y="24" width="392" height="148" rx="6" fill="#5BBF85" fill-opacity="0.06"/>
+            <!-- Header label -->
+            <text x="220" y="42" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.14em" fill="currentColor" fill-opacity="0.3">TARGET ZONE · 200 YDS · TOP DOWN</text>
+            <!-- Left stick -->
+            <line x1="110" y1="62" x2="110" y2="148" stroke="#5BBF85" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="110" cy="58" r="6" fill="#5BBF85"/>
+            <text x="84" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5BBF85" fill-opacity="0.85">L</text>
+            <!-- Right stick -->
+            <line x1="330" y1="62" x2="330" y2="148" stroke="#5BBF85" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="330" cy="58" r="6" fill="#5BBF85"/>
+            <text x="356" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5BBF85" fill-opacity="0.85">R</text>
+            <!-- Corridor fill -->
+            <rect x="110" y="62" width="220" height="86" fill="#5BBF85" fill-opacity="0.09"/>
+            <!-- Width measurement -->
+            <line x1="110" y1="158" x2="330" y2="158" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <line x1="110" y1="153" x2="110" y2="163" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <line x1="330" y1="153" x2="330" y2="163" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <text x="220" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.32">20 yards wide</text>
+            <!-- Trajectory arrow -->
+            <line x1="220" y1="205" x2="220" y2="152" stroke="#C9A84C" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arr-corr)"/>
+            <!-- Tee ball -->
+            <circle cx="220" cy="208" r="7" fill="#C9A84C" fill-opacity="0.88"/>
+            <text x="246" y="212" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.32">TEE</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>16 of 20 balls in a 20-yard corridor before narrowing. Scratch: 18/20 in a 12-yard corridor.</div>
         </div>
@@ -1369,36 +1366,35 @@ html[data-theme="light"] .footer-bottom {
               <li>Grade yourself: how many of 15 ended up on the correct side?</li>
             </ol>
           </div>
-          <!-- Left-Right-Center: 3 targets, 3 shot paths from tee -->
-          <svg class="drill-diagram" viewBox="0 0 440 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Left Right Center target drill">
-            <rect width="440" height="165" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- Range background -->
-            <rect x="20" y="16" width="400" height="105" rx="5" fill="currentColor" fill-opacity="0.03"/>
-            <text x="220" y="30" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.25">RANGE · TOP DOWN</text>
-            <!-- LEFT target -->
-            <circle cx="90" cy="52" r="9" fill="#5A8FA8" fill-opacity="0.85"/>
-            <text x="90" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#FAFAFA">L</text>
-            <text x="90" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5A8FA8" fill-opacity="0.7">Left Target</text>
-            <!-- CENTER target -->
-            <circle cx="220" cy="45" r="9" fill="#5BBF85" fill-opacity="0.9"/>
-            <text x="220" y="49" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#0A0A0A">C</text>
-            <text x="220" y="70" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.7">Center</text>
-            <!-- RIGHT target -->
-            <circle cx="350" cy="52" r="9" fill="#C9A84C" fill-opacity="0.85"/>
-            <text x="350" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#0A0A0A">R</text>
-            <text x="350" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#C9A84C" fill-opacity="0.7">Right Target</text>
-            <!-- Shot paths from tee (diverging) -->
+          <!-- Left-Right-Center Block diagram -->
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Left Right Center: three targets, shot paths from tee">
             <defs>
-              <marker id="arr-l" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="#5A8FA8" fill-opacity="0.7"/></marker>
-              <marker id="arr-c" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="#5BBF85" fill-opacity="0.8"/></marker>
-              <marker id="arr-r" markerWidth="5" markerHeight="5" refX="3" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="#C9A84C" fill-opacity="0.8"/></marker>
+              <marker id="arr-lrc-l" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#5A8FA8" fill-opacity="0.75"/></marker>
+              <marker id="arr-lrc-c" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#5BBF85" fill-opacity="0.85"/></marker>
+              <marker id="arr-lrc-r" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#C9A84C" fill-opacity="0.85"/></marker>
             </defs>
-            <line x1="220" y1="128" x2="95" y2="62" stroke="#5A8FA8" stroke-width="1.5" stroke-opacity="0.6" stroke-dasharray="5 3" marker-end="url(#arr-l)"/>
-            <line x1="220" y1="128" x2="220" y2="56" stroke="#5BBF85" stroke-width="1.5" stroke-opacity="0.7" stroke-dasharray="5 3" marker-end="url(#arr-c)"/>
-            <line x1="220" y1="128" x2="345" y2="62" stroke="#C9A84C" stroke-width="1.5" stroke-opacity="0.7" stroke-dasharray="5 3" marker-end="url(#arr-r)"/>
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <rect x="24" y="24" width="392" height="130" rx="6" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="42" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.14em" fill="currentColor" fill-opacity="0.28">RANGE · TOP DOWN · 3 TARGETS</text>
+            <!-- Left target -->
+            <circle cx="90" cy="72" r="13" fill="#5A8FA8" fill-opacity="0.8"/>
+            <text x="90" y="77" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#FAFAFA">L</text>
+            <text x="90" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5A8FA8" fill-opacity="0.7">Left Edge</text>
+            <!-- Center target -->
+            <circle cx="220" cy="62" r="13" fill="#5BBF85" fill-opacity="0.85"/>
+            <text x="220" y="67" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#0A0A0A">C</text>
+            <text x="220" y="90" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.7">Center</text>
+            <!-- Right target -->
+            <circle cx="350" cy="72" r="13" fill="#C9A84C" fill-opacity="0.82"/>
+            <text x="350" y="77" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#0A0A0A">R</text>
+            <text x="350" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#C9A84C" fill-opacity="0.7">Right Edge</text>
+            <!-- Shot paths -->
+            <line x1="220" y1="168" x2="102" y2="84" stroke="#5A8FA8" stroke-width="1.8" stroke-opacity="0.55" stroke-dasharray="6 4" marker-end="url(#arr-lrc-l)"/>
+            <line x1="220" y1="168" x2="220" y2="77" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.65" stroke-dasharray="6 4" marker-end="url(#arr-lrc-c)"/>
+            <line x1="220" y1="168" x2="338" y2="84" stroke="#C9A84C" stroke-width="1.8" stroke-opacity="0.65" stroke-dasharray="6 4" marker-end="url(#arr-lrc-r)"/>
             <!-- Tee -->
-            <circle cx="220" cy="131" r="7" fill="#C9A84C" fill-opacity="0.85"/>
-            <text x="220" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">TEE · 5 balls each target</text>
+            <circle cx="220" cy="172" r="9" fill="#C9A84C" fill-opacity="0.82"/>
+            <text x="220" y="198" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.28">TEE · 5 balls to each target in sequence</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>12 of 15 on the correct side. High HC: 9/15 acceptable to start.</div>
         </div>
@@ -1429,46 +1425,45 @@ html[data-theme="light"] .footer-bottom {
               <li>Most players find 80% effort produces 95% of distance with better dispersion</li>
             </ol>
           </div>
-          <!-- 80% Swing: dispersion cones comparing 100% vs 80% effort -->
-          <svg class="drill-diagram" viewBox="0 0 440 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="80% vs 100% effort dispersion comparison">
-            <rect width="440" height="165" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- Divider -->
-            <line x1="220" y1="16" x2="220" y2="148" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
-            <!-- ── LEFT: 100% effort — wide cone ── -->
-            <text x="110" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.5">100% Effort</text>
-            <!-- wide dispersion cone -->
-            <path d="M110,128 L38,52 L182,52 Z" fill="#E76F51" fill-opacity="0.07" stroke="#E76F51" stroke-opacity="0.35" stroke-width="1.5"/>
-            <!-- shot dots (scattered) -->
-            <circle cx="72" cy="68" r="4" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="155" cy="74" r="4" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="95" cy="58" r="4" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="138" cy="62" r="4" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="110" cy="72" r="4" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="60" cy="80" r="4" fill="#E76F51" fill-opacity="0.4"/>
-            <circle cx="168" cy="60" r="4" fill="#E76F51" fill-opacity="0.4"/>
-            <!-- width label -->
-            <line x1="38" y1="44" x2="182" y2="44" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1"/>
-            <text x="110" y="41" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">wide miss pattern</text>
-            <!-- tee dot -->
-            <circle cx="110" cy="131" r="5" fill="currentColor" fill-opacity="0.3"/>
-            <!-- ── RIGHT: 80% effort — tight cone ── -->
-            <text x="330" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#5BBF85">80% Effort</text>
-            <!-- tight dispersion cone -->
-            <path d="M330,128 L282,52 L378,52 Z" fill="#5BBF85" fill-opacity="0.08" stroke="#5BBF85" stroke-opacity="0.4" stroke-width="1.5"/>
-            <!-- shot dots (tight cluster) -->
-            <circle cx="322" cy="72" r="4" fill="#5BBF85" fill-opacity="0.7"/>
-            <circle cx="338" cy="64" r="4" fill="#5BBF85" fill-opacity="0.7"/>
-            <circle cx="314" cy="60" r="4" fill="#5BBF85" fill-opacity="0.7"/>
-            <circle cx="346" cy="72" r="4" fill="#5BBF85" fill-opacity="0.7"/>
-            <circle cx="330" cy="58" r="4" fill="#5BBF85" fill-opacity="0.7"/>
-            <!-- width label -->
-            <line x1="282" y1="44" x2="378" y2="44" stroke="#5BBF85" stroke-opacity="0.35" stroke-width="1"/>
-            <text x="330" y="41" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.6">tight pattern</text>
-            <!-- tee dot -->
-            <circle cx="330" cy="131" r="5" fill="#5BBF85" fill-opacity="0.6"/>
-            <!-- distance note -->
-            <text x="330" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">≈ same distance</text>
-            <text x="110" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">more spray</text>
+          <!-- 80% Swing: dispersion cones side by side -->
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="80% vs 100% effort: dispersion comparison">
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <line x1="220" y1="18" x2="220" y2="195" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
+            <!-- LEFT: 100% Effort -->
+            <text x="110" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="600" fill="currentColor" fill-opacity="0.55">100% Effort</text>
+            <!-- wide cone -->
+            <path d="M110,162 L30,62 L190,62 Z" fill="#E76F51" fill-opacity="0.07" stroke="#E76F51" stroke-opacity="0.32" stroke-width="1.5"/>
+            <!-- width line -->
+            <line x1="30" y1="56" x2="190" y2="56" stroke="#E76F51" stroke-opacity="0.28" stroke-width="1.2"/>
+            <text x="110" y="50" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#E76F51" fill-opacity="0.55">wide pattern</text>
+            <!-- scattered dots -->
+            <circle cx="65" cy="82" r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="155" cy="88" r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="88" cy="70" r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="140" cy="75" r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="110" cy="88" r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="52" cy="98" r="5" fill="#E76F51" fill-opacity="0.38"/>
+            <circle cx="172" cy="74" r="5" fill="#E76F51" fill-opacity="0.38"/>
+            <!-- tee + label -->
+            <circle cx="110" cy="165" r="8" fill="currentColor" fill-opacity="0.2"/>
+            <text x="110" y="188" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.28">more spray</text>
+            <!-- RIGHT: 80% Effort -->
+            <text x="330" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#5BBF85">80% Effort</text>
+            <!-- tight cone -->
+            <path d="M330,162 L272,62 L388,62 Z" fill="#5BBF85" fill-opacity="0.09" stroke="#5BBF85" stroke-opacity="0.4" stroke-width="1.5"/>
+            <!-- width line -->
+            <line x1="272" y1="56" x2="388" y2="56" stroke="#5BBF85" stroke-opacity="0.35" stroke-width="1.2"/>
+            <text x="330" y="50" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.65">tight pattern</text>
+            <!-- clustered dots -->
+            <circle cx="318" cy="88" r="5" fill="#5BBF85" fill-opacity="0.72"/>
+            <circle cx="342" cy="78" r="5" fill="#5BBF85" fill-opacity="0.72"/>
+            <circle cx="310" cy="74" r="5" fill="#5BBF85" fill-opacity="0.72"/>
+            <circle cx="350" cy="88" r="5" fill="#5BBF85" fill-opacity="0.72"/>
+            <circle cx="330" cy="70" r="5" fill="#5BBF85" fill-opacity="0.72"/>
+            <!-- tee + label -->
+            <circle cx="330" cy="165" r="8" fill="#5BBF85" fill-opacity="0.55"/>
+            <text x="330" y="188" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.65">≈ same distance</text>
+            <text x="220" y="210" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.22">80% effort · better contact · similar carry</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Consistent contact on 16/20 balls. Less than 10% distance drop vs. max swing.</div>
         </div>
@@ -1501,39 +1496,44 @@ html[data-theme="light"] .footer-bottom {
               <li>Alternate: 2 feet-together, then 1 normal swing to transfer the feel</li>
             </ol>
           </div>
-          <!-- Feet Together Driver: side-by-side stance comparison -->
-          <svg class="drill-diagram" viewBox="0 0 440 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Feet Together vs Normal Stance">
-            <rect width="440" height="165" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- divider -->
-            <line x1="220" y1="16" x2="220" y2="150" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
-            <text x="220" y="88" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.18">vs</text>
+          <!-- Feet Together Driver: stance comparison top-down -->
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Feet Together vs Normal Stance: top-down comparison">
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <!-- divider + vs label -->
+            <line x1="220" y1="18" x2="220" y2="198" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
+            <rect x="202" y="100" width="36" height="22" rx="5" fill="currentColor" fill-opacity="0.06"/>
+            <text x="220" y="115" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" fill-opacity="0.22">vs</text>
             <!-- ── LEFT: Normal Stance ── -->
-            <text x="110" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.38">Normal Stance</text>
-            <!-- feet (top-down ovals, shoulder width apart) -->
-            <ellipse cx="70" cy="110" rx="22" ry="10" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.5"/>
-            <text x="70" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.3">L</text>
-            <ellipse cx="148" cy="110" rx="22" ry="10" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.5"/>
-            <text x="148" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.3">R</text>
-            <!-- width arrows -->
-            <line x1="70" y1="128" x2="148" y2="128" stroke="currentColor" stroke-opacity="0.14" stroke-width="1"/>
-            <line x1="70" y1="123" x2="70" y2="133" stroke="currentColor" stroke-opacity="0.14" stroke-width="1"/>
-            <line x1="148" y1="123" x2="148" y2="133" stroke="currentColor" stroke-opacity="0.14" stroke-width="1"/>
-            <text x="109" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.22">shoulder width</text>
-            <!-- ball faded -->
-            <circle cx="109" cy="75" r="8" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.15" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="110" y="40" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="500" fill="currentColor" fill-opacity="0.45">Normal Stance</text>
+            <!-- faded ball -->
+            <circle cx="110" cy="75" r="10" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <text x="110" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.2">BALL</text>
+            <!-- Left foot — shoulder width apart -->
+            <ellipse cx="62" cy="142" rx="26" ry="12" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.8"/>
+            <text x="62" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" fill-opacity="0.35">L</text>
+            <!-- Right foot -->
+            <ellipse cx="158" cy="142" rx="26" ry="12" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.8"/>
+            <text x="158" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" fill-opacity="0.35">R</text>
+            <!-- width measurement -->
+            <line x1="62" y1="163" x2="158" y2="163" stroke="currentColor" stroke-opacity="0.16" stroke-width="1.2"/>
+            <line x1="62" y1="157" x2="62" y2="169" stroke="currentColor" stroke-opacity="0.16" stroke-width="1.2"/>
+            <line x1="158" y1="157" x2="158" y2="169" stroke="currentColor" stroke-opacity="0.16" stroke-width="1.2"/>
+            <text x="110" y="184" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.25">shoulder width</text>
             <!-- ── RIGHT: Feet Together ── -->
-            <text x="330" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#5BBF85">Feet Together</text>
-            <!-- feet (touching at heels) -->
-            <ellipse cx="298" cy="110" rx="22" ry="10" fill="#5BBF85" fill-opacity="0.12" stroke="#5BBF85" stroke-width="1.8"/>
-            <text x="298" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">L</text>
-            <ellipse cx="362" cy="110" rx="22" ry="10" fill="#5BBF85" fill-opacity="0.12" stroke="#5BBF85" stroke-width="1.8"/>
-            <text x="362" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.8">R</text>
-            <!-- heels touching indicator -->
-            <line x1="318" y1="110" x2="342" y2="110" stroke="#5BBF85" stroke-opacity="0.5" stroke-width="2"/>
-            <text x="330" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.55">heels touching</text>
+            <text x="330" y="40" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#5BBF85">Feet Together</text>
             <!-- ball highlighted -->
-            <circle cx="330" cy="75" r="9" fill="#C9A84C" fill-opacity="0.9"/>
-            <text x="330" y="57" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">BALL POSITION</text>
+            <circle cx="330" cy="75" r="11" fill="#C9A84C" fill-opacity="0.88"/>
+            <text x="330" y="58" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.6">BALL</text>
+            <!-- Left foot close -->
+            <ellipse cx="298" cy="142" rx="26" ry="12" fill="#5BBF85" fill-opacity="0.13" stroke="#5BBF85" stroke-width="2"/>
+            <text x="298" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5BBF85" fill-opacity="0.85">L</text>
+            <!-- Right foot — touching (only 8px gap between ellipse edges) -->
+            <ellipse cx="362" cy="142" rx="26" ry="12" fill="#5BBF85" fill-opacity="0.13" stroke="#5BBF85" stroke-width="2"/>
+            <text x="362" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5BBF85" fill-opacity="0.85">R</text>
+            <!-- gap indicator — heels together -->
+            <line x1="322" y1="142" x2="338" y2="142" stroke="#5BBF85" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="330" y="184" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.6">heels touching</text>
+            <text x="220" y="208" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.2">forces core sequencing · eliminates lower-body overuse</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Finish in balance on 13/15 swings. If falling off, reduce swing length before adding effort.</div>
         </div>
@@ -1564,47 +1564,47 @@ html[data-theme="light"] .footer-bottom {
               <li>Use launch monitor if available to track attack angle changes</li>
             </ol>
           </div>
-          <!-- Tee Height Ladder: side view of 3 tee heights + attack angle -->
-          <svg class="drill-diagram" viewBox="0 0 440 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tee Height Ladder: low, normal, high with attack angles">
-            <rect width="440" height="165" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- Ground line -->
-            <line x1="30" y1="128" x2="410" y2="128" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.5"/>
-            <text x="220" y="20" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.25">SIDE VIEW · ATTACK ANGLE</text>
-            <!-- ── LOW TEE ── -->
-            <text x="90" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.5">Low</text>
-            <text x="90" y="51" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">¼ inch</text>
-            <!-- tee peg -->
-            <line x1="90" y1="128" x2="90" y2="118" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
-            <!-- ball -->
-            <circle cx="90" cy="113" r="9" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.5"/>
-            <!-- attack angle arrow: shallow / descending -->
+          <!-- Tee Height Ladder: side view, 3 tees, attack angle arrows -->
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tee Height Ladder: low, normal, high tees with attack angle arrows">
             <defs>
-              <marker id="aa-low" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="#E76F51" fill-opacity="0.7"/></marker>
-              <marker id="aa-norm" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="currentColor" fill-opacity="0.45"/></marker>
-              <marker id="aa-high" markerWidth="5" markerHeight="5" refX="5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 Z" fill="#5BBF85" fill-opacity="0.8"/></marker>
+              <marker id="aa-low2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#E76F51" fill-opacity="0.75"/></marker>
+              <marker id="aa-norm2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="currentColor" fill-opacity="0.45"/></marker>
+              <marker id="aa-high2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="#5BBF85" fill-opacity="0.85"/></marker>
             </defs>
-            <line x1="55" y1="94" x2="82" y2="112" stroke="#E76F51" stroke-width="2" stroke-opacity="0.65" marker-end="url(#aa-low)"/>
-            <text x="46" y="88" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.6">-2°</text>
-            <!-- ── NORMAL TEE ── -->
-            <text x="220" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.5">Normal</text>
-            <text x="220" y="51" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">¾ inch</text>
-            <line x1="220" y1="128" x2="220" y2="110" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
-            <circle cx="220" cy="104" r="9" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.5"/>
-            <!-- level attack angle arrow -->
-            <line x1="186" y1="104" x2="212" y2="104" stroke="currentColor" stroke-width="2" stroke-opacity="0.4" marker-end="url(#aa-norm)"/>
-            <text x="174" y="100" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.4">0°</text>
-            <!-- ── HIGH TEE ── -->
-            <text x="350" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#5BBF85">High</text>
-            <text x="350" y="51" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.5">1½ inch</text>
-            <line x1="350" y1="128" x2="350" y2="100" stroke="#5BBF85" stroke-opacity="0.5" stroke-width="2"/>
-            <circle cx="350" cy="93" r="9" fill="#5BBF85" fill-opacity="0.14" stroke="#5BBF85" stroke-width="1.8"/>
-            <!-- ascending attack angle arrow -->
-            <line x1="318" y1="106" x2="342" y2="92" stroke="#5BBF85" stroke-width="2" stroke-opacity="0.75" marker-end="url(#aa-high)"/>
-            <text x="304" y="112" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.65">+4°</text>
-            <!-- labels -->
-            <text x="90" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">shallow path</text>
-            <text x="220" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">level</text>
-            <text x="350" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#5BBF85" fill-opacity="0.6">ascending</text>
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="28" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.14em" fill="currentColor" fill-opacity="0.28">SIDE VIEW · ATTACK ANGLE</text>
+            <!-- Ground line -->
+            <line x1="30" y1="168" x2="410" y2="168" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.8"/>
+            <!-- ── LOW TEE (x=90) ── -->
+            <text x="90" y="50" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="500" fill="currentColor" fill-opacity="0.5">Low</text>
+            <text x="90" y="66" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.3">¼ inch</text>
+            <!-- tee peg (short) -->
+            <line x1="90" y1="168" x2="90" y2="154" stroke="currentColor" stroke-opacity="0.4" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- ball -->
+            <circle cx="90" cy="147" r="12" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-opacity="0.28" stroke-width="1.8"/>
+            <!-- attack angle: descending (club path goes down) -->
+            <line x1="46" y1="118" x2="81" y2="145" stroke="#E76F51" stroke-width="2.5" stroke-opacity="0.7" marker-end="url(#aa-low2)"/>
+            <text x="44" y="112" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#E76F51" fill-opacity="0.65">−2°</text>
+            <text x="90" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#E76F51" fill-opacity="0.5">shallow path</text>
+            <!-- ── NORMAL TEE (x=220) ── -->
+            <text x="220" y="50" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="500" fill="currentColor" fill-opacity="0.5">Normal</text>
+            <text x="220" y="66" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.3">¾ inch</text>
+            <line x1="220" y1="168" x2="220" y2="148" stroke="currentColor" stroke-opacity="0.4" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="220" cy="140" r="12" fill="currentColor" fill-opacity="0.13" stroke="currentColor" stroke-opacity="0.28" stroke-width="1.8"/>
+            <!-- level arrow -->
+            <line x1="178" y1="140" x2="208" y2="140" stroke="currentColor" stroke-width="2.5" stroke-opacity="0.4" marker-end="url(#aa-norm2)"/>
+            <text x="165" y="136" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.38">0°</text>
+            <text x="220" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.3">level</text>
+            <!-- ── HIGH TEE (x=350) ── -->
+            <text x="350" y="50" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#5BBF85">High</text>
+            <text x="350" y="66" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.55">1½ inch</text>
+            <line x1="350" y1="168" x2="350" y2="138" stroke="#5BBF85" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="350" cy="128" r="12" fill="#5BBF85" fill-opacity="0.14" stroke="#5BBF85" stroke-width="2"/>
+            <!-- ascending arrow (club comes up) -->
+            <line x1="310" y1="148" x2="338" y2="128" stroke="#5BBF85" stroke-width="2.5" stroke-opacity="0.8" marker-end="url(#aa-high2)"/>
+            <text x="296" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#5BBF85" fill-opacity="0.7">+4°</text>
+            <text x="350" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.6">ascending</text>
+            <text x="220" y="214" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.2">6 balls at each height · track attack angle shift</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Solid contact on 5/6 at each height. Attack angle should shift +2 to +4 degrees from low to high tee.</div>
         </div>
@@ -1638,33 +1638,35 @@ html[data-theme="light"] .footer-bottom {
             </ol>
           </div>
           <!-- 3-2-1 Pressure Drill: sequence flow -->
-          <svg class="drill-diagram" viewBox="0 0 440 165" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="3-2-1 Pressure Drill sequence">
-            <rect width="440" height="165" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <text x="220" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" font-weight="600" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.25">SEQUENCE — ALL MUST LAND ON TARGET</text>
+          <!-- 3-2-1 Pressure Drill: horizontal sequence -->
+          <svg class="drill-diagram" viewBox="0 0 440 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="3-2-1 Pressure Drill: sequence with restart on miss">
+            <rect width="440" height="220" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="28" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.14em" fill="currentColor" fill-opacity="0.28">SEQUENCE — ALL BALLS MUST LAND ON TARGET SIDE</text>
             <!-- ── STEP 3 ── -->
-            <text x="80" y="48" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="currentColor" fill-opacity="0.7">3 Balls</text>
-            <!-- 3 dots -->
-            <circle cx="48" cy="80" r="11" fill="#5BBF85" fill-opacity="0.2" stroke="#5BBF85" stroke-width="1.5"/>
-            <circle cx="80" cy="80" r="11" fill="#5BBF85" fill-opacity="0.2" stroke="#5BBF85" stroke-width="1.5"/>
-            <circle cx="112" cy="80" r="11" fill="#5BBF85" fill-opacity="0.2" stroke="#5BBF85" stroke-width="1.5"/>
-            <text x="80" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">all 3 on target side</text>
-            <!-- arrow -->
-            <text x="166" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="18" fill="currentColor" fill-opacity="0.2">→</text>
+            <text x="78" y="58" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="currentColor" fill-opacity="0.65">3 Balls</text>
+            <circle cx="42" cy="96" r="14" fill="#5BBF85" fill-opacity="0.18" stroke="#5BBF85" stroke-width="2"/>
+            <circle cx="78" cy="96" r="14" fill="#5BBF85" fill-opacity="0.18" stroke="#5BBF85" stroke-width="2"/>
+            <circle cx="114" cy="96" r="14" fill="#5BBF85" fill-opacity="0.18" stroke="#5BBF85" stroke-width="2"/>
+            <text x="78" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.32">all 3 on target</text>
+            <!-- → arrow -->
+            <path d="M130,96 L162,96" stroke="currentColor" stroke-opacity="0.2" stroke-width="2"/>
+            <polygon points="162,91 174,96 162,101" fill="currentColor" fill-opacity="0.18"/>
             <!-- ── STEP 2 ── -->
-            <text x="236" y="48" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="currentColor" fill-opacity="0.7">2 Balls</text>
-            <circle cx="212" cy="80" r="11" fill="#5BBF85" fill-opacity="0.3" stroke="#5BBF85" stroke-width="1.5"/>
-            <circle cx="260" cy="80" r="11" fill="#5BBF85" fill-opacity="0.3" stroke="#5BBF85" stroke-width="1.5"/>
-            <text x="236" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.3">both on target side</text>
-            <!-- arrow -->
-            <text x="298" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="18" fill="currentColor" fill-opacity="0.2">→</text>
-            <!-- ── STEP 1 (the one that counts) ── -->
-            <text x="370" y="48" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#C9A84C">1 Ball</text>
-            <circle cx="370" cy="80" r="13" fill="#C9A84C" fill-opacity="0.22" stroke="#C9A84C" stroke-width="2"/>
-            <text x="370" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#C9A84C">!</text>
-            <text x="370" y="108" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#C9A84C" fill-opacity="0.65">this one counts</text>
-            <!-- Miss = restart -->
-            <path d="M 410,90 Q 430,90 430,140 Q 430,155 220,155 Q 10,155 10,140 Q 10,90 30,90" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
-            <text x="220" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.4">miss → restart from 3</text>
+            <text x="236" y="58" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="currentColor" fill-opacity="0.65">2 Balls</text>
+            <circle cx="204" cy="96" r="14" fill="#5BBF85" fill-opacity="0.28" stroke="#5BBF85" stroke-width="2"/>
+            <circle cx="248" cy="96" r="14" fill="#5BBF85" fill-opacity="0.28" stroke="#5BBF85" stroke-width="2"/>
+            <text x="226" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.32">both on target</text>
+            <!-- → arrow -->
+            <path d="M264,96 L296,96" stroke="currentColor" stroke-opacity="0.2" stroke-width="2"/>
+            <polygon points="296,91 308,96 296,101" fill="currentColor" fill-opacity="0.18"/>
+            <!-- ── STEP 1 ── -->
+            <text x="378" y="58" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#C9A84C">1 Ball</text>
+            <circle cx="378" cy="96" r="18" fill="#C9A84C" fill-opacity="0.2" stroke="#C9A84C" stroke-width="2.5"/>
+            <text x="378" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#C9A84C" fill-opacity="0.9">!</text>
+            <text x="378" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#C9A84C" fill-opacity="0.65">this one counts</text>
+            <!-- Miss = restart loop -->
+            <path d="M408,110 Q420,110 420,158 Q420,172 220,172 Q20,172 20,158 Q20,110 42,110" stroke="#E76F51" stroke-opacity="0.28" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+            <text x="220" y="192" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#E76F51" fill-opacity="0.45">miss → restart the whole sequence from 3</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Complete the full 3-2-1 sequence 3 times in a practice session without restarting.</div>
         </div>
