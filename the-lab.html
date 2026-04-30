@@ -954,6 +954,40 @@ html[data-theme="light"] .theme-toggle:hover {
 /* Base */
 html[data-theme="light"] body { background: #F5F4F0; color: #1C1B18; }
 
+/* Override inline white text — rgba and hex variants */
+html[data-theme="light"] [style*="rgba(250,250,250"] { color: rgba(28,27,24,0.65) !important; }
+html[data-theme="light"] [style*="#FAFAFA"],
+html[data-theme="light"] [style*="#fafafa"] { color: #1C1B18 !important; }
+
+/* Email strip input (top strip) */
+html[data-theme="light"] #labEmailInput {
+  background: rgba(28,27,24,0.06) !important;
+  border-color: rgba(28,27,24,0.15) !important;
+  color: #1C1B18 !important;
+}
+/* Subscribe button stays white-on-green */
+html[data-theme="light"] #labEmailBtn { color: rgba(250,250,250,0.95) !important; }
+
+/* Bottom email capture — button is the medium forest green */
+html[data-theme="light"] #articleEmailBtn {
+  background: #1B4D3E !important;
+  color: rgba(250,250,250,0.92) !important;
+}
+html[data-theme="light"] #articleEmailInput {
+  background: rgba(255,255,255,0.12) !important;
+  border-color: rgba(255,255,255,0.25) !important;
+  color: var(--white) !important;
+}
+
+/* Bottom email capture section */
+html[data-theme="light"] #labEmailCapture {
+  background: #0D2B20 !important;
+  border-top-color: rgba(255,255,255,0.08) !important;
+}
+html[data-theme="light"] #labEmailCapture [style*="#FAFAFA"],
+html[data-theme="light"] #labEmailCapture [style*="#fafafa"] { color: rgba(250,250,250,0.95) !important; }
+html[data-theme="light"] #labEmailCapture [style*="rgba(250,250,250"] { color: rgba(250,250,250,0.75) !important; }
+
 /* Nav */
 html[data-theme="light"] nav {
   background: rgba(245,244,240,0.92) !important;
@@ -963,6 +997,8 @@ html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
 html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links .nav-cta,
+html[data-theme="light"] .nav-drawer .nav-cta { color: var(--white) !important; }
 html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
 html[data-theme="light"] .nav-drawer {
   background: rgba(245,244,240,0.97) !important;
@@ -986,16 +1022,28 @@ html[data-theme="light"] .section-nav a.active {
   border-bottom-color: var(--green) !important;
 }
 
+/* Section header text — forest green for mid-scale headings */
+html[data-theme="light"] .lab-section h2,
+html[data-theme="light"] .section-header h2 { color: var(--green) !important; }
+html[data-theme="light"] .lab-hero h1 { color: #1C1B18; }
+
 /* Lab hero */
 html[data-theme="light"] .lab-hero {
-  background: linear-gradient(170deg, #F5F4F0 0%, #EEF3F0 100%);
+  background-color: #EDECEA;
+  background-image:
+    radial-gradient(ellipse 70% 90% at -6% 55%, rgba(27,77,62,0.11) 0%, transparent 52%),
+    radial-gradient(ellipse 60% 80% at 108% 45%, rgba(44,95,124,0.08) 0%, transparent 52%);
 }
-html[data-theme="light"] .lab-hero p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .lab-hero h1 { color: #1C1B18; }
+html[data-theme="light"] .lab-hero p { color: rgba(28,27,24,0.65); }
 
 /* Tournament banner */
 html[data-theme="light"] .banner-inner {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .banner-course { color: rgba(28,27,24,0.5); }
 html[data-theme="light"] .banner-error { color: rgba(28,27,24,0.4); }
@@ -1003,8 +1051,11 @@ html[data-theme="light"] .banner-error { color: rgba(28,27,24,0.4); }
 /* Field strength */
 html[data-theme="light"] .strength-section { border-bottom-color: rgba(28,27,24,0.07); }
 html[data-theme="light"] .strength-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .strength-label { color: rgba(28,27,24,0.55); }
 html[data-theme="light"] .strength-value { color: #1C1B18; }
@@ -1027,14 +1078,18 @@ html[data-theme="light"] .section-toggle:hover {
   color: var(--green);
 }
 
-/* Player cards (Top 10) */
+/* Player cards (Top 10) — liquid glass */
 html[data-theme="light"] .player-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .player-card:hover {
-  background: #FAFAF8;
-  border-color: rgba(91,191,133,0.3);
+  background: rgba(255,255,255,0.68);
+  border-color: rgba(91,191,133,0.35);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.09), inset 0 1px 0 rgba(255,255,255,0.95);
 }
 html[data-theme="light"] .player-name { color: #1C1B18; }
 html[data-theme="light"] .sg-label { color: rgba(28,27,24,0.45); }
@@ -1043,8 +1098,11 @@ html[data-theme="light"] .skill-name { color: rgba(28,27,24,0.55); }
 
 /* Predictions table */
 html[data-theme="light"] .pred-table {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 html[data-theme="light"] .pred-table thead { background: rgba(28,27,24,0.04); }
 html[data-theme="light"] .pred-table th {
@@ -1068,18 +1126,27 @@ html[data-theme="light"] .info-tip .tip-text {
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
 }
 
-/* Charts */
+/* Charts — liquid glass */
 html[data-theme="light"] .chart-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
-html[data-theme="light"] .chart-card:hover { background: #FAFAF8; }
+html[data-theme="light"] .chart-card:hover {
+  background: rgba(255,255,255,0.68);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.09);
+}
 html[data-theme="light"] .chart-subtitle { color: rgba(28,27,24,0.45); }
 
-/* Intel cards */
+/* Intel cards — liquid glass */
 html[data-theme="light"] .intel-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .value-player { border-bottom-color: rgba(28,27,24,0.05); }
 html[data-theme="light"] .value-indicator { color: rgba(28,27,24,0.4); }
@@ -1110,6 +1177,7 @@ html[data-theme="light"] footer {
   background: #ECEBE6;
   border-top-color: rgba(28,27,24,0.1);
 }
+html[data-theme="light"] .f-brand .f-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
 html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
 html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
@@ -1543,7 +1611,7 @@ html[data-theme="light"] .footer-bottom {
 </section>
 
 <!-- EMAIL CAPTURE -->
-<div style="background:#0A0A0A; padding:72px 24px; text-align:center; border-top:1px solid rgba(255,255,255,0.06);">
+<div id="labEmailCapture" style="background:#0A0A0A; padding:72px 24px; text-align:center; border-top:1px solid rgba(255,255,255,0.06);">
   <div style="max-width:480px; margin:0 auto;">
     <div style="font-family:'JetBrains Mono','Courier New',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#5BBF85; margin-bottom:16px;">Free Every Tuesday</div>
     <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(26px,5vw,36px); font-weight:600; color:#FAFAFA; margin-bottom:12px; line-height:1.2;">Get the weekly breakdown<br>in your inbox</h2>

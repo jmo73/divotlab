@@ -1361,6 +1361,8 @@ html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
 html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links .nav-cta,
+html[data-theme="light"] .nav-drawer .nav-cta { color: var(--white) !important; }
 html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
 html[data-theme="light"] .nav-drawer {
   background: rgba(245,244,240,0.97) !important;
@@ -1377,17 +1379,18 @@ html[data-theme="light"] .mobile-cta-bar {
 
 /* Hero */
 html[data-theme="light"] .hero {
-  background: #F5F4F0;
+  background-color: #EDECEA;
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(27,77,62,0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(44,95,124,0.05) 0%, transparent 65%);
+    radial-gradient(ellipse 70% 90% at -6% 55%, rgba(27,77,62,0.11) 0%, transparent 52%),
+    radial-gradient(ellipse 60% 80% at 108% 45%, rgba(44,95,124,0.08) 0%, transparent 52%);
 }
 html[data-theme="light"] .hero::before {
-  background: radial-gradient(circle, rgba(27,77,62,0.07) 0%, transparent 55%);
+  background: radial-gradient(circle, rgba(27,77,62,0.04) 0%, transparent 55%);
 }
 html[data-theme="light"] .hero h1 { color: #1C1B18; }
-html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.55); }
-html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .section-eyebrow { color: var(--green) !important; }
+html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.65); }
+html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.35); }
 html[data-theme="light"] .scroll-hint span { color: rgba(28,27,24,0.3); }
 
 /* Hero email signup */
@@ -1544,6 +1547,7 @@ html[data-theme="light"] footer {
   background: #ECEBE6;
   border-top-color: rgba(28,27,24,0.1);
 }
+html[data-theme="light"] .f-brand .f-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
 html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
 html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }

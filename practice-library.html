@@ -122,12 +122,12 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 }
 .hero h1 {
   font-family: var(--display);
-  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-size: clamp(3rem, 5.5vw, 4.6rem);
   font-weight: 600; line-height: 1.08; letter-spacing: -.02em;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 .hero p {
-  font-size: 17px; font-weight: 300; line-height: 1.7;
+  font-size: 18px; font-weight: 300; line-height: 1.75;
   color: rgba(250,250,250,.5);
 }
 
@@ -188,7 +188,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 .cat-tab[data-cat="mental"].active   { color: var(--purple);     border-bottom-color: var(--purple); }
 
 /* CONTENT */
-.content { max-width: 1100px; margin: 0 auto; padding: 48px 56px 96px; }
+.content { max-width: 1100px; margin: 0 auto; padding: 64px 56px 120px; }
 .cat-panel { display: none; }
 .cat-panel.active { display: block; }
 
@@ -242,9 +242,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 /* SECTION HEADING */
 .section-heading {
   font-family: var(--display);
-  font-size: 1.4rem; font-weight: 600;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
+  font-size: clamp(1.6rem, 2.5vw, 2rem); font-weight: 600;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
   border-bottom: 1px solid rgba(255,255,255,.06);
   color: rgba(250,250,250,.85);
 }
@@ -283,25 +283,25 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 
 /* START-HERE callout */
 .start-here {
-  display: flex; align-items: center; gap: 14px;
+  display: flex; align-items: center; gap: 16px;
   background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
-  border-radius: 8px; padding: 14px 18px; margin-bottom: 24px;
+  border-radius: 10px; padding: 18px 22px; margin-bottom: 32px;
 }
 .start-here-label {
-  font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .14em;
+  font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .14em;
   text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
 }
-.start-here-text { font-size: 13px; color: rgba(250,250,250,.6); line-height: 1.5; }
+.start-here-text { font-size: 14px; color: rgba(250,250,250,.6); line-height: 1.55; }
 .start-here-text strong { color: var(--white); font-weight: 500; }
 
 /* Fundamentals — collapsible */
-.fundamentals-wrap { margin-bottom: 36px; }
+.fundamentals-wrap { margin-bottom: 48px; }
 .fund-toggle {
   width: 100%; display: flex; align-items: center; justify-content: space-between;
   background: none; border: none; border-bottom: 1px solid rgba(255,255,255,.06);
-  cursor: pointer; padding: 0 0 12px; margin-bottom: 0; color: var(--white);
+  cursor: pointer; padding: 0 0 14px; margin-bottom: 0; color: var(--white);
 }
-.fund-toggle-label { font-family: var(--display); font-size: 1.1rem; font-weight: 600; color: rgba(250,250,250,.65); }
+.fund-toggle-label { font-family: var(--display); font-size: 1.25rem; font-weight: 600; color: rgba(250,250,250,.65); }
 .fund-toggle-hint {
   font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
   color: var(--muted); display: flex; align-items: center; gap: 6px;
@@ -317,12 +317,12 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 
 /* DRILL QUICK-NAV */
 .drill-quicknav {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  margin-bottom: 28px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 36px;
 }
 .quicknav-link {
-  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .04em;
-  padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,.08);
+  font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .04em;
+  padding: 7px 14px; border-radius: 5px; border: 1px solid rgba(255,255,255,.08);
   color: rgba(250,250,250,.4); background: none; cursor: pointer;
   transition: all .15s; white-space: nowrap;
 }
@@ -330,9 +330,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 .quicknav-link.done { color: var(--green-light); border-color: rgba(91,191,133,.25); }
 
 /* ACCORDIONS */
-.accordion-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 52px; }
+.accordion-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 72px; }
 .accordion-item {
-  background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
   overflow: hidden; transition: border-color .2s, box-shadow .2s;
   position: relative;
 }
@@ -357,8 +357,8 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 .accordion-item.drill-done .drill-name { color: rgba(250,250,250,.55); }
 
 .accordion-trigger {
-  width: 100%; display: flex; align-items: center; gap: 14px;
-  padding: 16px 18px; background: none; border: none; cursor: pointer;
+  width: 100%; display: flex; align-items: center; gap: 16px;
+  padding: 22px 24px; background: none; border: none; cursor: pointer;
   text-align: left;
 }
 .accordion-trigger:hover { background: rgba(255,255,255,.025); }
@@ -382,7 +382,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 }
 
 .drill-name {
-  font-family: var(--body); font-size: 15px; font-weight: 500; color: var(--white);
+  font-family: var(--body); font-size: 17px; font-weight: 500; color: var(--white);
   flex: 1; transition: color .18s;
 }
 .hc-tags { display: flex; gap: 5px; flex-shrink: 0; }
@@ -404,25 +404,25 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 .accordion-body {
   max-height: 0; overflow: hidden; opacity: 0;
   transition: max-height .4s cubic-bezier(.22,1,.36,1), opacity .25s ease;
-  padding: 0 18px;
+  padding: 0 26px;
 }
-.accordion-item.open .accordion-body { max-height: 1800px; opacity: 1; padding: 0 18px 24px; }
+.accordion-item.open .accordion-body { max-height: 1800px; opacity: 1; padding: 0 26px 32px; }
 
 .drill-meta {
-  display: flex; gap: 28px; flex-wrap: wrap;
-  border-top: 1px solid rgba(255,255,255,.06); padding: 16px 0 18px;
-  margin-bottom: 18px;
+  display: flex; gap: 32px; flex-wrap: wrap;
+  border-top: 1px solid rgba(255,255,255,.06); padding: 20px 0 22px;
+  margin-bottom: 22px;
 }
-.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-item { display: flex; flex-direction: column; gap: 4px; }
 .meta-label { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.meta-value { font-size: 13px; font-weight: 500; color: var(--white); }
+.meta-value { font-size: 14px; font-weight: 500; color: var(--white); }
 
-.drill-description { font-size: 14px; line-height: 1.72; color: rgba(250,250,250,.62); margin-bottom: 18px; }
+.drill-description { font-size: 15px; line-height: 1.78; color: rgba(250,250,250,.62); margin-bottom: 22px; }
 
-.drill-steps { margin-bottom: 18px; }
-.drill-steps h4 { font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.drill-steps ol { padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
-.drill-steps li { font-size: 13px; line-height: 1.6; color: rgba(250,250,250,.68); }
+.drill-steps { margin-bottom: 22px; }
+.drill-steps h4 { font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.drill-steps ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.drill-steps li { font-size: 14px; line-height: 1.65; color: rgba(250,250,250,.68); }
 
 .drill-benchmark {
   background: rgba(91,191,133,.07); border: 1px solid rgba(91,191,133,.18);
@@ -448,23 +448,23 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
 }
 
 /* SESSIONS */
-.sessions { margin-bottom: 52px; }
-.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.sessions { margin-bottom: 64px; }
+.sessions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
 .session-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px;
 }
 .session-card h4 {
-  font-family: var(--display); font-size: 1.05rem; font-weight: 600; margin-bottom: 4px;
+  font-family: var(--display); font-size: 1.2rem; font-weight: 600; margin-bottom: 6px;
 }
 .session-duration {
-  font-family: var(--mono); font-size: 9px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 20px;
 }
 .session-card ol { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0; }
 .session-card li {
-  font-size: 13px; color: rgba(250,250,250,.65); line-height: 1.45;
-  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer;
-  transition: color .15s; display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: rgba(250,250,250,.65); line-height: 1.5;
+  padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer;
+  transition: color .15s; display: flex; align-items: center; gap: 10px;
 }
 .session-card li:last-child { border-bottom: none; }
 .session-card li:hover { color: var(--white); }
@@ -533,8 +533,167 @@ footer {
   font-size: 12px; color: rgba(250,250,250,.25);
 }
 
+/* =============================================
+   SIDEBAR LAYOUT
+   ============================================= */
+.content-outer {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 56px 56px 120px;
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+/* Remove old content standalone padding — now handled by content-outer */
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  max-width: none;
+  margin: 0;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 138px; /* nav (68px) + filter-zone (~54px) + gap (16px) */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-section {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 18px 16px;
+}
+
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* Level buttons in sidebar — vertical list style */
+.sidebar .lvl-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  border: none;
+  color: rgba(250,250,250,0.45);
+  background: transparent;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 2px;
+}
+.sidebar .lvl-btn:last-child { margin-bottom: 0; }
+.sidebar .lvl-btn:hover {
+  color: var(--white);
+  background: rgba(255,255,255,0.06);
+}
+.sidebar .lvl-btn.active {
+  color: var(--white);
+  background: rgba(255,255,255,0.09);
+  font-weight: 600;
+}
+.sidebar .lvl-btn .lvl-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.2);
+}
+.sidebar .lvl-btn.active .lvl-dot { background: var(--green-light); }
+
+/* Progress tracker */
+.sidebar-progress-nums {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+.sidebar-done-num {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1;
+}
+.sidebar-done-of {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: rgba(250,250,250,0.3);
+}
+.sidebar-done-label {
+  font-size: 11px;
+  color: rgba(250,250,250,0.3);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+.sidebar-progress-track {
+  height: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sidebar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(.22,1,.36,1);
+  width: 0%;
+}
+.sidebar-progress-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(250,250,250,0.25);
+  line-height: 1.5;
+}
+
+/* Category count chip */
+.sidebar-drill-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(250,250,250,0.3);
+  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 4px;
+}
+.sidebar-drill-count strong { color: rgba(250,250,250,0.6); }
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
+  .content-outer {
+    flex-direction: column;
+    padding: 32px 24px 80px;
+    gap: 0;
+  }
+  .sidebar {
+    width: 100%;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .sidebar-section { flex: 1; min-width: 220px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .hero-stats { gap: 24px; }
 }
@@ -550,7 +709,6 @@ footer {
   .cat-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .cat-tabs::-webkit-scrollbar { display: none; }
   .cat-tab { padding: 14px 14px; font-size: 10px; letter-spacing: .06em; flex-shrink: 0; }
-  .content { padding: 28px 16px 80px; }
   .fundamentals { grid-template-columns: 1fr; }
   .sessions-grid { grid-template-columns: 1fr; }
   .drill-meta { gap: 16px; }
@@ -559,7 +717,131 @@ footer {
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   footer { padding: 48px 22px 28px; }
   .footer-bottom { flex-direction: column; gap: 6px; align-items: center; }
+  .sidebar { flex-direction: column; }
+  .sidebar-section { min-width: unset; }
+  .content-outer { padding: 24px 16px 80px; }
 }
+
+/* =============================================
+   SIDEBAR — SEARCH
+   ============================================= */
+.sidebar-search-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.sidebar-search-icon {
+  position: absolute; left: 10px;
+  color: rgba(250,250,250,0.3); pointer-events: none; flex-shrink: 0;
+}
+.sidebar-search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  padding: 9px 30px 9px 30px;
+  font-family: var(--body); font-size: 13px;
+  color: var(--white); outline: none;
+  transition: border-color .2s, background .2s;
+  -webkit-appearance: none; appearance: none;
+}
+.sidebar-search-input::placeholder { color: rgba(250,250,250,0.3); }
+.sidebar-search-input:focus { border-color: var(--green-light); background: rgba(255,255,255,0.09); }
+.sidebar-search-input::-webkit-search-cancel-button { display: none; }
+.sidebar-search-clear {
+  position: absolute; right: 8px;
+  background: none; border: none;
+  color: rgba(250,250,250,0.35); font-size: 18px;
+  cursor: pointer; display: none;
+  align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  transition: color .15s; padding: 0; line-height: 1;
+}
+.sidebar-search-clear:hover { color: var(--white); }
+.sidebar-search-count {
+  margin-top: 8px;
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(250,250,250,0.3);
+}
+.sidebar-search-count strong { color: rgba(250,250,250,0.6); }
+
+/* SIDEBAR — LEVEL COUNT BADGE */
+.lvl-count {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(250,250,250,0.22);
+  transition: color .15s;
+}
+.sidebar .lvl-btn.active .lvl-count { color: rgba(250,250,250,0.45); }
+
+/* SIDEBAR — BOOKMARKS */
+.sidebar-bookmarks-empty {
+  font-size: 12px; color: rgba(250,250,250,0.25);
+  text-align: center; padding: 6px 0 2px; line-height: 1.5;
+}
+.sidebar-bookmarks-list { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-bookmark-item {
+  display: block; padding: 8px 10px;
+  border-radius: 6px; text-decoration: none;
+  cursor: pointer; transition: background .15s;
+}
+.sidebar-bookmark-item:hover { background: rgba(255,255,255,0.06); }
+.sidebar-bookmark-name {
+  display: block; font-size: 12px; font-weight: 500;
+  color: rgba(250,250,250,0.72); line-height: 1.3; margin-bottom: 2px;
+}
+.sidebar-bookmark-cat {
+  display: block; font-family: var(--mono);
+  font-size: 9px; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(250,250,250,0.25);
+}
+
+/* BOOKMARK BUTTON on drill rows */
+.drill-bookmark-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  background: none; border: none; cursor: pointer;
+  color: rgba(250,250,250,0.18); border-radius: 4px;
+  transition: color .15s, background .15s; flex-shrink: 0;
+}
+.drill-bookmark-btn:hover { color: rgba(250,250,250,0.55); background: rgba(255,255,255,0.06); }
+.drill-bookmark-btn.bookmarked { color: var(--gold); }
+.drill-bookmark-btn.bookmarked:hover { background: rgba(201,168,76,0.1); }
+
+/* SIDEBAR — RESET BUTTON */
+.sidebar-reset-btn {
+  display: block; width: 100%; margin-top: 14px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 6px;
+  padding: 8px 12px;
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: rgba(250,250,250,0.22); cursor: pointer;
+  transition: all .15s; text-align: center;
+}
+.sidebar-reset-btn:hover {
+  border-color: rgba(231,111,81,0.4);
+  color: rgba(231,111,81,0.7);
+  background: rgba(231,111,81,0.06);
+}
+
+/* SEARCH ACTIVE — show all cat-panels with category labels */
+.content.search-active .cat-panel { display: block; }
+.search-cat-sep {
+  display: none;
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted);
+  padding: 28px 0 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 14px;
+}
+.search-active .cat-panel.active .search-cat-sep { display: block; }
+.search-active .start-here,
+.search-active .fundamentals-wrap,
+.search-active .drill-quicknav,
+.search-active .sessions,
+.search-active .resources,
+.search-active .labnotes-nudge { display: none; }
+.search-active .section-heading { display: none; }
 
 /* =============================================
    THEME TOGGLE BUTTON
@@ -611,6 +893,8 @@ html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
 html[data-theme="light"] .nav-links a.active { color: var(--green) !important; }
 html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links .nav-cta,
+html[data-theme="light"] .nav-drawer .nav-cta { color: var(--white) !important; }
 html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
 html[data-theme="light"] .nav-drawer {
   background: rgba(245,244,240,0.97) !important;
@@ -621,10 +905,13 @@ html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
 
 /* Hero */
 html[data-theme="light"] .hero {
-  background: linear-gradient(165deg, #F5F4F0 0%, #EEF3F0 100%);
+  background-color: #EDECEA;
+  background-image:
+    radial-gradient(ellipse 70% 90% at -6% 55%, rgba(27,77,62,0.11) 0%, transparent 52%),
+    radial-gradient(ellipse 60% 80% at 108% 45%, rgba(44,95,124,0.08) 0%, transparent 52%);
 }
 html[data-theme="light"] .hero::before {
-  background: radial-gradient(ellipse at center, rgba(27,77,62,0.05) 0%, transparent 65%);
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.04) 0%, transparent 60%);
 }
 html[data-theme="light"] .hero h1 { color: #1C1B18; }
 html[data-theme="light"] .hero p { color: rgba(28,27,24,0.5); }
@@ -646,9 +933,60 @@ html[data-theme="light"] .lvl-btn { color: rgba(28,27,24,0.4); }
 html[data-theme="light"] .lvl-btn:hover { color: rgba(28,27,24,0.75); }
 html[data-theme="light"] .lvl-btn.active { color: #1C1B18; }
 
+/* Lab Notes nudge — light mode */
+html[data-theme="light"] .labnotes-nudge {
+  background: rgba(27,77,62,0.07);
+  border-color: rgba(27,77,62,0.2);
+}
+html[data-theme="light"] .nudge-text { color: rgba(28,27,24,0.75); }
+html[data-theme="light"] .nudge-text strong { color: var(--green); }
+html[data-theme="light"] .nudge-btn { color: var(--green); border-color: rgba(27,77,62,0.3); }
+html[data-theme="light"] .nudge-btn:hover { background: rgba(27,77,62,0.08); border-color: var(--green); }
+
+/* Sidebar — light mode */
+html[data-theme="light"] .sidebar-section {
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+html[data-theme="light"] .sidebar-label { color: rgba(28,27,24,0.38); }
+html[data-theme="light"] .sidebar .lvl-btn { color: rgba(28,27,24,0.48); }
+html[data-theme="light"] .sidebar .lvl-btn:hover { color: #1C1B18; background: rgba(28,27,24,0.05); }
+html[data-theme="light"] .sidebar .lvl-btn.active { color: #1C1B18; background: rgba(28,27,24,0.08); font-weight: 600; }
+html[data-theme="light"] .sidebar .lvl-btn .lvl-dot { background: rgba(28,27,24,0.15); }
+html[data-theme="light"] .sidebar .lvl-btn.active .lvl-dot { background: var(--green); }
+html[data-theme="light"] .sidebar-search-icon { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .sidebar-search-input { background: rgba(28,27,24,0.05); border-color: rgba(28,27,24,0.12); color: #1C1B18; }
+html[data-theme="light"] .sidebar-search-input::placeholder { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .sidebar-search-input:focus { border-color: var(--green); background: rgba(28,27,24,0.07); }
+html[data-theme="light"] .sidebar-search-clear { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .sidebar-search-clear:hover { color: #1C1B18; }
+html[data-theme="light"] .sidebar-search-count { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .sidebar-search-count strong { color: rgba(28,27,24,0.65); }
+html[data-theme="light"] .lvl-count { color: rgba(28,27,24,0.22); }
+html[data-theme="light"] .sidebar .lvl-btn.active .lvl-count { color: rgba(28,27,24,0.48); }
+html[data-theme="light"] .sidebar-bookmarks-empty { color: rgba(28,27,24,0.28); }
+html[data-theme="light"] .sidebar-bookmark-item:hover { background: rgba(28,27,24,0.05); }
+html[data-theme="light"] .sidebar-bookmark-name { color: rgba(28,27,24,0.75); }
+html[data-theme="light"] .sidebar-bookmark-cat { color: rgba(28,27,24,0.28); }
+html[data-theme="light"] .drill-bookmark-btn { color: rgba(28,27,24,0.16); }
+html[data-theme="light"] .drill-bookmark-btn:hover { color: rgba(28,27,24,0.52); background: rgba(28,27,24,0.05); }
+html[data-theme="light"] .sidebar-reset-btn { border-color: rgba(28,27,24,0.08); color: rgba(28,27,24,0.28); }
+html[data-theme="light"] .sidebar-reset-btn:hover { border-color: rgba(231,111,81,0.4); color: rgba(231,111,81,0.8); background: rgba(231,111,81,0.05); }
+html[data-theme="light"] .search-cat-sep { color: rgba(28,27,24,0.38); border-bottom-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .sidebar-done-num { color: #1C1B18; }
+html[data-theme="light"] .sidebar-done-of { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .sidebar-done-label { color: rgba(28,27,24,0.38); }
+html[data-theme="light"] .sidebar-progress-track { background: rgba(28,27,24,0.1); }
+html[data-theme="light"] .sidebar-progress-hint { color: rgba(28,27,24,0.28); }
+html[data-theme="light"] .sidebar-drill-count { color: rgba(28,27,24,0.3); border-top-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .sidebar-drill-count strong { color: rgba(28,27,24,0.65); }
+
 /* Section heading */
 html[data-theme="light"] .section-heading {
-  color: rgba(28,27,24,0.85);
+  color: var(--green);
   border-bottom-color: rgba(28,27,24,0.08);
 }
 
@@ -664,8 +1002,11 @@ html[data-theme="light"] .start-here-text strong { color: #1C1B18; }
 html[data-theme="light"] .fund-toggle { border-bottom-color: rgba(28,27,24,0.08); color: #1C1B18; }
 html[data-theme="light"] .fund-toggle-label { color: rgba(28,27,24,0.7); }
 html[data-theme="light"] .fund-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .fund-card li { color: rgba(28,27,24,0.72); }
 
@@ -684,14 +1025,29 @@ html[data-theme="light"] .quicknav-link.done {
   border-color: rgba(27,77,62,0.25);
 }
 
-/* Accordion drill cards */
+/* Accordion drill cards — liquid glass */
 html[data-theme="light"] .accordion-item {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
-html[data-theme="light"] .accordion-item.drill-done { background: rgba(27,77,62,0.04); }
+html[data-theme="light"] .accordion-item.drill-done { background: rgba(27,77,62,0.07); }
 html[data-theme="light"] .accordion-item.drill-done .drill-name { color: rgba(28,27,24,0.48); }
-html[data-theme="light"] .accordion-trigger:hover { background: rgba(28,27,24,0.025); }
+html[data-theme="light"] .accordion-trigger:hover { background: rgba(255,255,255,0.3); }
+
+/* Session cards — liquid glass */
+html[data-theme="light"] .session-card {
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+html[data-theme="light"] .session-card h4 { color: #1C1B18; }
+html[data-theme="light"] .session-card li { color: rgba(28,27,24,0.65); border-bottom-color: rgba(28,27,24,0.06); }
+html[data-theme="light"] .session-card li:hover { color: #1C1B18; }
 html[data-theme="light"] .drill-check { border-color: rgba(28,27,24,0.18); }
 html[data-theme="light"] .drill-num { color: rgba(28,27,24,0.25); }
 html[data-theme="light"] .drill-name { color: #1C1B18; }
@@ -707,11 +1063,20 @@ html[data-theme="light"] .diagram-placeholder {
   color: rgba(28,27,24,0.25);
 }
 
+/* CTA band — solid dark green, white text */
+html[data-theme="light"] .cta-band {
+  background: linear-gradient(135deg, #1B4D3E 0%, #0D2B20 100%);
+  border-color: rgba(91,191,133,0.2);
+}
+html[data-theme="light"] .cta-band h2 { color: var(--white); }
+html[data-theme="light"] .cta-band p { color: rgba(250,250,250,0.65); }
+
 /* Footer */
 html[data-theme="light"] footer {
   background: #ECEBE6;
   border-top-color: rgba(28,27,24,0.1);
 }
+html[data-theme="light"] .f-brand .f-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
 html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
 html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
@@ -778,22 +1143,66 @@ html[data-theme="light"] .footer-bottom {
 <div class="filter-zone" id="filterZone">
   <div class="filter-inner">
     <div class="cat-tabs" id="cat-tabs">
-      <button class="cat-tab active" data-cat="driving">Driving</button>
-      <button class="cat-tab" data-cat="approach">Approach</button>
-      <button class="cat-tab" data-cat="shortgame">Short Game</button>
-      <button class="cat-tab" data-cat="putting">Putting</button>
-      <button class="cat-tab" data-cat="mental">Mental</button>
-    </div>
-    <div class="level-bar">
-      <span class="level-label">Level:</span>
-      <button class="lvl-btn active" data-hc="all">All</button>
-      <button class="lvl-btn" data-hc="high">High (18+)</button>
-      <button class="lvl-btn" data-hc="mid">Mid (10–17)</button>
-      <button class="lvl-btn" data-hc="low">Low (5–9)</button>
-      <button class="lvl-btn" data-hc="scratch">Scratch</button>
+      <button type="button" class="cat-tab active" data-cat="driving">Driving</button>
+      <button type="button" class="cat-tab" data-cat="approach">Approach</button>
+      <button type="button" class="cat-tab" data-cat="shortgame">Short Game</button>
+      <button type="button" class="cat-tab" data-cat="putting">Putting</button>
+      <button type="button" class="cat-tab" data-cat="mental">Mental</button>
     </div>
   </div>
 </div>
+
+<div class="content-outer">
+
+<!-- ====== SIDEBAR ====== -->
+<aside class="sidebar" id="drill-sidebar">
+
+  <!-- Search -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Search Drills</div>
+    <div class="sidebar-search-wrap">
+      <svg class="sidebar-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="sidebar-search" class="sidebar-search-input" placeholder="Find a drill..." autocomplete="off">
+      <button class="sidebar-search-clear" id="sidebar-search-clear" aria-label="Clear search">×</button>
+    </div>
+    <div class="sidebar-search-count" id="sidebar-search-count" style="display:none;">
+      <strong id="sidebar-visible-count">0</strong> results
+    </div>
+  </div>
+
+  <!-- Your Level -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Your Level</div>
+    <button class="lvl-btn active" data-hc="all"><span class="lvl-dot"></span>All Levels<span class="lvl-count" id="lc-all"></span></button>
+    <button class="lvl-btn" data-hc="high"><span class="lvl-dot"></span>High (18+)<span class="lvl-count" id="lc-high"></span></button>
+    <button class="lvl-btn" data-hc="mid"><span class="lvl-dot"></span>Mid (10–17)<span class="lvl-count" id="lc-mid"></span></button>
+    <button class="lvl-btn" data-hc="low"><span class="lvl-dot"></span>Low (5–9)<span class="lvl-count" id="lc-low"></span></button>
+    <button class="lvl-btn" data-hc="scratch"><span class="lvl-dot"></span>Scratch (0–4)<span class="lvl-count" id="lc-scratch"></span></button>
+  </div>
+
+  <!-- Saved Drills -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Saved Drills</div>
+    <div id="sidebar-bookmarks-empty" class="sidebar-bookmarks-empty">Star a drill to save it here</div>
+    <div id="sidebar-bookmarks-list" class="sidebar-bookmarks-list"></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Progress</div>
+    <div class="sidebar-progress-nums">
+      <span class="sidebar-done-num" id="sidebar-done-num">0</span>
+      <span class="sidebar-done-of" id="sidebar-done-of">/ 0</span>
+    </div>
+    <div class="sidebar-done-label">drills mastered</div>
+    <div class="sidebar-progress-track">
+      <div class="sidebar-progress-fill" id="sidebar-progress-fill"></div>
+    </div>
+    <div class="sidebar-progress-hint">Tap the circle on any drill to mark it complete</div>
+    <button type="button" class="sidebar-reset-btn" id="sidebar-reset-btn">Reset all progress</button>
+  </div>
+
+</aside>
 
 <div class="content">
 
@@ -805,7 +1214,7 @@ html[data-theme="light"] .footer-bottom {
       <span class="start-here-text">New to this category? Begin with <strong>Feet Together Driver</strong> to calibrate tempo, then move to the <strong>Corridor Drill</strong> once your balance is consistent. High handicaps should spend 80% of driving practice on these two before adding others.</span>
     </div>
 
-    <div class="fundamentals-wrap" id="fund-driving">
+    <div class="fundamentals-wrap fund-open" id="fund-driving">
       <button class="fund-toggle" onclick="toggleFund('fund-driving')">
         <span class="fund-toggle-label">Fundamentals</span>
         <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -853,6 +1262,7 @@ html[data-theme="light"] .footer-bottom {
       <button class="quicknav-link" data-target="driving-7">Speed Contrast Sets</button>
     </div>
 
+    <div class="search-cat-sep" data-cat-name="Driving">Driving</div>
     <div class="accordion-list" id="driving-drills">
 
       <div class="accordion-item" data-hc="high mid low scratch">
@@ -1160,7 +1570,7 @@ html[data-theme="light"] .footer-bottom {
       <span class="start-here-text">New to this category? Build your <strong>Yardage Book</strong> first — you cannot practice distance control until you know your actual carry numbers. Then move to the <strong>10-Yard Ladder</strong> to develop feel around those numbers.</span>
     </div>
 
-    <div class="fundamentals-wrap" id="fund-approach">
+    <div class="fundamentals-wrap fund-open" id="fund-approach">
       <button class="fund-toggle" onclick="toggleFund('fund-approach')">
         <span class="fund-toggle-label">Fundamentals</span>
         <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -1199,6 +1609,7 @@ html[data-theme="light"] .footer-bottom {
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="approach"></div>
 
+    <div class="search-cat-sep">Approach</div>
     <div class="accordion-list">
 
       <div class="accordion-item" data-hc="high mid low scratch">
@@ -1436,7 +1847,7 @@ html[data-theme="light"] .footer-bottom {
       <span class="start-here-text">New to this category? Start with the <strong>Dollar Bill Drill</strong> — if your low point is behind the ball, every other short game drill will fail. Once you're hitting it clean, move to the <strong>6-Foot Circle</strong> to build green-side feel.</span>
     </div>
 
-    <div class="fundamentals-wrap" id="fund-shortgame">
+    <div class="fundamentals-wrap fund-open" id="fund-shortgame">
       <button class="fund-toggle" onclick="toggleFund('fund-shortgame')">
         <span class="fund-toggle-label">Fundamentals</span>
         <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -1475,6 +1886,7 @@ html[data-theme="light"] .footer-bottom {
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="shortgame"></div>
 
+    <div class="search-cat-sep">Short Game</div>
     <div class="accordion-list">
 
       <div class="accordion-item" data-hc="high mid low scratch">
@@ -1741,7 +2153,7 @@ html[data-theme="light"] .footer-bottom {
       <span class="start-here-text">New to this category? Run the <strong>Gate Drill</strong> first to understand your stroke path and face angle. Then do the <strong>Lag Ladder</strong> — most 3-putts are a distance control problem, not a line problem.</span>
     </div>
 
-    <div class="fundamentals-wrap" id="fund-putting">
+    <div class="fundamentals-wrap fund-open" id="fund-putting">
       <button class="fund-toggle" onclick="toggleFund('fund-putting')">
         <span class="fund-toggle-label">Fundamentals</span>
         <span class="fund-toggle-hint">Setup · Feels · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -1780,6 +2192,7 @@ html[data-theme="light"] .footer-bottom {
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="putting"></div>
 
+    <div class="search-cat-sep">Putting</div>
     <div class="accordion-list">
 
       <div class="accordion-item" data-hc="high mid low scratch">
@@ -2047,7 +2460,7 @@ html[data-theme="light"] .footer-bottom {
       <span class="start-here-text">New to this category? Begin with the <strong>Round Audit</strong> — you cannot fix mental patterns you haven't identified yet. Do it after your next 3 rounds before touching any other drill here.</span>
     </div>
 
-    <div class="fundamentals-wrap" id="fund-mental">
+    <div class="fundamentals-wrap fund-open" id="fund-mental">
       <button class="fund-toggle" onclick="toggleFund('fund-mental')">
         <span class="fund-toggle-label">Fundamentals</span>
         <span class="fund-toggle-hint">Routine · Mindset · Avoid <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
@@ -2086,6 +2499,7 @@ html[data-theme="light"] .footer-bottom {
     <p class="section-heading">Drills</p>
     <div class="drill-quicknav" data-auto-nav="mental"></div>
 
+    <div class="search-cat-sep">Mental</div>
     <div class="accordion-list">
 
       <div class="accordion-item" data-hc="high mid low scratch">
@@ -2264,6 +2678,8 @@ html[data-theme="light"] .footer-bottom {
 
 </div><!-- /content -->
 
+</div><!-- /content-outer -->
+
 <div class="cta-band">
   <h2>Want a plan built around your specific weaknesses?</h2>
   <p>The Practice Plan quiz analyzes your game across all five categories and builds a prioritized plan with the right drills for your handicap level. Free, personalized, and takes five minutes.</p>
@@ -2378,6 +2794,16 @@ html[data-theme="light"] .footer-bottom {
     if (first && !first.classList.contains('open')) first.classList.add('open');
   }
 
+  // ── Sidebar: visible drill count ─────────────────────────────
+  var sidebarVisibleCount = document.getElementById('sidebar-visible-count');
+  function updateVisibleCount() {
+    if (!sidebarVisibleCount) return;
+    var activePanel = document.querySelector('.cat-panel.active');
+    if (!activePanel) return;
+    var visible = activePanel.querySelectorAll('.accordion-item:not(.hidden)').length;
+    sidebarVisibleCount.textContent = visible;
+  }
+
   catTabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       catTabs.forEach(function (t) { t.classList.remove('active'); });
@@ -2389,15 +2815,20 @@ html[data-theme="light"] .footer-bottom {
       document.querySelectorAll('.lvl-btn').forEach(function (b) { b.classList.remove('active'); });
       document.querySelector('.lvl-btn[data-hc="all"]').classList.add('active');
       panel.querySelectorAll('.accordion-item').forEach(function (i) { i.classList.remove('hidden'); });
-      // scroll content into view just below sticky bar
-      var offset = filterZone.offsetTop + filterZone.offsetHeight;
-      window.scrollTo({ top: offset, behavior: 'smooth' });
+      updateVisibleCount();
+      // scroll so content-outer sits just below nav (68px) + filter-zone
+      var contentOuter = document.querySelector('.content-outer');
+      if (contentOuter) {
+        var target = contentOuter.offsetTop - 68 - filterZone.offsetHeight;
+        window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      }
     });
   });
 
   // Open first drill on initial load
   var firstPanel = document.querySelector('.cat-panel.active');
   if (firstPanel) openFirstDrill(firstPanel);
+  updateVisibleCount();
 
   // ── Level filter ─────────────────────────────────────────────
   document.querySelectorAll('.lvl-btn').forEach(function (btn) {
@@ -2416,6 +2847,7 @@ html[data-theme="light"] .footer-bottom {
           if (hide && item.classList.contains('open')) item.classList.remove('open');
         }
       });
+      updateVisibleCount();
     });
   });
 
@@ -2433,33 +2865,191 @@ function toggleFund(id) {
 }
 
 (function () {
-  var STORAGE_KEY = 'divotlab_drills_done';
+  var STORAGE_KEY    = 'divotlab_drills_done';
+  var BOOKMARK_KEY   = 'divotlab_drills_bookmarked';
+  var catNames       = { driving:'Driving', approach:'Approach', shortgame:'Short Game', putting:'Putting', mental:'Mental' };
+  var panels         = ['driving','approach','shortgame','putting','mental'];
+  var totalDrills    = 0; // calculated after drills are enhanced
+  var catPanelsAll   = document.querySelectorAll('.cat-panel');
+  var catTabsAll     = document.querySelectorAll('.cat-tab');
+  var contentEl      = document.querySelector('.content');
+  var prevCat        = 'driving';
 
-  // ── Load persisted done state ────────────────────────────────
-  function loadDone() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
-  }
-  function saveDone(map) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(map)); } catch(e) {}
+  // ── Storage helpers ──────────────────────────────────────────
+  function loadDone()      { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)  || '{}'); } catch(e) { return {}; } }
+  function saveDone(m)     { try { localStorage.setItem(STORAGE_KEY,  JSON.stringify(m)); } catch(e) {} }
+  function loadBookmarks() { try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || '{}'); } catch(e) { return {}; } }
+  function saveBookmarks(m){ try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(m)); } catch(e) {} }
+
+  // ── Sidebar DOM refs ─────────────────────────────────────────
+  var sidebarDoneNum  = document.getElementById('sidebar-done-num');
+  var sidebarDoneOf   = document.getElementById('sidebar-done-of');
+  var sidebarProgFill = document.getElementById('sidebar-progress-fill');
+  var bkmEmpty        = document.getElementById('sidebar-bookmarks-empty');
+  var bkmList         = document.getElementById('sidebar-bookmarks-list');
+  var searchInput     = document.getElementById('sidebar-search');
+  var searchClear     = document.getElementById('sidebar-search-clear');
+  var searchCount     = document.getElementById('sidebar-search-count');
+  var searchVisible   = document.getElementById('sidebar-visible-count');
+
+  // ── Level count badges ───────────────────────────────────────
+  function updateLevelCounts() {
+    var activePanel = document.querySelector('.cat-panel.active');
+    if (!activePanel) return;
+    var allItems = activePanel.querySelectorAll('.accordion-item[data-drill-id]');
+    ['all','high','mid','low','scratch'].forEach(function(hc) {
+      var el = document.getElementById('lc-' + hc);
+      if (!el) return;
+      var count = hc === 'all' ? allItems.length : 0;
+      if (hc !== 'all') {
+        allItems.forEach(function(item) {
+          if ((item.dataset.hc || '').split(' ').indexOf(hc) !== -1) count++;
+        });
+      }
+      el.textContent = count;
+    });
   }
 
-  // ── Enhance each accordion with: number, checkbox, share btn ─
-  var done = loadDone();
-  var panels = ['driving','approach','shortgame','putting','mental'];
+  // ── Progress sidebar ─────────────────────────────────────────
+  function updateSidebarProgress(d) {
+    var count = Object.keys(d).length;
+    if (sidebarDoneNum)  sidebarDoneNum.textContent  = count;
+    if (sidebarDoneOf)   sidebarDoneOf.textContent   = '/ ' + totalDrills;
+    if (sidebarProgFill) sidebarProgFill.style.width = totalDrills ? Math.round((count / totalDrills) * 100) + '%' : '0%';
+  }
+
+  // ── Bookmarks sidebar ────────────────────────────────────────
+  function updateBookmarksSidebar(bmarks) {
+    if (!bkmList) return;
+    var keys = Object.keys(bmarks);
+    if (bkmEmpty) bkmEmpty.style.display = keys.length ? 'none' : 'block';
+    bkmList.innerHTML = '';
+    keys.forEach(function(drillId) {
+      var meta = bmarks[drillId];
+      if (!meta) return;
+      var a = document.createElement('a');
+      a.className = 'sidebar-bookmark-item';
+      a.href = '#drill-' + drillId;
+      a.innerHTML = '<span class="sidebar-bookmark-name">' + (meta.name || drillId) + '</span>' +
+                    '<span class="sidebar-bookmark-cat">' + (catNames[meta.cat] || meta.cat) + '</span>';
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        var el = document.getElementById('drill-' + drillId);
+        if (!el) return;
+        // exit search mode if active
+        if (contentEl.classList.contains('search-active')) exitSearch();
+        // switch to correct category
+        var catPanel = el.closest('.cat-panel');
+        if (catPanel) {
+          var cat = catPanel.id.replace('panel-', '');
+          catTabsAll.forEach(function(t) { t.classList.remove('active'); });
+          catPanelsAll.forEach(function(p) { p.classList.remove('active'); });
+          var tab = document.querySelector('.cat-tab[data-cat="' + cat + '"]');
+          if (tab) tab.classList.add('active');
+          catPanel.classList.add('active');
+          prevCat = cat;
+          updateLevelCounts();
+        }
+        el.classList.add('open');
+        setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+      });
+      bkmList.appendChild(a);
+    });
+  }
+
+  // ── Search ───────────────────────────────────────────────────
+  function exitSearch() {
+    if (!contentEl) return;
+    contentEl.classList.remove('search-active');
+    if (searchInput) searchInput.value = '';
+    if (searchClear) searchClear.style.display = 'none';
+    if (searchCount) searchCount.style.display = 'none';
+    // Restore previous category
+    catPanelsAll.forEach(function(p) { p.classList.remove('active'); });
+    var prev = document.getElementById('panel-' + prevCat);
+    if (prev) prev.classList.add('active');
+    catTabsAll.forEach(function(t) { t.classList.remove('active'); });
+    var tab = document.querySelector('.cat-tab[data-cat="' + prevCat + '"]');
+    if (tab) tab.classList.add('active');
+    // Reset level filter
+    document.querySelectorAll('.sidebar .lvl-btn').forEach(function(b) { b.classList.remove('active'); });
+    var allBtn = document.querySelector('.sidebar .lvl-btn[data-hc="all"]');
+    if (allBtn) allBtn.classList.add('active');
+    prev && prev.querySelectorAll('.accordion-item').forEach(function(i) { i.classList.remove('hidden'); });
+    updateLevelCounts();
+  }
+
+  function doSearch(query) {
+    if (!contentEl) return;
+    var q = query.trim().toLowerCase();
+    if (!q) { exitSearch(); return; }
+    if (searchClear) searchClear.style.display = 'flex';
+    contentEl.classList.add('search-active');
+    var total = 0;
+    catPanelsAll.forEach(function(panel) {
+      var hasResults = false;
+      panel.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
+        var nameEl = item.querySelector('.drill-name');
+        var match = nameEl && nameEl.textContent.toLowerCase().indexOf(q) !== -1;
+        item.classList.toggle('hidden', !match);
+        if (match) { hasResults = true; total++; }
+      });
+      panel.classList.toggle('active', hasResults);
+    });
+    if (searchCount) searchCount.style.display = 'block';
+    if (searchVisible) searchVisible.textContent = total;
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() { doSearch(this.value); });
+    searchInput.addEventListener('search', function() { doSearch(this.value); });
+  }
+  if (searchClear) {
+    searchClear.addEventListener('click', function() { exitSearch(); if (searchInput) searchInput.focus(); });
+  }
+
+  // ── Apply done state ─────────────────────────────────────────
+  function applyDone(d) {
+    document.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
+      item.classList.toggle('drill-done', !!d[item.dataset.drillId]);
+    });
+    updateSidebarProgress(d);
+    panels.forEach(function(cat) {
+      var panel = document.getElementById('panel-' + cat);
+      if (!panel) return;
+      var allPanelItems = panel.querySelectorAll('.accordion-item[data-drill-id]');
+      var doneCount = 0;
+      allPanelItems.forEach(function(item) { if (d[item.dataset.drillId]) doneCount++; });
+      panel.querySelectorAll('.quicknav-link').forEach(function(btn, i) {
+        btn.classList.toggle('done', !!d[cat + '-' + i]);
+      });
+      var tab = document.querySelector('.cat-tab[data-cat="' + cat + '"]');
+      if (!tab) return;
+      var badge = tab.querySelector('.tab-badge');
+      if (!badge) { badge = document.createElement('span'); badge.className = 'tab-badge'; tab.appendChild(badge); }
+      if (doneCount > 0) { badge.textContent = doneCount + '/' + allPanelItems.length; badge.classList.add('visible'); }
+      else { badge.classList.remove('visible'); }
+    });
+  }
+
+  // ── Enhance each drill: number, checkbox, bookmark, share ────
+  var done      = loadDone();
+  var bookmarks = loadBookmarks();
 
   panels.forEach(function(cat) {
     var panel = document.getElementById('panel-' + cat);
     if (!panel) return;
     var items = panel.querySelectorAll('.accordion-item');
-
     items.forEach(function(item, i) {
       var trigger = item.querySelector('.accordion-trigger');
       var body    = item.querySelector('.accordion-body');
-      var name    = item.querySelector('.drill-name');
-      if (!trigger || !name) return;
+      var nameEl  = item.querySelector('.drill-name');
+      if (!trigger || !nameEl) return;
 
-      var drillId = cat + '-' + i;
+      var drillId   = cat + '-' + i;
+      var drillName = nameEl.textContent.trim();
       item.dataset.drillId = drillId;
+      if (body) item.id = 'drill-' + drillId;
 
       // Number
       var num = document.createElement('span');
@@ -2467,23 +3057,46 @@ function toggleFund(id) {
       num.textContent = String(i + 1).padStart(2, '0');
       trigger.insertBefore(num, trigger.firstChild);
 
-      // Checkbox — click to toggle done, do NOT expand accordion
+      // Done checkbox
       var check = document.createElement('span');
       check.className = 'drill-check';
       check.title = 'Mark as done';
       check.innerHTML = '<svg viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 5 4.5 8.5 11 1"/></svg>';
       check.addEventListener('click', function(e) {
-        e.stopPropagation(); // don't open accordion
+        e.stopPropagation();
         var d = loadDone();
         if (d[drillId]) { delete d[drillId]; } else { d[drillId] = 1; }
         saveDone(d);
         applyDone(d);
       });
-      trigger.insertBefore(check, name);
+      trigger.insertBefore(check, nameEl);
+
+      // Bookmark button (star) — before chevron
+      var bmark = document.createElement('button');
+      bmark.type = 'button';
+      bmark.className = 'drill-bookmark-btn';
+      bmark.title = 'Save drill';
+      bmark.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+      if (bookmarks[drillId]) bmark.classList.add('bookmarked');
+      bmark.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var bmarks = loadBookmarks();
+        if (bmarks[drillId]) {
+          delete bmarks[drillId];
+          bmark.classList.remove('bookmarked');
+        } else {
+          bmarks[drillId] = { name: drillName, cat: cat };
+          bmark.classList.add('bookmarked');
+        }
+        saveBookmarks(bmarks);
+        updateBookmarksSidebar(bmarks);
+      });
+      trigger.insertBefore(bmark, trigger.lastChild); // before chevron
 
       // Share button inside body
       if (body) {
         var share = document.createElement('button');
+        share.type = 'button';
         share.className = 'drill-share';
         share.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Copy link';
         share.addEventListener('click', function() {
@@ -2498,54 +3111,31 @@ function toggleFund(id) {
           });
         });
         body.appendChild(share);
-        item.id = 'drill-' + drillId;
       }
     });
-
-    applyDone(done);
   });
 
-  function applyDone(d) {
-    document.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
-      var isDone = !!d[item.dataset.drillId];
-      item.classList.toggle('drill-done', isDone);
-    });
-    // Update tab badges
-    panels.forEach(function(cat) {
-      var panel = document.getElementById('panel-' + cat);
-      if (!panel) return;
-      var total = panel.querySelectorAll('.accordion-item[data-drill-id]').length;
-      var doneCount = 0;
-      panel.querySelectorAll('.accordion-item[data-drill-id]').forEach(function(item) {
-        if (d[item.dataset.drillId]) doneCount++;
-      });
-      // Update quicknav done state
-      panel.querySelectorAll('.quicknav-link').forEach(function(btn, i) {
-        var id = cat + '-' + i;
-        btn.classList.toggle('done', !!d[id]);
-      });
-      // Tab badge
-      var tab = document.querySelector('.cat-tab[data-cat="' + cat + '"]');
-      if (!tab) return;
-      var badge = tab.querySelector('.tab-badge');
-      if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'tab-badge';
-        tab.appendChild(badge);
-      }
-      if (doneCount > 0) {
-        badge.textContent = doneCount + '/' + total;
-        badge.classList.add('visible');
-      } else {
-        badge.classList.remove('visible');
-      }
+  // Calculate total AFTER all drills are enhanced
+  totalDrills = document.querySelectorAll('.accordion-item[data-drill-id]').length;
+
+  // Initial render
+  applyDone(done);
+  updateBookmarksSidebar(bookmarks);
+  updateLevelCounts();
+
+  // ── Reset progress ───────────────────────────────────────────
+  var resetBtn = document.getElementById('sidebar-reset-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      if (!confirm('Reset all progress? This cannot be undone.')) return;
+      saveDone({});
+      applyDone({});
     });
   }
 
   // ── Session steps: click to jump to drill ───────────────────
   document.querySelectorAll('.session-card li').forEach(function(li) {
     var text = li.textContent.trim();
-    // Find matching drill by name
     var match = null;
     document.querySelectorAll('.accordion-item .drill-name').forEach(function(dn) {
       if (!match && text.toLowerCase().indexOf(dn.textContent.trim().toLowerCase()) !== -1) {
@@ -2556,20 +3146,19 @@ function toggleFund(id) {
       li.title = 'Jump to drill';
       li.addEventListener('click', function(e) {
         e.stopPropagation();
-        // Switch to the correct category panel first
         var panel = match.closest('.cat-panel');
         if (panel && !panel.classList.contains('active')) {
           var catId = panel.id.replace('panel-', '');
-          document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
-          document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
+          catTabsAll.forEach(function(t) { t.classList.remove('active'); });
+          catPanelsAll.forEach(function(p) { p.classList.remove('active'); });
           var tab = document.querySelector('.cat-tab[data-cat="' + catId + '"]');
           if (tab) tab.classList.add('active');
           panel.classList.add('active');
+          prevCat = catId;
+          updateLevelCounts();
         }
         match.classList.add('open');
-        setTimeout(function() {
-          match.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 60);
+        setTimeout(function() { match.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
       });
     } else {
       li.style.cursor = 'default';

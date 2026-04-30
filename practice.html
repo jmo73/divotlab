@@ -1265,6 +1265,8 @@ html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
 html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
 html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links .nav-cta,
+html[data-theme="light"] .nav-drawer .nav-cta { color: var(--white) !important; }
 html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
 html[data-theme="light"] .nav-drawer {
   background: rgba(245,244,240,0.97) !important;
@@ -1275,16 +1277,18 @@ html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
 
 /* Hero */
 html[data-theme="light"] .hero {
-  background: #F5F4F0;
+  background-color: #EDECEA;
   background-image:
-    radial-gradient(ellipse at center, rgba(27,77,62,0.08) 0%, transparent 66%);
+    radial-gradient(ellipse 70% 90% at -6% 55%, rgba(27,77,62,0.11) 0%, transparent 52%),
+    radial-gradient(ellipse 60% 80% at 108% 45%, rgba(44,95,124,0.08) 0%, transparent 52%);
 }
 html[data-theme="light"] .hero::before {
-  background: radial-gradient(ellipse at center, rgba(27,77,62,0.06) 0%, transparent 66%);
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.04) 0%, transparent 60%);
 }
-html[data-theme="light"] .hero h1 { color: #1C1B18; }
-html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.5); }
-html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .hero h1 { color: #1C1B18; padding-bottom: 0.06em; }
+html[data-theme="light"] .hero-eyebrow { color: var(--green) !important; }
+html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.65); }
+html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.35); }
 html[data-theme="light"] .hero-start button:hover {
   box-shadow: 0 8px 24px rgba(27,77,62,0.2);
 }
@@ -1303,32 +1307,42 @@ html[data-theme="light"] .progress-label { color: rgba(28,27,24,0.38); }
 html[data-theme="light"] .q-text { color: #1C1B18; }
 html[data-theme="light"] .q-subtext { color: rgba(28,27,24,0.45); }
 
-/* Quiz options */
+/* Quiz options — liquid glass */
 html[data-theme="light"] .option {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .option:hover {
-  background: #F8F7F4;
-  border-color: rgba(28,27,24,0.2);
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(28,27,24,0.15);
 }
 html[data-theme="light"] .option.selected {
-  background: rgba(27,77,62,0.06);
+  background: rgba(27,77,62,0.08);
   border-color: var(--green);
+  box-shadow: 0 3px 14px rgba(27,77,62,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 html[data-theme="light"] .option-radio { border-color: rgba(28,27,24,0.2); }
 html[data-theme="light"] .option-text { color: rgba(28,27,24,0.72); }
 html[data-theme="light"] .option.selected .option-text { color: #1C1B18; }
 
-/* Results teaser */
+/* Results teaser — liquid glass */
 html[data-theme="light"] .teaser-right {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .teaser-title { color: #1C1B18; }
 html[data-theme="light"] .weakness-reveal {
-  background: rgba(28,27,24,0.03);
-  border-color: rgba(28,27,24,0.08);
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.65);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.85);
 }
 html[data-theme="light"] .weakness-name { color: #1C1B18; }
 html[data-theme="light"] .weakness-desc { color: rgba(28,27,24,0.55); }
@@ -1366,10 +1380,13 @@ html[data-theme="light"] .unlock-email-input:focus {
 }
 html[data-theme="light"] .unlock-email-note { color: rgba(28,27,24,0.25); }
 
-/* Priority cards (full results) */
+/* Priority cards — liquid glass */
 html[data-theme="light"] .priority-card {
-  background: #FFFFFF;
-  border-color: rgba(28,27,24,0.1);
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.72);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 html[data-theme="light"] .results-header h2 { color: #1C1B18; }
 html[data-theme="light"] .results-header p { color: rgba(28,27,24,0.4); }
@@ -1379,6 +1396,7 @@ html[data-theme="light"] footer {
   background: #ECEBE6;
   border-top-color: rgba(28,27,24,0.1);
 }
+html[data-theme="light"] .f-brand .f-logo svg { color: #1C1B18 !important; }
 html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
 html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
 html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
