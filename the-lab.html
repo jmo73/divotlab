@@ -1178,8 +1178,8 @@ html[data-theme="light"] .loading-msg { color: rgba(28,27,24,0.4); }
 /* Rank badge — white number on green circle in light mode */
 html[data-theme="light"] .rank-badge { color: #FFFFFF !important; }
 
-/* Winning Profile — center circle uses var(--black) inline */
-html[data-theme="light"] [style*="background: var(--black)"] { background: #EDECEA !important; }
+/* Winning Profile — center circle: match glass card rendered color (~52% white over #EDECEA) */
+html[data-theme="light"] [style*="background: var(--black)"] { background: #F5F4F1 !important; }
 
 /* Field Strength — Average/Below Avg bar segments (translucent white → visible gray) */
 html[data-theme="light"] [style*="background: rgba(250,250,250,0.3)"] { background: rgba(28,27,24,0.14) !important; }
@@ -1836,14 +1836,34 @@ html[data-theme="light"] .footer-bottom {
       var scales = chart.options.scales || {};
       Object.keys(scales).forEach(function (id) {
         var s = scales[id];
-        if (s.ticks) s.ticks.color = tickColor;
+        if (s.ticks) { s.ticks.color = tickColor; s.ticks.backdropColor = 'transparent'; }
         if (s.grid)  { s.grid.color = gridColor; s.grid.borderColor = gridColor; }
         if (s.title) s.title.color = textColor;
+        if (s.pointLabels) s.pointLabels.color = textColor;
       });
 
-      // Legend
+      // Legend labels — also patch generateLabels output which can override color
       var legend = chart.options.plugins && chart.options.plugins.legend;
-      if (legend && legend.labels) legend.labels.color = textColor;
+      if (legend && legend.labels) {
+        legend.labels.color = textColor;
+        // Wrap generateLabels to patch per-item fontColor
+        if (!legend.labels._themeWrapped) {
+          var origGenerate = legend.labels.generateLabels;
+          if (origGenerate) {
+            legend.labels.generateLabels = function(c) {
+              var items = origGenerate.call(this, c);
+              var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+              var color = currentTheme === 'light' ? 'rgba(28,27,24,0.65)' : 'rgba(250,250,250,0.7)';
+              items.forEach(function(item) { item.fontColor = color; });
+              return items;
+            };
+            legend.labels._themeWrapped = true;
+          }
+        } else {
+          // Already wrapped — just force a re-render by clearing cache
+          if (chart._legendLabelItems) chart._legendLabelItems = null;
+        }
+      }
 
       // Fix dark segment borders (Field Composition donut)
       if (chart.data && chart.data.datasets) {
@@ -1854,6 +1874,17 @@ html[data-theme="light"] .footer-bottom {
           }
           if (ds.hoverBorderColor === '#FAFAFA' && light) {
             ds.hoverBorderColor = borderFix;
+          }
+
+          // Polar area fills — increase alpha in light mode (hex '55' = 33% → 'AA' = 67%)
+          if (chart.config.type === 'polarArea' && Array.isArray(ds.backgroundColor)) {
+            ds.backgroundColor = ds.backgroundColor.map(function(c) {
+              if (typeof c === 'string' && /^#[0-9A-Fa-f]{6}55$/.test(c))
+                return light ? c.slice(0, 7) + 'AA' : c;
+              if (typeof c === 'string' && /^#[0-9A-Fa-f]{6}AA$/.test(c))
+                return light ? c : c.slice(0, 7) + '55';
+              return c;
+            });
           }
         });
       }
