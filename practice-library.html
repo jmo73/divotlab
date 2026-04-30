@@ -2805,17 +2805,33 @@ html[data-theme="light"] .footer-bottom {
   }
 
   catTabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
+    tab.addEventListener('click', function (e) {
+      e.preventDefault();
       catTabs.forEach(function (t) { t.classList.remove('active'); });
       catPanels.forEach(function (p) { p.classList.remove('active'); });
       tab.classList.add('active');
-      var panel = document.getElementById('panel-' + tab.dataset.cat);
+      var cat = tab.dataset.cat;
+      var panel = document.getElementById('panel-' + cat);
+      if (!panel) return;
       panel.classList.add('active');
+      // exit search mode if active
+      var contentEl = document.querySelector('.content');
+      if (contentEl && contentEl.classList.contains('search-active')) {
+        contentEl.classList.remove('search-active');
+        var si = document.getElementById('sidebar-search');
+        var sc = document.getElementById('sidebar-search-clear');
+        var sk = document.getElementById('sidebar-search-count');
+        if (si) si.value = '';
+        if (sc) sc.style.display = 'none';
+        if (sk) sk.style.display = 'none';
+      }
       // reset level filter
       document.querySelectorAll('.lvl-btn').forEach(function (b) { b.classList.remove('active'); });
-      document.querySelector('.lvl-btn[data-hc="all"]').classList.add('active');
+      var allBtn = document.querySelector('.lvl-btn[data-hc="all"]');
+      if (allBtn) allBtn.classList.add('active');
       panel.querySelectorAll('.accordion-item').forEach(function (i) { i.classList.remove('hidden'); });
-      updateVisibleCount();
+      // update shared state
+      if (window._drillLib) { window._drillLib.setPrevCat(cat); window._drillLib.updateLevelCounts(); }
       // scroll so content-outer sits just below nav (68px) + filter-zone
       var contentOuter = document.querySelector('.content-outer');
       if (contentOuter) {
@@ -2837,17 +2853,17 @@ html[data-theme="light"] .footer-bottom {
       btn.classList.add('active');
       var hc = btn.dataset.hc;
       var activePanel = document.querySelector('.cat-panel.active');
+      if (!activePanel) return;
       activePanel.querySelectorAll('.accordion-item').forEach(function (item) {
         if (hc === 'all') {
           item.classList.remove('hidden');
         } else {
           var levels = (item.dataset.hc || '').split(' ');
-          var hide = !levels.includes(hc);
+          var hide = levels.indexOf(hc) === -1;
           item.classList.toggle('hidden', hide);
           if (hide && item.classList.contains('open')) item.classList.remove('open');
         }
       });
-      updateVisibleCount();
     });
   });
 
@@ -3117,6 +3133,12 @@ function toggleFund(id) {
 
   // Calculate total AFTER all drills are enhanced
   totalDrills = document.querySelectorAll('.accordion-item[data-drill-id]').length;
+
+  // Expose shared API for the first IIFE's event handlers
+  window._drillLib = {
+    updateLevelCounts: updateLevelCounts,
+    setPrevCat: function(cat) { prevCat = cat; }
+  };
 
   // Initial render
   applyDone(done);
