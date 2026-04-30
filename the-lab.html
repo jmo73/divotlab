@@ -1172,6 +1172,45 @@ html[data-theme="light"] select option { background: #FFFFFF; color: #1C1B18; }
 /* Loading */
 html[data-theme="light"] .loading-msg { color: rgba(28,27,24,0.4); }
 
+/* Row separators — all inline-border elements */
+html[data-theme="light"] .value-player { border-bottom-color: rgba(28,27,24,0.07) !important; }
+html[data-theme="light"] .skill-row { border: none; }
+html[data-theme="light"] .pick-row { border-bottom-color: rgba(28,27,24,0.07) !important; }
+html[data-theme="light"] .strength-details { border-top-color: rgba(28,27,24,0.08); }
+html[data-theme="light"] .drill-meta { border-top-color: rgba(28,27,24,0.08); }
+
+/* Inline white border overrides (dynamic content) */
+html[data-theme="light"] [style*="border-bottom: 1px solid rgba(255,255,255"] {
+  border-bottom-color: rgba(28,27,24,0.07) !important;
+}
+html[data-theme="light"] [style*="border-top: 1px solid rgba(255,255,255"] {
+  border-top-color: rgba(28,27,24,0.07) !important;
+}
+html[data-theme="light"] [style*="border: 1px solid rgba(255,255,255,0.0"] {
+  border-color: rgba(28,27,24,0.09) !important;
+}
+
+/* Chart canvas — ensure transparent background */
+html[data-theme="light"] canvas { background: transparent !important; }
+
+/* Select dropdowns in dynamic content */
+html[data-theme="light"] [style*="background: rgba(255,255,255,0.0"] {
+  background: rgba(28,27,24,0.04) !important;
+}
+
+/* Donut chart center (Winning Profile) */
+html[data-theme="light"] .chart-card canvas { background: transparent !important; }
+
+/* Leaderboard / dynamically rendered table rows */
+html[data-theme="light"] .leaderboard-table { color: #1C1B18; }
+html[data-theme="light"] [style*="color: rgba(250,250,250,0.35)"],
+html[data-theme="light"] [style*="color: rgba(250,250,250,.35)"] { color: rgba(28,27,24,0.42) !important; }
+
+/* Momentum / sparkline sections */
+html[data-theme="light"] [style*="border-bottom: 1px solid rgba(255,255,255,0.06)"] {
+  border-bottom-color: rgba(28,27,24,0.07) !important;
+}
+
 /* Footer */
 html[data-theme="light"] footer {
   background: #ECEBE6;
@@ -1739,5 +1778,55 @@ html[data-theme="light"] .footer-bottom {
 })();
 </script>
 <script src="/assets/js/theme.js"></script>
+<script>
+// ── Chart.js theme adaptation ─────────────────────────────────────────────
+(function () {
+  function applyChartTheme(theme) {
+    if (typeof Chart === 'undefined') return;
+    var light = theme === 'light';
+    var textColor  = light ? 'rgba(28,27,24,0.55)'  : 'rgba(250,250,250,0.5)';
+    var gridColor  = light ? 'rgba(28,27,24,0.09)'  : 'rgba(255,255,255,0.07)';
+    var tickColor  = light ? 'rgba(28,27,24,0.5)'   : 'rgba(250,250,250,0.45)';
+
+    Chart.defaults.color       = textColor;
+    Chart.defaults.borderColor = gridColor;
+    if (Chart.defaults.plugins && Chart.defaults.plugins.legend)
+      Chart.defaults.plugins.legend.labels = Object.assign(
+        Chart.defaults.plugins.legend.labels || {}, { color: textColor });
+
+    // Update every existing chart instance
+    Object.values(Chart.instances || {}).forEach(function (chart) {
+      if (!chart || !chart.options) return;
+      var scales = chart.options.scales || {};
+      Object.keys(scales).forEach(function (id) {
+        var s = scales[id];
+        if (s.ticks) s.ticks.color = tickColor;
+        if (s.grid)  s.grid.color  = gridColor;
+        if (s.title) s.title.color = textColor;
+      });
+      var legend = chart.options.plugins && chart.options.plugins.legend;
+      if (legend && legend.labels) legend.labels.color = textColor;
+      chart.update('none');
+    });
+  }
+
+  // Apply on page load (theme may already be set)
+  applyChartTheme(document.documentElement.getAttribute('data-theme') || 'light');
+
+  // Re-apply whenever theme attribute changes
+  var obs = new MutationObserver(function (muts) {
+    muts.forEach(function (m) {
+      if (m.attributeName === 'data-theme')
+        applyChartTheme(document.documentElement.getAttribute('data-theme') || 'light');
+    });
+  });
+  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // Also re-run after a short delay to catch charts created after page load
+  setTimeout(function () {
+    applyChartTheme(document.documentElement.getAttribute('data-theme') || 'light');
+  }, 2000);
+})();
+</script>
 </body>
 </html>

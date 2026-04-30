@@ -2832,11 +2832,10 @@ html[data-theme="light"] .footer-bottom {
       panel.querySelectorAll('.accordion-item').forEach(function (i) { i.classList.remove('hidden'); });
       // update shared state
       if (window._drillLib) { window._drillLib.setPrevCat(cat); window._drillLib.updateLevelCounts(); }
-      // scroll so content-outer sits just below nav (68px) + filter-zone
-      var contentOuter = document.querySelector('.content-outer');
-      if (contentOuter) {
-        var target = contentOuter.offsetTop - 68 - filterZone.offsetHeight;
-        window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      // Only scroll if filter zone isn't sticky yet (user hasn't scrolled far enough)
+      var stickPoint = filterZone.offsetTop - 68;
+      if (window.scrollY < stickPoint) {
+        window.scrollTo({ top: stickPoint, behavior: 'smooth' });
       }
     });
   });
