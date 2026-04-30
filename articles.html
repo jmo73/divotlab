@@ -470,12 +470,15 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   updateCounts();
   filterPosts();
 
-  // Silently update with API data if available
+  // Silently update with API data — merge so locally-added articles are never lost
   fetch(API_BASE + '/api/blog-posts')
     .then(function(r){ return r.json(); })
     .then(function(data) {
       if (data.success && data.posts && data.posts.length > 0) {
-        allPosts = data.posts;
+        var apiSlugs = data.posts.map(function(p){ return p.slug; });
+        var localOnly = allPosts.filter(function(p){ return apiSlugs.indexOf(p.slug) === -1; });
+        allPosts = data.posts.concat(localOnly);
+        allPosts.sort(function(a, b){ return new Date(b.date) - new Date(a.date); });
         updateCounts();
         filterPosts();
       }

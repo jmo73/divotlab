@@ -1874,12 +1874,16 @@ html[data-theme="light"] .footer-bottom {
     ];
     renderHomepageCards(fallback);
 
-    // Silently update with API data if available
+    // Silently update with API data — merge so locally-added articles are never lost
     fetch(API + '/api/blog-posts/latest?limit=3')
       .then(function(r){ return r.json(); })
       .then(function(data){
         if (data.success && data.posts && data.posts.length > 0) {
-          renderHomepageCards(data.posts);
+          var apiSlugs = data.posts.map(function(p){ return p.slug; });
+          var localOnly = fallback.filter(function(p){ return apiSlugs.indexOf(p.slug) === -1; });
+          var merged = localOnly.concat(data.posts);
+          merged.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+          renderHomepageCards(merged.slice(0, 3));
         }
       })
       .catch(function(){});
