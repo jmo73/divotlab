@@ -10,6 +10,7 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab Notes — Data-Backed Golf Picks Every Tournament — Divot Lab</title>
 <meta name="description" content="Get data-backed tournament picks, betting edges, and player insights delivered every event week. Built on DataGolf analytics and strokes gained models.">
@@ -1311,6 +1312,248 @@ footer {
   .pick-book { display: none; }
 }
 
+/* =============================================
+   THEME TOGGLE BUTTON
+   ============================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(250,250,250,0.6);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(250,250,250,0.9);
+  transform: scale(1.1);
+}
+html[data-theme="light"] .theme-toggle {
+  background: rgba(28,27,24,0.07);
+  border-color: rgba(28,27,24,0.14);
+  color: rgba(28,27,24,0.55);
+}
+html[data-theme="light"] .theme-toggle:hover {
+  background: rgba(28,27,24,0.13);
+  color: rgba(28,27,24,0.85);
+}
+
+/* =============================================
+   LIGHT MODE OVERRIDES — lab-notes.html
+   ============================================= */
+
+/* Base */
+html[data-theme="light"] body { background: #F5F4F0; color: #1C1B18; }
+
+/* Nav */
+html[data-theme="light"] nav {
+  background: rgba(245,244,240,0.92) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
+html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
+html[data-theme="light"] .nav-drawer {
+  background: rgba(245,244,240,0.97) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-drawer a { color: rgba(28,27,24,0.7) !important; }
+html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
+
+/* Mobile CTA bar */
+html[data-theme="light"] .mobile-cta-bar {
+  background: rgba(245,244,240,0.95);
+  border-top-color: rgba(28,27,24,0.1);
+}
+
+/* Hero */
+html[data-theme="light"] .hero {
+  background: #F5F4F0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(27,77,62,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(44,95,124,0.05) 0%, transparent 65%);
+}
+html[data-theme="light"] .hero::before {
+  background: radial-gradient(circle, rgba(27,77,62,0.07) 0%, transparent 55%);
+}
+html[data-theme="light"] .hero h1 { color: #1C1B18; }
+html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .scroll-hint span { color: rgba(28,27,24,0.3); }
+
+/* Hero email signup */
+html[data-theme="light"] .hero-signup input {
+  background: rgba(28,27,24,0.05);
+  border-color: rgba(28,27,24,0.15);
+  color: #1C1B18;
+}
+html[data-theme="light"] .hero-signup input::placeholder { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .hero-signup input:focus {
+  border-color: var(--green);
+  background: rgba(28,27,24,0.07);
+}
+
+/* Ghost button */
+html[data-theme="light"] .btn-ghost {
+  color: rgba(28,27,24,0.65);
+  border-color: rgba(28,27,24,0.15);
+}
+html[data-theme="light"] .btn-ghost:hover {
+  border-color: rgba(28,27,24,0.28);
+  color: #1C1B18;
+  background: rgba(28,27,24,0.04);
+}
+
+/* What you get section */
+html[data-theme="light"] .what-you-get {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.08);
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .content-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .content-card:hover {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+  border-color: rgba(28,27,24,0.15);
+}
+html[data-theme="light"] .content-card h3 { color: #1C1B18; }
+html[data-theme="light"] .content-card p { color: rgba(28,27,24,0.6); }
+
+/* Sample email section */
+html[data-theme="light"] .sample-section { background: #F5F4F0; }
+html[data-theme="light"] .section-desc { color: rgba(28,27,24,0.6); }
+html[data-theme="light"] .sample-list li { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .email-preview {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+}
+html[data-theme="light"] .email-bar {
+  background: #F3F2EE;
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .email-dots span { background: rgba(28,27,24,0.1); }
+html[data-theme="light"] .email-bar-subject { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .email-subject-line { color: #1C1B18; }
+html[data-theme="light"] .email-meta {
+  color: rgba(28,27,24,0.3);
+  border-bottom-color: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .email-content-line { border-bottom-color: rgba(28,27,24,0.05); }
+html[data-theme="light"] .email-content-label { color: rgba(28,27,24,0.65); }
+
+/* Lab picks preview */
+html[data-theme="light"] .picks-section {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.08);
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .picks-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+}
+html[data-theme="light"] .picks-card-header {
+  background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, #F8F7F3 100%);
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .picks-card-header h4 { color: #1C1B18; }
+html[data-theme="light"] .pick-row { border-bottom-color: rgba(28,27,24,0.05); }
+html[data-theme="light"] .pick-player { color: #1C1B18; }
+html[data-theme="light"] .pick-player small { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .pick-book { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .picks-footer {
+  border-top-color: rgba(28,27,24,0.08);
+  color: rgba(28,27,24,0.3);
+}
+html[data-theme="light"] .picks-text .section-desc { color: rgba(28,27,24,0.6); }
+
+/* Pricing section */
+html[data-theme="light"] .pricing-section { background: #F5F4F0; }
+html[data-theme="light"] .pricing-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .pricing-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+html[data-theme="light"] .pricing-card.gold {
+  border-color: rgba(201,168,76,0.35);
+  background: linear-gradient(180deg, rgba(201,168,76,0.04) 0%, #FFFFFF 40%);
+}
+html[data-theme="light"] .pricing-card.free-tier { border-color: rgba(28,27,24,0.1); background: #FAFAF8; }
+html[data-theme="light"] .pricing-dollar { color: #1C1B18; }
+html[data-theme="light"] .pricing-period { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .pricing-annual { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .pricing-desc { color: rgba(28,27,24,0.6); }
+html[data-theme="light"] .pricing-features li { color: rgba(28,27,24,0.72); }
+html[data-theme="light"] .pricing-note { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .pricing-btn-outline {
+  background: rgba(28,27,24,0.07);
+  color: #1C1B18;
+}
+html[data-theme="light"] .pricing-btn-outline:hover { background: rgba(28,27,24,0.12); }
+
+/* Social proof */
+html[data-theme="light"] .proof-section {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.08);
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .proof-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .proof-quote { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .proof-author { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .proof-author strong { color: #1C1B18; }
+
+/* FAQ */
+html[data-theme="light"] .faq-section { background: #F5F4F0; }
+html[data-theme="light"] .faq-item { border-bottom-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .faq-q { color: #1C1B18; }
+html[data-theme="light"] .faq-q .ic { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .faq-a { color: rgba(28,27,24,0.6); }
+
+/* Final CTA */
+html[data-theme="light"] .final-cta {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.08);
+}
+
+/* Practice plan callout */
+html[data-theme="light"] .practice-callout { background: #F5F4F0; border-top-color: rgba(28,27,24,0.08); }
+html[data-theme="light"] .practice-callout-inner {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .practice-callout h3 { color: #1C1B18; }
+html[data-theme="light"] .practice-callout p { color: rgba(28,27,24,0.6); }
+
+/* Footer */
+html[data-theme="light"] footer {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
+html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .f-col a { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .f-col a:hover { color: #1C1B18; }
+html[data-theme="light"] .footer-bottom {
+  border-top-color: rgba(28,27,24,0.08);
+  color: rgba(28,27,24,0.3);
+}
+
 </style>
 </head>
 <body>
@@ -1333,6 +1576,7 @@ footer {
     <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode"></button>
     <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
 
@@ -1350,6 +1594,7 @@ footer {
   <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Switch to dark mode"></button>
   <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
@@ -1859,6 +2104,7 @@ footer {
   }
 })();
 </script>
+<script src="/assets/js/theme.js"></script>
 
 </body>
 </html>

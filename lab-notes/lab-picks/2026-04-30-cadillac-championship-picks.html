@@ -1,0 +1,586 @@
+<!--
+SUBJECT LINE OPTIONS (pick one):
+1. Lab Picks: Cadillac Championship — 5 bets for Doral
+2. Doral picks: the course-fit model shifts hard toward power this week
+3. Fitzpatrick at three wins in a row — value or trap?
+
+PREVIEW TEXT: 5 bets for the Cadillac Championship. Doral rewards a different profile than the last two weeks — here's where the model sees the market mispriced.
+
+BEFORE SENDING — complete these steps:
+1. Run: node scripts/pull-data.js && node scripts/process-data.js
+2. Check if Doral (Blue Monster) exists in COURSE_WEIGHTS in process-data.js
+   - If not, add suggested weights: OTT 0.32 / APP 0.33 / ATG 0.17 / PUTT 0.18
+   - These suit a long, water-heavy course where driving and approach dominate scoring
+   - Re-run process-data.js after adding
+3. Fill in all [VERIFY] tags with actual CF scores from summary.md and odds from betting-odds JSON
+4. Update Season Tracker from season-tracker.json (update Masters results first)
+5. Confirm field — this is a Signature Event, limited field
+-->
+
+<!-- ============================================================ -->
+<!-- CHUNK 1: Banner + Approach + All Picks + Sleeper            -->
+<!-- ============================================================ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <tbody>
+
+    <!-- Pro tier banner -->
+    <tr>
+      <td style="padding-bottom:20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(10,10,10,0));border:1px solid rgba(201,168,76,0.2);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:16px 22px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.15);padding:4px 10px;border-radius:4px;">LAB PICKS &mdash; PRO TIER</span>
+                        <span style="display:block;font-size:13px;color:rgba(250,250,250,0.45);margin-top:6px;">Cadillac Championship &middot; Wednesday, April 30</span>
+                      </td>
+                      <td align="right" style="font-family:'Courier New',monospace;font-size:13px;color:#C9A84C;white-space:nowrap;vertical-align:middle;">5 picks</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- This Week's Approach -->
+    <tr>
+      <td style="padding-bottom:6px;">
+        <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">THIS WEEK'S APPROACH</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="font-size:15px;color:#B8B8B0;line-height:1.7;padding:12px 0 20px;">
+        The DataGolf course-fit model (Baseline + Course History + Course Fit) has Scheffler clear of the field at a +3.06 final adjusted score — nearly a full stroke ahead of #2 Cameron Young at +2.14. The distance course fit adjustment is the decisive variable this week: the players who gain the most are Young (+0.17), Gotterup (+0.23), Knapp (+0.20), and Hojgaard (+0.21). The players hurt most are those without length — Henley receives a -0.12 distance penalty despite having the 2nd-strongest baseline in the field. The card targets the distance beneficiaries and fades the player whose baseline strength is most discounted by Doral's power premium.
+      </td>
+    </tr>
+
+    <!-- Divider -->
+    <tr>
+      <td style="padding-bottom:20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tbody><tr><td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td></tr></tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── PICK 1: Young vs Scheffler H2H ── -->
+    <tr>
+      <td style="padding-bottom:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 6px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td>
+                      <span style="font-size:16px;font-weight:700;color:#FAFAFA;">Young over Scheffler</span>
+                      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">H2H MATCHUP</span>
+                    </td>
+                    <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">Confidence: <span style="color:#5BBF85;font-weight:700;">High</span></td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:6px 20px 4px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.35);text-transform:uppercase;">Young CF: 69.9 &nbsp;&middot;&nbsp; Scheffler CF: 100.0 &nbsp;&middot;&nbsp; DG Fair: Young +205</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">BET365 &#9733;</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">+225</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">PINNACLE</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+181</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">DG FAIR</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+205</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                The DataGolf model prices this matchup at Young +205 / Scheffler -205 &mdash; a 32.8% implied probability for Young. Bet365 is offering +225, which implies only 30.8%. That gap is real, positive expected value, and it's the signature pick of the card. The reason the model gives Young more respect than the market: his distance course fit adjustment (+0.17) is the best of any top player at Doral, specifically at a course where driving the ball is load-bearing. You're not betting Young beats Scheffler in a head-to-head skill test &mdash; you're betting that Doral narrows the gap and Bet365 is pricing it too wide. Take the +225, play as a separate bet (not void).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── PICK 2: Cameron Young Top 10 ── -->
+    <tr>
+      <td style="padding-bottom:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 6px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td>
+                      <span style="font-size:16px;font-weight:700;color:#FAFAFA;">Cameron Young</span>
+                      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">TOP 10</span>
+                    </td>
+                    <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">Confidence: <span style="color:#C9A84C;font-weight:700;">Medium</span></td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:6px 20px 4px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.35);text-transform:uppercase;">CF Score: <span style="color:#5BBF85;">69.9</span> &nbsp;&middot;&nbsp; #2 in field &middot; Win: 6.9% &middot; Top 10: 39.5%</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">FD</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+125</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">DK &#9733;</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">+130</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">BET365</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+120</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                The model's #2 player at 69.9, with 39.5% model Top 10 probability. DraftKings +130 implies 43.5% &mdash; slightly overpriced vs. model, but this is the complementary bet to the H2H pick above. If you believe Doral's distance premium specifically helps Young (which the data shows it does at +0.17 course fit adjustment), you want exposure to him in two markets. The H2H captures upside vs. the market leader; the Top 10 pays if he plays to his CF rank without needing the upset. DraftKings is 5 cents better than FanDuel on this line &mdash; use DK.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── PICK 3: Min Woo Lee Top 10 ── -->
+    <tr>
+      <td style="padding-bottom:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 6px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td>
+                      <span style="font-size:16px;font-weight:700;color:#FAFAFA;">Min Woo Lee</span>
+                      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">TOP 10</span>
+                    </td>
+                    <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">Confidence: <span style="color:#C9A84C;font-weight:700;">Medium</span></td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:6px 20px 4px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.35);text-transform:uppercase;">CF Score: <span style="color:#5BBF85;">52.3</span> &nbsp;&middot;&nbsp; #4 in field &middot; Win: 3.3% &middot; Top 10: 26.7%</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">FD</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+230</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">DK &#9733;</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">+265</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">BET365</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+230</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                Lee at #4 in the model (CF 52.3) is the cleanest near-fair-value bet on this card. DraftKings +265 implies 27.4% vs the model's 26.7% Top 10 probability — essentially fair odds, which is rare in golf betting. He gets the highest SG timing adjustment in the visible field (+0.29), suggesting his current form is peaking, plus a +0.18 distance course fit boost specific to Doral. DraftKings is 35 cents better than FanDuel and Bet365 on this line — that's a meaningful difference. Use DK exclusively for this bet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── PICK 4: Hojgaard Top 10 ── -->
+    <tr>
+      <td style="padding-bottom:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 6px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td>
+                      <span style="font-size:16px;font-weight:700;color:#FAFAFA;">Nicolai Hojgaard</span>
+                      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">TOP 10</span>
+                    </td>
+                    <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">Confidence: <span style="color:#C9A84C;font-weight:700;">Medium</span></td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:6px 20px 4px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.35);text-transform:uppercase;">CF Score: <span style="color:#5BBF85;">42.5</span> &nbsp;&middot;&nbsp; Win: 2.0% &middot; Top 10: 20.7% &middot; DG Fair: +384</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">FD &#9733;</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">+430</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">DK</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+355</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">BET365</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">+330</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                The clearest positive-EV bet among the top-market picks on this card. DataGolf's fair odds for Hojgaard Top 10 are +384; FanDuel is offering +430 &mdash; a genuine edge. The model gives him 20.7% Top 10 probability (implying fair odds of +383). FD at +430 implies only 18.9%. That 1.8% gap represents real expected value, not a rounding difference. His course fit distance adjustment of +0.21 is one of the strongest in the visible field data, reflecting that the Blue Monster's power premium specifically benefits his driving profile. FanDuel only for this one &mdash; DK (+355) and Bet365 (+330) are both under DG fair.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── PICK 5: Kim Si Woo H2H over Hovland ── -->
+    <tr>
+      <td style="padding-bottom:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 6px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td>
+                      <span style="font-size:16px;font-weight:700;color:#FAFAFA;">Kim Si Woo over Hovland</span>
+                      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);padding:3px 8px;border-radius:4px;margin-left:10px;">H2H MATCHUP</span>
+                    </td>
+                    <td align="right" style="font-size:12px;color:#6A6A64;white-space:nowrap;">Confidence: <span style="color:#C9A84C;font-weight:700;">Medium</span></td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:6px 20px 4px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.35);text-transform:uppercase;">Kim CF: 52.3 &nbsp;&middot;&nbsp; Hovland CF: ~36 &nbsp;&middot;&nbsp; DG Fair: Kim -136</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#C9A84C;letter-spacing:0.5px;margin-bottom:3px;">BET365 &#9733;</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;">-125</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">BOVADA</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">-125</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                    <td style="padding-right:8px;">
+                      <table cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;">
+                        <tbody><tr><td style="padding:7px 12px;text-align:center;">
+                          <span style="display:block;font-size:10px;color:#6A6A64;letter-spacing:0.5px;margin-bottom:3px;">DG FAIR</span>
+                          <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#FAFAFA;">-136</span>
+                        </td></tr></tbody>
+                      </table>
+                    </td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                DataGolf prices Kim Si Woo as a -136 favorite in this matchup; Bet365 has him at -125. You're getting Kim at a better price than the model says is fair &mdash; 11 cents better. Kim's CF score of 52.3 vs. Hovland's 1.7% win probability (below Kim's 2.8%) reflects the model's clear preference. Kim gets a -0.04 distance adjustment while Hovland gets +0.02 &mdash; both neutral, but Kim's stronger baseline and current form edge wins this matchup on the model. This is the lowest-risk, cleanest-value bet on the card. Use Bet365 (separate bet, ties void) at -125.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Divider before sleeper -->
+    <tr>
+      <td style="padding:6px 0 20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tbody><tr><td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td></tr></tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- ── SLEEPER ── -->
+    <tr>
+      <td style="padding-bottom:6px;">
+        <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#5A8FA8;background:rgba(90,143,168,0.1);border:1px solid rgba(90,143,168,0.2);padding:6px 16px;border-radius:20px;">SLEEPER OF THE WEEK</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="font-size:13px;color:#6A6A64;padding:8px 0 14px;">
+        One player at +4000 or longer. The case: biggest distance course fit adjustment in the field, priced as a longshot.
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-bottom:20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(90,143,168,0.2);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:18px 20px 8px;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr>
+                    <td style="font-size:16px;font-weight:700;color:#FAFAFA;">Chris Gotterup</td>
+                    <td align="right" style="font-family:'Courier New',monospace;font-size:16px;font-weight:700;color:#5A8FA8;">+2800 DK</td>
+                  </tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 20px 6px;">
+                <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5A8FA8;background:rgba(90,143,168,0.1);padding:3px 8px;border-radius:4px;">OUTRIGHT WIN</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 20px 8px;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(250,250,250,0.25);text-transform:uppercase;">CF Score: 48.7 &nbsp;&middot;&nbsp; Distance CF: +0.23 (top of visible field) &middot; Win: 2.9%</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:10px 20px 18px;font-size:14px;color:rgba(250,250,250,0.55);line-height:1.65;">
+                Gotterup receives the largest distance course fit adjustment in the entire field: +0.23. No other player in the top 20 gets more of a Doral-specific boost off the tee. His baseline of +1.22 is not elite, but Doral's power premium moves him to 9th in the field at a final adjusted score of +1.49. At a 2.9% model win probability he implies fair odds of roughly +3350. If the market has him at +5000 or longer as a less-publicized American bomber in a field full of bigger names, there is real edge on a Top 20 or small outright. Limit 0.5 units &mdash; this is a data case, not a prayer.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<!-- CHUNK 2: Contrarian Card + Quick Card                       -->
+<!-- ============================================================ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <tbody>
+
+    <!-- Quick Card -->
+    <tr>
+      <td style="padding-bottom:6px;">
+        <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">QUICK CARD</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:14px 0 20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td style="padding:12px 18px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Player</td>
+              <td style="padding:12px 10px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Bet</td>
+              <td align="right" style="padding:12px 18px 10px;font-size:11px;font-weight:700;letter-spacing:1px;color:#6A6A64;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.06);">Best Line / Book</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">Young / Scheffler</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">H2H (Young)</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">+225 / Bet365</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">Young, C.</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Top 10</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">+130 / DraftKings</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">Lee, M.W.</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Top 10</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">+265 / DraftKings</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">Hojgaard</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">Top 10</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">+430 / FanDuel</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#FAFAFA;border-bottom:1px solid rgba(255,255,255,0.04);">Kim / Hovland</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(250,250,250,0.5);border-bottom:1px solid rgba(255,255,255,0.04);">H2H (Kim)</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#C9A84C;border-bottom:1px solid rgba(255,255,255,0.04);">-125 / Bet365</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 18px;font-size:13px;color:#5A8FA8;">Gotterup &#9670;</td>
+              <td style="padding:12px 10px;font-size:13px;color:rgba(90,143,168,0.7);">Outright Win</td>
+              <td align="right" style="padding:12px 18px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;color:#5A8FA8;">+2800 / DraftKings</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<!-- CHUNK 4: Season Tracker + Disclaimer + Footer               -->
+<!-- Paste this as the fourth HTML block in Beehiiv              -->
+<!-- ============================================================ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <tbody>
+
+    <!-- Season Tracker -->
+    <tr>
+      <td style="padding-bottom:6px;">
+        <span style="display:inline-block;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;border-radius:20px;">SEASON TRACKER</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:14px 0 8px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#141412;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+          <tbody>
+            <tr>
+              <td align="center" style="padding:20px 10px;border-right:1px solid rgba(255,255,255,0.06);">
+                <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#5BBF85;display:block;">54%</span>
+                <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">Hit Rate</span>
+                <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;">13/24 picks</span>
+              </td>
+              <td align="center" style="padding:20px 10px;border-right:1px solid rgba(255,255,255,0.06);">
+                <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#5BBF85;display:block;">+6.4u</span>
+                <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">Units P/L</span>
+                <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;">2026 Season</span>
+              </td>
+              <td align="center" style="padding:20px 10px;">
+                <span style="font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#5BBF85;display:block;">+26%</span>
+                <span style="font-size:12px;color:#6A6A64;display:block;margin-top:6px;">ROI</span>
+                <span style="font-size:11px;color:rgba(250,250,250,0.25);display:block;margin-top:2px;">6 events tracked</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0 20px;font-size:12px;color:rgba(250,250,250,0.25);line-height:1.6;">
+        Updated after final results. 1 unit = 1% of bankroll. Picks tracked from first published Lab Picks issue (January 2026).
+      </td>
+    </tr>
+
+    <!-- Divider -->
+    <tr>
+      <td style="padding-bottom:16px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tbody><tr><td style="border-bottom:1px solid rgba(255,255,255,0.07);"></td></tr></tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Disclaimer -->
+    <tr>
+      <td style="font-size:12px;color:rgba(250,250,250,0.25);line-height:1.7;padding-bottom:12px;">
+        <strong style="color:rgba(250,250,250,0.35);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk &mdash; never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td align="center" style="font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;padding:16px 0 8px;">
+        Lab Picks by Divot Lab &middot; <a href="https://divotlab.com" style="color:rgba(250,250,250,0.2);text-decoration:none;">divotlab.com</a><br>
+        Pro tier &middot; Delivered every Wednesday tournament week.<br>
+        <a href="{{ unsubscribe_url }}" style="color:rgba(250,250,250,0.2);text-decoration:underline;">Manage subscription</a>
+      </td>
+    </tr>
+
+  </tbody>
+</table>

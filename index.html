@@ -11,6 +11,7 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Divot Lab - Golf, Analyzed</title>
 <meta name="description" content="Data-driven golf analysis. Strokes gained breakdowns, tournament intelligence, and insights that actually help your game. Stats that tell the story.">
@@ -1284,6 +1285,197 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   .ticker ~ .nav-drawer { top: 100px !important; }
   .ticker.hidden ~ .nav-drawer { top: 68px !important; }
 }
+
+/* =============================================
+   THEME TOGGLE BUTTON
+   ============================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(250,250,250,0.6);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(250,250,250,0.9);
+  transform: scale(1.1);
+}
+html[data-theme="light"] .theme-toggle {
+  background: rgba(28,27,24,0.07);
+  border-color: rgba(28,27,24,0.14);
+  color: rgba(28,27,24,0.55);
+}
+html[data-theme="light"] .theme-toggle:hover {
+  background: rgba(28,27,24,0.13);
+  color: rgba(28,27,24,0.85);
+}
+
+/* =============================================
+   LIGHT MODE OVERRIDES — index.html
+   ============================================= */
+
+/* Nav — always light glass in light mode */
+html[data-theme="light"] nav {
+  background: rgba(245,244,240,0.92) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
+html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
+html[data-theme="light"] .nav-drawer {
+  background: rgba(245,244,240,0.97) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-drawer a { color: rgba(28,27,24,0.7) !important; }
+html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
+
+/* Ticker */
+html[data-theme="light"] .ticker {
+  background: #1B4D3E;
+  border-bottom-color: rgba(255,255,255,0.12);
+}
+
+/* Hero — warm cream with subtle green glow */
+html[data-theme="light"] .hero {
+  background: #F5F4F0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(27,77,62,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(44,95,124,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(91,191,133,0.04) 0%, transparent 60%);
+}
+html[data-theme="light"] .hero::before {
+  background: radial-gradient(circle, rgba(27,77,62,0.07) 0%, transparent 55%);
+}
+html[data-theme="light"] .hero::after {
+  background: radial-gradient(circle, rgba(44,95,124,0.06) 0%, transparent 60%);
+}
+html[data-theme="light"] .hero h1 { color: #1C1B18; }
+html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .hero-email-note { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .btn-text {
+  color: rgba(28,27,24,0.55);
+  border-bottom-color: rgba(28,27,24,0.25);
+}
+html[data-theme="light"] .btn-text:hover {
+  color: #1C1B18;
+  border-bottom-color: rgba(28,27,24,0.55);
+}
+html[data-theme="light"] .scroll-cue span { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .scroll-cue .line {
+  background: linear-gradient(to bottom, rgba(28,27,24,0.28), transparent);
+}
+
+/* Hero panel (live data widget) */
+html[data-theme="light"] .hero-panel {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .hero-panel-header { border-bottom-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .hero-panel-event { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .hero-panel-row:hover { background: rgba(28,27,24,0.03); }
+html[data-theme="light"] .hero-panel-rank { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .hero-panel-avatar {
+  background: rgba(28,27,24,0.05);
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .hero-panel-initials {
+  color: rgba(28,27,24,0.45);
+  background: rgba(27,77,62,0.09);
+}
+html[data-theme="light"] .hero-panel-name { color: rgba(28,27,24,0.88); }
+html[data-theme="light"] .hero-panel-stat { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .hero-panel-thru { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .hero-panel-pos { background: rgba(28,27,24,0.05); }
+html[data-theme="light"] .hero-panel-pos.even {
+  color: rgba(28,27,24,0.5);
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .hero-panel-footer { border-top-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .hero-panel-loading { color: rgba(28,27,24,0.3); }
+
+/* Hero email form */
+html[data-theme="light"] .hero-email input {
+  background: rgba(28,27,24,0.05);
+  border-color: rgba(28,27,24,0.15);
+  color: #1C1B18;
+}
+html[data-theme="light"] .hero-email input::placeholder { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .hero-email input:focus {
+  border-color: var(--green);
+  background: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .hero-email button {
+  background: rgba(28,27,24,0.07);
+  color: #1C1B18;
+  border-color: rgba(28,27,24,0.15);
+}
+html[data-theme="light"] .hero-email button:hover { background: rgba(28,27,24,0.12); }
+
+/* Stat bar */
+html[data-theme="light"] .stat-bar {
+  background: #FFFFFF;
+  border-top-color: rgba(28,27,24,0.07);
+  border-bottom-color: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .stat-lbl { color: rgba(28,27,24,0.45); }
+html[data-theme="light"] .stat-sep { background: rgba(28,27,24,0.12); }
+html[data-theme="light"] .stat-source { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .stat-source strong { color: rgba(28,27,24,0.5); }
+
+/* Apparel section */
+html[data-theme="light"] .apparel-wrap { background: #ECEBE6; }
+
+/* Popup modal */
+html[data-theme="light"] .popup-overlay {
+  background: rgba(28,27,24,0.65);
+}
+html[data-theme="light"] .popup-modal {
+  background: linear-gradient(165deg, #FFFFFF 0%, #F5F8F6 100%);
+  border-color: rgba(27,77,62,0.15);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.14);
+}
+html[data-theme="light"] .popup-close { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .popup-close:hover { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .popup-title { color: #1C1B18; }
+html[data-theme="light"] .popup-subtitle { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .popup-form input {
+  background: rgba(28,27,24,0.05);
+  border-color: rgba(28,27,24,0.15);
+  color: #1C1B18;
+}
+html[data-theme="light"] .popup-form input::placeholder { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .popup-form input:focus {
+  border-color: var(--green);
+  background: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .popup-disclaimer { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .popup-code-label { color: rgba(28,27,24,0.5); }
+
+/* Footer */
+html[data-theme="light"] footer {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
+html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .f-col a { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .f-col a:hover { color: #1C1B18; }
+html[data-theme="light"] .footer-bottom {
+  border-top-color: rgba(28,27,24,0.08);
+  color: rgba(28,27,24,0.3);
+}
 </style>
 </head>
 <body>
@@ -1328,6 +1520,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
     <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode"></button>
     <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
 
@@ -1347,6 +1540,7 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Switch to dark mode"></button>
   <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
@@ -2425,5 +2619,6 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   
 })();
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>

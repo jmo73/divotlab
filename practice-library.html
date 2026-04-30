@@ -9,6 +9,7 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png">
 <title>Golf Practice Drill Library — Divot Lab</title>
@@ -559,6 +560,167 @@ footer {
   footer { padding: 48px 22px 28px; }
   .footer-bottom { flex-direction: column; gap: 6px; align-items: center; }
 }
+
+/* =============================================
+   THEME TOGGLE BUTTON
+   ============================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(250,250,250,0.6);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(250,250,250,0.9);
+  transform: scale(1.1);
+}
+html[data-theme="light"] .theme-toggle {
+  background: rgba(28,27,24,0.07);
+  border-color: rgba(28,27,24,0.14);
+  color: rgba(28,27,24,0.55);
+}
+html[data-theme="light"] .theme-toggle:hover {
+  background: rgba(28,27,24,0.13);
+  color: rgba(28,27,24,0.85);
+}
+
+/* =============================================
+   LIGHT MODE OVERRIDES — practice-library.html
+   ============================================= */
+
+/* Base */
+html[data-theme="light"] body { background: #F5F4F0; color: #1C1B18; }
+
+/* Nav */
+html[data-theme="light"] nav {
+  background: rgba(245,244,240,0.92) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
+html[data-theme="light"] .nav-links a.active { color: var(--green) !important; }
+html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
+html[data-theme="light"] .nav-drawer {
+  background: rgba(245,244,240,0.97) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-drawer a { color: rgba(28,27,24,0.7) !important; }
+html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
+
+/* Hero */
+html[data-theme="light"] .hero {
+  background: linear-gradient(165deg, #F5F4F0 0%, #EEF3F0 100%);
+}
+html[data-theme="light"] .hero::before {
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.05) 0%, transparent 65%);
+}
+html[data-theme="light"] .hero h1 { color: #1C1B18; }
+html[data-theme="light"] .hero p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .hero-stats { border-top-color: rgba(28,27,24,0.08); }
+html[data-theme="light"] .hero-stat-num { color: #1C1B18; }
+html[data-theme="light"] .hero-stat-label { color: rgba(28,27,24,0.4); }
+
+/* Filter zone (sticky) */
+html[data-theme="light"] .filter-zone {
+  background: rgba(245,244,240,0.95) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .cat-tabs { border-bottom-color: rgba(28,27,24,0.08); }
+html[data-theme="light"] .cat-tab { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .cat-tab:hover { color: rgba(28,27,24,0.75); }
+html[data-theme="light"] .level-bar { border-top-color: rgba(28,27,24,0.05); }
+html[data-theme="light"] .level-label { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .lvl-btn { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .lvl-btn:hover { color: rgba(28,27,24,0.75); }
+html[data-theme="light"] .lvl-btn.active { color: #1C1B18; }
+
+/* Section heading */
+html[data-theme="light"] .section-heading {
+  color: rgba(28,27,24,0.85);
+  border-bottom-color: rgba(28,27,24,0.08);
+}
+
+/* Start-here callout */
+html[data-theme="light"] .start-here {
+  background: rgba(28,27,24,0.03);
+  border-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .start-here-text { color: rgba(28,27,24,0.65); }
+html[data-theme="light"] .start-here-text strong { color: #1C1B18; }
+
+/* Fundamentals */
+html[data-theme="light"] .fund-toggle { border-bottom-color: rgba(28,27,24,0.08); color: #1C1B18; }
+html[data-theme="light"] .fund-toggle-label { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .fund-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .fund-card li { color: rgba(28,27,24,0.72); }
+
+/* Quick-nav links */
+html[data-theme="light"] .quicknav-link {
+  border-color: rgba(28,27,24,0.1);
+  color: rgba(28,27,24,0.45);
+}
+html[data-theme="light"] .quicknav-link:hover {
+  color: #1C1B18;
+  border-color: rgba(28,27,24,0.22);
+  background: rgba(28,27,24,0.04);
+}
+html[data-theme="light"] .quicknav-link.done {
+  color: var(--green);
+  border-color: rgba(27,77,62,0.25);
+}
+
+/* Accordion drill cards */
+html[data-theme="light"] .accordion-item {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .accordion-item.drill-done { background: rgba(27,77,62,0.04); }
+html[data-theme="light"] .accordion-item.drill-done .drill-name { color: rgba(28,27,24,0.48); }
+html[data-theme="light"] .accordion-trigger:hover { background: rgba(28,27,24,0.025); }
+html[data-theme="light"] .drill-check { border-color: rgba(28,27,24,0.18); }
+html[data-theme="light"] .drill-num { color: rgba(28,27,24,0.25); }
+html[data-theme="light"] .drill-name { color: #1C1B18; }
+html[data-theme="light"] .drill-meta { border-top-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .drill-description { color: rgba(28,27,24,0.65); }
+html[data-theme="light"] .drill-steps li { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .drill-steps h4 { color: rgba(28,27,24,0.4); }
+html[data-theme="light"] .meta-value { color: #1C1B18; }
+html[data-theme="light"] .drill-share { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .drill-share:hover { color: rgba(28,27,24,0.7); }
+html[data-theme="light"] .diagram-placeholder {
+  border-color: rgba(28,27,24,0.12);
+  color: rgba(28,27,24,0.25);
+}
+
+/* Footer */
+html[data-theme="light"] footer {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
+html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .f-col a { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .f-col a:hover { color: #1C1B18; }
+html[data-theme="light"] .footer-bottom {
+  border-top-color: rgba(28,27,24,0.08);
+  color: rgba(28,27,24,0.3);
+}
 </style>
 </head>
 <body>
@@ -580,6 +742,7 @@ footer {
     <a href="/lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode"></button>
     <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
   <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
@@ -594,6 +757,7 @@ footer {
   <a href="/lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Switch to dark mode"></button>
   <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
@@ -2414,5 +2578,6 @@ function toggleFund(id) {
 
 }());
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>

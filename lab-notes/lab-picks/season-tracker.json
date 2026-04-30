@@ -1,20 +1,34 @@
 {
   "season": "2026",
-  "last_updated": "2026-04-04",
-  "total_picks": 0,
+  "last_updated": "2026-04-30",
+  "tracking_started": "January 2026",
+  "total_picks": 24,
   "results": {
-    "win":     { "picks": 0, "hits": 0 },
-    "top_5":   { "picks": 0, "hits": 0 },
-    "top_10":  { "picks": 0, "hits": 0 },
-    "top_20":  { "picks": 0, "hits": 0 },
-    "matchup": { "picks": 0, "hits": 0 },
-    "sleeper": { "picks": 0, "hits": 0 }
+    "win":     { "picks": 0,  "hits": 0 },
+    "top_5":   { "picks": 3,  "hits": 2 },
+    "top_10":  { "picks": 10, "hits": 6 },
+    "top_20":  { "picks": 5,  "hits": 3 },
+    "matchup": { "picks": 6,  "hits": 2 }
   },
   "units": {
-    "wagered":    0,
-    "returned":   0,
-    "profit_loss": 0,
-    "roi_pct":    0
+    "wagered":      24.5,
+    "returned":     30.9,
+    "profit_loss":  6.4,
+    "roi_pct":      26.1
   },
-  "weekly_picks": []
+  "events_tracked": 6,
+  "weekly_picks": [
+    {
+      "event": "Cadillac Championship",
+      "date": "2026-04-30",
+      "picks": [
+        { "player": "Young, Cameron",   "bet": "H2H over Scheffler", "book": "Bet365",     "odds": 225,  "type": "matchup", "units": 1.0, "result": null },
+        { "player": "Young, Cameron",   "bet": "Top 10",             "book": "DraftKings", "odds": 130,  "type": "top_10",  "units": 1.0, "result": null },
+        { "player": "Lee, Min Woo",     "bet": "Top 10",             "book": "DraftKings", "odds": 265,  "type": "top_10",  "units": 1.0, "result": null },
+        { "player": "Hojgaard, Nicolai","bet": "Top 10",             "book": "FanDuel",    "odds": 430,  "type": "top_10",  "units": 1.0, "result": null },
+        { "player": "Kim, Si Woo",      "bet": "H2H over Hovland",  "book": "Bet365",     "odds": -125, "type": "matchup", "units": 1.0, "result": null },
+        { "player": "Gotterup, Chris",  "bet": "Outright Win",       "book": "DraftKings", "odds": 2800, "type": "win",     "units": 0.5, "result": null, "sleeper": true }
+      ]
+    }
+  ]
 }

@@ -11,6 +11,7 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png">
 <title>What Should I Practice? — Divot Lab</title>
@@ -1214,6 +1215,179 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   .footer-grid { grid-template-columns:1fr; gap:28px; }
   .footer-bottom { flex-direction:column; gap:8px; }
 }
+
+/* =============================================
+   THEME TOGGLE BUTTON
+   ============================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(250,250,250,0.6);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .15s;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(250,250,250,0.9);
+  transform: scale(1.1);
+}
+html[data-theme="light"] .theme-toggle {
+  background: rgba(28,27,24,0.07);
+  border-color: rgba(28,27,24,0.14);
+  color: rgba(28,27,24,0.55);
+}
+html[data-theme="light"] .theme-toggle:hover {
+  background: rgba(28,27,24,0.13);
+  color: rgba(28,27,24,0.85);
+}
+
+/* =============================================
+   LIGHT MODE OVERRIDES — practice.html
+   ============================================= */
+
+/* Base */
+html[data-theme="light"] body { background: #F5F4F0; color: #1C1B18; }
+
+/* Nav */
+html[data-theme="light"] nav {
+  background: rgba(245,244,240,0.92) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.6) !important; }
+html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
+html[data-theme="light"] .nav-drawer {
+  background: rgba(245,244,240,0.97) !important;
+  border-bottom-color: rgba(28,27,24,0.08) !important;
+}
+html[data-theme="light"] .nav-drawer a { color: rgba(28,27,24,0.7) !important; }
+html[data-theme="light"] .nav-drawer a:hover { color: #1C1B18 !important; }
+
+/* Hero */
+html[data-theme="light"] .hero {
+  background: #F5F4F0;
+  background-image:
+    radial-gradient(ellipse at center, rgba(27,77,62,0.08) 0%, transparent 66%);
+}
+html[data-theme="light"] .hero::before {
+  background: radial-gradient(ellipse at center, rgba(27,77,62,0.06) 0%, transparent 66%);
+}
+html[data-theme="light"] .hero h1 { color: #1C1B18; }
+html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .hero-note { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .hero-start button:hover {
+  box-shadow: 0 8px 24px rgba(27,77,62,0.2);
+}
+
+/* Mobile CTA bar */
+html[data-theme="light"] .mobile-cta-bar {
+  background: rgba(245,244,240,0.95);
+  border-top-color: rgba(28,27,24,0.1);
+}
+
+/* Progress bar */
+html[data-theme="light"] .progress-bar { background: rgba(28,27,24,0.1); }
+html[data-theme="light"] .progress-label { color: rgba(28,27,24,0.38); }
+
+/* Quiz question text */
+html[data-theme="light"] .q-text { color: #1C1B18; }
+html[data-theme="light"] .q-subtext { color: rgba(28,27,24,0.45); }
+
+/* Quiz options */
+html[data-theme="light"] .option {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .option:hover {
+  background: #F8F7F4;
+  border-color: rgba(28,27,24,0.2);
+}
+html[data-theme="light"] .option.selected {
+  background: rgba(27,77,62,0.06);
+  border-color: var(--green);
+}
+html[data-theme="light"] .option-radio { border-color: rgba(28,27,24,0.2); }
+html[data-theme="light"] .option-text { color: rgba(28,27,24,0.72); }
+html[data-theme="light"] .option.selected .option-text { color: #1C1B18; }
+
+/* Results teaser */
+html[data-theme="light"] .teaser-right {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .teaser-title { color: #1C1B18; }
+html[data-theme="light"] .weakness-reveal {
+  background: rgba(28,27,24,0.03);
+  border-color: rgba(28,27,24,0.08);
+}
+html[data-theme="light"] .weakness-name { color: #1C1B18; }
+html[data-theme="light"] .weakness-desc { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .blurred-drill {
+  background: rgba(28,27,24,0.03);
+  border-color: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .blurred-drill-name { color: rgba(28,27,24,0.6); }
+html[data-theme="light"] .blurred-drill-desc { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .blur-overlay {
+  background: linear-gradient(180deg, transparent 10%, rgba(245,244,240,0.8) 60%, rgba(245,244,240,0.97) 100%);
+}
+html[data-theme="light"] .locked-item {
+  background: rgba(28,27,24,0.03);
+  border-color: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .locked-text { color: rgba(28,27,24,0.45); }
+html[data-theme="light"] .lock-badge {
+  color: rgba(28,27,24,0.28);
+  background: rgba(28,27,24,0.05);
+}
+html[data-theme="light"] .unlock-section { border-top-color: rgba(28,27,24,0.07); }
+html[data-theme="light"] .unlock-price { color: #1C1B18; }
+html[data-theme="light"] .unlock-price-note { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .unlock-guarantee { color: rgba(28,27,24,0.3); }
+html[data-theme="light"] .unlock-email-input {
+  background: rgba(28,27,24,0.05);
+  border-color: rgba(28,27,24,0.12);
+  color: #1C1B18;
+}
+html[data-theme="light"] .unlock-email-input::placeholder { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .unlock-email-input:focus {
+  border-color: var(--green);
+  background: rgba(28,27,24,0.07);
+}
+html[data-theme="light"] .unlock-email-note { color: rgba(28,27,24,0.25); }
+
+/* Priority cards (full results) */
+html[data-theme="light"] .priority-card {
+  background: #FFFFFF;
+  border-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .results-header h2 { color: #1C1B18; }
+html[data-theme="light"] .results-header p { color: rgba(28,27,24,0.4); }
+
+/* Footer */
+html[data-theme="light"] footer {
+  background: #ECEBE6;
+  border-top-color: rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .f-brand .f-logo-text { color: #1C1B18; }
+html[data-theme="light"] .f-brand p { color: rgba(28,27,24,0.5); }
+html[data-theme="light"] .f-col h5 { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .f-col a { color: rgba(28,27,24,0.55); }
+html[data-theme="light"] .f-col a:hover { color: #1C1B18; }
+html[data-theme="light"] .footer-bottom {
+  border-top-color: rgba(28,27,24,0.08);
+  color: rgba(28,27,24,0.3);
+}
 </style>
 </head>
 <body>
@@ -1236,6 +1410,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
     <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
     <a href="https://divotlab.printful.me/">Shop</a>
     <a href="/about">About</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode"></button>
     <a href="/the-lab" class="nav-cta">The Lab</a>
   </div>
   <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
@@ -1250,6 +1425,7 @@ footer { background:var(--black); border-top:1px solid rgba(255,255,255,.06); pa
   <a href="/lab-notes" class="nav-lab-notes">Lab Notes<span class="pro-pill">PRO</span></a>
   <a href="https://divotlab.printful.me/">Shop</a>
   <a href="/about">About</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Switch to dark mode"></button>
   <a href="/the-lab" class="nav-cta">The Lab</a>
 </div>
 
@@ -2743,5 +2919,6 @@ function retakeQuiz() {
   }
 })();
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>
