@@ -1932,7 +1932,34 @@ html[data-theme="light"] .footer-bottom {
               <li>Repeat quarterly — your numbers change as your swing evolves</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Club distance chart ]</text></svg>
+          <!-- Yardage Book: club carry bar chart -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Club carry distances: stepping bar chart showing 8-12 yard gaps">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">YOUR CLUB CARRY CHART</text>
+            <!-- Ground baseline -->
+            <line x1="22" y1="140" x2="418" y2="140" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <!-- 6 bars stepping up: GW→6i. Centers at 45,115,185,255,325,395. Width 44px -->
+            <rect x="23"  y="102" width="44" height="38"  rx="3" fill="#5A8FA8" fill-opacity="0.62"/>
+            <rect x="93"  y="88"  width="44" height="52"  rx="3" fill="#5A8FA8" fill-opacity="0.66"/>
+            <rect x="163" y="74"  width="44" height="66"  rx="3" fill="#5A8FA8" fill-opacity="0.70"/>
+            <rect x="233" y="60"  width="44" height="80"  rx="3" fill="#5A8FA8" fill-opacity="0.74"/>
+            <rect x="303" y="46"  width="44" height="94"  rx="3" fill="#5A8FA8" fill-opacity="0.78"/>
+            <rect x="373" y="32"  width="44" height="108" rx="3" fill="#5A8FA8" fill-opacity="0.84"/>
+            <!-- Club labels below baseline -->
+            <text x="45"  y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">GW</text>
+            <text x="115" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">PW</text>
+            <text x="185" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">9i</text>
+            <text x="255" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">8i</text>
+            <text x="325" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">7i</text>
+            <text x="395" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">6i</text>
+            <!-- Gap indicator between GW and PW bar tops (x=80, in the gap between bars) -->
+            <line x1="80" y1="102" x2="80" y2="88" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
+            <line x1="76" y1="102" x2="84" y2="102" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
+            <line x1="76" y1="88"  x2="84" y2="88"  stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
+            <text x="88" y="97" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A8FA8" fill-opacity="0.7">~10 yds</text>
+            <!-- Caption -->
+            <text x="220" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">8–12 yards between each club · verify carry, not total</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Clean 8–12 yard gaps between every club. No two clubs within 5 yards of each other.</div>
         </div>
       </div>
@@ -1962,7 +1989,38 @@ html[data-theme="light"] .footer-bottom {
               <li>Grade: how many of 20 balls finish within 5 yards of the target?</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Ladder distance targets ]</text></svg>
+          <!-- 10-Yard Ladder: side-view arcs at 4 carry distances -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="10-Yard Ladder: 4 ball trajectories at increasing carry distances from one tee">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">SIDE VIEW · ONE CLUB · 4 TARGETS</text>
+            <!-- Ground -->
+            <line x1="22" y1="142" x2="418" y2="142" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <!-- Tee ball -->
+            <circle cx="36" cy="139" r="7" fill="#C9A84C" fill-opacity="0.85"/>
+            <!-- 4 shot arcs (quadratic bezier) — same start, different carry -->
+            <!-- Arc 1: 100 yds → landing at x=120 -->
+            <path d="M36,139 Q78,108 120,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.55" stroke-dasharray="5 3" fill="none"/>
+            <circle cx="120" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.7"/>
+            <!-- Arc 2: 110 yds → landing at x=210 -->
+            <path d="M36,139 Q123,88 210,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.65" stroke-dasharray="5 3" fill="none"/>
+            <circle cx="210" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.75"/>
+            <!-- Arc 3: 120 yds → landing at x=305 -->
+            <path d="M36,139 Q170,68 305,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.75" stroke-dasharray="5 3" fill="none"/>
+            <circle cx="305" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.80"/>
+            <!-- Arc 4: 130 yds → landing at x=405 -->
+            <path d="M36,139 Q220,48 405,139" stroke="#5A8FA8" stroke-width="1.8" stroke-opacity="0.85" stroke-dasharray="5 3" fill="none"/>
+            <circle cx="405" cy="139" r="5" fill="#5BBF85" fill-opacity="0.85"/>
+            <!-- Distance labels below landing dots -->
+            <text x="120" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">100</text>
+            <text x="210" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">110</text>
+            <text x="305" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">120</text>
+            <text x="405" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.7">130 yds</text>
+            <!-- +10 yds gap bracket between landing 1 and 2 -->
+            <line x1="120" y1="132" x2="210" y2="132" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+            <text x="165" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.3">+10 yds</text>
+            <!-- Caption -->
+            <text x="220" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">5 balls per target · same grip · vary swing length only</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>14 of 20 balls within 5 yards of target. Mid/low HC target: 16/20.</div>
         </div>
       </div>
@@ -1991,7 +2049,34 @@ html[data-theme="light"] .footer-bottom {
               <li>Count how many balls stop within 10 yards of each target</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Swing length vs. distance ]</text></svg>
+          <!-- Same Club, 5 Distances: 3 clock-face swing positions -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Same Club 5 Distances: clock positions 9 o'clock, 10 o'clock, full swing">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">BACKSWING LENGTH → CARRY DISTANCE</text>
+            <!-- 3 clock circles at cx=80, 220, 360. cy=80, r=36 -->
+            <!-- CLOCK 1: 9 o'clock — arm points LEFT -->
+            <circle cx="80" cy="80" r="36" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.5"/>
+            <line x1="80" y1="80" x2="44" y2="80" stroke="#5A8FA8" stroke-width="3" stroke-linecap="round" stroke-opacity="0.8"/>
+            <circle cx="80" cy="80" r="4" fill="#5A8FA8" fill-opacity="0.6"/>
+            <!-- clock center dot -->
+            <text x="80" y="126" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.55">9 o'clock</text>
+            <text x="80" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.32">50–60%</text>
+            <!-- CLOCK 2: 10 o'clock — arm points upper-left (150° from +x axis → end at cx-r·cos30°, cy-r·sin30°) -->
+            <circle cx="220" cy="80" r="36" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.5"/>
+            <!-- 10 o'clock: (220 - 36·cos(30°), 80 - 36·sin(30°)) = (220-31.2, 80-18) = (188.8, 62) -->
+            <line x1="220" y1="80" x2="189" y2="62" stroke="#5A8FA8" stroke-width="3" stroke-linecap="round" stroke-opacity="0.8"/>
+            <circle cx="220" cy="80" r="4" fill="#5A8FA8" fill-opacity="0.6"/>
+            <text x="220" y="126" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.55">10 o'clock</text>
+            <text x="220" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.32">75–85%</text>
+            <!-- CLOCK 3: 12 o'clock / Full — arm points UP -->
+            <circle cx="360" cy="80" r="36" fill="#5BBF85" fill-opacity="0.05" stroke="#5BBF85" stroke-opacity="0.25" stroke-width="1.5"/>
+            <line x1="360" y1="80" x2="360" y2="44" stroke="#5BBF85" stroke-width="3" stroke-linecap="round" stroke-opacity="0.85"/>
+            <circle cx="360" cy="80" r="4" fill="#5BBF85" fill-opacity="0.7"/>
+            <text x="360" y="126" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#5BBF85">Full swing</text>
+            <text x="360" y="140" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.6">100%</text>
+            <!-- Caption -->
+            <text x="220" y="162" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">same grip · same club · 5 balls per length</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>18 of 25 balls within 10 yards of target. Builds to 20/25 as feel develops.</div>
         </div>
       </div>
@@ -2021,7 +2106,44 @@ html[data-theme="light"] .footer-bottom {
               <li>Track your "attack number" — how often did your ball finish pin-high?</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Proximity distribution ]</text></svg>
+          <!-- Flag Attack: top-down green with proximity rings and shot dots -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Flag Attack: top-down green showing 15ft and 30ft proximity zones with shot distribution">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · PROXIMITY ZONES</text>
+            <!-- Green surface -->
+            <ellipse cx="220" cy="88" rx="120" ry="78" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.18" stroke-width="1.5"/>
+            <!-- 30-foot ring -->
+            <ellipse cx="220" cy="88" rx="80" ry="53" fill="none" stroke="#C9A84C" stroke-opacity="0.28" stroke-width="1.2" stroke-dasharray="5 4"/>
+            <text x="306" y="78" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.55">30 ft</text>
+            <!-- 15-foot ring -->
+            <ellipse cx="220" cy="88" rx="40" ry="27" fill="#5BBF85" fill-opacity="0.06" stroke="#5BBF85" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <text x="264" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.7">15 ft</text>
+            <!-- Pin -->
+            <circle cx="220" cy="88" r="4" fill="#C9A84C" fill-opacity="0.9"/>
+            <line x1="220" y1="84" x2="220" y2="68" stroke="#C9A84C" stroke-width="1.5" stroke-opacity="0.7"/>
+            <rect x="220" y="64" width="14" height="8" rx="1" fill="#C9A84C" fill-opacity="0.65"/>
+            <!-- Shot dots: inside 15ft = green (good) -->
+            <circle cx="210" cy="82" r="5" fill="#5BBF85" fill-opacity="0.8"/>
+            <circle cx="228" cy="94" r="5" fill="#5BBF85" fill-opacity="0.8"/>
+            <circle cx="215" cy="98" r="5" fill="#5BBF85" fill-opacity="0.8"/>
+            <circle cx="232" cy="80" r="5" fill="#5BBF85" fill-opacity="0.8"/>
+            <!-- Shot dots: 15–30ft = gold (ok) -->
+            <circle cx="248" cy="72" r="5" fill="#C9A84C" fill-opacity="0.7"/>
+            <circle cx="195" cy="100" r="5" fill="#C9A84C" fill-opacity="0.7"/>
+            <circle cx="256" cy="96" r="5" fill="#C9A84C" fill-opacity="0.7"/>
+            <circle cx="200" cy="70" r="5" fill="#C9A84C" fill-opacity="0.7"/>
+            <!-- Shot dots: outside 30ft = red (miss) -->
+            <circle cx="278" cy="80" r="5" fill="#E76F51" fill-opacity="0.6"/>
+            <circle cx="170" cy="88" r="5" fill="#E76F51" fill-opacity="0.6"/>
+            <circle cx="240" cy="130" r="5" fill="#E76F51" fill-opacity="0.6"/>
+            <!-- Zone legend at bottom -->
+            <circle cx="52" cy="165" r="5" fill="#5BBF85" fill-opacity="0.8"/>
+            <text x="62" y="169" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.45">inside 15ft</text>
+            <circle cx="148" cy="165" r="5" fill="#C9A84C" fill-opacity="0.7"/>
+            <text x="158" y="169" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.45">15–30 ft</text>
+            <circle cx="240" cy="165" r="5" fill="#E76F51" fill-opacity="0.6"/>
+            <text x="250" y="169" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.45">outside 30ft</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>6 of 20 inside 15 feet. Low/scratch target: 8 of 20. Pin-high rate above 60%.</div>
         </div>
       </div>
@@ -2051,7 +2173,46 @@ html[data-theme="light"] .footer-bottom {
               <li>Track which group held the target better</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Wind adjustment matrix ]</text></svg>
+          <!-- Wind Club Selection: 3-panel wind scenarios -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Wind Club Selection: headwind, downwind, crosswind scenarios with club adjustments">
+            <defs>
+              <marker id="wnd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5A8FA8" fill-opacity="0.65"/>
+              </marker>
+            </defs>
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">WIND ADJUSTMENT · CLUB SELECTION</text>
+            <!-- Dividers -->
+            <line x1="147" y1="24" x2="147" y2="155" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="293" y1="24" x2="293" y2="155" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
+            <!-- PANEL 1: INTO WIND -->
+            <text x="73" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Into Wind</text>
+            <!-- Wind arrow pointing DOWN toward golfer -->
+            <line x1="73" y1="60" x2="73" y2="90" stroke="#5A8FA8" stroke-width="2.2" stroke-opacity="0.65" marker-end="url(#wnd-arr)"/>
+            <text x="73" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A8FA8" fill-opacity="0.6">WIND</text>
+            <!-- Adjustment labels -->
+            <rect x="26" y="100" width="94" height="34" rx="5" fill="#5A8FA8" fill-opacity="0.08" stroke="#5A8FA8" stroke-opacity="0.2" stroke-width="1"/>
+            <text x="73" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5A8FA8" fill-opacity="0.85">+1 club</text>
+            <text x="73" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">swing at 80%</text>
+            <!-- PANEL 2: DOWNWIND -->
+            <text x="220" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Downwind</text>
+            <!-- Wind arrow pointing UP away from golfer -->
+            <line x1="220" y1="90" x2="220" y2="60" stroke="#5BBF85" stroke-width="2.2" stroke-opacity="0.7" marker-end="url(#wnd-arr)"/>
+            <text x="220" y="96" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.6">WIND</text>
+            <rect x="172" y="100" width="96" height="34" rx="5" fill="#5BBF85" fill-opacity="0.08" stroke="#5BBF85" stroke-opacity="0.22" stroke-width="1"/>
+            <text x="220" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5BBF85" fill-opacity="0.85">−1 club</text>
+            <text x="220" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">let it run out</text>
+            <!-- PANEL 3: CROSSWIND -->
+            <text x="366" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Crosswind</text>
+            <!-- Wind arrow pointing RIGHT (across) -->
+            <line x1="318" y1="75" x2="414" y2="75" stroke="#C9A84C" stroke-width="2.2" stroke-opacity="0.7" marker-end="url(#wnd-arr)"/>
+            <text x="366" y="72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.6">WIND</text>
+            <rect x="318" y="100" width="96" height="34" rx="5" fill="#C9A84C" fill-opacity="0.07" stroke="#C9A84C" stroke-opacity="0.2" stroke-width="1"/>
+            <text x="366" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#C9A84C" fill-opacity="0.85">ride or fight</text>
+            <text x="366" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">choose intentionally</text>
+            <!-- Caption -->
+            <text x="220" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">smooth 7-iron beats a forced 8-iron into the wind every time</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Carry within 10 yards of intended number in each wind direction. No more mis-clubbing by a full club.</div>
         </div>
       </div>
@@ -2082,7 +2243,44 @@ html[data-theme="light"] .footer-bottom {
               <li>Once grooved, repeat with your 6-iron and 8-iron using the same shape</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Shot shape dispersion ]</text></svg>
+          <!-- Stock Shot Groove: scattered vs. consistent dispersion -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Stock Shot Groove: scattered dispersion vs tight consistent fade pattern">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <line x1="220" y1="18" x2="220" y2="162" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">SHOT SHAPE DISPERSION</text>
+            <!-- LEFT: No stock shape — scattered in all directions -->
+            <text x="110" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.45">No Pattern</text>
+            <!-- Wide scattered cone representing random shot shapes -->
+            <path d="M110,148 L30,48 L190,48 Z" fill="#E76F51" fill-opacity="0.05" stroke="#E76F51" stroke-opacity="0.22" stroke-width="1.2"/>
+            <!-- Scattered dots in various directions -->
+            <circle cx="58"  cy="72"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="160" cy="64"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="78"  cy="56"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="148" cy="80"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="95"  cy="90"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="42"  cy="92"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <circle cx="175" cy="52"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <circle cx="125" cy="60"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <!-- Tee dot left -->
+            <circle cx="110" cy="152" r="7" fill="currentColor" fill-opacity="0.2"/>
+            <text x="110" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">unpredictable</text>
+            <!-- RIGHT: Consistent gentle fade — tight band curving right -->
+            <text x="330" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#5BBF85">Stock Fade</text>
+            <!-- Tight cone biased slightly right -->
+            <path d="M310,148 L270,48 L370,48 Z" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.32" stroke-width="1.5"/>
+            <!-- Tight clustered dots, shifted slightly right of center -->
+            <circle cx="316" cy="78"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="330" cy="64"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="322" cy="90"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="338" cy="72"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="328" cy="56"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="344" cy="84"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="314" cy="66"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <circle cx="336" cy="92"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
+            <!-- Tee dot right -->
+            <circle cx="330" cy="152" r="7" fill="#5BBF85" fill-opacity="0.55"/>
+            <text x="330" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.65">predictable</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>24 of 30 producing the intended shape. Dispersion pattern should be tight and predictable, not scattered.</div>
         </div>
       </div>
