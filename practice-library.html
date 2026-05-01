@@ -1952,11 +1952,6 @@ html[data-theme="light"] .footer-bottom {
             <text x="255" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">8i</text>
             <text x="325" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">7i</text>
             <text x="395" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.45">6i</text>
-            <!-- Gap indicator between GW and PW bar tops (x=80, in the gap between bars) -->
-            <line x1="80" y1="102" x2="80" y2="88" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
-            <line x1="76" y1="102" x2="84" y2="102" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
-            <line x1="76" y1="88"  x2="84" y2="88"  stroke="currentColor" stroke-opacity="0.22" stroke-width="1.2"/>
-            <text x="88" y="97" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A8FA8" fill-opacity="0.7">~10 yds</text>
             <!-- Caption -->
             <text x="220" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">8–12 yards between each club · verify carry, not total</text>
           </svg>
@@ -1995,29 +1990,25 @@ html[data-theme="light"] .footer-bottom {
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">SIDE VIEW · ONE CLUB · 4 TARGETS</text>
             <!-- Ground -->
             <line x1="22" y1="142" x2="418" y2="142" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
-            <!-- Tee ball -->
-            <circle cx="36" cy="139" r="7" fill="#C9A84C" fill-opacity="0.85"/>
-            <!-- 4 shot arcs (quadratic bezier) — same start, different carry -->
-            <!-- Arc 1: 100 yds → landing at x=120 -->
+            <!-- 4 shot arcs drawn first so tee ball renders on top -->
             <path d="M36,139 Q78,108 120,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.55" stroke-dasharray="5 3" fill="none"/>
-            <circle cx="120" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.7"/>
-            <!-- Arc 2: 110 yds → landing at x=210 -->
             <path d="M36,139 Q123,88 210,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.65" stroke-dasharray="5 3" fill="none"/>
-            <circle cx="210" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.75"/>
-            <!-- Arc 3: 120 yds → landing at x=305 -->
             <path d="M36,139 Q170,68 305,139" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.75" stroke-dasharray="5 3" fill="none"/>
-            <circle cx="305" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.80"/>
-            <!-- Arc 4: 130 yds → landing at x=405 -->
             <path d="M36,139 Q220,48 405,139" stroke="#5A8FA8" stroke-width="1.8" stroke-opacity="0.85" stroke-dasharray="5 3" fill="none"/>
+            <!-- Landing circles -->
+            <circle cx="120" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.7"/>
+            <circle cx="210" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.75"/>
+            <circle cx="305" cy="139" r="5" fill="#5A8FA8" fill-opacity="0.80"/>
             <circle cx="405" cy="139" r="5" fill="#5BBF85" fill-opacity="0.85"/>
+            <!-- Tee ball drawn LAST so it sits on top of all arcs -->
+            <circle cx="36" cy="139" r="8" fill="#C9A84C" fill-opacity="0.88"/>
             <!-- Distance labels below landing dots -->
             <text x="120" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">100</text>
+            <!-- +10 yds sits cleanly between "100" and "110" labels -->
+            <text x="165" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.22">+10 yds</text>
             <text x="210" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">110</text>
             <text x="305" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">120</text>
             <text x="405" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.7">130 yds</text>
-            <!-- +10 yds gap bracket between landing 1 and 2 -->
-            <line x1="120" y1="132" x2="210" y2="132" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
-            <text x="165" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.3">+10 yds</text>
             <!-- Caption -->
             <text x="220" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">5 balls per target · same grip · vary swing length only</text>
           </svg>
@@ -2110,8 +2101,8 @@ html[data-theme="light"] .footer-bottom {
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Flag Attack: top-down green showing 15ft and 30ft proximity zones with shot distribution">
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · PROXIMITY ZONES</text>
-            <!-- Green surface -->
-            <ellipse cx="220" cy="88" rx="120" ry="78" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.18" stroke-width="1.5"/>
+            <!-- Green surface — kept clear of title (y=16) and legend (y=165) -->
+            <ellipse cx="220" cy="88" rx="95" ry="60" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.18" stroke-width="1.5"/>
             <!-- 30-foot ring -->
             <ellipse cx="220" cy="88" rx="80" ry="53" fill="none" stroke="#C9A84C" stroke-opacity="0.28" stroke-width="1.2" stroke-dasharray="5 4"/>
             <text x="306" y="78" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.55">30 ft</text>
@@ -2176,41 +2167,44 @@ html[data-theme="light"] .footer-bottom {
           <!-- Wind Club Selection: 3-panel wind scenarios -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Wind Club Selection: headwind, downwind, crosswind scenarios with club adjustments">
             <defs>
-              <marker id="wnd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-                <polygon points="0,0 10,5 0,10" fill="#5A8FA8" fill-opacity="0.65"/>
+              <!-- Each arrow marker matches its line color -->
+              <marker id="wnd-blu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5A8FA8"/>
+              </marker>
+              <marker id="wnd-grn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5BBF85"/>
+              </marker>
+              <marker id="wnd-gld" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#C9A84C"/>
               </marker>
             </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">WIND ADJUSTMENT · CLUB SELECTION</text>
-            <!-- Dividers -->
             <line x1="147" y1="24" x2="147" y2="155" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
             <line x1="293" y1="24" x2="293" y2="155" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 3"/>
             <!-- PANEL 1: INTO WIND -->
-            <text x="73" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Into Wind</text>
-            <!-- Wind arrow pointing DOWN toward golfer -->
-            <line x1="73" y1="60" x2="73" y2="90" stroke="#5A8FA8" stroke-width="2.2" stroke-opacity="0.65" marker-end="url(#wnd-arr)"/>
-            <text x="73" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A8FA8" fill-opacity="0.6">WIND</text>
-            <!-- Adjustment labels -->
+            <text x="73" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Into Wind</text>
+            <!-- WIND label above arrow, arrow below it — nothing covers either -->
+            <text x="73" y="52" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A8FA8" fill-opacity="0.65">WIND</text>
+            <line x1="73" y1="56" x2="73" y2="88" stroke="#5A8FA8" stroke-width="2.2" stroke-opacity="0.7" marker-end="url(#wnd-blu)"/>
             <rect x="26" y="100" width="94" height="34" rx="5" fill="#5A8FA8" fill-opacity="0.08" stroke="#5A8FA8" stroke-opacity="0.2" stroke-width="1"/>
             <text x="73" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5A8FA8" fill-opacity="0.85">+1 club</text>
             <text x="73" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">swing at 80%</text>
-            <!-- PANEL 2: DOWNWIND -->
-            <text x="220" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Downwind</text>
-            <!-- Wind arrow pointing UP away from golfer -->
-            <line x1="220" y1="90" x2="220" y2="60" stroke="#5BBF85" stroke-width="2.2" stroke-opacity="0.7" marker-end="url(#wnd-arr)"/>
-            <text x="220" y="96" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.6">WIND</text>
-            <rect x="172" y="100" width="96" height="34" rx="5" fill="#5BBF85" fill-opacity="0.08" stroke="#5BBF85" stroke-opacity="0.22" stroke-width="1"/>
-            <text x="220" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5BBF85" fill-opacity="0.85">−1 club</text>
-            <text x="220" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">let it run out</text>
-            <!-- PANEL 3: CROSSWIND -->
-            <text x="366" y="38" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Crosswind</text>
-            <!-- Wind arrow pointing RIGHT (across) -->
-            <line x1="318" y1="75" x2="414" y2="75" stroke="#C9A84C" stroke-width="2.2" stroke-opacity="0.7" marker-end="url(#wnd-arr)"/>
-            <text x="366" y="72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.6">WIND</text>
+            <!-- PANEL 2: DOWNWIND — arrow points UP, WIND label at tail (below start), clear of rect -->
+            <text x="220" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Downwind</text>
+            <line x1="220" y1="88" x2="220" y2="56" stroke="#5BBF85" stroke-width="2.2" stroke-opacity="0.75" marker-end="url(#wnd-grn)"/>
+            <!-- WIND label at arrow tail, 8px below the line start, 8px above rect -->
+            <text x="220" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.65">WIND</text>
+            <rect x="172" y="106" width="96" height="34" rx="5" fill="#5BBF85" fill-opacity="0.08" stroke="#5BBF85" stroke-opacity="0.22" stroke-width="1"/>
+            <text x="220" y="121" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5BBF85" fill-opacity="0.85">−1 club</text>
+            <text x="220" y="134" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">let it run out</text>
+            <!-- PANEL 3: CROSSWIND — WIND label above arrow line -->
+            <text x="366" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.6">Crosswind</text>
+            <text x="366" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.65">WIND</text>
+            <line x1="318" y1="68" x2="414" y2="68" stroke="#C9A84C" stroke-width="2.2" stroke-opacity="0.72" marker-end="url(#wnd-gld)"/>
             <rect x="318" y="100" width="96" height="34" rx="5" fill="#C9A84C" fill-opacity="0.07" stroke="#C9A84C" stroke-opacity="0.2" stroke-width="1"/>
             <text x="366" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#C9A84C" fill-opacity="0.85">ride or fight</text>
-            <text x="366" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">choose intentionally</text>
-            <!-- Caption -->
+            <text x="366" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.38">be intentional</text>
             <text x="220" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">smooth 7-iron beats a forced 8-iron into the wind every time</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Carry within 10 yards of intended number in each wind direction. No more mis-clubbing by a full club.</div>
@@ -2243,43 +2237,42 @@ html[data-theme="light"] .footer-bottom {
               <li>Once grooved, repeat with your 6-iron and 8-iron using the same shape</li>
             </ol>
           </div>
-          <!-- Stock Shot Groove: scattered vs. consistent dispersion -->
+          <!-- Stock Shot Groove: scattered vs. tight consistent fade -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Stock Shot Groove: scattered dispersion vs tight consistent fade pattern">
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <line x1="220" y1="18" x2="220" y2="162" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">SHOT SHAPE DISPERSION</text>
-            <!-- LEFT: No stock shape — scattered in all directions -->
-            <text x="110" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.45">No Pattern</text>
-            <!-- Wide scattered cone representing random shot shapes -->
-            <path d="M110,148 L30,48 L190,48 Z" fill="#E76F51" fill-opacity="0.05" stroke="#E76F51" stroke-opacity="0.22" stroke-width="1.2"/>
-            <!-- Scattered dots in various directions -->
-            <circle cx="58"  cy="72"  r="5" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="160" cy="64"  r="5" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="78"  cy="56"  r="5" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="148" cy="80"  r="5" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="95"  cy="90"  r="5" fill="#E76F51" fill-opacity="0.55"/>
-            <circle cx="42"  cy="92"  r="5" fill="#E76F51" fill-opacity="0.40"/>
-            <circle cx="175" cy="52"  r="5" fill="#E76F51" fill-opacity="0.40"/>
-            <circle cx="125" cy="60"  r="5" fill="#E76F51" fill-opacity="0.40"/>
-            <!-- Tee dot left -->
-            <circle cx="110" cy="152" r="7" fill="currentColor" fill-opacity="0.2"/>
-            <text x="110" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">unpredictable</text>
-            <!-- RIGHT: Consistent gentle fade — tight band curving right -->
-            <text x="330" y="34" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#5BBF85">Stock Fade</text>
-            <!-- Tight cone biased slightly right -->
-            <path d="M310,148 L270,48 L370,48 Z" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.32" stroke-width="1.5"/>
-            <!-- Tight clustered dots, shifted slightly right of center -->
-            <circle cx="316" cy="78"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="330" cy="64"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="322" cy="90"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="338" cy="72"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="328" cy="56"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="344" cy="84"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="314" cy="66"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <circle cx="336" cy="92"  r="5" fill="#5BBF85" fill-opacity="0.75"/>
-            <!-- Tee dot right -->
-            <circle cx="330" cy="152" r="7" fill="#5BBF85" fill-opacity="0.55"/>
-            <text x="330" y="170" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.65">predictable</text>
+            <line x1="220" y1="24" x2="220" y2="155" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
+            <!-- LEFT: No stock shape — wide scattered cone -->
+            <text x="110" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.45">No Pattern</text>
+            <path d="M110,145 L34,52 L186,52 Z" fill="#E76F51" fill-opacity="0.06" stroke="#E76F51" stroke-opacity="0.25" stroke-width="1.2"/>
+            <!-- Scattered dots spread across the wide cone -->
+            <circle cx="55"  cy="76"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="158" cy="68"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="76"  cy="60"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="146" cy="82"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="98"  cy="92"  r="5" fill="#E76F51" fill-opacity="0.55"/>
+            <circle cx="44"  cy="96"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <circle cx="172" cy="58"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <circle cx="122" cy="64"  r="5" fill="#E76F51" fill-opacity="0.40"/>
+            <!-- Tee drawn last so it sits on top -->
+            <circle cx="110" cy="148" r="7" fill="currentColor" fill-opacity="0.22"/>
+            <text x="110" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">unpredictable</text>
+            <!-- RIGHT: Consistent fade — narrow cone shifted right, tight dots within -->
+            <text x="332" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#5BBF85">Stock Fade</text>
+            <!-- Cone center at x=332, narrower (width 80px at top) and offset right to show fade -->
+            <path d="M320,145 L292,52 L372,52 Z" fill="#5BBF85" fill-opacity="0.09" stroke="#5BBF85" stroke-opacity="0.38" stroke-width="1.5"/>
+            <!-- Tight clustered dots — all clearly inside the cone, biased right of center -->
+            <circle cx="326" cy="80"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="338" cy="66"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="320" cy="92"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="344" cy="76"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="332" cy="60"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="348" cy="88"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="318" cy="70"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="340" cy="94"  r="5" fill="#5BBF85" fill-opacity="0.78"/>
+            <!-- Tee drawn last -->
+            <circle cx="320" cy="148" r="7" fill="#5BBF85" fill-opacity="0.6"/>
+            <text x="332" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.65">predictable</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>24 of 30 producing the intended shape. Dispersion pattern should be tight and predictable, not scattered.</div>
         </div>
