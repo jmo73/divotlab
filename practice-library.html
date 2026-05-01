@@ -2109,24 +2109,32 @@ html[data-theme="light"] .footer-bottom {
             <!-- 15-foot ring -->
             <ellipse cx="220" cy="88" rx="40" ry="27" fill="#5BBF85" fill-opacity="0.06" stroke="#5BBF85" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 3"/>
             <text x="264" y="84" font-family="JetBrains Mono, monospace" font-size="9" fill="#5BBF85" fill-opacity="0.7">15 ft</text>
-            <!-- Pin -->
+            <!-- Shot dots drawn before pin so pin appears on top -->
+            <!-- GREEN: inside 15ft ring (rx=40 ry=27) — all verified < 1 -->
+            <circle cx="210" cy="82" r="5" fill="#5BBF85" fill-opacity="0.82"/>
+            <circle cx="228" cy="94" r="5" fill="#5BBF85" fill-opacity="0.82"/>
+            <circle cx="215" cy="98" r="5" fill="#5BBF85" fill-opacity="0.82"/>
+            <circle cx="232" cy="80" r="5" fill="#5BBF85" fill-opacity="0.82"/>
+            <!-- GOLD: between 15ft and 30ft rings — verified outside 15ft (>1) and inside 30ft (<1) -->
+            <!-- (264,88): 15ft=1.21 ✓ 30ft=0.30 ✓ -->
+            <circle cx="264" cy="88" r="5" fill="#C9A84C" fill-opacity="0.75"/>
+            <!-- (176,88): 15ft=1.21 ✓ 30ft=0.30 ✓ -->
+            <circle cx="176" cy="88" r="5" fill="#C9A84C" fill-opacity="0.75"/>
+            <!-- (248,112): 15ft=1.32 ✓ 30ft=0.31 ✓ -->
+            <circle cx="248" cy="112" r="5" fill="#C9A84C" fill-opacity="0.75"/>
+            <!-- (200,116): 15ft=1.32 ✓ 30ft=0.34 ✓ -->
+            <circle cx="200" cy="116" r="5" fill="#C9A84C" fill-opacity="0.75"/>
+            <!-- RED: outside 30ft ring (rx=80 ry=53) — verified >1 -->
+            <!-- (136,88): 30ft=1.10 ✓ -->
+            <circle cx="136" cy="88" r="5" fill="#E76F51" fill-opacity="0.65"/>
+            <!-- (306,95): 30ft=1.12 ✓ -->
+            <circle cx="306" cy="95" r="5" fill="#E76F51" fill-opacity="0.65"/>
+            <!-- (220,152): 30ft=1.46 ✓ -->
+            <circle cx="220" cy="152" r="5" fill="#E76F51" fill-opacity="0.65"/>
+            <!-- Pin drawn last so it appears on top of all dots -->
             <circle cx="220" cy="88" r="4" fill="#C9A84C" fill-opacity="0.9"/>
-            <line x1="220" y1="84" x2="220" y2="68" stroke="#C9A84C" stroke-width="1.5" stroke-opacity="0.7"/>
-            <rect x="220" y="64" width="14" height="8" rx="1" fill="#C9A84C" fill-opacity="0.65"/>
-            <!-- Shot dots: inside 15ft = green (good) -->
-            <circle cx="210" cy="82" r="5" fill="#5BBF85" fill-opacity="0.8"/>
-            <circle cx="228" cy="94" r="5" fill="#5BBF85" fill-opacity="0.8"/>
-            <circle cx="215" cy="98" r="5" fill="#5BBF85" fill-opacity="0.8"/>
-            <circle cx="232" cy="80" r="5" fill="#5BBF85" fill-opacity="0.8"/>
-            <!-- Shot dots: 15–30ft = gold (ok) -->
-            <circle cx="248" cy="72" r="5" fill="#C9A84C" fill-opacity="0.7"/>
-            <circle cx="195" cy="100" r="5" fill="#C9A84C" fill-opacity="0.7"/>
-            <circle cx="256" cy="96" r="5" fill="#C9A84C" fill-opacity="0.7"/>
-            <circle cx="200" cy="70" r="5" fill="#C9A84C" fill-opacity="0.7"/>
-            <!-- Shot dots: outside 30ft = red (miss) -->
-            <circle cx="278" cy="80" r="5" fill="#E76F51" fill-opacity="0.6"/>
-            <circle cx="170" cy="88" r="5" fill="#E76F51" fill-opacity="0.6"/>
-            <circle cx="240" cy="130" r="5" fill="#E76F51" fill-opacity="0.6"/>
+            <line x1="220" y1="84" x2="220" y2="70" stroke="#C9A84C" stroke-width="1.5" stroke-opacity="0.7"/>
+            <rect x="220" y="66" width="14" height="8" rx="1" fill="#C9A84C" fill-opacity="0.65"/>
             <!-- Zone legend at bottom -->
             <circle cx="52" cy="165" r="5" fill="#5BBF85" fill-opacity="0.8"/>
             <text x="62" y="169" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.45">inside 15ft</text>
