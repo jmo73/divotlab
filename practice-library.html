@@ -452,8 +452,8 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rot
   width: 100%;
   max-width: 480px;
   height: auto;
+  margin: 0 auto 18px;
   border-radius: 8px;
-  margin-bottom: 18px;
   color: var(--white);
   border: 1px solid rgba(255,255,255,0.06);
 }
@@ -1310,31 +1310,32 @@ html[data-theme="light"] .footer-bottom {
           </div>
           <!-- Corridor Drill -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Corridor Drill: top-down range view">
+            <defs>
+              <marker id="ah-gold-up" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,10 5,0 10,10" fill="#C9A84C"/>
+              </marker>
+            </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · RANGE</text>
             <rect x="22" y="23" width="396" height="106" rx="5" fill="#5BBF85" fill-opacity="0.06"/>
-            <!-- Left stick -->
             <circle cx="102" cy="38" r="5" fill="#5BBF85"/>
             <line x1="102" y1="38" x2="102" y2="116" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
             <text x="80" y="80" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#5BBF85" fill-opacity="0.8">L</text>
-            <!-- Right stick -->
             <circle cx="338" cy="38" r="5" fill="#5BBF85"/>
             <line x1="338" y1="38" x2="338" y2="116" stroke="#5BBF85" stroke-width="3" stroke-linecap="round"/>
             <text x="360" y="80" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#5BBF85" fill-opacity="0.8">R</text>
-            <!-- Corridor shading -->
             <rect x="102" y="38" width="236" height="78" fill="#5BBF85" fill-opacity="0.09"/>
-            <text x="220" y="55" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.2">TARGET ZONE · 200 yds</text>
-            <!-- Width measurement — sits below corridor, above tee -->
+            <text x="220" y="56" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.2">TARGET ZONE · 200 yds</text>
+            <!-- Width measurement -->
             <line x1="102" y1="126" x2="338" y2="126" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
             <line x1="102" y1="121" x2="102" y2="131" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
             <line x1="338" y1="121" x2="338" y2="131" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
             <text x="220" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.3">20 yards wide</text>
-            <!-- Tee ball — offset left of center so it never intersects the label -->
+            <!-- Tee: offset from center so trajectory doesn't cross measurement -->
             <circle cx="170" cy="168" r="8" fill="#C9A84C" fill-opacity="0.85"/>
             <text x="190" y="172" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.3">TEE</text>
-            <!-- Trajectory arrow — uses polygon so line never shows through head -->
-            <line x1="170" y1="160" x2="170" y2="130" stroke="#C9A84C" stroke-width="1.8" stroke-dasharray="5 3"/>
-            <polygon points="163,130 177,130 170,120" fill="#C9A84C" fill-opacity="0.85"/>
+            <!-- marker-end with refX/refY at tip of the upward triangle -->
+            <line x1="170" y1="168" x2="170" y2="130" stroke="#C9A84C" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#ah-gold-up)"/>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>16 of 20 balls in a 20-yard corridor before narrowing. Scratch: 18/20 in a 12-yard corridor.</div>
         </div>
@@ -1369,10 +1370,21 @@ html[data-theme="light"] .footer-bottom {
           </div>
           <!-- Left-Right-Center Block -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Left Right Center: three targets with shot paths from tee">
+            <defs>
+              <marker id="ah-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5A8FA8"/>
+              </marker>
+              <marker id="ah-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5BBF85"/>
+              </marker>
+              <marker id="ah-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#C9A84C"/>
+              </marker>
+            </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <rect x="22" y="23" width="396" height="120" rx="5" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · 3 TARGETS</text>
-            <!-- LEFT target -->
+            <!-- LEFT target — label above so shot path doesn't cross it -->
             <text x="82" y="40" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5A8FA8" fill-opacity="0.8">Left</text>
             <circle cx="82" cy="58" r="12" fill="#5A8FA8" fill-opacity="0.78"/>
             <text x="82" y="63" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#FAFAFA">L</text>
@@ -1384,13 +1396,13 @@ html[data-theme="light"] .footer-bottom {
             <text x="358" y="40" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#C9A84C" fill-opacity="0.8">Right</text>
             <circle cx="358" cy="58" r="12" fill="#C9A84C" fill-opacity="0.8"/>
             <text x="358" y="63" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0A0A0A">R</text>
-            <!-- Shot paths — lines stop before target circles, polygons provide clean arrowheads -->
-            <line x1="220" y1="150" x2="98" y2="72" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3"/>
-            <polygon points="88,64 100,78 110,66" fill="#5A8FA8" fill-opacity="0.75"/>
-            <line x1="220" y1="150" x2="220" y2="66" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.55" stroke-dasharray="5 3"/>
-            <polygon points="213,62 227,62 220,50" fill="#5BBF85" fill-opacity="0.85"/>
-            <line x1="220" y1="150" x2="344" y2="72" stroke="#C9A84C" stroke-width="1.6" stroke-opacity="0.55" stroke-dasharray="5 3"/>
-            <polygon points="332,64 344,78 354,66" fill="#C9A84C" fill-opacity="0.8"/>
+            <!-- Shot paths: lines terminate at circle edge (not center), marker does the arrowhead -->
+            <!-- Left: endpoint = (82,58) + r=12 toward (220,150) → approx (92,65) -->
+            <line x1="220" y1="148" x2="92" y2="65" stroke="#5A8FA8" stroke-width="1.6" stroke-opacity="0.5" stroke-dasharray="6 4" marker-end="url(#ah-blue)"/>
+            <!-- Center: endpoint = (220,50+12)=62 -->
+            <line x1="220" y1="148" x2="220" y2="62" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.6" stroke-dasharray="6 4" marker-end="url(#ah-green)"/>
+            <!-- Right: endpoint = (358,58) + r=12 toward (220,150) → approx (348,65) -->
+            <line x1="220" y1="148" x2="348" y2="65" stroke="#C9A84C" stroke-width="1.6" stroke-opacity="0.6" stroke-dasharray="6 4" marker-end="url(#ah-gold)"/>
             <!-- Tee ball -->
             <circle cx="220" cy="154" r="8" fill="#C9A84C" fill-opacity="0.82"/>
             <text x="238" y="158" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.28">TEE · 5 balls each</text>
@@ -1494,9 +1506,9 @@ html[data-theme="light"] .footer-bottom {
           <!-- Feet Together Driver: stance comparison -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Feet Together vs Normal Stance: top-down comparison">
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
-            <!-- divider -->
+            <!-- divider — "vs" sits between ball bottom (y=58) and foot top (y=78) -->
             <line x1="220" y1="16" x2="220" y2="165" stroke="currentColor" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="5 4"/>
-            <text x="220" y="93" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.18">vs</text>
+            <text x="220" y="71" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.18">vs</text>
             <!-- LEFT: Normal Stance -->
             <text x="110" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.45">Normal Stance</text>
             <!-- faded ball: label ABOVE, ball below -->
@@ -1559,39 +1571,47 @@ html[data-theme="light"] .footer-bottom {
           </div>
           <!-- Tee Height Ladder: side view -->
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tee Height Ladder: low, normal, high with attack angle arrows">
+            <defs>
+              <marker id="aa-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#E76F51"/>
+              </marker>
+              <marker id="aa-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="currentColor" fill-opacity="0.5"/>
+              </marker>
+              <marker id="aa-grn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#5BBF85"/>
+              </marker>
+            </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">SIDE VIEW · ATTACK ANGLE</text>
             <line x1="24" y1="148" x2="416" y2="148" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.5"/>
-            <!-- LOW -->
+            <!-- LOW: ball at cy=127, tee peg, descending arrow from left -->
             <text x="90" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.5">Low</text>
             <text x="90" y="46" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.3">¼ inch</text>
             <line x1="90" y1="148" x2="90" y2="136" stroke="currentColor" stroke-opacity="0.38" stroke-width="2.2" stroke-linecap="round"/>
             <circle cx="90" cy="127" r="10" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.28" stroke-width="1.6"/>
-            <!-- Descending arrow — line stops 8px from ball edge, polygon arrowhead is clean -->
-            <line x1="46" y1="103" x2="76" y2="120" stroke="#E76F51" stroke-width="2" stroke-opacity="0.65"/>
-            <polygon points="71,116 83,123 76,130" fill="#E76F51" fill-opacity="0.85"/>
-            <text x="36" y="99" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#E76F51" fill-opacity="0.7">−2°</text>
-            <text x="90" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#E76F51" fill-opacity="0.5">shallow</text>
-            <!-- NORMAL -->
+            <!-- Arrow terminates at ball edge (90-10=80, angle toward ball); marker-end draws the head -->
+            <line x1="44" y1="102" x2="80" y2="123" stroke="#E76F51" stroke-width="2" stroke-opacity="0.7" marker-end="url(#aa-red)"/>
+            <text x="36" y="98" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#E76F51" fill-opacity="0.75">−2°</text>
+            <text x="90" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#E76F51" fill-opacity="0.55">shallow</text>
+            <!-- NORMAL: ball at cy=120, level arrow from left -->
             <text x="220" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="500" fill="currentColor" fill-opacity="0.5">Normal</text>
             <text x="220" y="46" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.3">¾ inch</text>
             <line x1="220" y1="148" x2="220" y2="130" stroke="currentColor" stroke-opacity="0.38" stroke-width="2.2" stroke-linecap="round"/>
             <circle cx="220" cy="120" r="10" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-opacity="0.28" stroke-width="1.6"/>
-            <!-- Level arrow — line stops before ball, polygon at end -->
-            <line x1="178" y1="120" x2="206" y2="120" stroke="currentColor" stroke-width="2" stroke-opacity="0.35"/>
-            <polygon points="206,115 218,120 206,125" fill="currentColor" fill-opacity="0.42"/>
-            <text x="162" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="currentColor" fill-opacity="0.38">0°</text>
-            <text x="220" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.3">level</text>
-            <!-- HIGH -->
+            <!-- Level: terminates at left edge of ball (220-10=210) -->
+            <line x1="172" y1="120" x2="210" y2="120" stroke="currentColor" stroke-width="2" stroke-opacity="0.38" marker-end="url(#aa-grey)"/>
+            <text x="158" y="116" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="currentColor" fill-opacity="0.4">0°</text>
+            <text x="220" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.32">level</text>
+            <!-- HIGH: ball at cy=108, longer tee, ascending arrow from left -->
             <text x="350" y="32" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#5BBF85">High</text>
             <text x="350" y="46" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.55">1½ inch</text>
-            <line x1="350" y1="148" x2="350" y2="120" stroke="#5BBF85" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="350" y1="148" x2="350" y2="118" stroke="#5BBF85" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round"/>
             <circle cx="350" cy="108" r="10" fill="#5BBF85" fill-opacity="0.14" stroke="#5BBF85" stroke-width="1.8"/>
-            <!-- Ascending arrow — line stops before ball, polygon at end -->
-            <line x1="310" y1="130" x2="337" y2="114" stroke="#5BBF85" stroke-width="2" stroke-opacity="0.72"/>
-            <polygon points="332,107 345,112 338,121" fill="#5BBF85" fill-opacity="0.9"/>
-            <text x="296" y="138" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#5BBF85" fill-opacity="0.72">+4°</text>
-            <text x="350" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.6">ascending</text>
+            <!-- Ascending: terminates at ball edge (350-7=343, going up-right to ball) -->
+            <line x1="308" y1="130" x2="342" y2="112" stroke="#5BBF85" stroke-width="2" stroke-opacity="0.78" marker-end="url(#aa-grn)"/>
+            <text x="294" y="138" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#5BBF85" fill-opacity="0.75">+4°</text>
+            <text x="350" y="167" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5BBF85" fill-opacity="0.62">ascending</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Solid contact on 5/6 at each height. Attack angle should shift +2 to +4 degrees from low to high tee.</div>
         </div>
@@ -1705,8 +1725,8 @@ html[data-theme="light"] .footer-bottom {
             <circle cx="234" cy="94" r="5" fill="#5BBF85" fill-opacity="0.62"/>
             <!-- Average carry line drawn AFTER dots (appears on top) -->
             <line x1="218" y1="26" x2="218" y2="125" stroke="#C9A84C" stroke-width="1.6" stroke-dasharray="5 3" stroke-opacity="0.7"/>
-            <!-- "avg carry" label anchored to RIGHT of line, ABOVE ellipse top (y=52) to never overlap dots -->
-            <text x="226" y="36" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#C9A84C" fill-opacity="0.8">avg carry</text>
+            <!-- "avg carry" sits at bottom of the line, right of it, below the ellipse (ellipse bottom y=112, label at y=128) -->
+            <text x="226" y="128" font-family="JetBrains Mono, monospace" font-size="9" fill="#C9A84C" fill-opacity="0.72">← avg carry</text>
             <!-- Outlier X — far left, label above cross -->
             <text x="62" y="46" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#E76F51" fill-opacity="0.5">outlier</text>
             <circle cx="62" cy="62" r="7" fill="#E76F51" fill-opacity="0.2" stroke="#E76F51" stroke-opacity="0.38" stroke-width="1.2" stroke-dasharray="2 2"/>
