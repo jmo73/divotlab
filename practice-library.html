@@ -83,21 +83,28 @@ nav {
 .nav-cta:hover { background: #236b4f; }
 .pro-pill { display: inline-block; font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: rgba(91,191,133,0.15); color: var(--green-light); padding: 2px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; }
 .nav-hamburger {
-  display: none; flex-direction: column; justify-content: center; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px; margin-left: auto; z-index: 101;
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  width: 40px; height: 40px; gap: 5px;
+  background: none; border: none; cursor: pointer; margin-left: auto; z-index: 101; position: relative;
 }
 .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform .3s cubic-bezier(.22,1,.36,1), opacity .2s ease; }
 nav.menu-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 nav.menu-open .nav-hamburger span:nth-child(2) { opacity: 0; }
 nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 .nav-drawer {
-  position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
-  background: rgba(10,10,10,0.97); border-bottom: 1px solid rgba(255,255,255,0.07);
-  padding: 20px 28px; flex-direction: column; align-items: center; gap: 4px;
+  position: fixed; top: 68px; left: 0; right: 0;
+  /* z-index must exceed filter-zone (110) so drawer appears above it when open */
+  z-index: 120;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 12px 0 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
   max-height: 0; overflow: hidden; opacity: 0;
-  transition: max-height .4s cubic-bezier(.22,1,.36,1), opacity .3s ease, background .35s;
+  pointer-events: none;
+  transition: max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
 }
-.nav-drawer.open { max-height: calc(100vh - 68px); overflow-y: auto; opacity: 1; }
+.nav-drawer.open { max-height: calc(100vh - 68px); overflow-y: auto; opacity: 1; pointer-events: auto; }
 .nav-drawer a { font-size: 15px; font-weight: 500; letter-spacing: .06em; color: rgba(250,250,250,.75); padding: 10px 0; width: 100%; text-align: center; transition: color .2s; }
 .nav-drawer a:hover { color: var(--white); }
 .nav-drawer .nav-cta { margin-top: 8px; width: auto; padding: 10px 32px; border-radius: 5px; }
