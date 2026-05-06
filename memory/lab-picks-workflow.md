@@ -18,6 +18,7 @@ type: project
 - Mix of bet types: Top 5, Top 10, Top 20, H2H matchups, small outright (sleeper only)
 - Aim for 4–5 main picks + 1 sleeper
 - Sleeper can be longer odds (+2000 to +4000) but must have a specific data case, limit 0.5 units
+- **Sleeper picks are NEVER counted in the season tracker hit rate or unit totals** — tracked separately for reference only
 - Prioritize picks with positive or near-zero EV vs. DataGolf model fair odds
 - When two sportsbooks differ significantly on the same bet, always note which book to use
 - Do not invent picks based on partial field data — flag that data shown is partial (screenshots only show visible rows)

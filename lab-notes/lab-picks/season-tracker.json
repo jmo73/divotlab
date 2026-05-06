@@ -1,33 +1,72 @@
 {
   "season": "2026",
-  "last_updated": "2026-04-30",
+  "last_updated": "2026-05-07",
   "tracking_started": "January 2026",
-  "total_picks": 24,
-  "results": {
-    "win":     { "picks": 0,  "hits": 0 },
-    "top_5":   { "picks": 3,  "hits": 2 },
-    "top_10":  { "picks": 10, "hits": 6 },
-    "top_20":  { "picks": 5,  "hits": 3 },
-    "matchup": { "picks": 6,  "hits": 2 }
+  "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7).",
+
+  "totals": {
+    "total_picks": 29,
+    "total_hits": 16,
+    "hit_rate_pct": 55.2,
+    "events_tracked": 7,
+    "by_type": {
+      "win":     { "picks": 0,  "hits": 0 },
+      "top_5":   { "picks": 3,  "hits": 2 },
+      "top_10":  { "picks": 12, "hits": 7 },
+      "top_20":  { "picks": 5,  "hits": 3 },
+      "matchup": { "picks": 8,  "hits": 4 }
+    },
+    "units": {
+      "wagered":      29.0,
+      "returned":     37.75,
+      "profit_loss":  8.75,
+      "roi_pct":      30.2
+    }
   },
-  "units": {
-    "wagered":      24.5,
-    "returned":     30.9,
-    "profit_loss":  6.4,
-    "roi_pct":      26.1
+
+  "mock_baseline": {
+    "note": "Events 1–6 (Jan–Apr 2026). Displayed as 13/24, +6.4u. Do not edit.",
+    "picks": 24,
+    "hits": 13,
+    "wagered": 24.0,
+    "profit_loss": 6.40
   },
-  "events_tracked": 6,
+
+  "sleeper_note": "Sleepers tracked separately — not included in hit rate or unit totals.",
+
   "weekly_picks": [
     {
       "event": "Cadillac Championship",
       "date": "2026-04-30",
+      "picks_count": 5,
+      "hits_count": 3,
+      "net_units": 2.35,
       "picks": [
-        { "player": "Young, Cameron",   "bet": "H2H over Scheffler", "book": "Bet365",     "odds": 225,  "type": "matchup", "units": 1.0, "result": null },
-        { "player": "Young, Cameron",   "bet": "Top 10",             "book": "DraftKings", "odds": 130,  "type": "top_10",  "units": 1.0, "result": null },
-        { "player": "Lee, Min Woo",     "bet": "Top 10",             "book": "DraftKings", "odds": 265,  "type": "top_10",  "units": 1.0, "result": null },
-        { "player": "Hojgaard, Nicolai","bet": "Top 10",             "book": "FanDuel",    "odds": 430,  "type": "top_10",  "units": 1.0, "result": null },
-        { "player": "Kim, Si Woo",      "bet": "H2H over Hovland",  "book": "Bet365",     "odds": -125, "type": "matchup", "units": 1.0, "result": null },
-        { "player": "Gotterup, Chris",  "bet": "Outright Win",       "book": "DraftKings", "odds": 2800, "type": "win",     "units": 0.5, "result": null, "sleeper": true }
+        { "player": "Young, Cameron",    "bet": "H2H over Scheffler", "book": "Bet365",     "odds": 225,  "type": "matchup", "units": 1.0, "result": "win",  "profit": 2.25 },
+        { "player": "Young, Cameron",    "bet": "Top 10",             "book": "DraftKings", "odds": 130,  "type": "top_10",  "units": 1.0, "result": "win",  "profit": 1.30 },
+        { "player": "Lee, Min Woo",      "bet": "Top 10",             "book": "DraftKings", "odds": 265,  "type": "top_10",  "units": 1.0, "result": "loss", "profit": -1.0, "note": "Finished T18" },
+        { "player": "Hojgaard, Nicolai", "bet": "Top 10",             "book": "FanDuel",    "odds": 430,  "type": "top_10",  "units": 1.0, "result": "loss", "profit": -1.0, "note": "Finished T23" },
+        { "player": "Kim, Si Woo",       "bet": "H2H over Hovland",   "book": "Bet365",     "odds": -125, "type": "matchup", "units": 1.0, "result": "win",  "profit": 0.80 }
+      ],
+      "sleepers": [
+        { "player": "Gotterup, Chris", "bet": "Outright Win", "odds": 2800, "result": "loss", "note": "Not counted in totals" }
+      ]
+    },
+    {
+      "event": "Truist Championship",
+      "date": "2026-05-07",
+      "picks_count": 5,
+      "hits_count": null,
+      "net_units": null,
+      "picks": [
+        { "player": "Kim, Si Woo",        "bet": "H2H over Cantlay",     "book": "Bet365", "odds": -125, "type": "matchup", "units": 1.0, "result": null, "profit": null },
+        { "player": "Spaun, J.J.",        "bet": "Top 20",               "book": "FanDuel","odds": 175,  "type": "top_20",  "units": 1.0, "result": null, "profit": null },
+        { "player": "Schauffele, Xander", "bet": "H2H over Fitzpatrick", "book": "Bovada", "odds": -125, "type": "matchup", "units": 1.0, "result": null, "profit": null },
+        { "player": "Lee, Min Woo",       "bet": "Top 10",               "book": "FanDuel","odds": 340,  "type": "top_10",  "units": 1.0, "result": null, "profit": null },
+        { "player": "Knapp, Jake",        "bet": "Top 10",               "book": "FanDuel","odds": 430,  "type": "top_10",  "units": 1.0, "result": null, "profit": null }
+      ],
+      "sleepers": [
+        { "player": "Gotterup, Chris", "bet": "Top 5", "odds": 900, "book": "FanDuel", "result": null, "note": "Not counted in totals" }
       ]
     }
   ]
