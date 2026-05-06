@@ -2996,8 +2996,8 @@ html[data-theme="light"] .footer-bottom {
             </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · PUTT LINE</text>
-            <!-- Green surface -->
-            <ellipse cx="220" cy="90" rx="82" ry="58" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.14" stroke-width="1.5"/>
+            <!-- Green surface — wider oval so labels stay inside -->
+            <ellipse cx="220" cy="90" rx="115" ry="58" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.14" stroke-width="1.5"/>
             <!-- Putt line: from ball through gate to hole -->
             <line x1="220" y1="140" x2="220" y2="48" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.5" stroke-dasharray="6 4" marker-end="url(#putt-arr)"/>
             <!-- Hole with flag at top -->
@@ -3292,7 +3292,7 @@ html[data-theme="light"] .footer-bottom {
             <!-- 9: (165,90) -->
             <circle cx="165" cy="90" r="8" fill="#5BBF85" fill-opacity="0.82"/>
             <text x="165" y="94" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="currentColor" fill-opacity="0.55">9</text>
-            <text x="220" y="166" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">goal: finish inside 18 inches · making it is a bonus</text>
+            <text x="220" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">goal: finish inside 18 inches · making it is a bonus</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>15 of 20 within 18 inches. Below 10 means pace control is the primary issue — prioritize Lag Ladder before this drill.</div>
         </div>
@@ -3338,10 +3338,9 @@ html[data-theme="light"] .footer-bottom {
             <!-- Curved ball path: M128,140 Q230,52 310,60
                  Apex at t=0.5: x=0.25*128+0.5*230+0.25*310=32+115+77.5=224.5, y=0.25*140+0.5*52+0.25*60=35+26+15=76 -->
             <path d="M128,140 Q230,52 310,60" stroke="#5BBF85" stroke-width="2" stroke-opacity="0.6" stroke-dasharray="6 4" fill="none"/>
-            <!-- Apex marker tee at approximately (222,76) -->
-            <line x1="222" y1="80" x2="222" y2="66" stroke="currentColor" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="222" cy="63" r="4" fill="currentColor" fill-opacity="0.42"/>
-            <text x="236" y="64" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.5">APEX</text>
+            <!-- Apex marker: circle only, no tee line -->
+            <circle cx="222" cy="72" r="5" fill="currentColor" fill-opacity="0.42"/>
+            <text x="236" y="76" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.5">APEX</text>
             <!-- Aim line: where you aim the ball to start the break (toward apex) -->
             <line x1="128" y1="134" x2="215" y2="70" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2" stroke-dasharray="3 4"/>
             <text x="148" y="100" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">aim line</text>
@@ -3385,29 +3384,27 @@ html[data-theme="light"] .footer-bottom {
           <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Eyes-Closed Putting: three putt outcomes show face and path bias without visual compensation">
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">RESULT = TRUE STROKE PATH</text>
-            <!-- Green surface -->
-            <ellipse cx="220" cy="68" rx="88" ry="52" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.13" stroke-width="1.5"/>
-            <!-- Three outcome zones at the top -->
-            <!-- LEFT miss zone (face/path left) -->
-            <circle cx="155" cy="52" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
-            <text x="155" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path left</text>
-            <text x="155" y="48" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face closed</text>
-            <!-- CENTER (hole — correct) -->
-            <circle cx="220" cy="46" r="5" fill="currentColor" fill-opacity="0.38"/>
-            <line x1="220" y1="41" x2="220" y2="28" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.5" stroke-linecap="round"/>
-            <polygon points="220,28 231,33 220,38" fill="#5BBF85" fill-opacity="0.7"/>
-            <text x="220" y="24" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.7">on line ✓</text>
-            <!-- RIGHT miss zone (face/path right) -->
-            <circle cx="285" cy="52" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
-            <text x="285" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path right</text>
-            <text x="285" y="48" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face open</text>
-            <!-- Three putt lines from ball to each outcome (drawn before ball) -->
-            <line x1="220" y1="140" x2="162" y2="62" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
-            <line x1="220" y1="140" x2="220" y2="54" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.65" stroke-dasharray="5 3" fill="none"/>
-            <line x1="220" y1="140" x2="278" y2="62" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
-            <!-- Ball (drawn last) with eyes-closed label -->
+            <!-- Green surface — shifted down 15px to clear title -->
+            <ellipse cx="220" cy="83" rx="88" ry="52" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.13" stroke-width="1.5"/>
+            <!-- LEFT miss zone -->
+            <circle cx="155" cy="67" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="155" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path left</text>
+            <text x="155" y="63" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face closed</text>
+            <!-- CENTER hole -->
+            <circle cx="220" cy="61" r="5" fill="currentColor" fill-opacity="0.38"/>
+            <line x1="220" y1="56" x2="220" y2="43" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="220,43 231,48 220,53" fill="#5BBF85" fill-opacity="0.7"/>
+            <text x="220" y="39" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.7">on line ✓</text>
+            <!-- RIGHT miss zone -->
+            <circle cx="285" cy="67" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="285" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path right</text>
+            <text x="285" y="63" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face open</text>
+            <!-- Putt lines from ball to each outcome -->
+            <line x1="220" y1="140" x2="162" y2="77" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
+            <line x1="220" y1="140" x2="220" y2="69" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.65" stroke-dasharray="5 3" fill="none"/>
+            <line x1="220" y1="140" x2="278" y2="77" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
+            <!-- Ball drawn last -->
             <circle cx="220" cy="143" r="7" fill="#5BBF85" fill-opacity="0.8"/>
-            <!-- Eyes closed indicator above ball -->
             <text x="220" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.28">eyes closed</text>
             <text x="220" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">result reveals your true tendencies without visual compensation</text>
           </svg>
@@ -3539,7 +3536,45 @@ html[data-theme="light"] .footer-bottom {
               <li>Identify one specific habit to change before the next round</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Decision quality scorecard ]</text></svg>
+          <!-- Round Audit: decision quality trend line over 10 rounds -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Round Audit: decision quality score trending upward over 10 rounds with benchmark line">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">DECISION QUALITY · 10 ROUNDS</text>
+            <!-- Y axis labels -->
+            <text x="20" y="42" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.28">3</text>
+            <text x="20" y="92" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.28">2</text>
+            <text x="20" y="142" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.28">1</text>
+            <text x="4" y="92" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7.5" fill="currentColor" fill-opacity="0.2" transform="rotate(-90,4,92)">score</text>
+            <!-- Gridlines -->
+            <line x1="28" y1="38" x2="416" y2="38" stroke="currentColor" stroke-opacity="0.06" stroke-width="1"/>
+            <line x1="28" y1="88" x2="416" y2="88" stroke="currentColor" stroke-opacity="0.06" stroke-width="1"/>
+            <line x1="28" y1="138" x2="416" y2="138" stroke="currentColor" stroke-opacity="0.12" stroke-width="1.2"/>
+            <!-- Benchmark line at 2.2 → y=78 -->
+            <line x1="28" y1="78" x2="416" y2="78" stroke="#9B72CF" stroke-opacity="0.35" stroke-width="1.2" stroke-dasharray="5 4"/>
+            <text x="420" y="82" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#9B72CF" fill-opacity="0.6">2.2</text>
+            <!-- Data points (10 rounds) — upward trend: 1.8,2.0,1.9,2.1,2.0,2.2,2.3,2.1,2.4,2.5
+                 y = 138 - (score-1)*50. x values: 48,88,128,168,208,248,288,328,368,408 -->
+            <!-- Trend line connecting dots (drawn before dots) -->
+            <polyline points="48,98 88,88 128,93 168,83 208,88 248,78 288,73 328,83 368,68 408,63"
+              stroke="#9B72CF" stroke-width="1.5" stroke-opacity="0.45" fill="none"/>
+            <!-- Data dots -->
+            <circle cx="48"  cy="98" r="4" fill="#9B72CF" fill-opacity="0.6"/>
+            <circle cx="88"  cy="88" r="4" fill="#9B72CF" fill-opacity="0.6"/>
+            <circle cx="128" cy="93" r="4" fill="#9B72CF" fill-opacity="0.6"/>
+            <circle cx="168" cy="83" r="4" fill="#9B72CF" fill-opacity="0.6"/>
+            <circle cx="208" cy="88" r="4" fill="#9B72CF" fill-opacity="0.6"/>
+            <circle cx="248" cy="78" r="5" fill="#9B72CF" fill-opacity="0.75"/>
+            <circle cx="288" cy="73" r="5" fill="#9B72CF" fill-opacity="0.78"/>
+            <circle cx="328" cy="83" r="4" fill="#9B72CF" fill-opacity="0.65"/>
+            <circle cx="368" cy="68" r="5" fill="#9B72CF" fill-opacity="0.82"/>
+            <circle cx="408" cy="63" r="5" fill="#9B72CF" fill-opacity="0.88"/>
+            <!-- X axis labels -->
+            <text x="28"  y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.25">1</text>
+            <text x="228" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.25">5</text>
+            <text x="408" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.25">10</text>
+            <text x="220" y="162" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.2">rounds</text>
+            <text x="220" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">score decisions 1–3 · target: 2.2 avg over 10 rounds</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Average decision score above 2.2 over 10 rounds. Consistent 1s in the same situation reveal your most important mental pattern to fix.</div>
         </div>
       </div>
@@ -3569,7 +3604,34 @@ html[data-theme="light"] .footer-bottom {
               <li>During the round, execute the plan without re-evaluating unless something unexpected changes</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Hole mapping template ]</text></svg>
+          <!-- Pre-Round Hole Mapping: top-down hole with aim, miss-ok, and avoid zones -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pre-Round Hole Mapping: top-down hole template showing aim zone, safe miss side, and anti-target">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">HOLE MAPPING TEMPLATE</text>
+            <!-- Green at top -->
+            <ellipse cx="220" cy="46" rx="36" ry="24" fill="#5BBF85" fill-opacity="0.14" stroke="#5BBF85" stroke-opacity="0.3" stroke-width="1.5"/>
+            <!-- Pin -->
+            <circle cx="220" cy="46" r="4" fill="currentColor" fill-opacity="0.35"/>
+            <line x1="220" y1="42" x2="220" y2="30" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="220,30 231,35 220,40" fill="#9B72CF" fill-opacity="0.7"/>
+            <!-- Fairway rectangle -->
+            <rect x="195" y="70" width="50" height="80" rx="4" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <!-- Left rough — safe miss zone -->
+            <rect x="110" y="70" width="82" height="80" rx="4" fill="#5BBF85" fill-opacity="0.05" stroke="#5BBF85" stroke-opacity="0.18" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="151" y="105" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#5BBF85" fill-opacity="0.65">MISS</text>
+            <text x="151" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.5">OK here</text>
+            <!-- Right rough — anti-target / avoid zone -->
+            <rect x="248" y="70" width="82" height="80" rx="4" fill="#E76F51" fill-opacity="0.05" stroke="#E76F51" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="289" y="100" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" fill="#E76F51" fill-opacity="0.6">AVOID</text>
+            <text x="289" y="112" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.45">anti-target</text>
+            <!-- AIM label with arrow in fairway -->
+            <text x="220" y="100" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.75">AIM</text>
+            <line x1="220" y1="103" x2="220" y2="68" stroke="#9B72CF" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="4 3" marker-end="url(#sg-arr)"/>
+            <!-- Tee box -->
+            <rect x="200" y="154" width="40" height="18" rx="3" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.2"/>
+            <text x="220" y="166" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">TEE</text>
+            <text x="220" y="178" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">plan each hole · know your miss · execute without re-reading</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Stick to your pre-planned decision on 14+ of 18 holes. Track how often deviation from the plan leads to higher scores.</div>
         </div>
       </div>
@@ -3600,7 +3662,48 @@ html[data-theme="light"] .footer-bottom {
               <li>Repeat 10 times per session until the protocol is automatic under pressure</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Reset protocol sequence ]</text></svg>
+          <!-- One-Shot Reset Protocol: 4-step horizontal flow -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="One-Shot Reset Protocol: 4-step sequence — react, breathe, trigger word, full routine">
+            <defs>
+              <marker id="rst-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                <polygon points="0,0 10,5 0,10" fill="#9B72CF" fill-opacity="0.5"/>
+              </marker>
+            </defs>
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">4-STEP RESET · AFTER EVERY BAD SHOT</text>
+            <!-- 4 boxes. Width=82, gap=14. Left edges: 22, 118, 214, 310. Centers: 63, 159, 255, 351 -->
+            <!-- Step 1: React -->
+            <rect x="22" y="42" width="82" height="72" rx="8" fill="#9B72CF" fill-opacity="0.08" stroke="#9B72CF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <text x="63" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.8">①</text>
+            <text x="63" y="76" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.65">React</text>
+            <text x="63" y="89" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.32">5 seconds</text>
+            <text x="63" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">let it out</text>
+            <!-- Arrow 1→2 -->
+            <line x1="106" y1="78" x2="116" y2="78" stroke="#9B72CF" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#rst-arr)"/>
+            <!-- Step 2: Breathe -->
+            <rect x="118" y="42" width="82" height="72" rx="8" fill="#9B72CF" fill-opacity="0.08" stroke="#9B72CF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <text x="159" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.8">②</text>
+            <text x="159" y="76" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.65">Breathe</text>
+            <text x="159" y="89" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.32">deep breath</text>
+            <text x="159" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">shake it off</text>
+            <!-- Arrow 2→3 -->
+            <line x1="202" y1="78" x2="212" y2="78" stroke="#9B72CF" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#rst-arr)"/>
+            <!-- Step 3: Trigger -->
+            <rect x="214" y="42" width="82" height="72" rx="8" fill="#9B72CF" fill-opacity="0.08" stroke="#9B72CF" stroke-opacity="0.3" stroke-width="1.5"/>
+            <text x="255" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.8">③</text>
+            <text x="255" y="76" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.65">Trigger</text>
+            <text x="255" y="89" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#9B72CF" fill-opacity="0.6">"next shot"</text>
+            <text x="255" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">say it aloud</text>
+            <!-- Arrow 3→4 -->
+            <line x1="298" y1="78" x2="308" y2="78" stroke="#9B72CF" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#rst-arr)"/>
+            <!-- Step 4: Routine -->
+            <rect x="310" y="42" width="108" height="72" rx="8" fill="#9B72CF" fill-opacity="0.12" stroke="#9B72CF" stroke-opacity="0.4" stroke-width="2"/>
+            <text x="364" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.85">④</text>
+            <text x="364" y="76" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#9B72CF" fill-opacity="0.85">Routine</text>
+            <text x="364" y="89" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.35">full pre-shot</text>
+            <text x="364" y="100" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">as if nothing happened</text>
+            <text x="220" y="132" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">practice on the range · run the sequence after every deliberate mishit</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Shot quality after a reset equals your baseline quality on 8 of 10 attempts. The protocol fails if you're still thinking about the previous shot during the next swing.</div>
         </div>
       </div>
@@ -3631,7 +3734,34 @@ html[data-theme="light"] .footer-bottom {
               <li>Track your "pressure score" vs. your normal practice round score</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Pressure vs. performance chart ]</text></svg>
+          <!-- Pressure Simulation: two-bar comparison practice vs pressure performance -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pressure Simulation: bar chart comparing normal practice round vs pressure simulation score gap">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">PRACTICE VS PRESSURE GAP</text>
+            <!-- Baseline -->
+            <line x1="60" y1="138" x2="380" y2="138" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2"/>
+            <!-- LEFT: Practice bar (tall = high performance, purple) -->
+            <!-- Bar: x=90-185, height=88px → top at y=50. Represents 88-score practice average -->
+            <rect x="90" y="50" width="95" height="88" rx="6" fill="#9B72CF" fill-opacity="0.55"/>
+            <text x="137" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#9B72CF" fill-opacity="0.75">Practice</text>
+            <text x="137" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">avg score</text>
+            <!-- RIGHT: Pressure bar (shorter = higher score = worse, faded) -->
+            <!-- Bar: x=255-350, height=60px → top at y=78. Represents pressure round ~4 shots higher -->
+            <rect x="255" y="78" width="95" height="60" rx="6" fill="#9B72CF" fill-opacity="0.28"/>
+            <text x="302" y="70" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="currentColor" fill-opacity="0.42">Pressure</text>
+            <text x="302" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.38">pressure round</text>
+            <!-- Gap indicator between bar tops -->
+            <line x1="195" y1="50" x2="248" y2="50" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>
+            <line x1="195" y1="78" x2="248" y2="78" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>
+            <line x1="221" y1="52" x2="221" y2="76" stroke="#E76F51" stroke-width="1.5" stroke-opacity="0.55"/>
+            <line x1="216" y1="52" x2="226" y2="52" stroke="#E76F51" stroke-opacity="0.5" stroke-width="1.2"/>
+            <line x1="216" y1="76" x2="226" y2="76" stroke="#E76F51" stroke-opacity="0.5" stroke-width="1.2"/>
+            <text x="236" y="66" font-family="JetBrains Mono, monospace" font-size="9" fill="#E76F51" fill-opacity="0.62">gap</text>
+            <!-- Target: "within 3 shots" dashed guideline -->
+            <line x1="255" y1="56" x2="380" y2="56" stroke="#9B72CF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="384" y="60" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#9B72CF" fill-opacity="0.45">target</text>
+            <text x="220" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">gap within 3 shots = mental game is working · bigger gap = next priority</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Pressure round score within 3 shots of your normal round average. Greater gap means mental game is the primary area of improvement.</div>
         </div>
       </div>
