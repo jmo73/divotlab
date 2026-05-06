@@ -3013,11 +3013,11 @@ html[data-theme="light"] .footer-bottom {
             <circle cx="235" cy="100" r="4" fill="currentColor" fill-opacity="0.42"/>
             <!-- Gate label between tees -->
             <text x="220" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.3">GATE</text>
-            <!-- Failure labels beside each tee -->
-            <text x="182" y="101" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.55">face open</text>
-            <text x="250" y="101" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.55">face closed</text>
-            <!-- Ball at bottom drawn last -->
-            <circle cx="220" cy="143" r="8" fill="#5BBF85" fill-opacity="0.8"/>
+            <!-- Failure labels: left tee = face closed (ball goes left), right tee = face open (ball goes right) -->
+            <text x="182" y="101" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.55">face closed</text>
+            <text x="250" y="101" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.55">face open</text>
+            <!-- Ball at bottom drawn last — slightly smaller -->
+            <circle cx="220" cy="143" r="6" fill="#5BBF85" fill-opacity="0.8"/>
             <text x="220" y="165" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">pass cleanly through the gate · 18 of 20 is the benchmark</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>18 of 20 through the gate cleanly from 6 feet. Below 14 means path or face angle needs immediate attention.</div>
@@ -3090,9 +3090,9 @@ html[data-theme="light"] .footer-bottom {
             <text x="332" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.55">8</text>
             <text x="374" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.3">9</text>
             <text x="416" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="currentColor" fill-opacity="0.3">10</text>
-            <!-- Fatigue zone annotation above bars 7-8 -->
-            <text x="311" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">fatigue</text>
-            <text x="311" y="86" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">zone</text>
+            <!-- Fatigue zone annotation — above bars 7-8, moved up -->
+            <text x="311" y="66" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">fatigue</text>
+            <text x="311" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">zone</text>
             <text x="220" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">group of 10 putts · misses cluster when fatigue sets in</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>85/100 for high HC. Mid: 90/100. Low/scratch: 95/100. Track over time — consistency matters more than one good session.</div>
@@ -3158,7 +3158,7 @@ html[data-theme="light"] .footer-bottom {
             <circle cx="183" cy="129" r="8" fill="#5BBF85" fill-opacity="0.82"/><text x="183" y="133" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="currentColor" fill-opacity="0.55">6</text>
             <circle cx="168" cy="92"  r="8" fill="#5BBF85" fill-opacity="0.82"/><text x="168" y="96"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="currentColor" fill-opacity="0.55">7</text>
             <circle cx="183" cy="55"  r="8" fill="#5BBF85" fill-opacity="0.82"/><text x="183" y="59"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="currentColor" fill-opacity="0.55">8</text>
-            <text x="220" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">all 8 must drop consecutively · miss any → restart from 1</text>
+            <text x="220" y="174" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">all 8 must drop consecutively · miss any → restart from 1</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Complete the full circle without a restart. Progress to 5 feet when you can do it twice in one session.</div>
         </div>
@@ -3198,30 +3198,30 @@ html[data-theme="light"] .footer-bottom {
             </defs>
             <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
             <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · LAG DISTANCE ZONES</text>
-            <!-- Green at top center -->
-            <ellipse cx="220" cy="50" rx="52" ry="36" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.16" stroke-width="1.5"/>
-            <!-- 3-foot target zone (dashed) around hole -->
-            <circle cx="220" cy="50" r="16" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.4" stroke-width="1.2" stroke-dasharray="4 3"/>
-            <text x="244" y="46" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.65">3 ft</text>
-            <!-- Hole with flag at center of green -->
-            <circle cx="220" cy="50" r="4" fill="currentColor" fill-opacity="0.35"/>
-            <line x1="220" y1="46" x2="220" y2="33" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
-            <polygon points="220,33 231,38 220,43" fill="#5BBF85" fill-opacity="0.7"/>
-            <!-- Putt lines drawn before balls -->
-            <!-- 15 ft → ball at cy=100 -->
-            <line x1="220" y1="92" x2="220" y2="64" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.5" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
-            <!-- 30 ft → ball at cy=125 -->
-            <line x1="220" y1="117" x2="220" y2="64" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.6" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
-            <!-- 50 ft → ball at cy=145 -->
-            <line x1="220" y1="137" x2="220" y2="64" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.72" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
-            <!-- Balls (drawn after lines) -->
-            <circle cx="220" cy="96"  r="8" fill="#5BBF85" fill-opacity="0.72"/>
-            <circle cx="220" cy="121" r="8" fill="#5BBF85" fill-opacity="0.78"/>
-            <circle cx="220" cy="141" r="8" fill="#5BBF85" fill-opacity="0.85"/>
-            <!-- Distance labels — beside each ball to the right -->
-            <text x="238" y="100" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.42">15 ft</text>
-            <text x="238" y="125" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.42">30 ft</text>
-            <text x="238" y="145" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.7">50 ft</text>
+            <!-- Green at top center — cy=66 keeps top edge at y=30, clear of title at y=16 -->
+            <ellipse cx="220" cy="66" rx="52" ry="36" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.16" stroke-width="1.5"/>
+            <!-- 3-foot target zone (dashed) -->
+            <circle cx="220" cy="66" r="16" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.4" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <text x="244" y="62" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.65">3 ft</text>
+            <!-- Hole with flag -->
+            <circle cx="220" cy="66" r="4" fill="currentColor" fill-opacity="0.35"/>
+            <line x1="220" y1="62" x2="220" y2="48" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="220,48 231,53 220,58" fill="#5BBF85" fill-opacity="0.7"/>
+            <!-- Putt lines drawn before balls; all terminate at y=80 (bottom of 3ft zone) -->
+            <!-- 15 ft ball at cy=102 -->
+            <line x1="220" y1="94" x2="220" y2="80" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.5" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
+            <!-- 30 ft ball at cy=116 (moved up) -->
+            <line x1="220" y1="108" x2="220" y2="80" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.6" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
+            <!-- 50 ft ball at cy=138 -->
+            <line x1="220" y1="130" x2="220" y2="80" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.72" stroke-dasharray="5 3" marker-end="url(#lag-arr)"/>
+            <!-- Balls drawn after lines -->
+            <circle cx="220" cy="98"  r="8" fill="#5BBF85" fill-opacity="0.72"/>
+            <circle cx="220" cy="113" r="8" fill="#5BBF85" fill-opacity="0.78"/>
+            <circle cx="220" cy="135" r="8" fill="#5BBF85" fill-opacity="0.85"/>
+            <!-- Distance labels beside each ball -->
+            <text x="238" y="102" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.42">15 ft</text>
+            <text x="238" y="117" font-family="JetBrains Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.42">30 ft</text>
+            <text x="238" y="139" font-family="JetBrains Mono, monospace" font-size="10" fill="#5BBF85" fill-opacity="0.7">50 ft</text>
             <text x="220" y="165" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">5 putts from each · finish inside 3-foot zone · 12 of 15 is benchmark</text>
           </svg>
           <div class="drill-benchmark"><span>Benchmark</span>12 of 15 inside 3 feet. High HC acceptable start: 9/15. Track your worst zone each session.</div>
@@ -3269,7 +3269,7 @@ html[data-theme="light"] .footer-bottom {
             <!-- Hole at center with flag -->
             <circle cx="220" cy="90" r="4" fill="currentColor" fill-opacity="0.35"/>
             <line x1="220" y1="86" x2="220" y2="72" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.5" stroke-linecap="round"/>
-            <polygon points="220,72 231,77 220,82" fill="#5BBF85" fill-opacity="0.7"/>
+            <polygon points="220,72 231,77 220,82" fill="#C9A84C" fill-opacity="0.82"/>
             <!-- 4 putt lines drawn before balls: r=55, positions at (220,35),(275,90),(220,145),(165,90) -->
             <!-- 12 o'clock (220,35) → hole (220,90): line y1=43 to y2=79 -->
             <line x1="220" y1="43" x2="220" y2="79" stroke="#5BBF85" stroke-width="1.6" stroke-opacity="0.48" stroke-dasharray="5 3" marker-end="url(#pace-arr)"/>
@@ -3323,7 +3323,35 @@ html[data-theme="light"] .footer-bottom {
               <li>Repeat with a different putt; over time, compare your reads to reality</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Break arc and apex diagram ]</text></svg>
+          <!-- Breaking Putt Mapping: top-down curved putt line with apex and entry angle -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Breaking Putt Mapping: curved putt path showing ball arc, apex tee mark, and entry angle into hole">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">TOP DOWN · READ BEFORE YOU PUTT</text>
+            <!-- Sloped green surface (tilt implied by slope direction) -->
+            <ellipse cx="240" cy="88" rx="100" ry="66" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.14" stroke-width="1.5"/>
+            <!-- Hole with flag at upper-right area -->
+            <circle cx="310" cy="60" r="5" fill="currentColor" fill-opacity="0.38"/>
+            <line x1="310" y1="55" x2="310" y2="40" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="310,40 322,45 310,50" fill="#5BBF85" fill-opacity="0.7"/>
+            <!-- Ball position at lower-left -->
+            <circle cx="128" cy="140" r="7" fill="#5BBF85" fill-opacity="0.82"/>
+            <!-- Curved ball path: M128,140 Q230,52 310,60
+                 Apex at t=0.5: x=0.25*128+0.5*230+0.25*310=32+115+77.5=224.5, y=0.25*140+0.5*52+0.25*60=35+26+15=76 -->
+            <path d="M128,140 Q230,52 310,60" stroke="#5BBF85" stroke-width="2" stroke-opacity="0.6" stroke-dasharray="6 4" fill="none"/>
+            <!-- Apex marker tee at approximately (222,76) -->
+            <line x1="222" y1="80" x2="222" y2="66" stroke="currentColor" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="222" cy="63" r="4" fill="currentColor" fill-opacity="0.42"/>
+            <text x="236" y="64" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.5">APEX</text>
+            <!-- Aim line: where you aim the ball to start the break (toward apex) -->
+            <line x1="128" y1="134" x2="215" y2="70" stroke="currentColor" stroke-opacity="0.18" stroke-width="1.2" stroke-dasharray="3 4"/>
+            <text x="148" y="100" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">aim line</text>
+            <!-- Break arrow showing ball curves to hole after apex -->
+            <text x="280" y="82" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">entry</text>
+            <text x="280" y="92" font-family="JetBrains Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.28">angle</text>
+            <!-- Ball label -->
+            <text x="110" y="152" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="middle" fill="currentColor" fill-opacity="0.3">BALL</text>
+            <text x="220" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">mark apex with a tee · commit to the read before hitting</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>Read matches actual break within 1 ball-width on 10 of 15 attempts. Consistent misreads in one direction reveal a systematic bias to correct.</div>
         </div>
       </div>
@@ -3353,7 +3381,36 @@ html[data-theme="light"] .footer-bottom {
               <li>Open eyes only after you hear the result — then assess where the ball finished and why</li>
             </ol>
           </div>
-          <svg class="diagram-placeholder" viewBox="0 0 400 160"><rect width="400" height="160" fill="none"/><text x="200" y="85" text-anchor="middle" fill="#888880" font-family="JetBrains Mono, monospace" font-size="12">[ Stroke path without visual compensation ]</text></svg>
+          <!-- Eyes-Closed Putting: 3 possible outcomes reveal true stroke path and face angle -->
+          <svg class="drill-diagram" viewBox="0 0 440 185" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Eyes-Closed Putting: three putt outcomes show face and path bias without visual compensation">
+            <rect width="440" height="185" rx="8" fill="currentColor" fill-opacity="0.03"/>
+            <text x="220" y="16" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="600" letter-spacing="0.13em" fill="currentColor" fill-opacity="0.27">RESULT = TRUE STROKE PATH</text>
+            <!-- Green surface -->
+            <ellipse cx="220" cy="68" rx="88" ry="52" fill="#5BBF85" fill-opacity="0.07" stroke="#5BBF85" stroke-opacity="0.13" stroke-width="1.5"/>
+            <!-- Three outcome zones at the top -->
+            <!-- LEFT miss zone (face/path left) -->
+            <circle cx="155" cy="52" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="155" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path left</text>
+            <text x="155" y="48" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face closed</text>
+            <!-- CENTER (hole — correct) -->
+            <circle cx="220" cy="46" r="5" fill="currentColor" fill-opacity="0.38"/>
+            <line x1="220" y1="41" x2="220" y2="28" stroke="currentColor" stroke-opacity="0.42" stroke-width="1.5" stroke-linecap="round"/>
+            <polygon points="220,28 231,33 220,38" fill="#5BBF85" fill-opacity="0.7"/>
+            <text x="220" y="24" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#5BBF85" fill-opacity="0.7">on line ✓</text>
+            <!-- RIGHT miss zone (face/path right) -->
+            <circle cx="285" cy="52" r="12" fill="#E76F51" fill-opacity="0.08" stroke="#E76F51" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="285" y="38" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#E76F51" fill-opacity="0.6">path right</text>
+            <text x="285" y="48" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#E76F51" fill-opacity="0.5">face open</text>
+            <!-- Three putt lines from ball to each outcome (drawn before ball) -->
+            <line x1="220" y1="140" x2="162" y2="62" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
+            <line x1="220" y1="140" x2="220" y2="54" stroke="#5BBF85" stroke-width="1.8" stroke-opacity="0.65" stroke-dasharray="5 3" fill="none"/>
+            <line x1="220" y1="140" x2="278" y2="62" stroke="#E76F51" stroke-width="1.6" stroke-opacity="0.45" stroke-dasharray="5 3" fill="none"/>
+            <!-- Ball (drawn last) with eyes-closed label -->
+            <circle cx="220" cy="143" r="7" fill="#5BBF85" fill-opacity="0.8"/>
+            <!-- Eyes closed indicator above ball -->
+            <text x="220" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.28">eyes closed</text>
+            <text x="220" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="currentColor" fill-opacity="0.28">result reveals your true tendencies without visual compensation</text>
+          </svg>
           <div class="drill-benchmark"><span>Benchmark</span>8 of 15 within 12 inches of the hole. Consistent misses in one direction reveal path or face bias. Compare to eyes-open results for the same putt.</div>
         </div>
       </div>
