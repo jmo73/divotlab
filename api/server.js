@@ -32,26 +32,62 @@ const LAB_PICKS_PASSWORD = process.env.LAB_PICKS_PASSWORD || 'lab2026picks';
 // Weights sum to 1.0. These represent editorial judgment about
 // what skills matter most at each venue.
 // ============================================
+// ============================================
+// COURSE WEIGHTS — what each venue rewards
+// Weights sum to 1.0. Derived from historical
+// top-10 SG patterns + venue characteristics.
+// ott = off-the-tee, app = approach,
+// arg = around the green, putt = putting
+// ============================================
 const COURSE_WEIGHTS = {
-  // Majors
-  'masters tournament': { ott: 0.25, app: 0.30, arg: 0.25, putt: 0.20, notes: 'Length + approach to slopes, elite short game around Augusta greens' },
-  'pga championship': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Venue rotates — balanced profile, adjust per year' },
-  'u.s. open': { ott: 0.20, app: 0.35, arg: 0.25, putt: 0.20, notes: 'Accuracy premium, brutal rough punishes misses' },
-  'the open championship': { ott: 0.30, app: 0.25, arg: 0.25, putt: 0.20, notes: 'Links — driving lines and creativity critical' },
-  // Signature Events
-  'the players championship': { ott: 0.15, app: 0.40, arg: 0.20, putt: 0.25, notes: 'TPC Sawgrass — iron precision, water on 6 holes, Poa greens' },
-  'genesis invitational': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Riviera — complete game test, kikuyu rough' },
-  'arnold palmer invitational presented by mastercard': { ott: 0.20, app: 0.35, arg: 0.20, putt: 0.25, notes: 'Bay Hill — water, approach precision, firm greens' },
-  'the memorial tournament presented by workday': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Muirfield Village — Nicklaus design, complete test' },
-  'wm phoenix open': { ott: 0.20, app: 0.35, arg: 0.20, putt: 0.25, notes: 'TPC Scottsdale — scoring event, iron play separates' },
-  'rbc heritage': { ott: 0.15, app: 0.35, arg: 0.25, putt: 0.25, notes: 'Harbour Town — short, precise, shotmaking' },
-  'at&t pebble beach pro-am': { ott: 0.20, app: 0.35, arg: 0.25, putt: 0.20, notes: 'Pebble Beach — approach play dominates on small greens' },
-  'travelers championship': { ott: 0.20, app: 0.30, arg: 0.20, putt: 0.30, notes: 'TPC River Highlands — scoring, putting surface quality' },
-  'rocket mortgage classic': { ott: 0.25, app: 0.25, arg: 0.20, putt: 0.30, notes: 'Detroit GC — scoring event, putting premium' },
-  'the sentry': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25, notes: 'Kapalua — balanced, wide fairways, scoring event' },
-  'farmers insurance open': { ott: 0.30, app: 0.25, arg: 0.20, putt: 0.25, notes: 'Torrey Pines South — length matters, marine layer' },
-  // Default for unlisted events
-  '_default': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25, notes: 'Balanced profile — no course-specific weights available' }
+  // ── MAJORS ──────────────────────────────
+  'masters tournament':         { ott: 0.25, app: 0.32, arg: 0.25, putt: 0.18, notes: 'Augusta — approach to slopes, elite short game, premium around greens' },
+  'pga championship':           { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Venue rotates — balanced, typically penalizes rough misses' },
+  'u.s. open':                  { ott: 0.18, app: 0.38, arg: 0.26, putt: 0.18, notes: 'Accuracy premium, brutal rough, approach precision critical' },
+  'the open championship':      { ott: 0.30, app: 0.25, arg: 0.25, putt: 0.20, notes: 'Links — driving lines, creativity, wind management' },
+  // ── SIGNATURE / ELEVATED ────────────────
+  'the players championship':   { ott: 0.15, app: 0.42, arg: 0.18, putt: 0.25, notes: 'TPC Sawgrass — iron precision, water on 6 holes, Poa greens' },
+  'genesis invitational':       { ott: 0.22, app: 0.32, arg: 0.22, putt: 0.24, notes: 'Riviera — kikuyu rough, complete game, precise iron play' },
+  'arnold palmer invitational': { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24, notes: 'Bay Hill — water, approach precision, firm greens' },
+  'arnold palmer invitational presented by mastercard': { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24, notes: 'Bay Hill' },
+  'the memorial tournament':    { ott: 0.25, app: 0.30, arg: 0.22, putt: 0.23, notes: 'Muirfield Village — Nicklaus design, complete game test' },
+  'the memorial tournament presented by workday': { ott: 0.25, app: 0.30, arg: 0.22, putt: 0.23, notes: 'Muirfield Village' },
+  // ── REGULAR EVENTS (alphabetical) ───────
+  'american express':           { ott: 0.20, app: 0.28, arg: 0.22, putt: 0.30, notes: 'La Quinta/PGA West — scoring event, putting premium on bermuda' },
+  'at&t pebble beach pro-am':   { ott: 0.20, app: 0.36, arg: 0.22, putt: 0.22, notes: 'Pebble — approach dominates on small greens, coastal wind' },
+  'barbasol championship':      { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24, notes: 'Opposite-field — scoring, driving advantage' },
+  'barracuda championship':     { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24, notes: 'Modified Stableford — birdies and eagles, attacking play' },
+  'bmw championship':           { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Playoff venue varies — balanced complete game' },
+  'byron nelson':               { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26, notes: 'TPC Craig Ranch — scoring event, wedge play important' },
+  'canadian open':              { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24, notes: 'TPC Toronto — length rewarded, scoring opportunity' },
+  'charles schwab challenge':   { ott: 0.18, app: 0.35, arg: 0.23, putt: 0.24, notes: 'Colonial — shotmakers course, placement premium' },
+  'cognizant classic':          { ott: 0.22, app: 0.28, arg: 0.20, putt: 0.30, notes: 'PGA National — Champion course, putting on slow bermuda' },
+  'farmers insurance open':     { ott: 0.30, app: 0.27, arg: 0.20, putt: 0.23, notes: 'Torrey Pines — length matters, coastal marine layer' },
+  'fedex st. jude championship':{ ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'TPC Southwind — FedEx playoff event, complete game' },
+  'genesis scottish open':      { ott: 0.28, app: 0.26, arg: 0.24, putt: 0.22, notes: 'Links-adjacent — driving angles, wind management' },
+  'houston open':               { ott: 0.27, app: 0.28, arg: 0.20, putt: 0.25, notes: 'Memorial Park — scoring event, length rewarded' },
+  'john deere classic':         { ott: 0.25, app: 0.27, arg: 0.20, putt: 0.28, notes: 'TPC Deere Run — scoring, putting on poa/bermuda blend' },
+  'korn ferry challenge':       { ott: 0.25, app: 0.27, arg: 0.22, putt: 0.26, notes: 'Balanced — KFT graduates event' },
+  'mexico open at vidanta':     { ott: 0.27, app: 0.30, arg: 0.20, putt: 0.23, notes: 'Vidanta — altitude aids distance, approach important' },
+  'puerto rico open':           { ott: 0.25, app: 0.28, arg: 0.20, putt: 0.27, notes: 'Opposite-field — tropical conditions, scoring' },
+  'rbc canadian open':          { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24, notes: 'TPC Toronto — length rewarded' },
+  'rbc heritage':               { ott: 0.14, app: 0.38, arg: 0.26, putt: 0.22, notes: 'Harbour Town — short, precise, shotmaking dominates' },
+  'rocket mortgage classic':    { ott: 0.24, app: 0.24, arg: 0.20, putt: 0.32, notes: 'Detroit GC — scoring event, putting premium on bermuda' },
+  'rsm classic':                { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26, notes: 'Sea Island — coastal scoring event, short game' },
+  'sanderson farms championship':{ ott: 0.26, app: 0.28, arg: 0.20, putt: 0.26, notes: 'Country Club of Jackson — scoring, balanced' },
+  'the sentry':                 { ott: 0.26, app: 0.26, arg: 0.24, putt: 0.24, notes: 'Kapalua — wide fairways, scoring event, wind factor' },
+  'shriners children\'s open':  { ott: 0.22, app: 0.27, arg: 0.20, putt: 0.31, notes: 'TPC Summerlin — scoring, putting premium on poa' },
+  'sony open in hawaii':        { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26, notes: 'Waialae — wind, scoring, short game around small greens' },
+  'the tour championship':      { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'East Lake — FedEx finale, complete game' },
+  'travelers championship':     { ott: 0.20, app: 0.28, arg: 0.20, putt: 0.32, notes: 'TPC River Highlands — scoring, strong putting premium' },
+  'truist championship':        { ott: 0.25, app: 0.35, arg: 0.20, putt: 0.20, notes: 'Quail Hollow — Green Mile demands approach precision, length matters' },
+  'wells fargo championship':   { ott: 0.25, app: 0.35, arg: 0.20, putt: 0.20, notes: 'Quail Hollow — same as Truist Championship' },
+  'wm phoenix open':            { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24, notes: 'TPC Scottsdale — scoring event, iron play separates field' },
+  'wyndham championship':       { ott: 0.20, app: 0.28, arg: 0.22, putt: 0.30, notes: 'Sedgefield — short course, putting premium, scoring' },
+  'zozo championship':          { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26, notes: 'Narashino CC — Japan, balanced, shorter layout' },
+  '3m open':                    { ott: 0.27, app: 0.27, arg: 0.20, putt: 0.26, notes: 'TPC Twin Cities — scoring event, balanced' },
+  // ── DEFAULT ─────────────────────────────
+  '_default': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25, notes: 'Balanced — no course-specific profile available' }
 };
 
 /**
@@ -75,6 +111,52 @@ function getCourseWeights(eventName) {
   }
   
   return { ...COURSE_WEIGHTS['_default'], matched: false, match_name: 'Default (no course profile)' };
+}
+
+// ============================================
+// COURSE-FIT COMPUTATION HELPERS
+// ============================================
+
+/**
+ * Compute raw weighted course-fit score for one player.
+ * Returns null for any missing SG category so callers can
+ * decide how to handle partial data rather than silently zeroing.
+ */
+function computeRawFit(sg_ott, sg_app, sg_arg, sg_putt, weights) {
+  // At minimum we need approach — the highest-weight category
+  if (sg_app == null) return null;
+  const ott  = sg_ott  != null ? sg_ott  : 0;
+  const arg  = sg_arg  != null ? sg_arg  : 0;
+  const putt = sg_putt != null ? sg_putt : 0;
+  return weights.ott * ott + weights.app * sg_app + weights.arg * arg + weights.putt * putt;
+}
+
+/**
+ * Blend long-term skill (L24) with recent form (L12).
+ * 65 % L24 anchors to true skill; 35 % L12 captures hot/cold streaks.
+ * Falls back to L24-only when L12 is unavailable.
+ */
+function blendForm(l24Score, l12Score) {
+  if (l12Score == null) return { score: l24Score, blended: false };
+  return { score: l24Score * 0.65 + l12Score * 0.35, blended: true };
+}
+
+/**
+ * Normalize an array of raw scores to a 0–100 scale within the field.
+ * Top scorer → 100, bottom scorer → 0, linear interpolation for everyone else.
+ */
+function normalizeToField(players) {
+  const valid = players.filter(p => p.rawScore != null);
+  if (valid.length === 0) return players;
+  const min = Math.min(...valid.map(p => p.rawScore));
+  const max = Math.max(...valid.map(p => p.rawScore));
+  const range = max - min;
+  return players.map(p => ({
+    ...p,
+    fitScore: p.rawScore == null ? null
+      : range > 0 ? Math.round((p.rawScore - min) / range * 100)
+      : 50
+  }));
 }
 
 // Caching with intelligent TTL
@@ -754,6 +836,141 @@ app.get('/api/matchup-all-pairings', async (req, res) => {
       success: false,
       error: error.message
     });
+  }
+});
+
+// ============================================
+// COURSE-FIT LEADERBOARD ENDPOINT
+// Computes normalized 0-100 course-fit scores
+// for every player in the current field, blending
+// long-term skill (L24) with recent form (L12).
+// ============================================
+
+app.get('/api/course-fit', async (req, res) => {
+  try {
+    const bustCache = req.query.bust === 'true';
+    const cacheKey = 'course-fit-leaderboard';
+    if (bustCache) cache.del(cacheKey);
+
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      return res.json({ success: true, fromCache: true, ...cached });
+    }
+
+    await updatePGATourPlayerIds();
+
+    // Fetch in parallel: field, L24 skill, L12 skill (form)
+    const [fieldRaw, skillL24Raw, skillL12Raw] = await Promise.all([
+      fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
+      fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
+      fetchDataGolfDirect(`/preds/skill-ratings?display=value&period=l12&file_format=json&key=${DATAGOLF_API_KEY}`)
+        .catch(() => null) // non-fatal if L12 unavailable
+    ]);
+
+    const eventName  = fieldRaw.event_name || '';
+    const weights    = getCourseWeights(eventName);
+    const fieldPlayers = fieldRaw.field || [];
+
+    // Build skill lookups by dg_id
+    const l24Map = new Map();
+    const l12Map = new Map();
+    (skillL24Raw.skill_ratings || skillL24Raw.players || []).forEach(p => {
+      if (p.dg_id) l24Map.set(p.dg_id, p);
+    });
+    if (skillL12Raw) {
+      (skillL12Raw.skill_ratings || skillL12Raw.players || []).forEach(p => {
+        if (p.dg_id) l12Map.set(p.dg_id, p);
+      });
+    }
+
+    // Compute raw course-fit score for each field player
+    const withRaw = fieldPlayers.map(fp => {
+      const l24 = l24Map.get(fp.dg_id);
+      const l12 = l12Map.get(fp.dg_id);
+
+      const l24Score = l24 ? computeRawFit(l24.sg_ott, l24.sg_app, l24.sg_arg, l24.sg_putt, weights) : null;
+      const l12Score = l12 ? computeRawFit(l12.sg_ott, l12.sg_app, l12.sg_arg, l12.sg_putt, weights) : null;
+      const { score: blended, blended: formApplied } = l24Score != null ? blendForm(l24Score, l12Score) : { score: null, blended: false };
+
+      return {
+        dg_id:       fp.dg_id,
+        player_name: fp.player_name,
+        country:     fp.country || (l24 && l24.country) || '',
+        am:          fp.am || 0,
+        rawScore:    blended,
+        fitScore:    null, // filled after normalization
+        // L24 skill breakdown (displayed in UI)
+        sg_ott:      l24 ? (l24.sg_ott  != null ? +l24.sg_ott.toFixed(3)  : null) : null,
+        sg_app:      l24 ? (l24.sg_app  != null ? +l24.sg_app.toFixed(3)  : null) : null,
+        sg_arg:      l24 ? (l24.sg_arg  != null ? +l24.sg_arg.toFixed(3)  : null) : null,
+        sg_putt:     l24 ? (l24.sg_putt != null ? +l24.sg_putt.toFixed(3) : null) : null,
+        sg_total:    l24 ? (l24.sg_total != null ? +l24.sg_total.toFixed(3): null) : null,
+        // Form info
+        form_blended: formApplied,
+        has_full_data: !!(l24 && l24.sg_ott != null && l24.sg_app != null && l24.sg_arg != null && l24.sg_putt != null)
+      };
+    });
+
+    // Normalize to 0-100 within the field, then sort
+    const normalized = normalizeToField(withRaw)
+      .sort((a, b) => {
+        if (b.fitScore != null && a.fitScore != null) return b.fitScore - a.fitScore;
+        if (b.fitScore != null) return 1;
+        if (a.fitScore != null) return -1;
+        return 0;
+      })
+      .map((p, i) => ({
+        rank: i + 1,
+        ...p,
+        percentile: p.fitScore != null ? Math.round(100 - (i / withRaw.length) * 100) : null
+      }));
+
+    // How many players have full SG data (data quality signal for UI)
+    const withData    = normalized.filter(p => p.fitScore != null).length;
+    const withFullSG  = normalized.filter(p => p.has_full_data).length;
+
+    console.log(`  Course-fit: ${eventName} | ${normalized.length} players | ${withData} scored | ${withFullSG} full SG | form blended: ${skillL12Raw ? 'yes' : 'no'}`);
+    console.log(`  Weights: ott=${weights.ott} app=${weights.app} arg=${weights.arg} putt=${weights.putt} (${weights.matched ? 'matched' : 'default'})`);
+
+    // Determine cache duration
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isDuringTournament = fieldRaw.current_round > 0;
+    const cacheTTL = isDuringTournament ? 1800 : 21600; // 30min live, 6hr pre-tournament
+
+    const payload = {
+      tournament: {
+        event_id:    fieldRaw.event_id,
+        event_name:  eventName,
+        course:      fieldRaw.course || fieldRaw.course_name || '',
+        field_size:  fieldPlayers.length,
+        current_round: fieldRaw.current_round || 0
+      },
+      course_weights: {
+        ott:   weights.ott,
+        app:   weights.app,
+        arg:   weights.arg,
+        putt:  weights.putt,
+        matched:    weights.matched,
+        match_name: weights.match_name,
+        notes:      weights.notes || ''
+      },
+      field: normalized,
+      meta: {
+        players_scored:    withData,
+        players_full_sg:   withFullSG,
+        form_blended:      !!skillL12Raw,
+        normalization:     '0-100 within field (top scorer = 100)',
+        blend_ratio:       skillL12Raw ? '65% L24 skill + 35% L12 form' : 'L24 only (L12 unavailable)',
+        timestamp:         new Date().toISOString()
+      }
+    };
+
+    cache.set(cacheKey, payload, cacheTTL);
+    res.json({ success: true, fromCache: false, ...payload });
+
+  } catch (error) {
+    console.error('Course-fit error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -1831,6 +2048,9 @@ app.listen(PORT, () => {
   GET  /api/live-tournament        (5min)
   GET  /api/live-stats             (5min)
   GET  /api/live-hole-stats        (5min)
+
+⛳ COURSE FIT:
+  GET  /api/course-fit             (6hr / 30min live) ⭐ NEW
 
 💰 BETTING TOOLS:
   GET  /api/betting-odds           (30min)

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Picks — Data-Driven Golf Picks Every Tournament Week — Divot Lab</title>
+<meta name="description" content="One free data-driven golf pick every tournament week. Course-fit model, odds comparison across 6 sportsbooks. 2026 season: 55% hit rate, +30% ROI.">
+<meta property="og:title" content="Lab Picks — Divot Lab">
+<meta property="og:description" content="One free data-driven golf pick every tournament week. 55% hit rate · +30% ROI · 2026 season.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.divotlab.com/picks">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.divotlab.com/og-image.png">
+<link rel="canonical" href="https://www.divotlab.com/picks">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:      #0A0A0A;
+  --black-mid:  #111110;
+  --black-card: #161614;
+  --white:      #FAFAFA;
+  --green:      #1B4D3E;
+  --green-light:#5BBF85;
+  --blue-mid:   #5A8FA8;
+  --gold:       #C9A84C;
+  --steel-dim:  #6A6A64;
+  --border:     rgba(255,255,255,0.07);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 56px;height:68px;display:flex;align-items:center;background:rgba(10,10,10,0.7);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);}
+.nav-logo{display:flex;align-items:center;gap:11px;}
+.nav-logo svg{width:26px;height:26px;color:var(--white);}
+.nav-wordmark{font-size:14px;font-weight:600;letter-spacing:.1em;color:var(--white);}
+.nav-wordmark span{font-weight:300;opacity:.55;}
+.nav-links{display:flex;align-items:center;gap:32px;margin-left:auto;}
+.nav-links a{font-size:13px;font-weight:500;letter-spacing:.05em;color:rgba(250,250,250,.65);transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-links a.active{color:var(--gold);}
+.nav-cta{background:var(--green);color:var(--white)!important;padding:9px 22px;border-radius:5px;font-weight:500;transition:background .2s,transform .15s;}
+.nav-cta:hover{background:#236b4f;transform:translateY(-1px);}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:40px;height:40px;margin-left:auto;cursor:pointer;background:none;border:none;gap:5px;}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:transform .3s,opacity .2s;}
+nav.menu-open .nav-hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+nav.menu-open .nav-hamburger span:nth-child(2){opacity:0;}
+nav.menu-open .nav-hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.nav-drawer{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(10,10,10,0.97);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 0 20px;display:flex;flex-direction:column;align-items:center;gap:4px;max-height:0;overflow:hidden;opacity:0;pointer-events:none;transition:max-height .38s cubic-bezier(.22,1,.36,1),opacity .28s ease;}
+.nav-drawer.open{max-height:calc(100vh - 68px);overflow-y:auto;opacity:1;pointer-events:auto;}
+.nav-drawer a{font-size:15px;font-weight:500;color:rgba(250,250,250,.75);padding:10px 0;width:100%;text-align:center;transition:color .2s;}
+.nav-drawer a:hover{color:var(--white);}
+.nav-drawer .nav-cta{margin-top:8px;width:auto;padding:10px 32px;border-radius:5px;}
+
+/* ── HERO ── */
+.hero{padding:130px 32px 72px;text-align:center;position:relative;overflow:hidden;background:var(--black);background-image:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,0.14) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(44,95,124,0.1) 0%,transparent 60%);}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.5) 40%,rgba(91,191,133,0.4) 60%,transparent);}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.hero h1{font-family:var(--display);font-size:clamp(2.8rem,6vw,4.8rem);font-weight:500;line-height:1.06;letter-spacing:-0.025em;margin-bottom:18px;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:17px;color:rgba(250,250,250,0.45);max-width:480px;margin:0 auto 40px;line-height:1.7;}
+
+/* ── SEASON RECORD BAR ── */
+.record-bar{background:var(--black-mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;}
+.record-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);}
+.record-stat{padding:32px 24px;text-align:center;position:relative;}
+.record-stat+.record-stat::before{content:'';position:absolute;left:0;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,0.06);}
+.record-val{font-family:var(--mono);font-size:clamp(36px,5vw,52px);font-weight:500;line-height:1;margin-bottom:10px;letter-spacing:-0.02em;}
+.record-val.green{color:var(--green-light);}
+.record-val.gold{color:var(--gold);}
+.record-val.blue{color:var(--blue-mid);}
+.record-label{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.3);margin-bottom:5px;}
+.record-sub{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.18);}
+.record-note{max-width:900px;margin:0 auto;padding:14px 24px;font-size:12px;color:rgba(250,250,250,0.2);text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
+
+/* ── CURRENT PICK ── */
+.pick-section{padding:80px 32px;max-width:780px;margin:0 auto;}
+.section-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.pick-card{background:var(--black-card);border:1px solid rgba(201,168,76,0.2);border-radius:16px;overflow:hidden;position:relative;}
+.pick-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 40%,rgba(91,191,133,0.5) 70%,transparent);}
+.pick-card-header{padding:28px 32px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.pick-tournament{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;color:rgba(250,250,250,0.3);margin-bottom:6px;}
+.pick-player{font-family:var(--display);font-size:clamp(2rem,5vw,3.4rem);font-weight:600;color:var(--white);line-height:1.05;letter-spacing:-0.02em;}
+.pick-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:4px;}
+.bet-badge{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:4px;border:1px solid;}
+.bet-badge.gold{color:var(--gold);background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);}
+.conf-badge{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:4px;}
+.conf-high{background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
+.conf-medium{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.25);}
+.conf-low{background:rgba(255,255,255,0.05);color:rgba(250,250,250,0.4);border:1px solid rgba(255,255,255,0.1);}
+.odds-block{text-align:right;flex-shrink:0;}
+.odds-num{font-family:var(--mono);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:500;color:var(--gold);line-height:1;}
+.odds-book{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.28);margin-top:4px;letter-spacing:0.08em;}
+.pick-reasoning{padding:22px 32px 28px;font-size:16px;color:rgba(250,250,250,0.62);line-height:1.75;}
+.pick-footer{padding:18px 32px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.pick-teaser{font-size:13px;color:rgba(250,250,250,0.38);font-style:italic;}
+.result-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;font-family:var(--mono);font-size:12px;font-weight:600;}
+.result-win{background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
+.result-loss{background:rgba(255,255,255,0.05);color:rgba(250,250,250,0.35);border:1px solid rgba(255,255,255,0.08);}
+.result-pending{background:rgba(201,168,76,0.08);color:rgba(201,168,76,0.5);border:1px solid rgba(201,168,76,0.15);}
+
+/* ── EMAIL SIGNUP ── */
+.signup-section{background:var(--black-mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:72px 32px;text-align:center;position:relative;overflow:hidden;}
+.signup-section::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(27,77,62,0.18) 0%,transparent 60%);pointer-events:none;}
+.signup-inner{position:relative;z-index:1;max-width:520px;margin:0 auto;}
+.signup-title{font-family:var(--display);font-size:clamp(2rem,4vw,3rem);font-weight:500;font-style:italic;line-height:1.12;margin-bottom:14px;}
+.signup-sub{font-size:15px;color:rgba(250,250,250,0.42);line-height:1.7;margin-bottom:32px;}
+.signup-form{display:flex;gap:10px;max-width:440px;margin:0 auto 12px;}
+.signup-form input{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:14px 18px;font-family:var(--body);font-size:14px;color:var(--white);outline:none;transition:border-color .2s,background .2s;}
+.signup-form input::placeholder{color:rgba(250,250,250,0.3);}
+.signup-form input:focus{border-color:var(--green-light);background:rgba(255,255,255,0.1);}
+.signup-form button{background:var(--green);color:var(--white);border:none;border-radius:7px;padding:14px 26px;font-family:var(--body);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s,transform .15s;}
+.signup-form button:hover{background:#236b4f;transform:translateY(-1px);}
+.signup-note{font-size:12px;color:rgba(250,250,250,0.2);}
+.price-pills{display:flex;gap:8px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+.price-pill{font-family:var(--mono);font-size:11px;padding:5px 14px;border-radius:20px;border:1px solid;}
+.price-pill.free{color:var(--green-light);border-color:rgba(91,191,133,0.25);background:rgba(91,191,133,0.07);}
+.price-pill.pro{color:var(--gold);border-color:rgba(201,168,76,0.25);background:rgba(201,168,76,0.07);}
+
+/* ── RECENT RESULTS ── */
+.results-section{padding:80px 32px;max-width:780px;margin:0 auto;}
+.results-section h2{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:500;letter-spacing:-0.02em;margin-bottom:8px;}
+.results-desc{font-size:14px;color:rgba(250,250,250,0.35);margin-bottom:36px;line-height:1.6;}
+.results-list{display:flex;flex-direction:column;gap:10px;}
+.result-row{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;}
+.result-event{font-size:11px;font-family:var(--mono);color:rgba(250,250,250,0.25);letter-spacing:0.08em;margin-bottom:4px;}
+.result-pick{font-size:14px;font-weight:600;color:rgba(250,250,250,0.85);}
+.result-pick span{font-weight:400;color:rgba(250,250,250,0.4);font-size:13px;}
+.result-odds{font-family:var(--mono);font-size:13px;color:rgba(250,250,250,0.35);text-align:right;}
+.result-pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;white-space:nowrap;}
+.pill-win{background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.2);}
+.pill-loss{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.28);border:1px solid rgba(255,255,255,0.07);}
+.pill-pending{background:rgba(201,168,76,0.07);color:rgba(201,168,76,0.45);border:1px solid rgba(201,168,76,0.15);}
+.results-loading{text-align:center;padding:40px;color:rgba(250,250,250,0.25);font-family:var(--mono);font-size:13px;}
+
+/* ── HOW IT WORKS ── */
+.how-section{background:var(--black-mid);border-top:1px solid var(--border);padding:72px 32px;}
+.how-inner{max-width:780px;margin:0 auto;}
+.how-section h2{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:500;letter-spacing:-0.02em;margin-bottom:48px;text-align:center;}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.how-card{background:var(--black-card);border:1px solid var(--border);border-radius:12px;padding:28px 24px;}
+.how-num{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(91,191,133,0.45);margin-bottom:14px;}
+.how-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:-0.01em;}
+.how-body{font-size:13px;color:rgba(250,250,250,0.45);line-height:1.65;}
+
+/* ── DISCLAIMER ── */
+.disclaimer{max-width:780px;margin:0 auto;padding:32px 32px 20px;font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;}
+.disclaimer strong{color:rgba(250,250,250,0.3);}
+
+/* ── FOOTER ── */
+footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.06);padding:48px 32px 32px;}
+.footer-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:0.1em;color:rgba(250,250,250,0.3);}
+.footer-logo svg{width:18px;height:18px;color:rgba(250,250,250,0.3);}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{font-size:12px;color:rgba(250,250,250,0.28);transition:color .2s;}
+.footer-links a:hover{color:var(--white);}
+.footer-copy{width:100%;font-size:11px;color:rgba(250,250,250,0.14);margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.05);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-hamburger{display:flex;}
+  .hero{padding:110px 20px 56px;}
+  .record-inner{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
+  .record-stat:nth-child(3){grid-column:1/-1;border-top:1px solid rgba(255,255,255,0.06);}
+  .record-stat:nth-child(3)::before{display:none;}
+  .pick-section,.results-section,.how-inner{padding-left:20px;padding-right:20px;}
+  .signup-section{padding:56px 20px;}
+  .signup-form{flex-direction:column;}
+  .how-grid{grid-template-columns:1fr;}
+  .result-row{grid-template-columns:1fr auto;grid-template-rows:auto auto;}
+  .result-odds{grid-column:2;grid-row:1;}
+  .result-pill{grid-column:1/-1;}
+  .pick-card-header{flex-direction:column;}
+  .odds-block{text-align:left;}
+  footer{padding:36px 20px 24px;}
+  .footer-inner{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/practice">Practice Plan</a>
+    <a href="/practice-library">Practice Library</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Lab Notes</a>
+    <a href="/picks" class="active">Lab Picks</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/practice">Practice Plan</a>
+  <a href="/practice-library">Practice Library</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Lab Notes</a>
+  <a href="/picks">Lab Picks</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Lab Picks · Divot Lab</div>
+  <h1>One free pick.<br><em>Every tournament week.</em></h1>
+  <p class="hero-sub">Data-driven golf picks built on course-fit models and odds comparison across six sportsbooks. The full card is in Lab Notes Pro — the free pick is posted here.</p>
+</section>
+
+<!-- SEASON RECORD -->
+<div class="record-bar">
+  <div class="record-inner">
+    <div class="record-stat">
+      <div class="record-val green" id="rec-rate">55%</div>
+      <div class="record-label">Hit Rate</div>
+      <div class="record-sub" id="rec-record">16/29 picks</div>
+    </div>
+    <div class="record-stat">
+      <div class="record-val gold" id="rec-units">+8.75u</div>
+      <div class="record-label">Units P/L</div>
+      <div class="record-sub" id="rec-season">2026 Season</div>
+    </div>
+    <div class="record-stat">
+      <div class="record-val blue" id="rec-roi">+30%</div>
+      <div class="record-label">ROI</div>
+      <div class="record-sub" id="rec-events">7 events tracked</div>
+    </div>
+  </div>
+  <div class="record-note">Every pick logged publicly before tee time · All results tracked · 1 unit = 1% of bankroll</div>
+</div>
+
+<!-- CURRENT PICK -->
+<section class="pick-section">
+  <div class="section-eyebrow" id="pick-eyebrow">This Week's Free Pick</div>
+  <div class="pick-card" id="pickCard">
+    <div class="pick-card-header">
+      <div>
+        <div class="pick-tournament" id="pick-tournament">Loading...</div>
+        <div class="pick-player" id="pick-player">—</div>
+        <div class="pick-badges" id="pick-badges"></div>
+      </div>
+      <div class="odds-block">
+        <div class="odds-num" id="pick-odds">—</div>
+        <div class="odds-book" id="pick-book"></div>
+      </div>
+    </div>
+    <div class="pick-reasoning" id="pick-reasoning"></div>
+    <div class="pick-footer">
+      <div class="pick-teaser" id="pick-teaser"></div>
+      <div id="pick-result-badge"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL SIGNUP -->
+<section class="signup-section">
+  <div class="signup-inner">
+    <div class="price-pills">
+      <span class="price-pill free">Free · Tuesday email</span>
+      <span class="price-pill pro">Pro · $9.99/mo · Full picks card</span>
+    </div>
+    <h2 class="signup-title">Get the full card every Wednesday.</h2>
+    <p class="signup-sub">The free pick is one of five. Lab Notes Pro includes the complete card — top 10s, matchups, a sleeper, and the course-fit breakdown behind every pick.</p>
+    <form class="signup-form" id="signupForm">
+      <input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email" required>
+      <button type="submit" id="signupBtn">Subscribe Free</button>
+    </form>
+    <p class="signup-note">Free forever. Start Pro from $9.99/mo. <a href="/lab-notes#pricing" style="color:rgba(250,250,250,0.35);text-decoration:underline;">See all plans →</a></p>
+  </div>
+</section>
+
+<!-- RECENT RESULTS -->
+<section class="results-section">
+  <div class="section-eyebrow">Pick History</div>
+  <h2>Recent results.</h2>
+  <p class="results-desc">All picks published before tee time. Results updated after final scores post each week.</p>
+  <div class="results-list" id="resultsList">
+    <div class="results-loading">Loading results...</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="how-inner">
+    <h2>How the picks are built.</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-title">Course-fit model</div>
+        <div class="how-body">Every player in the field is scored against historical strokes gained data, weighted for what actually wins at this specific venue. Approach accuracy, driving distance, short game, and putting are weighted differently for every course.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-title">Odds comparison</div>
+        <div class="how-body">DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars are compared before every pick. The best available line is flagged. The difference between books can be meaningful over a full season.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-title">Edge identification</div>
+        <div class="how-body">When the model's implied probability is meaningfully higher than the book's implied probability, that gap is the bet. Not every pick wins — but consistently finding and betting positive expected value is how the ROI compounds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="disclaimer">
+  <strong>Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+      DIVOT LAB
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/lab-notes">Lab Notes</a>
+      <a href="/picks">Lab Picks</a>
+      <a href="/articles">Articles</a>
+      <a href="/practice">Practice Plan</a>
+      <a href="/about">About</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 Divot Lab · <a href="https://www.divotlab.com" style="color:inherit;">divotlab.com</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var API = window.location.hostname==='localhost' ? 'http://localhost:3000' : 'https://divotlab-api.vercel.app';
+
+  // ── NAV ──────────────────────────────────────────────────────────────────
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  var navEl = document.getElementById('nav');
+  hamburger.addEventListener('click', function(){
+    var opening = !drawer.classList.contains('open');
+    navEl.classList.toggle('menu-open');
+    drawer.classList.toggle('open');
+    document.body.style.overflow = opening ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      navEl.classList.remove('menu-open');
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ── SEASON TRACKER ────────────────────────────────────────────────────────
+  fetch('/lab-notes/lab-picks/season-tracker.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var t = d.totals;
+      if(!t) return;
+      document.getElementById('rec-rate').textContent = Math.round(t.hit_rate_pct) + '%';
+      document.getElementById('rec-record').textContent = t.total_hits + '/' + t.total_picks + ' picks';
+      document.getElementById('rec-units').textContent = (t.units.profit_loss >= 0 ? '+' : '') + t.units.profit_loss.toFixed(2) + 'u';
+      document.getElementById('rec-roi').textContent = (t.units.roi_pct >= 0 ? '+' : '') + Math.round(t.units.roi_pct) + '%';
+      document.getElementById('rec-events').textContent = t.events_tracked + ' events tracked';
+    })
+    .catch(function(){});
+
+  // ── CURRENT PICK ─────────────────────────────────────────────────────────
+  fetch('/current-pick.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var p = d.pick;
+      document.getElementById('pick-eyebrow').textContent = 'Free Pick — ' + d.tournament;
+      document.getElementById('pick-tournament').textContent = d.tournament + ' · ' + d.week_of;
+      document.getElementById('pick-player').textContent = p.player;
+      document.getElementById('pick-odds').textContent = p.odds;
+      document.getElementById('pick-book').textContent = p.book;
+      document.getElementById('pick-reasoning').textContent = p.reasoning;
+      document.getElementById('pick-teaser').textContent = d.teaser || '';
+
+      // Bet type badge
+      var betLabel = p.bet_detail ? p.bet_type + ' — ' + p.bet_detail : p.bet_type;
+      var confClass = p.confidence === 'High' ? 'conf-high' : p.confidence === 'Medium' ? 'conf-medium' : 'conf-low';
+      document.getElementById('pick-badges').innerHTML =
+        '<span class="bet-badge gold">' + betLabel + '</span>' +
+        '<span class="conf-badge ' + confClass + '">' + p.confidence + ' confidence</span>';
+
+      // Result badge
+      var rb = document.getElementById('pick-result-badge');
+      if(p.result === 'win'){
+        rb.innerHTML = '<span class="result-badge result-win">✓ Hit' + (p.result_detail ? ' — ' + p.result_detail : '') + '</span>';
+      } else if(p.result === 'loss'){
+        rb.innerHTML = '<span class="result-badge result-loss">✗ Miss' + (p.result_detail ? ' — ' + p.result_detail : '') + '</span>';
+      } else {
+        rb.innerHTML = '<span class="result-badge result-pending">⏳ Pending</span>';
+      }
+    })
+    .catch(function(){
+      document.getElementById('pick-player').textContent = 'Pick drops Wednesday';
+      document.getElementById('pick-reasoning').textContent = 'The free pick for this tournament week will be posted here on Wednesday morning before tee times.';
+    });
+
+  // ── RECENT RESULTS ────────────────────────────────────────────────────────
+  fetch('/lab-notes/lab-picks/season-tracker.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var weeks = (d.weekly_picks || []).slice().reverse().slice(0, 4);
+      var list = document.getElementById('resultsList');
+      if(!weeks.length){ list.innerHTML = '<div class="results-loading">No results yet this season.</div>'; return; }
+
+      list.innerHTML = weeks.map(function(week){
+        var picks = (week.picks || []).slice(0, 3);
+        return picks.map(function(pick){
+          var pillClass = pick.result === 'win' ? 'pill-win' : pick.result === 'loss' ? 'pill-loss' : 'pill-pending';
+          var pillText = pick.result === 'win' ? '✓ Hit' : pick.result === 'loss' ? '✗ Miss' : '⏳ Pending';
+          var oddsStr = pick.odds > 0 ? '+' + pick.odds : '' + pick.odds;
+          var betLabel = pick.bet || pick.type || '';
+          return '<div class="result-row">' +
+            '<div>' +
+              '<div class="result-event">' + week.event + '</div>' +
+              '<div class="result-pick">' + pick.player + ' <span>· ' + betLabel + '</span></div>' +
+            '</div>' +
+            '<div class="result-odds">' + oddsStr + '<br><span style="font-size:10px;color:rgba(250,250,250,0.2);">' + (pick.book || '') + '</span></div>' +
+            '<div class="result-pill ' + pillClass + '">' + pillText + '</div>' +
+          '</div>';
+        }).join('');
+      }).join('');
+    })
+    .catch(function(){
+      document.getElementById('resultsList').innerHTML = '<div class="results-loading">Results unavailable.</div>';
+    });
+
+  // ── EMAIL SIGNUP ─────────────────────────────────────────────────────────
+  document.getElementById('signupForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('signupEmail').value.trim();
+    if(!email) return;
+    var btn = document.getElementById('signupBtn');
+    var orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Subscribing...';
+    fetch(API + '/api/subscribe', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email: email, utm_source: 'picks-page'})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.success){
+        btn.textContent = '✓ You\'re in';
+        btn.style.background = '#1B4D3E';
+        document.getElementById('signupEmail').value = '';
+        setTimeout(function(){ btn.textContent=orig; btn.style.background=''; btn.disabled=false; }, 3000);
+      } else {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(function(){ btn.textContent=orig; }, 2000);
+      }
+    })
+    .catch(function(){
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+      setTimeout(function(){ btn.textContent=orig; }, 2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>

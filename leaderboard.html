@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course-Fit Rankings — Lab Picks — Divot Lab</title>
+<meta name="description" content="Weekly course-fit rankings for the PGA Tour field. Strokes gained model weighted for what actually wins at this venue. Free top 10 every week.">
+<meta property="og:title" content="Course-Fit Rankings — Divot Lab">
+<meta property="og:description" content="Weekly course-fit rankings for the PGA Tour field. Free top 10 every week. Full field in Lab Notes Pro.">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.divotlab.com/leaderboard">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0A0A0A; --black-mid:#111110; --black-card:#161614;
+  --white:#FAFAFA; --green:#1B4D3E; --green-light:#5BBF85;
+  --blue-mid:#5A8FA8; --gold:#C9A84C; --red:#D94848;
+  --steel-dim:#6A6A64; --border:rgba(255,255,255,0.07);
+  --display:'Cormorant Garamond',Georgia,serif;
+  --body:'DM Sans','Helvetica Neue',sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 56px;height:68px;display:flex;align-items:center;background:rgba(10,10,10,0.7);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);}
+.nav-logo{display:flex;align-items:center;gap:11px;}
+.nav-logo svg{width:26px;height:26px;color:var(--white);}
+.nav-wordmark{font-size:14px;font-weight:600;letter-spacing:.1em;color:var(--white);}
+.nav-wordmark span{font-weight:300;opacity:.55;}
+.nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;}
+.nav-links a{font-size:13px;font-weight:500;letter-spacing:.05em;color:rgba(250,250,250,.65);transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-links a.active{color:var(--gold);}
+.nav-cta{background:var(--green);color:var(--white)!important;padding:9px 22px;border-radius:5px;font-weight:500;transition:background .2s;}
+.nav-cta:hover{background:#236b4f;}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:40px;height:40px;margin-left:auto;cursor:pointer;background:none;border:none;gap:5px;}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:transform .3s,opacity .2s;}
+nav.menu-open .nav-hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+nav.menu-open .nav-hamburger span:nth-child(2){opacity:0;}
+nav.menu-open .nav-hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.nav-drawer{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(10,10,10,0.97);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 0 20px;display:flex;flex-direction:column;align-items:center;gap:4px;max-height:0;overflow:hidden;opacity:0;pointer-events:none;transition:max-height .38s cubic-bezier(.22,1,.36,1),opacity .28s ease;}
+.nav-drawer.open{max-height:calc(100vh - 68px);overflow-y:auto;opacity:1;pointer-events:auto;}
+.nav-drawer a{font-size:15px;font-weight:500;color:rgba(250,250,250,.75);padding:10px 0;width:100%;text-align:center;}
+.nav-drawer a:hover{color:var(--white);}
+.nav-drawer .nav-cta{margin-top:8px;width:auto;padding:10px 32px;border-radius:5px;}
+
+/* HERO */
+.hero{padding:110px 32px 56px;text-align:center;position:relative;overflow:hidden;background:var(--black);background-image:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(27,77,62,0.22) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 85% 80%,rgba(44,95,124,0.12) 0%,transparent 60%);}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(91,191,133,0.5) 40%,rgba(201,168,76,0.4) 60%,transparent);}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--green-light);margin-bottom:16px;}
+.hero h1{font-family:var(--display);font-size:clamp(2.4rem,5vw,4rem);font-weight:500;line-height:1.08;letter-spacing:-0.025em;margin-bottom:16px;}
+.hero-sub{font-size:15px;color:rgba(250,250,250,0.42);max-width:520px;margin:0 auto;}
+
+/* TOURNAMENT INFO BAR */
+.tourney-bar{background:var(--black-mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:16px 32px;}
+.tourney-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.tourney-name{font-family:var(--display);font-size:22px;font-weight:500;font-style:italic;letter-spacing:-0.01em;}
+.tourney-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.tourney-chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:4px;}
+.chip-green{color:var(--green-light);background:rgba(91,191,133,0.1);border:1px solid rgba(91,191,133,0.2);}
+.chip-gold{color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);}
+.chip-blue{color:var(--blue-mid);background:rgba(90,143,168,0.08);border:1px solid rgba(90,143,168,0.18);}
+.chip-dim{color:rgba(250,250,250,0.3);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);}
+
+/* WEIGHTS EXPLAINER */
+.weights-bar{max-width:1100px;margin:0 auto;padding:16px 32px 0;}
+.weights-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.weight-label{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);letter-spacing:0.1em;margin-right:4px;}
+.weight-item{display:flex;align-items:center;gap:6px;}
+.weight-name{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.45);letter-spacing:0.06em;}
+.weight-bar-outer{width:60px;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.weight-bar-fill{height:100%;border-radius:3px;}
+.weight-pct{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.35);}
+.weights-note{font-size:11px;color:rgba(250,250,250,0.2);margin-top:8px;font-style:italic;}
+
+/* MAIN CONTENT */
+.main{max-width:1100px;margin:0 auto;padding:28px 32px 80px;}
+
+/* LOADING / EMPTY */
+.loading-state{text-align:center;padding:80px 20px;color:rgba(250,250,250,0.28);font-family:var(--mono);font-size:13px;letter-spacing:0.06em;}
+.loading-state .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(91,191,133,0.2);border-top-color:#5BBF85;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* LEADERBOARD TABLE */
+.lb-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.lb-table-header{display:grid;grid-template-columns:52px 1fr 90px 260px 80px;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.lb-table-header span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.lb-rows{position:relative;}
+.lb-row{display:grid;grid-template-columns:52px 1fr 90px 260px 80px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.15s;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row:hover{background:rgba(255,255,255,0.02);}
+.lb-row.top3{background:rgba(201,168,76,0.03);}
+.lb-row.top3:hover{background:rgba(201,168,76,0.06);}
+/* rank */
+.lb-rank{font-family:var(--mono);font-size:14px;font-weight:600;color:rgba(250,250,250,0.3);}
+.lb-rank.r1{color:var(--gold);}
+.lb-rank.r2{color:rgba(201,168,76,0.65);}
+.lb-rank.r3{color:rgba(201,168,76,0.45);}
+/* player */
+.lb-player{display:flex;flex-direction:column;gap:2px;}
+.lb-player-name{font-size:14px;font-weight:600;color:rgba(250,250,250,0.9);}
+.lb-player-country{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.22);letter-spacing:0.06em;}
+/* score */
+.lb-score-col{text-align:center;}
+.lb-score-num{font-family:var(--mono);font-size:20px;font-weight:500;line-height:1;color:var(--green-light);}
+.lb-score-num.faded{color:rgba(250,250,250,0.2);}
+.lb-score-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);margin-top:2px;letter-spacing:0.06em;}
+/* SG breakdown bars */
+.lb-breakdown{display:flex;flex-direction:column;gap:5px;}
+.sg-bar-row{display:flex;align-items:center;gap:7px;}
+.sg-bar-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);width:30px;flex-shrink:0;letter-spacing:0.04em;}
+.sg-bar-track{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.sg-bar-fill{height:100%;border-radius:2px;transition:width 0.4s ease;}
+.sg-bar-fill.pos{background:var(--green-light);}
+.sg-bar-fill.neg{background:var(--red);}
+.sg-bar-val{font-family:var(--mono);font-size:9px;width:34px;text-align:right;flex-shrink:0;}
+.sg-bar-val.pos{color:var(--green-light);}
+.sg-bar-val.neg{color:var(--red);}
+.sg-bar-val.zero{color:rgba(250,250,250,0.25);}
+/* percentile */
+.lb-pct{text-align:center;font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.3);}
+
+/* PAYWALL */
+.paywall-rows{position:relative;}
+.paywall-row{display:grid;grid-template-columns:52px 1fr 90px 260px 80px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;filter:blur(4px);user-select:none;pointer-events:none;opacity:0.4;}
+.paywall-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(to bottom,rgba(10,10,10,0.1) 0%,rgba(10,10,10,0.92) 30%);}
+.paywall-card{background:var(--black-card);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:28px 32px;text-align:center;max-width:380px;backdrop-filter:blur(8px);}
+.paywall-eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.paywall-title{font-family:var(--display);font-size:22px;font-weight:500;font-style:italic;margin-bottom:10px;}
+.paywall-sub{font-size:13px;color:rgba(250,250,250,0.42);line-height:1.6;margin-bottom:20px;}
+.paywall-btn{display:block;background:var(--gold);color:var(--black);border-radius:7px;padding:13px 28px;font-size:14px;font-weight:700;transition:background .2s;}
+.paywall-btn:hover{background:#D4B45E;}
+.paywall-note{font-size:11px;color:rgba(250,250,250,0.25);margin-top:10px;}
+
+/* SIGNUP CTA */
+.signup-band{background:var(--black-mid);border-top:1px solid var(--border);padding:56px 32px;text-align:center;}
+.signup-band h2{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:500;font-style:italic;margin-bottom:12px;}
+.signup-band p{font-size:14px;color:rgba(250,250,250,0.38);margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.7;}
+.signup-form{display:flex;gap:10px;max-width:400px;margin:0 auto 10px;}
+.signup-form input{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:13px 16px;font-family:var(--body);font-size:14px;color:var(--white);outline:none;transition:border-color .2s;}
+.signup-form input::placeholder{color:rgba(250,250,250,0.3);}
+.signup-form input:focus{border-color:var(--green-light);}
+.signup-form button{background:var(--green);color:var(--white);border:none;border-radius:7px;padding:13px 24px;font-family:var(--body);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.signup-form button:hover{background:#236b4f;}
+.signup-note{font-size:11px;color:rgba(250,250,250,0.2);}
+
+/* HOW SCORE WORKS */
+.explainer{max-width:1100px;margin:0 auto;padding:48px 32px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.expl-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:22px 20px;}
+.expl-num{font-family:var(--mono);font-size:10px;color:rgba(91,191,133,0.4);letter-spacing:0.14em;margin-bottom:10px;}
+.expl-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.expl-body{font-size:12px;color:rgba(250,250,250,0.38);line-height:1.65;}
+
+/* FOOTER */
+footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.05);padding:40px 32px 28px;}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.12em;color:rgba(250,250,250,0.25);}
+.footer-logo svg{width:16px;height:16px;color:rgba(250,250,250,0.25);}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-links a{font-size:12px;color:rgba(250,250,250,0.25);transition:color .2s;}
+.footer-links a:hover{color:var(--white);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-hamburger{display:flex;}
+  .hero{padding:100px 20px 48px;}
+  .tourney-bar{padding:14px 20px;}
+  .weights-bar{padding:14px 20px 0;}
+  .main{padding:20px 20px 60px;}
+  .lb-table-header,.lb-row,.paywall-row{grid-template-columns:40px 1fr 72px;}
+  .lb-table-header span:nth-child(4),
+  .lb-table-header span:nth-child(5),
+  .lb-row .lb-breakdown,
+  .lb-row .lb-pct,
+  .paywall-row > *:nth-child(4),
+  .paywall-row > *:nth-child(5){display:none;}
+  .explainer{grid-template-columns:1fr;}
+  .signup-form{flex-direction:column;}
+  footer{padding:32px 20px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Lab Picks</a>
+    <a href="/leaderboard" class="active">Course-Fit</a>
+    <a href="/practice-library">Practice Library</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Lab Notes</a>
+    <a href="/the-lab" class="nav-cta">The Lab</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/picks">Lab Picks</a>
+  <a href="/leaderboard">Course-Fit Rankings</a>
+  <a href="/practice-library">Practice Library</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Lab Notes</a>
+  <a href="/the-lab" class="nav-cta">The Lab</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Lab Picks · Divot Lab</div>
+  <h1>Course-Fit Rankings</h1>
+  <p class="hero-sub">The field ranked by how well each player's strokes gained profile matches what this specific venue actually rewards. Updated weekly.</p>
+</section>
+
+<!-- TOURNAMENT BAR -->
+<div class="tourney-bar">
+  <div class="tourney-inner">
+    <div class="tourney-name" id="tourneyName">Loading...</div>
+    <div class="tourney-meta">
+      <span class="tourney-chip chip-dim" id="tourneyField">— players</span>
+      <span class="tourney-chip chip-green" id="weightsMatched">Weights loading...</span>
+      <span class="tourney-chip chip-blue" id="formBlend"></span>
+    </div>
+  </div>
+</div>
+
+<!-- WEIGHTS EXPLAINER -->
+<div class="weights-bar">
+  <div class="weights-row" id="weightsRow">
+    <span class="weight-label">This week:</span>
+  </div>
+  <div class="weights-note" id="weightsNote"></div>
+</div>
+
+<!-- EXPLAINER CARDS -->
+<div class="explainer">
+  <div class="expl-card">
+    <div class="expl-num">01</div>
+    <div class="expl-title">What the score means</div>
+    <div class="expl-body">0–100. The top-scoring player in the field gets 100. The bottom gets 0. Everyone else is normalized between them. A score of 80+ means the player's skills strongly match this course's demands.</div>
+  </div>
+  <div class="expl-card">
+    <div class="expl-num">02</div>
+    <div class="expl-title">How it's calculated</div>
+    <div class="expl-body">Four strokes gained categories (OTT, Approach, Around the Green, Putting) are weighted based on what historically wins at this venue. Scores blend 24-month skill with 12-month recent form: 65% long-term, 35% recent.</div>
+  </div>
+  <div class="expl-card">
+    <div class="expl-num">03</div>
+    <div class="expl-title">How to use it</div>
+    <div class="expl-body">High course-fit + current form = prime betting candidate. High fit but cold recent form = watch. Low fit but hot form = fade. Cross-reference with the Lab Picks card for the full odds analysis.</div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="main">
+  <div id="lbContainer">
+    <div class="loading-state">
+      <div class="spinner"></div><br>
+      Loading course-fit rankings...
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP CTA -->
+<div class="signup-band">
+  <h2>Get the full picks card every Wednesday.</h2>
+  <p>The course-fit rankings are free. The picks — which players the model is actually betting on this week, with odds from 6 books — are in Lab Notes Pro.</p>
+  <form class="signup-form" id="signupForm">
+    <input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email" required>
+    <button type="submit" id="signupBtn">Subscribe Free</button>
+  </form>
+  <p class="signup-note">Free forever. Pro from $9.99/mo. <a href="/lab-notes#pricing" style="color:rgba(250,250,250,0.35);text-decoration:underline;">See plans →</a></p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+      DIVOT LAB
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/picks">Lab Picks</a>
+      <a href="/leaderboard">Course-Fit</a>
+      <a href="/lab-notes">Lab Notes</a>
+      <a href="/articles">Articles</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var API = window.location.hostname==='localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+  var FREE_LIMIT = 10;
+
+  // NAV
+  var hamburger = document.getElementById('navHamburger');
+  var drawer    = document.getElementById('navDrawer');
+  var navEl     = document.getElementById('nav');
+  hamburger.addEventListener('click', function(){
+    var opening = !drawer.classList.contains('open');
+    navEl.classList.toggle('menu-open');
+    drawer.classList.toggle('open');
+    document.body.style.overflow = opening ? 'hidden' : '';
+  });
+  drawer.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ navEl.classList.remove('menu-open'); drawer.classList.remove('open'); document.body.style.overflow=''; });
+  });
+
+  // SG value → bar width (clamped to 0–100% of a ±2 range)
+  function sgToBar(val){ return Math.min(100, Math.max(0, ((val + 2) / 4) * 100)); }
+
+  function fmtSG(val){
+    if(val == null) return {str:'—', cls:'zero'};
+    var s = val >= 0 ? '+' + val.toFixed(2) : val.toFixed(2);
+    return { str: s, cls: val > 0.005 ? 'pos' : val < -0.005 ? 'neg' : 'zero' };
+  }
+
+  function sgBarHTML(label, val, fillColor){
+    var f = fmtSG(val);
+    var w = val != null ? sgToBar(val) + '%' : '0%';
+    var fillCls = val == null ? '' : val >= 0 ? 'pos' : 'neg';
+    return '<div class="sg-bar-row">'
+      + '<span class="sg-bar-label">' + label + '</span>'
+      + '<div class="sg-bar-track"><div class="sg-bar-fill ' + fillCls + '" style="width:' + w + ';"></div></div>'
+      + '<span class="sg-bar-val ' + f.cls + '">' + f.str + '</span>'
+      + '</div>';
+  }
+
+  function rankClass(rank){ return rank===1?'r1':rank===2?'r2':rank===3?'r3':''; }
+
+  function renderRow(p, blurred){
+    var rc = rankClass(p.rank);
+    var rowCls = 'lb-row' + (p.rank <= 3 ? ' top3' : '') + (blurred ? ' paywall-row' : '');
+    var scoreNum = p.fitScore != null ? p.fitScore : '—';
+    var scoreCls = p.fitScore != null ? '' : 'faded';
+    return '<div class="' + rowCls + '">'
+      + '<div class="lb-rank ' + rc + '">' + p.rank + '</div>'
+      + '<div class="lb-player"><span class="lb-player-name">' + p.player_name + '</span>'
+      + (p.country ? '<span class="lb-player-country">' + p.country + '</span>' : '') + '</div>'
+      + '<div class="lb-score-col"><div class="lb-score-num ' + scoreCls + '">' + scoreNum + '</div><div class="lb-score-label">/ 100</div></div>'
+      + '<div class="lb-breakdown">'
+        + sgBarHTML('App', p.sg_app)
+        + sgBarHTML('OTT', p.sg_ott)
+        + sgBarHTML('ARG', p.sg_arg)
+        + sgBarHTML('Putt', p.sg_putt)
+      + '</div>'
+      + '<div class="lb-pct">' + (p.percentile != null ? 'Top ' + (100-p.percentile+1) + '%' : '—') + '</div>'
+    + '</div>';
+  }
+
+  function renderWeights(weights){
+    var cats = [
+      { key:'app',  label:'Approach', color:'#5BBF85' },
+      { key:'ott',  label:'OTT',      color:'#5A8FA8' },
+      { key:'arg',  label:'ARG',      color:'#C9A84C' },
+      { key:'putt', label:'Putting',  color:'rgba(250,250,250,0.5)' }
+    ];
+    var row = document.getElementById('weightsRow');
+    var html = '<span class="weight-label">This week:</span>';
+    cats.forEach(function(c){
+      var pct = Math.round((weights[c.key] || 0) * 100);
+      html += '<div class="weight-item">'
+        + '<span class="weight-name">' + c.label + '</span>'
+        + '<div class="weight-bar-outer"><div class="weight-bar-fill" style="width:' + pct + '%;background:' + c.color + ';"></div></div>'
+        + '<span class="weight-pct">' + pct + '%</span>'
+        + '</div>';
+    });
+    row.innerHTML = html;
+    var noteEl = document.getElementById('weightsNote');
+    noteEl.textContent = weights.notes || '';
+  }
+
+  function render(data){
+    // Tournament bar
+    document.getElementById('tourneyName').textContent = data.tournament.event_name || 'Current Tournament';
+    document.getElementById('tourneyField').textContent = data.tournament.field_size + ' players';
+    document.getElementById('weightsMatched').textContent = data.course_weights.matched
+      ? 'Course profile: ' + (data.course_weights.match_name || 'matched')
+      : 'Default weights (no course profile)';
+    document.getElementById('formBlend').textContent = data.meta.form_blended
+      ? '65% Skill + 35% Form'
+      : 'Skill only (L24)';
+
+    renderWeights(data.course_weights);
+
+    var field = data.field || [];
+    var free  = field.slice(0, FREE_LIMIT);
+    var rest  = field.slice(FREE_LIMIT);
+
+    var html = '<div class="lb-wrap">'
+      + '<div class="lb-table-header">'
+        + '<span>#</span><span>Player</span><span>Fit Score</span><span>SG Breakdown</span><span>Field %ile</span>'
+      + '</div>'
+      + '<div class="lb-rows">' + free.map(function(p){ return renderRow(p, false); }).join('') + '</div>';
+
+    if(rest.length > 0){
+      // Blurred paywall rows (visual dummy — 8 rows)
+      var dummyRows = rest.slice(0, 8);
+      html += '<div class="paywall-rows">'
+        + dummyRows.map(function(p){ return renderRow(p, true); }).join('')
+        + '<div class="paywall-overlay"><div class="paywall-card">'
+          + '<div class="paywall-eyebrow">Lab Notes Pro</div>'
+          + '<div class="paywall-title">See the full ' + data.tournament.field_size + '-player field.</div>'
+          + '<p class="paywall-sub">The full course-fit rankings, weekly picks with odds from 6 books, and the season tracker — all in Lab Notes Pro.</p>'
+          + '<a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" class="paywall-btn">Start Free Week →</a>'
+          + '<p class="paywall-note">$9.99/mo · Cancel anytime · 7-day free trial</p>'
+        + '</div></div>'
+      + '</div>';
+    }
+
+    html += '</div>';
+    document.getElementById('lbContainer').innerHTML = html;
+  }
+
+  // Load data
+  fetch(API + '/api/course-fit')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.success){ render(d); }
+      else{ document.getElementById('lbContainer').innerHTML = '<div class="loading-state">Error loading rankings. Try refreshing.</div>'; }
+    })
+    .catch(function(){
+      document.getElementById('lbContainer').innerHTML = '<div class="loading-state">Could not load rankings. Check your connection and try again.</div>';
+    });
+
+  // Email signup
+  var API_BASE = window.location.hostname==='localhost' ? 'http://localhost:3001' : 'https://divotlab-api.vercel.app';
+  document.getElementById('signupForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('signupEmail').value.trim();
+    if(!email) return;
+    var btn = document.getElementById('signupBtn');
+    var orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Subscribing...';
+    fetch(API_BASE + '/api/subscribe', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email, utm_source:'leaderboard-page'})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.success){ btn.textContent='✓ You\'re in'; btn.style.background='#1B4D3E'; document.getElementById('signupEmail').value=''; setTimeout(function(){ btn.textContent=orig; btn.style.background=''; btn.disabled=false; },3000); }
+      else{ btn.textContent='Try again'; btn.disabled=false; setTimeout(function(){ btn.textContent=orig; },2000); }
+    })
+    .catch(function(){ btn.textContent='Try again'; btn.disabled=false; setTimeout(function(){ btn.textContent=orig; },2000); });
+  });
+})();
+</script>
+</body>
+</html>
