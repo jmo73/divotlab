@@ -775,6 +775,89 @@ nav.light .nav-links a:hover { color:var(--black); }
 .email-note { margin-top:14px; font-size:12px; color:rgba(250,250,250,.25); }
 
 /* =============================================
+   SEASON TRACKER
+   ============================================= */
+.tracker-section {
+  background: var(--black);
+  padding: 96px 48px;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.tracker-section::before {
+  content: '';
+  position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(ellipse, rgba(91,191,133,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.tracker-inner {
+  position: relative; z-index: 1;
+  max-width: 780px; margin: 0 auto; text-align: center;
+}
+.tracker-label {
+  font-size: 11px; font-weight: 500; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--green-light);
+  margin-bottom: 18px;
+}
+.tracker-title {
+  font-family: var(--display);
+  font-size: clamp(28px,3.6vw,38px);
+  font-weight: 600; color: var(--white);
+  letter-spacing: -.02em; line-height: 1.12;
+  margin-bottom: 10px;
+}
+.tracker-sub {
+  font-size: 15px; color: rgba(250,250,250,0.38);
+  margin-bottom: 48px; line-height: 1.5;
+}
+.tracker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.tracker-stat {
+  background: rgba(255,255,255,0.02);
+  padding: 36px 24px;
+  transition: background .2s;
+}
+.tracker-stat:hover { background: rgba(255,255,255,0.04); }
+.tracker-val {
+  font-family: var(--mono);
+  font-size: clamp(32px,4vw,44px);
+  font-weight: 600;
+  color: var(--green-light);
+  line-height: 1;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.tracker-val.gold { color: #C9A84C; }
+.tracker-val.blue { color: var(--blue-mid); }
+.tracker-stat-label {
+  font-size: 12px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(250,250,250,0.35);
+  margin-bottom: 6px;
+}
+.tracker-stat-sub {
+  font-size: 12px; color: rgba(250,250,250,0.22);
+  font-family: var(--mono);
+}
+.tracker-note {
+  font-size: 11px; color: rgba(250,250,250,0.2);
+  line-height: 1.6; margin-top: 24px;
+}
+@media (max-width: 600px) {
+  .tracker-grid { grid-template-columns: 1fr; }
+  .tracker-section { padding: 72px 24px; }
+}
+
+/* =============================================
    POPUP MODAL
    ============================================= */
 .popup-overlay {
@@ -1697,6 +1780,34 @@ html[data-theme="light"] .footer-bottom {
   </section>
 </div>
 
+<!-- ========== SEASON TRACKER ========== -->
+<section class="tracker-section">
+  <div class="tracker-inner reveal">
+    <div class="tracker-label">Lab Picks · 2026 Season</div>
+    <h2 class="tracker-title">The picks. On the record.</h2>
+    <p class="tracker-sub">Every pick published in Lab Picks is tracked publicly. Results updated after final scores post.</p>
+    <div class="tracker-grid">
+      <div class="tracker-stat">
+        <div class="tracker-val" id="tracker-hit-rate">55%</div>
+        <div class="tracker-stat-label">Hit Rate</div>
+        <div class="tracker-stat-sub" id="tracker-record">16/29 picks</div>
+      </div>
+      <div class="tracker-stat">
+        <div class="tracker-val gold" id="tracker-units">+8.75u</div>
+        <div class="tracker-stat-label">Units P/L</div>
+        <div class="tracker-stat-sub" id="tracker-season">2026 Season</div>
+      </div>
+      <div class="tracker-stat">
+        <div class="tracker-val blue" id="tracker-roi">+30%</div>
+        <div class="tracker-stat-label">ROI</div>
+        <div class="tracker-stat-sub" id="tracker-events">7 events tracked</div>
+      </div>
+    </div>
+    <a href="/lab-notes" class="btn-fill" style="display:inline-block;padding:14px 40px;">Get Lab Picks Pro</a>
+    <p class="tracker-note">1 unit = 1% of bankroll. Sleepers tracked separately, not included in hit rate.<br>Picks tracked from January 2026. Past results do not guarantee future outcomes.</p>
+  </div>
+</section>
+
 <!-- ========== EMAIL ========== -->
 <section class="email-section">
   <div class="email-inner reveal">
@@ -1885,6 +1996,29 @@ html[data-theme="light"] .footer-bottom {
           merged.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
           renderHomepageCards(merged.slice(0, 3));
         }
+      })
+      .catch(function(){});
+  })();
+
+  // ====================================
+  // SEASON TRACKER — auto-populate from JSON
+  // ====================================
+  (function loadSeasonTracker(){
+    fetch('/lab-notes/lab-picks/season-tracker.json')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var t = d.totals;
+        if (!t) return;
+        var hitRate = Math.round(t.hit_rate_pct) + '%';
+        var record = t.total_hits + '/' + t.total_picks + ' picks';
+        var units = (t.units.profit_loss >= 0 ? '+' : '') + t.units.profit_loss.toFixed(2) + 'u';
+        var roi = (t.units.roi_pct >= 0 ? '+' : '') + Math.round(t.units.roi_pct) + '%';
+        var events = t.events_tracked + ' events tracked';
+        document.getElementById('tracker-hit-rate').textContent = hitRate;
+        document.getElementById('tracker-record').textContent = record;
+        document.getElementById('tracker-units').textContent = units;
+        document.getElementById('tracker-roi').textContent = roi;
+        document.getElementById('tracker-events').textContent = events;
       })
       .catch(function(){});
   })();
