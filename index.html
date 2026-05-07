@@ -831,7 +831,7 @@ nav.light .nav-links a:hover { color:var(--black); }
 .tracker-val {
   font-family: var(--mono);
   font-size: clamp(32px,4vw,44px);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--green-light);
   line-height: 1;
   margin-bottom: 10px;
@@ -1731,6 +1731,34 @@ html[data-theme="light"] .footer-bottom {
   </div>
 </section>
 
+<!-- ========== SEASON TRACKER ========== -->
+<section class="tracker-section">
+  <div class="tracker-inner reveal">
+    <div class="tracker-label">Lab Picks · 2026 Season</div>
+    <h2 class="tracker-title">The picks. On the record.</h2>
+    <p class="tracker-sub">Every pick published in Lab Picks is tracked publicly. Results updated after final scores post.</p>
+    <div class="tracker-grid">
+      <div class="tracker-stat">
+        <div class="tracker-val" id="tracker-hit-rate">55%</div>
+        <div class="tracker-stat-label">Hit Rate</div>
+        <div class="tracker-stat-sub" id="tracker-record">16/29 picks</div>
+      </div>
+      <div class="tracker-stat">
+        <div class="tracker-val gold" id="tracker-units">+8.75u</div>
+        <div class="tracker-stat-label">Units P/L</div>
+        <div class="tracker-stat-sub" id="tracker-season">2026 Season</div>
+      </div>
+      <div class="tracker-stat">
+        <div class="tracker-val blue" id="tracker-roi">+30%</div>
+        <div class="tracker-stat-label">ROI</div>
+        <div class="tracker-stat-sub" id="tracker-events">7 events tracked</div>
+      </div>
+    </div>
+    <a href="/lab-notes" class="btn-fill" style="display:inline-block;padding:14px 40px;">Get Lab Picks Pro</a>
+    <p class="tracker-note">1 unit = 1% of bankroll. Sleepers tracked separately, not included in hit rate.<br>Picks tracked from January 2026. Past results do not guarantee future outcomes.</p>
+  </div>
+</section>
+
 <!-- ========== APPAREL ========== -->
 <div class="apparel-wrap">
   <section class="section reveal">
@@ -1779,34 +1807,6 @@ html[data-theme="light"] .footer-bottom {
     </div>
   </section>
 </div>
-
-<!-- ========== SEASON TRACKER ========== -->
-<section class="tracker-section">
-  <div class="tracker-inner reveal">
-    <div class="tracker-label">Lab Picks · 2026 Season</div>
-    <h2 class="tracker-title">The picks. On the record.</h2>
-    <p class="tracker-sub">Every pick published in Lab Picks is tracked publicly. Results updated after final scores post.</p>
-    <div class="tracker-grid">
-      <div class="tracker-stat">
-        <div class="tracker-val" id="tracker-hit-rate">55%</div>
-        <div class="tracker-stat-label">Hit Rate</div>
-        <div class="tracker-stat-sub" id="tracker-record">16/29 picks</div>
-      </div>
-      <div class="tracker-stat">
-        <div class="tracker-val gold" id="tracker-units">+8.75u</div>
-        <div class="tracker-stat-label">Units P/L</div>
-        <div class="tracker-stat-sub" id="tracker-season">2026 Season</div>
-      </div>
-      <div class="tracker-stat">
-        <div class="tracker-val blue" id="tracker-roi">+30%</div>
-        <div class="tracker-stat-label">ROI</div>
-        <div class="tracker-stat-sub" id="tracker-events">7 events tracked</div>
-      </div>
-    </div>
-    <a href="/lab-notes" class="btn-fill" style="display:inline-block;padding:14px 40px;">Get Lab Picks Pro</a>
-    <p class="tracker-note">1 unit = 1% of bankroll. Sleepers tracked separately, not included in hit rate.<br>Picks tracked from January 2026. Past results do not guarantee future outcomes.</p>
-  </div>
-</section>
 
 <!-- ========== EMAIL ========== -->
 <section class="email-section">
