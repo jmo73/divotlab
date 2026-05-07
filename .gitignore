@@ -4,3 +4,15 @@ node_modules/
 .env.local
 api/.env
 lab-notes/.env
+
+# Beehiiv newsletter content — not part of the website
+lab-notes/issues/
+lab-notes/lab-picks/20*.html
+
+# Local tool files — not part of the website
+instagram-library.html
+partnership-guide.html
+twitter-cards.html
+twitter-evergreen.html
+twitter-header.html
+twitter-templates.html

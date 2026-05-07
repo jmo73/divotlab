@@ -487,9 +487,36 @@ body {
   #app { padding: 16px; }
   .app-header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .tabs { overflow-x: auto; }
-  .value-table { overflow-x: auto; }
   .stats-grid { grid-template-columns: 1fr; }
-  .leaderboard-row { grid-template-columns: 50px 1fr 80px 85px 70px; padding: 12px 16px; font-size: 13px; }
+
+  /* Remove nested scroll containers — let the page scroll naturally */
+  .value-table {
+    max-height: none;
+    overflow-y: visible;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .leaderboard-table {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  /* Drop Win Prob column — too wide for 4 columns on mobile */
+  .leaderboard-row {
+    grid-template-columns: 44px 1fr 72px 72px;
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+  .lb-win-prob { display: none; }
+
+  /* Hide DG Model Odds and Best Book columns in value table — keep Player, Market, Book Odds, Edge, Confidence */
+  .value-table th:nth-child(3),
+  .value-table td:nth-child(3),
+  .value-table th:nth-child(4),
+  .value-table td:nth-child(4) { display: none; }
+
+  .value-table th { padding: 11px 10px; font-size: 10px; }
+  .value-table td { padding: 11px 10px; font-size: 13px; }
 }
 </style>
 </head>
