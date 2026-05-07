@@ -778,7 +778,11 @@ nav.light .nav-links a:hover { color:var(--black); }
    SEASON TRACKER
    ============================================= */
 .tracker-section {
-  background: var(--black);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(27,77,62,0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 15% 80%, rgba(44,95,124,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 85% 20%, rgba(91,191,133,0.06) 0%, transparent 50%),
+    var(--black);
   padding: 96px 48px;
   position: relative;
   overflow: hidden;
@@ -787,9 +791,9 @@ nav.light .nav-links a:hover { color:var(--black); }
 }
 .tracker-section::before {
   content: '';
-  position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
-  width: 700px; height: 700px;
-  background: radial-gradient(ellipse, rgba(91,191,133,0.06) 0%, transparent 65%);
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(91,191,133,0.35) 35%, rgba(90,143,168,0.25) 65%, transparent 100%);
   pointer-events: none;
 }
 .tracker-inner {
