@@ -1,6 +1,18 @@
 {
-  "tournament": "",
-  "week_of": "",
-  "published": "",
-  "picks": []
+  "tournament": "Truist Championship",
+  "week_of": "May 7–11, 2026",
+  "published": "2026-05-07",
+  "picks": [
+    {
+      "player": "Si Woo Kim",
+      "bet_type": "H2H",
+      "bet_detail": "over Patrick Cantlay",
+      "odds": "-125",
+      "book": "Bet365",
+      "confidence": "Medium",
+      "reasoning": "Course-fit model ranks Kim in the top tier of the field. His SG: Approach over the last 8 events places him well above Cantlay for this venue's demands, and the matchup is mispriced relative to what the model shows.",
+      "result": null,
+      "result_detail": null
+    }
+  ]
 }

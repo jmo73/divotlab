@@ -380,9 +380,9 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .live-refresh-btn:hover{color:var(--white);background:rgba(255,255,255,0.09);}
 .live-note{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.18);margin-left:auto;}
 .live-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.live-table-head{display:grid;grid-template-columns:48px 1fr 68px 68px 70px 70px 70px 70px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.live-table-head{display:grid;grid-template-columns:48px 1fr 68px 68px 66px 66px 66px 66px 58px 58px 58px 58px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .live-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
-.live-row{display:grid;grid-template-columns:48px 1fr 68px 68px 70px 70px 70px 70px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.live-row{display:grid;grid-template-columns:48px 1fr 68px 68px 66px 66px 66px 66px 58px 58px 58px 58px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .live-row:hover{background:rgba(255,255,255,0.025);}
 .live-row.is-pick{background:rgba(201,168,76,0.05);border-left:2px solid rgba(201,168,76,0.5);}
 .live-row.is-pick .live-player-name{color:var(--gold);}
@@ -397,6 +397,35 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .live-empty{padding:60px 20px;text-align:center;}
 .live-empty-title{font-size:15px;font-weight:600;color:rgba(250,250,250,0.35);margin-bottom:8px;}
 .live-empty-sub{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;}
+
+/* ── MATCHUP MARKET ── */
+.mu-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.mu-market-btns{display:flex;gap:4px;}
+.mu-market-btn{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.08em;padding:7px 14px;border-radius:5px;border:1px solid rgba(255,255,255,0.1);background:none;color:rgba(250,250,250,0.4);cursor:pointer;transition:all .18s;}
+.mu-market-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
+.mu-market-btn.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.mu-note{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.18);}
+.mu-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.mu-table-head{display:grid;grid-template-columns:1fr 32px 1fr 88px 80px 68px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.mu-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.mu-row{display:grid;grid-template-columns:1fr 32px 1fr 88px 80px 68px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.mu-row:hover{background:rgba(255,255,255,0.025);}
+.mu-row.has-value{background:rgba(91,191,133,0.03);}
+.mu3-table-head{display:grid;grid-template-columns:1fr 1fr 1fr 88px 80px 68px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.mu3-row{display:grid;grid-template-columns:1fr 1fr 1fr 88px 80px 68px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.mu3-row:hover{background:rgba(255,255,255,0.025);}
+.mu3-row.has-value{background:rgba(91,191,133,0.03);}
+.mu-player{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mu-player.favored{color:var(--green-light);}
+.mu-player.pick-flag{color:var(--gold);}
+.mu-vs{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);text-align:center;}
+.mu-odds-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--gold);}
+.mu-book-val{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.35);text-transform:uppercase;}
+.mu-edge{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.3);}
+.mu-edge.pos{color:var(--green-light);}
+.mu-empty{padding:60px 20px;text-align:center;}
+.mu-empty-title{font-size:15px;font-weight:600;color:rgba(250,250,250,0.35);margin-bottom:8px;}
+.mu-empty-sub{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -435,20 +464,35 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
   .h2h-pname{font-size:16px;}
   .h2h-cat-row{gap:8px;}
 
+  /* Matchup Market — hide Book + Edge on mobile */
+  .mu-table-head,.mu-row{grid-template-columns:1fr 28px 1fr 72px 64px !important;}
+  .mu3-table-head,.mu3-row{grid-template-columns:1fr 1fr 1fr 72px 64px !important;}
+  .mu-table-head .mu-th:nth-child(5),.mu-table-head .mu-th:nth-child(6),
+  .mu-row>div:nth-child(5),.mu-row>div:nth-child(6),
+  .mu3-table-head .mu-th:nth-child(5),.mu3-table-head .mu-th:nth-child(6),
+  .mu3-row>div:nth-child(5),.mu3-row>div:nth-child(6){display:none !important;}
+  .mu-note{display:none;}
+
   /* Picks Card */
   .picks-card-wrap{padding:16px 16px;}
   .picks-grid{grid-template-columns:1fr;}
 
-  /* Live Tab — 5 cols on mobile: Pos, Player, Total, Today, Win% */
-  .live-table-head,.live-row{grid-template-columns:36px 1fr 52px 52px 60px !important;}
+  /* Live Tab — 5 cols on mobile: Pos, Player, Total, Win%, Top10% */
+  .live-table-head,.live-row{grid-template-columns:36px 1fr 52px 54px 54px !important;}
+  .live-table-head .live-th:nth-child(4),
   .live-table-head .live-th:nth-child(5),
   .live-table-head .live-th:nth-child(6),
   .live-table-head .live-th:nth-child(7),
   .live-table-head .live-th:nth-child(8),
+  .live-table-head .live-th:nth-child(10),
+  .live-table-head .live-th:nth-child(12),
+  .live-row>div:nth-child(4),
   .live-row>div:nth-child(5),
   .live-row>div:nth-child(6),
   .live-row>div:nth-child(7),
-  .live-row>div:nth-child(8){display:none !important;}
+  .live-row>div:nth-child(8),
+  .live-row>div:nth-child(10),
+  .live-row>div:nth-child(12){display:none !important;}
   .live-note{display:none;}
 }
 </style>
@@ -549,6 +593,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
     <button class="pro-tab" onclick="switchTab('value',this)">Value Finder</button>
     <button class="pro-tab" onclick="switchTab('h2h',this)">H2H Tool</button>
     <button class="pro-tab" onclick="switchTab('live',this)">Live</button>
+    <button class="pro-tab" onclick="switchTab('matchup',this)">Matchups</button>
   </div>
 
   <!-- Tab 1: Course Fit -->
@@ -604,6 +649,20 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
     <div id="liveTable" style="display:none;"></div>
   </div>
 
+  <!-- Tab 5: Matchup Market -->
+  <div class="tab-content" id="tab-matchup">
+    <div class="mu-toolbar">
+      <div class="mu-market-btns">
+        <button class="mu-market-btn active" onclick="switchMuMarket('tournament_matchups',this)">Tournament</button>
+        <button class="mu-market-btn" onclick="switchMuMarket('round_matchups',this)">Round</button>
+        <button class="mu-market-btn" onclick="switchMuMarket('3_balls',this)">3-Ball</button>
+      </div>
+      <span class="mu-note">Model edge vs. live book lines · 30-min refresh</span>
+    </div>
+    <div id="muLoading" class="loading-msg"><div class="spin"></div><br>Loading matchup data…</div>
+    <div id="muTable" style="display:none;"></div>
+  </div>
+
   <div class="pro-disclaimer">
     <strong style="color:rgba(250,250,250,0.25);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
   </div>
@@ -619,6 +678,8 @@ var vfSort = {col:'edge', dir:-1};
 var proPicksData = null;
 var liveRefreshTimer = null;
 var isLiveTabActive = false;
+var muMarket = 'tournament_matchups';
+var muCache = {};
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -697,6 +758,9 @@ function switchTab(id, btn){
     liveRefreshTimer = setInterval(function(){ if(isLiveTabActive) loadLiveData(false); }, 90000);
   } else {
     if(liveRefreshTimer){ clearInterval(liveRefreshTimer); liveRefreshTimer=null; }
+  }
+  if(id==='matchup' && !muCache[muMarket]){
+    loadMatchupData(muMarket);
   }
 }
 
@@ -1201,6 +1265,177 @@ function runH2H(){
   result.classList.add('show');
 }
 
+// ── MATCHUP MARKET ───────────────────────────────────────────────────────────
+function switchMuMarket(market, btn){
+  muMarket = market;
+  document.querySelectorAll('.mu-market-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  if(muCache[market]){
+    renderMatchups(muCache[market], market);
+  } else {
+    loadMatchupData(market);
+  }
+}
+
+async function loadMatchupData(market){
+  var loadEl = document.getElementById('muLoading');
+  var tableEl = document.getElementById('muTable');
+  loadEl.innerHTML = '<div class="spin"></div><br>Loading…';
+  loadEl.style.display='block';
+  tableEl.style.display='none';
+  try {
+    var res = await fetch(API+'/api/matchup-odds?tour=pga&market='+market+'&odds_format=decimal');
+    var d = await res.json();
+    if(!d.success) throw new Error(d.error||'API error');
+    muCache[market] = d.data;
+    renderMatchups(d.data, market);
+  } catch(e){
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">Could not load matchup data</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday through Sunday of tournament week.<br>'+e.message+'</div></div>';
+    loadEl.style.display='block';
+    tableEl.style.display='none';
+  }
+}
+
+function muGetVal(row, field, player){
+  if(row[field]&&row[field][player]!=null) return row[field][player];
+  if(row[player+'_'+field]!=null) return row[player+'_'+field];
+  if(row[field+'_'+player]!=null) return row[field+'_'+player];
+  return null;
+}
+
+function renderMatchups(data, market){
+  var loadEl = document.getElementById('muLoading');
+  var tableEl = document.getElementById('muTable');
+  var matchups = data.matchups||data.data||(Array.isArray(data)?data:[]);
+
+  if(!matchups||!matchups.length){
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">No matchups available</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.</div></div>';
+    loadEl.style.display='block';
+    tableEl.style.display='none';
+    return;
+  }
+
+  var books = ['draftkings','fanduel','betmgm','bet365','caesars','pinnacle'];
+  var is3ball = market==='3_balls';
+  var pickNames = new Set();
+  if(proPicksData&&proPicksData.picks) proPicksData.picks.forEach(function(p){ pickNames.add(p.player); });
+
+  function decToAm(d){ if(!d||d<=1) return null; return d>=2?Math.round((d-1)*100):Math.round(-100/(d-1)); }
+  function fmtAm(am){ if(am==null) return '—'; return am>=0?'+'+am:''+am; }
+  function iProb(d){ return (!d||d<=1)?0:(1/d); }
+
+  function playerCell(name, favored, rowClass){
+    var isPick = pickNames.has(name);
+    return '<div class="mu-player'+(favored?' favored':'')+(isPick?' pick-flag':'')+(rowClass?' '+rowClass:'')+'">'
+      +name+(isPick?'<span class="live-pick-badge" style="margin-left:5px;">PICK</span>':'')
+    +'</div>';
+  }
+
+  var html = '<div class="mu-table-wrap">';
+
+  if(!is3ball){
+    html += '<div class="mu-table-head">'
+      +'<span class="mu-th">Player A</span>'
+      +'<span class="mu-th"></span>'
+      +'<span class="mu-th">Player B</span>'
+      +'<span class="mu-th">'+tip('Best Odds','Best American odds for the model-favored player across DraftKings, FanDuel, BetMGM, Bet365, Caesars, and Pinnacle.')+'</span>'
+      +'<span class="mu-th">'+tip('Book','Book offering the best odds.',true)+'</span>'
+      +'<span class="mu-th">'+tip('Edge','Model probability minus book implied probability. +5% means the model thinks this side is 5 points underpriced.',true)+'</span>'
+      +'<span class="mu-th">'+tip('Signal','Value = model edge ≥ 8%. Watch = edge ≥ 4%.',true)+'</span>'
+      +'</div>';
+
+    matchups.forEach(function(row){
+      var p1 = row.p1_player_name||row.player1_name||'';
+      var p2 = row.p2_player_name||row.player2_name||'';
+      if(!p1||!p2) return;
+
+      var dgP1 = muGetVal(row,'datagolf','p1')||muGetVal(row,'datagolf_baseline','p1');
+      var dgP2 = muGetVal(row,'datagolf','p2')||muGetVal(row,'datagolf_baseline','p2');
+      var modelP1 = dgP1?iProb(dgP1):0.5;
+      var modelP2 = dgP2?iProb(dgP2):0.5;
+      var favP1 = modelP1>=modelP2;
+      var favPrefix = favP1?'p1':'p2';
+
+      var bestOdds=0, bestBook='';
+      books.forEach(function(b){
+        var o = muGetVal(row,b,favPrefix);
+        if(o&&o>bestOdds){bestOdds=o;bestBook=b;}
+      });
+
+      var modelProb = favP1?modelP1:modelP2;
+      var impliedP  = bestOdds?iProb(bestOdds):0;
+      var edgePct   = impliedP?(modelProb-impliedP)*100:null;
+      var hasVal = edgePct!=null&&edgePct>=4;
+      var signal='', sigCls='';
+      if(edgePct!=null&&edgePct>=8){signal='Value';sigCls='vbadge-strong';}
+      else if(edgePct!=null&&edgePct>=4){signal='Watch';sigCls='vbadge-moderate';}
+
+      html += '<div class="mu-row'+(hasVal?' has-value':'')+'">'
+        +playerCell(p1, favP1)
+        +'<div class="mu-vs">vs</div>'
+        +playerCell(p2, !favP1)
+        +'<div class="mu-odds-val">'+(bestOdds?fmtAm(decToAm(bestOdds)):'—')+'</div>'
+        +'<div class="mu-book-val">'+(bestBook?bestBook.toUpperCase():'—')+'</div>'
+        +'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>'
+        +'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'
+      +'</div>';
+    });
+  } else {
+    html += '<div class="mu3-table-head">'
+      +'<span class="mu-th">Player A</span>'
+      +'<span class="mu-th">Player B</span>'
+      +'<span class="mu-th">Player C</span>'
+      +'<span class="mu-th">'+tip('Best Odds','Best American odds for the model-favored player.')+'</span>'
+      +'<span class="mu-th">'+tip('Book','Book offering best odds.',true)+'</span>'
+      +'<span class="mu-th">'+tip('Edge','Model probability minus book implied probability.',true)+'</span>'
+      +'<span class="mu-th">'+tip('Signal','Value = edge ≥ 8%. Watch = edge ≥ 4%.',true)+'</span>'
+      +'</div>';
+
+    matchups.forEach(function(row){
+      var players = [
+        {name:row.p1_player_name||'',prefix:'p1'},
+        {name:row.p2_player_name||'',prefix:'p2'},
+        {name:row.p3_player_name||'',prefix:'p3'}
+      ].filter(function(p){return p.name;});
+      if(players.length<2) return;
+
+      players.forEach(function(p){
+        p.dg = muGetVal(row,'datagolf',p.prefix)||muGetVal(row,'datagolf_baseline',p.prefix);
+        p.prob = p.dg?iProb(p.dg):(1/players.length);
+      });
+
+      var favored = players.slice().sort(function(a,b){return b.prob-a.prob;})[0];
+      var bestOdds=0, bestBook='';
+      books.forEach(function(b){
+        var o = muGetVal(row,b,favored.prefix);
+        if(o&&o>bestOdds){bestOdds=o;bestBook=b;}
+      });
+      var impliedP = bestOdds?iProb(bestOdds):0;
+      var edgePct  = impliedP?(favored.prob-impliedP)*100:null;
+      var hasVal = edgePct!=null&&edgePct>=4;
+      var signal='',sigCls='';
+      if(edgePct!=null&&edgePct>=8){signal='Value';sigCls='vbadge-strong';}
+      else if(edgePct!=null&&edgePct>=4){signal='Watch';sigCls='vbadge-moderate';}
+
+      html += '<div class="mu3-row'+(hasVal?' has-value':'')+'">';
+      players.forEach(function(p){
+        html += playerCell(p.name, p.prefix===favored.prefix);
+      });
+      if(players.length<3) html += '<div></div>';
+      html += '<div class="mu-odds-val">'+(bestOdds?fmtAm(decToAm(bestOdds)):'—')+'</div>'
+        +'<div class="mu-book-val">'+(bestBook?bestBook.toUpperCase():'—')+'</div>'
+        +'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>'
+        +'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'
+      +'</div>';
+    });
+  }
+
+  html += '</div>';
+  loadEl.style.display='none';
+  tableEl.innerHTML=html;
+  tableEl.style.display='block';
+}
+
 // ── PRO PICKS CARD ────────────────────────────────────────────────────────────
 async function loadProPicks(){
   try {
@@ -1331,23 +1566,32 @@ function renderLiveTable(statsData, predData){
     return '<span class="live-sg" style="color:'+c+';">'+s+'</span>';
   }
 
+  function probCell(v, highlight){
+    if(v==null) return '<span class="live-sg" style="color:rgba(250,250,250,0.25);">—</span>';
+    var pct = (v * 100).toFixed(1)+'%';
+    var c = highlight?'rgba(250,250,250,0.75)':'rgba(250,250,250,0.5)';
+    return '<span class="live-sg" style="color:'+c+';">'+pct+'</span>';
+  }
+
   var html = '<div class="live-table-wrap">'
     +'<div class="live-table-head">'
     +'<span class="live-th">Pos</span>'
     +'<span class="live-th">Player</span>'
     +'<span class="live-th">Total</span>'
     +'<span class="live-th">Today</span>'
-    +'<span class="live-th">'+tip('App','SG: Approach this tournament — event average')+'</span>'
     +'<span class="live-th">'+tip('OTT','SG: Off the Tee this tournament — event average')+'</span>'
+    +'<span class="live-th">'+tip('App','SG: Approach this tournament — event average')+'</span>'
     +'<span class="live-th">'+tip('ARG','SG: Around the Green this tournament — event average')+'</span>'
     +'<span class="live-th">'+tip('Putt','SG: Putting this tournament — event average')+'</span>'
-    +'<span class="live-th">'+tip('Win%','DataGolf model win probability — updated live during rounds')+'</span>'
+    +'<span class="live-th">'+tip('Win%','Model win probability — updated live. Decimals × 100 = %.')+'</span>'
+    +'<span class="live-th">'+tip('Top5%','Model probability of a top-5 finish — updated live.')+'</span>'
+    +'<span class="live-th">'+tip('Top10%','Model probability of a top-10 finish — updated live.')+'</span>'
+    +'<span class="live-th">'+tip('Top20%','Model probability of a top-20 finish — updated live.')+'</span>'
     +'</div>';
 
   rows.forEach(function(p){
     var isPick = pickNames.has(p.player_name);
     var pred = winMap[p.player_name];
-    var winStr = pred&&pred.win!=null?pred.win.toFixed(1)+'%':'—';
     var pos = p.current_pos||p.position||'—';
     var total = scoreStr(p.total);
     var today = scoreStr(p.today);
@@ -1356,11 +1600,14 @@ function renderLiveTable(statsData, predData){
       +'<div><span class="live-player-name">'+p.player_name+'</span>'+(isPick?'<span class="live-pick-badge">PICK</span>':'')+'</div>'
       +'<div class="live-score '+scoreCls(p.total)+'">'+total+'</div>'
       +'<div class="live-score '+scoreCls(p.today)+'">'+today+'</div>'
-      +'<div>'+sgCell(p.sg_app)+'</div>'
       +'<div>'+sgCell(p.sg_ott)+'</div>'
+      +'<div>'+sgCell(p.sg_app)+'</div>'
       +'<div>'+sgCell(p.sg_arg)+'</div>'
       +'<div>'+sgCell(p.sg_putt)+'</div>'
-      +'<div><span class="live-sg" style="color:rgba(250,250,250,0.6);">'+winStr+'</span></div>'
+      +'<div>'+probCell(pred&&pred.win,true)+'</div>'
+      +'<div>'+probCell(pred&&pred.top_5,false)+'</div>'
+      +'<div>'+probCell(pred&&pred.top_10,false)+'</div>'
+      +'<div>'+probCell(pred&&pred.top_20,false)+'</div>'
     +'</div>';
   });
   html += '</div>';

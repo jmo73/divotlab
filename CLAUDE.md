@@ -269,11 +269,88 @@ The Lab is free and public. Pro → is the gold CTA button linking to the gated 
 
 ## Active Projects / In Progress
 
-- **Pro page (/pro)** — BUILT. Email-gated hub for Pro subscribers. Tabs: Course Fit (full field 0-100), Value Finder (sortable, edge + fit signal), H2H Tool (model insight), Live (live SG stats + pick tracking, auto-refresh 90s). "This Week's Card" section above tabs loads from pro-picks.json. API endpoints: /api/course-fit, /api/betting-odds (4 markets), /api/live-stats, /api/live-tournament.
+- **Pro page (/pro)** — BUILT. Email-gated hub for Pro subscribers. Tabs: Course Fit (full field 0-100), Value Finder (sortable, edge + fit signal), H2H Tool (model insight), Live (live SG + Win%/Top5/10/20, auto-refresh 90s). "This Week's Card" above tabs from pro-picks.json.
 - **Course-fit leaderboard** — BUILT. `leaderboard.html` + `/api/course-fit`. Top 10 free, full field paywalled. Next: course history component.
 - **Course-fit model** — IMPROVED. 40+ course profiles, form blending (65% L24 + 35% L12), 0-100 normalized score. Next: derive weights from historical data via /api/derive-course-weights.
 - **Between the Ears app partnership** — collaboration in early discussion. They integrate Divot Lab analytics, display "Powered by Divot Lab."
 - **Twitter/X account** — just launched. Templates and evergreen tweet library built. Focus: pick reveals, data takes, reply engagement during tournament rounds.
+
+---
+
+## Pro Dashboard Build Roadmap
+
+Full plan for expanding /pro with all available DataGolf data. Build in priority order.
+
+### DataGolf Endpoint Status
+
+| Endpoint | Status | Notes |
+|---|---|---|
+| `preds/live-tournament-stats` | ✅ Live tab | Live SG per round, event avg |
+| `preds/in-play` | ✅ Live tab | Win%/Top5/10/20 updated live |
+| `preds/pre-tournament` | ✅ Value Finder | Pre-round finish probabilities |
+| `betting-tools/outrights` | ✅ Value Finder | 4 markets, 6 books, model edge |
+| `betting-tools/matchups` | ⚡ partial | API built, H2H tool manual only — needs Matchup Market tab |
+| `preds/approach-skill` | ❌ not in UI | SG: App by distance bucket (100–125, 125–150, 150–175, 175–200, 200+) |
+| `preds/player-decompositions` | ❌ not in UI | Skill components: driving, irons, wedges, short game |
+| `preds/fantasy-projection-defaults` | ❌ not in UI | DFS salary + projected points |
+| `historical-raw/rounds` | ❌ not in UI | Round-level SG + scoring, 22 tours |
+| `historical-raw/event-results` | ❌ not in UI | Actual finishes, earnings, FedExCup pts |
+| `historical-odds/outrights` | ❌ not in UI | Opening/closing lines 2019–2025 |
+| `historical-odds/matchups` | ❌ not in UI | Historical H2H lines for backtesting |
+| `historical-dfs` | ❌ not in UI | DK/FD points vs SG correlation |
+| `preds/pre-tournament-archive` | ❌ not in UI | Historical pre-tournament predictions |
+
+### Build Priority
+
+**1. Matchup Market tab** — BUILT (2026-05-08)
+- New tab on /pro showing the full live H2H + 3-ball board from `betting-tools/matchups`
+- Three sub-views: Tournament Matchups, Round Matchups, 3-Balls
+- Model edge column: DataGolf implied probability vs sportsbook line
+- Value flag: highlight matchups where model disagrees with the market
+- Picks highlighted (any player in pro-picks.json)
+- Most actionable for bettors — replaces the manual H2H tool for pre-bet decisions
+
+**2. Approach Skill distance panel**
+- Click-to-expand row inside Course Fit table (or player hover card)
+- Fetches `preds/approach-skill` — shows SG: App broken into distance buckets
+- Genuine differentiator: shows if a player is elite from 150 but weak from 175
+- Relevant when a course has a specific "scoring hole" distance
+
+**3. Historical Backtesting dashboard**
+- New section or tab: "Model Accuracy"
+- Uses `historical-odds/outrights` + `historical-raw/event-results`
+- For each course: when model ranked a player top-5 probability, how often did they finish top 5?
+- Calibration chart: model probability bins vs actual hit rate
+- This is the verification product — makes the track record scientific
+
+**4. Player Trajectory indicators**
+- Rising/Falling badge in Course Fit + Value Finder rows
+- Compare L12 SG vs L24 SG per category — already computing both for blending
+- "Rising" = L12 meaningfully above L24 in the categories this course rewards
+- "Falling" = opposite
+- No new API calls needed — data already fetched
+
+**5. Historical Model Accuracy tracker**
+- `preds/pre-tournament-archive` + `historical-raw/event-results`
+- Show: at each venue, how has the top-ranked course-fit player finished historically?
+- Validates the course-fit model with real outcomes
+- Good Pro explainer content + credibility for subscriber retention
+
+**6. FedExCup + Earnings vs SG analysis**
+- `historical-raw/event-results` — earnings + FedExCup pts per player per event
+- Correlate with historical SG categories to show which skills drive earnings
+- Good article content + Pro educational section
+- Example insight: "SG: Approach explains 62% of earnings variance on PGA Tour"
+
+**7. DFS correlation section**
+- `historical-dfs` — DK/FD fantasy points per player per slate
+- Correlate with SG categories — which stats best predict DFS production
+- Useful if adding a DFS angle to Lab Notes Pro
+
+**8. Full Matchup backtesting**
+- `historical-odds/matchups` — historical H2H lines
+- Compare DataGolf model picks in H2H markets to closing lines and actual results
+- Builds the scientific case for H2H picks as the highest-edge bet type
 
 ---
 
