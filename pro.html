@@ -4,7 +4,6 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
 <meta charset="UTF-8">
-<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pro — Divot Lab</title>
 <meta name="description" content="Lab Notes Pro subscriber analytics hub. Full course-fit rankings, value finder, and H2H comparison tool for every PGA Tour event.">
@@ -174,20 +173,6 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .pc-odds-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);letter-spacing:0.08em;}
 .pc-odds-val{font-family:var(--mono);font-size:13px;color:var(--gold);}
 .pc-odds-book{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.22);}
-/* light mode */
-html[data-theme="light"] .tip-icon{color:rgba(28,27,24,0.4);background:rgba(28,27,24,0.08);}
-html[data-theme="light"] .tip-box{background:rgba(255,255,255,0.98);border-color:rgba(28,27,24,0.12);color:rgba(28,27,24,0.72);}
-html[data-theme="light"] .tip-box strong{color:#1C1B18;}
-html[data-theme="light"] #playerCard{background:rgba(255,255,255,0.98);border-color:rgba(28,27,24,0.12);box-shadow:0 12px 40px rgba(0,0,0,0.12);}
-html[data-theme="light"] .pc-name{color:#1C1B18;}
-html[data-theme="light"] .pc-country{color:rgba(28,27,24,0.35);}
-html[data-theme="light"] .pc-fit-score{color:#1B4D3E;}
-html[data-theme="light"] .pc-fit-label,.pc-sg-lbl,.pc-odds-label{color:rgba(28,27,24,0.35);}
-html[data-theme="light"] .pc-fit-row{border-bottom-color:rgba(28,27,24,0.08);}
-html[data-theme="light"] .pc-odds-row{border-top-color:rgba(28,27,24,0.07);}
-html[data-theme="light"] .pc-sg-track{background:rgba(28,27,24,0.08);}
-html[data-theme="light"] .pc-odds-val{color:#B8960C;}
-html[data-theme="light"] .pc-odds-book{color:rgba(28,27,24,0.3);}
 
 /* ── VALUE FINDER TAB ── */
 .vf-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
@@ -261,11 +246,8 @@ html[data-theme="light"] .pc-odds-book{color:rgba(28,27,24,0.3);}
 /* ── DISCLAIMER ── */
 .pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
 
-/* ── THEME TOGGLE ── */
-.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(250,250,250,0.6);cursor:pointer;transition:all .2s;flex-shrink:0;}
-.theme-toggle:hover{background:rgba(255,255,255,0.15);color:rgba(250,250,250,0.9);}
-
-/* ── LIGHT MODE ── */
+/* (light mode removed — /pro is always dark) */
+/*
 html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
 html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
 html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
@@ -367,9 +349,7 @@ html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 html[data-theme="light"] .h2h-val{color:rgba(28,27,24,0.6);}
-html[data-theme="light"] .h2h-breakdown{background:#F8F7F3;}
-/* Disclaimer */
-html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.25);}
+*/
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -399,7 +379,6 @@ html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.25);}
     <a href="/the-lab">The Lab</a>
     <a href="/articles">Articles</a>
     <a href="/lab-notes">Lab Notes</a>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
     <a href="/pro" class="nav-pro-btn active">Pro</a>
   </div>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -491,18 +470,10 @@ html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.25);}
         <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
         <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <div style="display:flex;gap:6px;">
-          <button class="vf-filter active" id="ef-all" onclick="setMinEdge(0,this)">All edges</button>
-          <button class="vf-filter" id="ef-5" onclick="setMinEdge(5,this)">5%+</button>
-          <button class="vf-filter" id="ef-10" onclick="setMinEdge(10,this)">10%+</button>
-          <button class="vf-filter" id="ef-15" onclick="setMinEdge(15,this)">15%+</button>
-        </div>
-        <label class="vf-toggle">
-          <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
-          Hide longshots (&gt;+1000)
-        </label>
-      </div>
+      <label class="vf-toggle">
+        <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
+        Hide longshots (&gt;+1000)
+      </label>
     </div>
     <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
     <div id="vfTable" style="display:none;"></div>
@@ -535,8 +506,7 @@ var courseFitData = null;
 var valueBetsData = [];
 var currentVfFilter = 'all';
 var top10OddsMap = {}; // player_name → {am, book, impliedProb}
-var vfSort = {col:'edge', dir:-1}; // col: 'odds'|'edge'|'fit'|'book' · dir: 1=asc, -1=desc
-var vfMinEdge = 5; // default: only show 5%+ edge bets
+var vfSort = {col:'edge', dir:-1}; // col: 'odds'|'edge'|'fit'|'prob' · dir: 1=asc, -1=desc
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -596,6 +566,7 @@ function showApp(email){
   document.getElementById('proApp').classList.add('show');
   document.getElementById('appUserEmail').textContent = email;
   initPlayerCard();
+  initTooltips();
   loadAllData();
 }
 function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
@@ -671,12 +642,30 @@ async function loadValueData(){
 }
 
 // ── TOOLTIP HELPER ────────────────────────────────────────────────────────────
-function tip(label, tipHtml, leftAlign){
+// suffix = optional sort arrow, placed between label and ? icon
+function tip(label, tipHtml, leftAlign, suffix){
   return '<span class="tip'+(leftAlign?' tip-left':'')+'">'
     +label
+    +(suffix?'<span class="sort-arrow" style="margin:0 2px;">'+suffix+'</span>':'')
     +'<i class="tip-icon">?</i>'
     +'<span class="tip-box">'+tipHtml+'</span>'
     +'</span>';
+}
+
+// Fixed-position tooltips — bypasses overflow:hidden on table wrappers
+function initTooltips(){
+  document.addEventListener('mouseover',function(e){
+    var tipEl=e.target.closest('.tip');
+    if(!tipEl) return;
+    var box=tipEl.querySelector('.tip-box');
+    if(!box) return;
+    var rect=tipEl.getBoundingClientRect();
+    var left=rect.left+rect.width/2-115;
+    if(left<8) left=8;
+    if(left+230>window.innerWidth-8) left=window.innerWidth-238;
+    var top=rect.top-10;
+    box.style.cssText='position:fixed;bottom:auto;top:'+top+'px;left:'+left+'px;transform:translateY(-100%);width:230px;';
+  });
 }
 
 // ── PLAYER HOVER CARD ─────────────────────────────────────────────────────────
@@ -850,13 +839,6 @@ function filterValue(market, btn){
   renderValueFinder(valueBetsData, market);
 }
 
-function setMinEdge(pct, btn){
-  vfMinEdge = pct;
-  document.querySelectorAll('#ef-all,#ef-5,#ef-10,#ef-15').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  renderValueFinder(valueBetsData, currentVfFilter);
-}
-
 function sortVF(col){
   if(vfSort.col===col) vfSort.dir *= -1; else { vfSort.col=col; vfSort.dir=-1; }
   renderValueFinder(valueBetsData, currentVfFilter);
@@ -875,8 +857,6 @@ function renderValueFinder(bets, market){
     // Hide very long odds (implied prob < 6.25%, i.e. > +1500 American)
     // Hide longshots: decimal odds > 11.0 = American +1000
     if(hideLong && b.bestOdds > 11.0) return false;
-    // Minimum edge filter
-    if(b.edgePct < vfMinEdge) return false;
     return b.edge > 0;
   });
 
@@ -919,15 +899,17 @@ function renderValueFinder(bets, market){
     return '<span class="vf-th'+(isActive?' sorted':'')+'" onclick="sortVF(\''+col+'\')">'+label+'<span class="sort-arrow">'+arrow+'</span></span>';
   }
 
+  function arrow(col){ return vfSort.col===col?(vfSort.dir===-1?'↓':'↑'):''; }
+
   var html = '<div class="vf-table">'
-    +'<div class="vf-head">'
+    +'<div class="vf-head" style="grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;">'
     +'<span class="vf-th">Player</span>'
-    +'<span class="vf-th '+( vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.')+'<span class="sort-arrow">'+(vfSort.col==='odds'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
-    +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced by the market. A 15% edge means the model sees 15% more expected value than fair odds.')+'<span class="sort-arrow">'+(vfSort.col==='edge'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
-    +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability that this specific outcome occurs — e.g., finishing top 10. This is NOT an outright win probability. A top-20 bet may show 60% — meaning the model gives 60% odds of finishing inside the top 20.')+'<span class="sort-arrow">'+(vfSort.col==='prob'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
-    +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')">'+tip('Fit Score','<strong>Course-Fit Score</strong>This player\'s 0–100 score for how well their strokes gained profile matches this week\'s venue. Higher = better course fit. Combined with edge, a high fit + high edge bet is the strongest signal.')+'<span class="sort-arrow">'+(vfSort.col==='fit'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
-    +'<span class="vf-th">'+tip('Best Book','<strong>Best Sportsbook</strong>The book offering the highest odds for this bet at time of page load. Always verify current lines before placing — odds move.',true)+'</span>'
-    +'<span class="vf-th">'+tip('Signal','<strong>Signal Rating</strong><strong>High Conf</strong> = positive edge AND course-fit score ≥ 70. Both the odds value AND the course fit agree.<strong>Watch</strong> = one condition met but not both.<strong>—</strong> = neither condition strongly met.',true)+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.',false,arrow('odds'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced. A 15% edge means 15% more expected value than fair odds.',false,arrow('edge'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')" style="white-space:nowrap;">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability this specific outcome occurs (e.g., top-10 finish). NOT an outright win probability — a top-20 bet showing 60% means 60% chance of finishing top 20.',false,arrow('prob'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')" style="white-space:nowrap;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what wins at this venue. High fit + high edge = strongest signal.',false,arrow('fit'))+'</span>'
+    +'<span class="vf-th" style="white-space:nowrap;">'+tip('Best Book','<strong>Best Sportsbook</strong>Book offering the highest odds for this bet at page load time. Always verify before placing.',true)+'</span>'
+    +'<span class="vf-th" style="white-space:nowrap;">'+tip('Signal','<strong>Signal Rating</strong><strong>High Conf</strong> = positive edge AND fit score ≥ 70<strong>Watch</strong> = one condition met<strong>—</strong> = neither strongly met',true)+'</span>'
     +'</div>';
 
   filtered.forEach(function(b){
@@ -957,7 +939,7 @@ function renderValueFinder(bets, market){
   // Update vf-head grid cols to match new column count (7)
   var style = document.getElementById('vfDynStyle');
   if(!style){ style=document.createElement('style'); style.id='vfDynStyle'; document.head.appendChild(style); }
-  style.textContent = '.vf-head,.vf-row{grid-template-columns:1fr 80px 80px 80px 72px 80px 80px;}';
+  style.textContent = '.vf-row{grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;}';
 
   document.getElementById('vfTable').innerHTML=html;
   document.getElementById('vfTable').style.display='block';
@@ -1062,24 +1044,35 @@ function runH2H(){
   var keycat = catAdvs[0];
   var keywinner = keycat.diff > 0.01 ? nameA : keycat.diff < -0.01 ? nameB : null;
   var overallWinner = aWins ? nameA : nameB;
-  var gap = Math.abs(scoreA-scoreB);
-  var conf = gap>=25?'Strong':gap>=12?'Moderate':'Marginal';
-  var confCol = gap>=25?'var(--green-light)':gap>=12?'var(--gold)':'rgba(250,250,250,0.35)';
+  var gap = Math.abs(scoreA - scoreB);
+  var gapDisplay = gap.toFixed(2);
+  // Thresholds in weighted SG units (not 0-100 scale)
+  var conf = gap>=0.28?'Strong':gap>=0.12?'Moderate':'Marginal';
+  var confCol = gap>=0.28?'var(--green-light)':gap>=0.12?'var(--gold)':'rgba(250,250,250,0.4)';
 
   var insightLine = keywinner
-    ? overallWinner+' leads on <strong>'+keycat.label+'</strong>'
-      +' ('+Math.round(keycat.weight*100)+'% of this week\'s score), '
-      +'the biggest differentiator for this venue.'
-    : 'The two players are closely matched across all categories for this course.';
+    ? '<strong style="color:rgba(250,250,250,0.88);">'+overallWinner+'</strong>'
+      +' holds the edge on <strong style="color:rgba(250,250,250,0.88);">'+keycat.label+'</strong>'
+      +' (+'+Math.abs(keycat.diff).toFixed(2)+' SG, weighted '+Math.round(keycat.weight*100)+'%)'
+      +' — the biggest differentiator for this week\'s course profile.'
+    : 'The players are closely matched across all categories for this venue.';
 
-  html += '<div style="padding:16px 24px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);">'
-    +'<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,250,250,0.28);font-family:var(--mono);margin-bottom:8px;">Model Insight</div>'
-    +'<div style="font-size:13px;color:rgba(250,250,250,0.6);line-height:1.6;margin-bottom:8px;">'+insightLine+'</div>'
-    +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
-      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);">Confidence:</span>'
-      +'<span style="font-family:var(--mono);font-size:12px;font-weight:600;color:'+confCol+';">'+conf+'</span>'
-      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);">·</span>'
-      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);">Weighted gap: <strong style="color:rgba(250,250,250,0.5);">'+gap+' pts</strong></span>'
+  var rec = gap>=0.28
+    ? 'Consider backing <strong>'+overallWinner+'</strong> in the H2H market if favorable odds are available.'
+    : gap>=0.12
+    ? 'Model shows a moderate edge for '+overallWinner+'. Factor in current form and available odds.'
+    : 'Narrow model advantage — treat as a toss-up and focus on odds value.';
+
+  html += '<div style="padding:18px 24px;background:rgba(27,77,62,0.05);border-top:1px solid rgba(91,191,133,0.1);display:flex;align-items:flex-start;gap:20px;">'
+    +'<div style="flex:1;">'
+      +'<div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(91,191,133,0.5);font-family:var(--mono);margin-bottom:8px;">Model Insight</div>'
+      +'<div style="font-size:13px;color:rgba(250,250,250,0.62);line-height:1.6;margin-bottom:8px;">'+insightLine+'</div>'
+      +'<div style="font-size:12px;color:rgba(250,250,250,0.42);line-height:1.55;font-style:italic;">'+rec+'</div>'
+    +'</div>'
+    +'<div style="flex-shrink:0;text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px 16px;min-width:90px;">'
+      +'<div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;">Confidence</div>'
+      +'<div style="font-family:var(--mono);font-size:15px;font-weight:600;color:'+confCol+';margin-bottom:4px;">'+conf+'</div>'
+      +'<div style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.22);">Δ'+gapDisplay+' wSG</div>'
     +'</div>'
     +'</div>';
 
@@ -1091,6 +1084,5 @@ function runH2H(){
 // ── INIT ──────────────────────────────────────────────────────────────────────
 checkAuth();
 </script>
-<script src="/assets/js/theme.js"></script>
 </body>
 </html>
