@@ -324,10 +324,18 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
         <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
         <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
       </div>
-      <label class="vf-toggle">
-        <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
-        Hide longshots (&gt;+1500)
-      </label>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;gap:6px;">
+          <button class="vf-filter active" id="ef-all" onclick="setMinEdge(0,this)">All edges</button>
+          <button class="vf-filter" id="ef-5" onclick="setMinEdge(5,this)">5%+</button>
+          <button class="vf-filter" id="ef-10" onclick="setMinEdge(10,this)">10%+</button>
+          <button class="vf-filter" id="ef-15" onclick="setMinEdge(15,this)">15%+</button>
+        </div>
+        <label class="vf-toggle">
+          <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
+          Hide longshots (&gt;+1000)
+        </label>
+      </div>
     </div>
     <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
     <div id="vfTable" style="display:none;"></div>
@@ -361,6 +369,7 @@ var valueBetsData = [];
 var currentVfFilter = 'all';
 var top10OddsMap = {}; // player_name → {am, book, impliedProb}
 var vfSort = {col:'edge', dir:-1}; // col: 'odds'|'edge'|'fit'|'book' · dir: 1=asc, -1=desc
+var vfMinEdge = 5; // default: only show 5%+ edge bets
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -584,6 +593,13 @@ function filterValue(market, btn){
   renderValueFinder(valueBetsData, market);
 }
 
+function setMinEdge(pct, btn){
+  vfMinEdge = pct;
+  document.querySelectorAll('#ef-all,#ef-5,#ef-10,#ef-15').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderValueFinder(valueBetsData, currentVfFilter);
+}
+
 function sortVF(col){
   if(vfSort.col===col) vfSort.dir *= -1; else { vfSort.col=col; vfSort.dir=-1; }
   renderValueFinder(valueBetsData, currentVfFilter);
@@ -600,8 +616,10 @@ function renderValueFinder(bets, market){
     return true;
   })).filter(function(b){
     // Hide very long odds (implied prob < 6.25%, i.e. > +1500 American)
-    if(hideLong && b.amOdds > 1500) return false;
-    // Only show positive edge
+    // Hide longshots: decimal odds > 11.0 = American +1000
+    if(hideLong && b.bestOdds > 11.0) return false;
+    // Minimum edge filter
+    if(b.edgePct < vfMinEdge) return false;
     return b.edge > 0;
   });
 
@@ -649,7 +667,7 @@ function renderValueFinder(bets, market){
     +'<span class="vf-th">Player</span>'
     +th('Odds','odds')
     +th('Edge %','edge')
-    +th('Win Prob','prob')
+    +th('Hit Prob','prob')
     +th('Fit Score','fit')
     +'<span class="vf-th">Best Book</span>'
     +'<span class="vf-th">Signal</span>'
