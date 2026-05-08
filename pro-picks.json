@@ -9,8 +9,52 @@
       "bet_detail": "over Patrick Cantlay",
       "odds": "-125",
       "book": "Bet365",
+      "confidence": "High",
+      "reasoning": "DG prices Kim as -133 fair. Bet365 at -125 gives 8 cents of edge. Kim ranks 6th in the full model, Cantlay 12th.",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "J.J. Spaun",
+      "bet_type": "Top 20",
+      "bet_detail": null,
+      "odds": "+175",
+      "book": "FanDuel",
+      "confidence": "High",
+      "reasoning": "FD +175 vs DG fair +168 — one of the only Top 20 bets on the board where the book offers more than model fair value.",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Xander Schauffele",
+      "bet_type": "H2H",
+      "bet_detail": "over Matt Fitzpatrick",
+      "odds": "-125",
+      "book": "Bovada",
       "confidence": "Medium",
-      "reasoning": "Course-fit model ranks Kim in the top tier of the field. His SG: Approach over the last 8 events places him well above Cantlay for this venue's demands, and the matchup is mispriced relative to what the model shows.",
+      "reasoning": "DG has Schauffele as -123 fair over Fitzpatrick. Bovada void line at -125 is essentially flat to model fair. Two runner-up finishes at Quail Hollow.",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Min Woo Lee",
+      "bet_type": "Top 10",
+      "bet_detail": null,
+      "odds": "+340",
+      "book": "FanDuel",
+      "confidence": "Medium",
+      "reasoning": "Cleanest Top 10 on the board: FD +340 vs DG fair +358, only 18 cents off. Lee ranks 9th in the full model.",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Jake Knapp",
+      "bet_type": "Top 10",
+      "bet_detail": null,
+      "odds": "+430",
+      "book": "FanDuel",
+      "confidence": "Medium",
+      "reasoning": "FD +430 vs DG fair +444 — 14 cents off. Distance profile fits a course that has favored bombers. Small unit.",
       "result": null,
       "result_detail": null
     }

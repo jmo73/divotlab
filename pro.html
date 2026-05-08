@@ -352,7 +352,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .picks-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .picks-card-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:20px;}
 .picks-card-tourney{font-size:12px;color:rgba(250,250,250,0.3);}
-.picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,300px));gap:12px;}
 .pick-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;}
 .pick-card.win{border-color:rgba(91,191,133,0.3);}
 .pick-card.loss{border-color:rgba(217,72,72,0.2);}
@@ -394,6 +394,9 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .live-neg-score{color:var(--red);}
 .live-zero{color:rgba(250,250,250,0.35);}
 .live-sg{font-family:var(--mono);font-size:11px;}
+.live-th.sorted{color:var(--gold)!important;}
+.live-th[onclick]{cursor:pointer;}
+.live-th[onclick]:hover{color:rgba(250,250,250,0.6);}
 .live-empty{padding:60px 20px;text-align:center;}
 .live-empty-title{font-size:15px;font-weight:600;color:rgba(250,250,250,0.35);margin-bottom:8px;}
 .live-empty-sub{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;}
@@ -680,6 +683,9 @@ var liveRefreshTimer = null;
 var isLiveTabActive = false;
 var muMarket = 'tournament_matchups';
 var muCache = {};
+var liveSort = {col:'total', dir:1};   // dir: 1=asc (lower=better for score), -1=desc
+var liveStatsCache = null;
+var livePredCache = null;
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -1284,13 +1290,13 @@ async function loadMatchupData(market){
   loadEl.style.display='block';
   tableEl.style.display='none';
   try {
-    var res = await fetch(API+'/api/matchup-odds?tour=pga&market='+market+'&odds_format=decimal');
+    var res = await fetch(API+'/api/matchup-odds?tour=pga&market='+market+'&odds_format=american');
     var d = await res.json();
     if(!d.success) throw new Error(d.error||'API error');
     muCache[market] = d.data;
     renderMatchups(d.data, market);
   } catch(e){
-    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">Could not load matchup data</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday through Sunday of tournament week.<br>'+e.message+'</div></div>';
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">Could not load matchup data</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.<br><span style="color:rgba(250,250,250,0.2);">'+e.message+'</span></div></div>';
     loadEl.style.display='block';
     tableEl.style.display='none';
   }
@@ -1309,7 +1315,9 @@ function renderMatchups(data, market){
   var matchups = data.matchups||data.data||(Array.isArray(data)?data:[]);
 
   if(!matchups||!matchups.length){
-    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">No matchups available</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.</div></div>';
+    var keys = data?Object.keys(data).join(', '):'(empty)';
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">No matchups found</div>'
+      +'<div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.<br><span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);">API keys: '+keys+'</span></div></div>';
     loadEl.style.display='block';
     tableEl.style.display='none';
     return;
@@ -1320,9 +1328,11 @@ function renderMatchups(data, market){
   var pickNames = new Set();
   if(proPicksData&&proPicksData.picks) proPicksData.picks.forEach(function(p){ pickNames.add(p.player); });
 
-  function decToAm(d){ if(!d||d<=1) return null; return d>=2?Math.round((d-1)*100):Math.round(-100/(d-1)); }
-  function fmtAm(am){ if(am==null) return '—'; return am>=0?'+'+am:''+am; }
-  function iProb(d){ return (!d||d<=1)?0:(1/d); }
+  // American odds helpers
+  function amToProb(am){ if(!am||am===0) return 0.5; return am>0?100/(am+100):(-am)/((-am)+100); }
+  function fmtAm(am){ if(am==null) return '—'; return am>0?'+'+am:''+am; }
+  // Best-odds finder returns highest american odds (most favorable to bettor)
+  function bestAm(vals){ var b=null; vals.forEach(function(v){ if(v!=null&&(b===null||v>b)) b=v; }); return b; }
 
   function playerCell(name, favored, rowClass){
     var isPick = pickNames.has(name);
@@ -1349,24 +1359,26 @@ function renderMatchups(data, market){
       var p2 = row.p2_player_name||row.player2_name||'';
       if(!p1||!p2) return;
 
-      var dgP1 = muGetVal(row,'datagolf','p1')||muGetVal(row,'datagolf_baseline','p1');
-      var dgP2 = muGetVal(row,'datagolf','p2')||muGetVal(row,'datagolf_baseline','p2');
-      var modelP1 = dgP1?iProb(dgP1):0.5;
-      var modelP2 = dgP2?iProb(dgP2):0.5;
+      // DataGolf model american odds for each player
+      var dgP1am = muGetVal(row,'datagolf','p1')||muGetVal(row,'datagolf_baseline','p1');
+      var dgP2am = muGetVal(row,'datagolf','p2')||muGetVal(row,'datagolf_baseline','p2');
+      var modelP1 = dgP1am!=null?amToProb(dgP1am):0.5;
+      var modelP2 = dgP2am!=null?amToProb(dgP2am):0.5;
       var favP1 = modelP1>=modelP2;
       var favPrefix = favP1?'p1':'p2';
 
-      var bestOdds=0, bestBook='';
+      // Best book american odds for the model-favored player
+      var bestAmo=null, bestBook='';
       books.forEach(function(b){
         var o = muGetVal(row,b,favPrefix);
-        if(o&&o>bestOdds){bestOdds=o;bestBook=b;}
+        if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
       });
 
       var modelProb = favP1?modelP1:modelP2;
-      var impliedP  = bestOdds?iProb(bestOdds):0;
-      var edgePct   = impliedP?(modelProb-impliedP)*100:null;
+      var impliedP  = bestAmo!=null?amToProb(bestAmo):0;
+      var edgePct   = impliedP>0?(modelProb-impliedP)*100:null;
       var hasVal = edgePct!=null&&edgePct>=4;
-      var signal='', sigCls='';
+      var signal='',sigCls='';
       if(edgePct!=null&&edgePct>=8){signal='Value';sigCls='vbadge-strong';}
       else if(edgePct!=null&&edgePct>=4){signal='Watch';sigCls='vbadge-moderate';}
 
@@ -1374,7 +1386,7 @@ function renderMatchups(data, market){
         +playerCell(p1, favP1)
         +'<div class="mu-vs">vs</div>'
         +playerCell(p2, !favP1)
-        +'<div class="mu-odds-val">'+(bestOdds?fmtAm(decToAm(bestOdds)):'—')+'</div>'
+        +'<div class="mu-odds-val">'+(bestAmo!=null?fmtAm(bestAmo):'—')+'</div>'
         +'<div class="mu-book-val">'+(bestBook?bestBook.toUpperCase():'—')+'</div>'
         +'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>'
         +'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'
@@ -1400,18 +1412,18 @@ function renderMatchups(data, market){
       if(players.length<2) return;
 
       players.forEach(function(p){
-        p.dg = muGetVal(row,'datagolf',p.prefix)||muGetVal(row,'datagolf_baseline',p.prefix);
-        p.prob = p.dg?iProb(p.dg):(1/players.length);
+        var dgAm = muGetVal(row,'datagolf',p.prefix)||muGetVal(row,'datagolf_baseline',p.prefix);
+        p.prob = dgAm!=null?amToProb(dgAm):(1/players.length);
       });
 
       var favored = players.slice().sort(function(a,b){return b.prob-a.prob;})[0];
-      var bestOdds=0, bestBook='';
+      var bestAmo=null, bestBook='';
       books.forEach(function(b){
         var o = muGetVal(row,b,favored.prefix);
-        if(o&&o>bestOdds){bestOdds=o;bestBook=b;}
+        if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
       });
-      var impliedP = bestOdds?iProb(bestOdds):0;
-      var edgePct  = impliedP?(favored.prob-impliedP)*100:null;
+      var impliedP = bestAmo!=null?amToProb(bestAmo):0;
+      var edgePct  = impliedP>0?(favored.prob-impliedP)*100:null;
       var hasVal = edgePct!=null&&edgePct>=4;
       var signal='',sigCls='';
       if(edgePct!=null&&edgePct>=8){signal='Value';sigCls='vbadge-strong';}
@@ -1422,7 +1434,7 @@ function renderMatchups(data, market){
         html += playerCell(p.name, p.prefix===favored.prefix);
       });
       if(players.length<3) html += '<div></div>';
-      html += '<div class="mu-odds-val">'+(bestOdds?fmtAm(decToAm(bestOdds)):'—')+'</div>'
+      html += '<div class="mu-odds-val">'+(bestAmo!=null?fmtAm(bestAmo):'—')+'</div>'
         +'<div class="mu-book-val">'+(bestBook?bestBook.toUpperCase():'—')+'</div>'
         +'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>'
         +'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'
@@ -1482,6 +1494,16 @@ function renderPicksCard(d){
   document.getElementById('picksCardWrap').style.display='block';
 }
 
+function sortLive(col){
+  if(liveSort.col===col){ liveSort.dir*=-1; }
+  else {
+    liveSort.col=col;
+    // Default direction: asc for scores (lower=better), desc for SG/prob (higher=better)
+    liveSort.dir = (col==='total'||col==='today')?1:-1;
+  }
+  if(liveStatsCache) renderLiveTable(liveStatsCache, livePredCache);
+}
+
 // ── LIVE TAB ──────────────────────────────────────────────────────────────────
 async function loadLiveData(showSpinner){
   var loadEl = document.getElementById('liveLoading');
@@ -1498,6 +1520,8 @@ async function loadLiveData(showSpinner){
     ]);
     var stats = await statsRes.json();
     var preds = await predRes.json();
+    liveStatsCache = stats.data;
+    livePredCache = preds.data;
     renderLiveTable(stats.data, preds.data);
   } catch(e){
     loadEl.innerHTML='<div class="live-empty"><div class="live-empty-title">Could not load live data</div><div class="live-empty-sub">Check your connection or try again during round play.</div></div>';
@@ -1544,11 +1568,22 @@ function renderLiveTable(statsData, predData){
     proPicksData.picks.forEach(function(p){ pickNames.add(p.player); });
   }
 
-  // Sort: picks first, then by total score (lower = better in golf)
+  // Sort: picks always pinned first, then apply user sort
+  var colMap = {
+    total: function(r){ return r.total!=null?r.total:999; },
+    today: function(r){ return r.today!=null?r.today:999; },
+    sg_ott: function(r){ return r.sg_ott!=null?r.sg_ott:-99; },
+    sg_app: function(r){ return r.sg_app!=null?r.sg_app:-99; },
+    sg_arg: function(r){ return r.sg_arg!=null?r.sg_arg:-99; },
+    sg_putt:function(r){ return r.sg_putt!=null?r.sg_putt:-99; },
+    win: function(r){ var pr=winMap[r.player_name]; return pr&&pr.win!=null?pr.win:-1; },
+    top10: function(r){ var pr=winMap[r.player_name]; return pr&&pr.top_10!=null?pr.top_10:-1; }
+  };
+  var sorter = colMap[liveSort.col]||colMap.total;
   rows = rows.slice().sort(function(a,b){
     var ap=pickNames.has(a.player_name)?0:1, bp=pickNames.has(b.player_name)?0:1;
     if(ap!==bp) return ap-bp;
-    return (a.total||0)-(b.total||0);
+    return liveSort.dir*(sorter(a)-sorter(b));
   });
 
   function scoreStr(v){
@@ -1573,20 +1608,29 @@ function renderLiveTable(statsData, predData){
     return '<span class="live-sg" style="color:'+c+';">'+pct+'</span>';
   }
 
+  function liveThSort(label, col, tipText){
+    var isActive = liveSort.col===col;
+    var arrow = isActive?(liveSort.dir===1?' ↑':' ↓'):'';
+    var style = 'cursor:pointer;'+(isActive?'color:var(--gold);':'');
+    return '<span class="live-th '+(isActive?'sorted':'')+'" onclick="sortLive(\''+col+'\')" style="'+style+'">'
+      +tip(label+arrow, tipText, false)+'</span>';
+  }
+  function liveThFixed(label){ return '<span class="live-th">'+label+'</span>'; }
+
   var html = '<div class="live-table-wrap">'
     +'<div class="live-table-head">'
-    +'<span class="live-th">Pos</span>'
-    +'<span class="live-th">Player</span>'
-    +'<span class="live-th">Total</span>'
-    +'<span class="live-th">Today</span>'
-    +'<span class="live-th">'+tip('OTT','SG: Off the Tee this tournament — event average')+'</span>'
-    +'<span class="live-th">'+tip('App','SG: Approach this tournament — event average')+'</span>'
-    +'<span class="live-th">'+tip('ARG','SG: Around the Green this tournament — event average')+'</span>'
-    +'<span class="live-th">'+tip('Putt','SG: Putting this tournament — event average')+'</span>'
-    +'<span class="live-th">'+tip('Win%','Model win probability — updated live. Decimals × 100 = %.')+'</span>'
-    +'<span class="live-th">'+tip('Top5%','Model probability of a top-5 finish — updated live.')+'</span>'
-    +'<span class="live-th">'+tip('Top10%','Model probability of a top-10 finish — updated live.')+'</span>'
-    +'<span class="live-th">'+tip('Top20%','Model probability of a top-20 finish — updated live.')+'</span>'
+    +liveThFixed('Pos')
+    +liveThFixed('Player')
+    +liveThSort('Total','total','Tournament score relative to par. Click to sort.')
+    +liveThSort('Today','today','Current round score. Click to sort.')
+    +liveThSort('OTT','sg_ott','SG: Off the Tee — event average. Click to sort.')
+    +liveThSort('App','sg_app','SG: Approach — event average. Click to sort.')
+    +liveThSort('ARG','sg_arg','SG: Around the Green — event average. Click to sort.')
+    +liveThSort('Putt','sg_putt','SG: Putting — event average. Click to sort.')
+    +liveThSort('Win%','win','DataGolf model win probability — updated live. Click to sort.')
+    +'<span class="live-th">'+tip('Top5%','Model probability of a top-5 finish.')+'</span>'
+    +liveThSort('Top10%','top10','Model probability of a top-10 finish. Click to sort.')
+    +'<span class="live-th">'+tip('Top20%','Model probability of a top-20 finish.')+'</span>'
     +'</div>';
 
   rows.forEach(function(p){
