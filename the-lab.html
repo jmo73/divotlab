@@ -1126,6 +1126,32 @@ html[data-theme="light"] .info-tip .tip-text {
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
 }
 
+/* ── Course Fit section ── */
+.lab-cf-row{display:grid;grid-template-columns:40px 1fr 58px 200px;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .15s;}
+.lab-cf-row:last-child{border-bottom:none;}
+.lab-cf-row:hover{background:rgba(255,255,255,0.02);}
+.lab-cf-row.top3{background:rgba(201,168,76,0.03);}
+.lab-cf-rank{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:rgba(250,250,250,0.28);text-align:center;}
+.lab-cf-rank.r1{color:#C9A84C;}
+.lab-cf-rank.r2{color:rgba(201,168,76,0.6);}
+.lab-cf-rank.r3{color:rgba(201,168,76,0.4);}
+.lab-cf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.88);}
+.lab-cf-country{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(250,250,250,0.2);margin-top:2px;}
+.lab-cf-score{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:var(--green-light);text-align:center;line-height:1;}
+.lab-cf-score.dim{color:rgba(250,250,250,0.2);}
+.lab-cf-bars{display:flex;flex-direction:column;gap:4px;}
+.lab-cf-br{display:flex;align-items:center;gap:6px;}
+.lab-cf-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(250,250,250,0.25);width:26px;flex-shrink:0;}
+.lab-cf-track{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.lab-cf-fill{height:100%;border-radius:2px;}
+.lab-cf-val{font-family:'JetBrains Mono',monospace;font-size:9px;width:30px;text-align:right;flex-shrink:0;}
+.lab-cf-pos{color:var(--green-light);}
+.lab-cf-neg{color:#D94848;}
+.lab-cf-zero{color:rgba(250,250,250,0.2);}
+.lab-cf-table{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;}
+.lab-cf-head{display:grid;grid-template-columns:40px 1fr 58px 200px;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);}
+.lab-cf-th{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.25);}
+
 /* Charts — liquid glass */
 html[data-theme="light"] .chart-card {
   background: rgba(255,255,255,0.52);
@@ -1290,6 +1316,7 @@ html[data-theme="light"] .footer-bottom {
   <a href="#leaderboard">Leaderboard</a>
   <a href="#predictions">Predictions</a>
   <a href="#rankings">Rankings</a>
+  <a href="#coursefit">Course Fit</a>
   <a href="#analytics">Charts</a>
 </div>
 
@@ -1407,6 +1434,38 @@ html[data-theme="light"] .footer-bottom {
     </div>
     <div class="top10-grid" id="top10-grid">
       <div class="loading-msg" style="grid-column:1/-1;">Loading rankings...</div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSE FIT -->
+<section class="lab-section" id="coursefit">
+  <div class="section-header">
+    <h2>Course-Fit Rankings</h2>
+    <div class="section-toggle">▼</div>
+  </div>
+  <div class="section-body">
+    <div style="font-size:13px;color:rgba(250,250,250,0.4);margin-bottom:20px;text-align:center;line-height:1.6;">
+      How each player's strokes gained profile matches this week's course demands.<br>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(250,250,250,0.2);">Powered by Divot Lab course-fit model · 65% skill + 35% recent form</span>
+    </div>
+    <div id="lab-cf-loading" style="text-align:center;padding:32px;color:rgba(250,250,250,0.25);font-size:13px;">Loading course-fit rankings…</div>
+    <div id="lab-cf-wrap" style="display:none;position:relative;">
+      <!-- Top 5 — always visible -->
+      <div id="lab-cf-top5"></div>
+      <!-- Blurred remainder with upgrade prompt -->
+      <div style="position:relative;">
+        <div id="lab-cf-rest" style="filter:blur(5px);pointer-events:none;user-select:none;opacity:0.5;"></div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(to bottom,rgba(10,10,10,0.2) 0%,rgba(10,10,10,0.9) 40%);">
+          <div style="background:rgba(10,10,10,0.92);border:1px solid rgba(201,168,76,0.22);border-radius:12px;padding:24px 28px;text-align:center;max-width:360px;backdrop-filter:blur(8px);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;">Lab Notes Pro</div>
+            <div style="font-size:16px;font-weight:600;color:#FAFAFA;margin-bottom:8px;letter-spacing:-0.01em;">Full field + analytics hub.</div>
+            <div style="font-size:13px;color:rgba(250,250,250,0.42);line-height:1.6;margin-bottom:18px;">All <span id="lab-cf-field-size">—</span> players ranked · Value finder · H2H comparison tool · Weekly picks email</div>
+            <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="display:inline-block;background:#C9A84C;color:#0A0A0A;border-radius:7px;padding:11px 24px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#D4B45E'" onmouseout="this.style.background='#C9A84C'">Start Free Week →</a>
+            <div style="margin-top:10px;font-size:11px;color:rgba(250,250,250,0.2);">$9.99/mo · Cancel anytime · <a href="/pro" style="color:rgba(201,168,76,0.5);">Sign in if you're already Pro →</a></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1762,6 +1821,75 @@ html[data-theme="light"] .footer-bottom {
       applyChartTheme(document.documentElement.getAttribute('data-theme') || 'light');
     }, ms);
   });
+})();
+</script>
+
+<!-- ── COURSE FIT FETCH ── -->
+<script>
+(function(){
+  var LAB_API = window.location.hostname==='localhost'?'http://localhost:3001':'https://divotlab-api.vercel.app';
+  var FREE_LIMIT = 5;
+  var DUMMY_ROWS = 6; // blurred rows shown below paywall
+
+  function sgBar(lbl, val){
+    var max = 2, min = -2;
+    var pct = val!=null ? Math.min(100,Math.max(0,((val-min)/(max-min))*100)) : 0;
+    var pos = val!=null && val > 0.005;
+    var neg = val!=null && val < -0.005;
+    var valStr = val!=null ? (val>=0?'+':'')+val.toFixed(2) : '—';
+    var valCls = pos?'lab-cf-pos':neg?'lab-cf-neg':'lab-cf-zero';
+    var fillCls = pos?'lab-cf-pos':'lab-cf-neg';
+    return '<div class="lab-cf-br">'
+      +'<span class="lab-cf-lbl">'+lbl+'</span>'
+      +'<div class="lab-cf-track"><div class="lab-cf-fill" style="width:'+pct+'%;background:'+(pos?'#5BBF85':'#D94848')+';"></div></div>'
+      +'<span class="lab-cf-val '+valCls+'">'+valStr+'</span>'
+      +'</div>';
+  }
+
+  function renderRow(p, i){
+    var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    var score = p.fitScore!=null?p.fitScore:'—';
+    var scoreCls = p.fitScore!=null?'':'dim';
+    return '<div class="lab-cf-row'+(i<3?' top3':'')+'">'
+      +'<div class="lab-cf-rank '+rc+'">'+(i+1)+'</div>'
+      +'<div><div class="lab-cf-player">'+p.player_name+'</div>'+(p.country?'<div class="lab-cf-country">'+p.country+'</div>':'')+'</div>'
+      +'<div class="lab-cf-score '+scoreCls+'">'+score+'</div>'
+      +'<div class="lab-cf-bars">'
+        +sgBar('App',p.sg_app)+sgBar('OTT',p.sg_ott)+sgBar('ARG',p.sg_arg)+sgBar('Putt',p.sg_putt)
+      +'</div>'
+      +'</div>';
+  }
+
+  fetch(LAB_API+'/api/course-fit')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.success) return;
+      var field = d.field || [];
+      document.getElementById('lab-cf-field-size').textContent = field.length;
+
+      var tableHead = '<div class="lab-cf-table">'
+        +'<div class="lab-cf-head">'
+          +'<span class="lab-cf-th">#</span>'
+          +'<span class="lab-cf-th">Player</span>'
+          +'<span class="lab-cf-th">Fit</span>'
+          +'<span class="lab-cf-th">SG Breakdown</span>'
+        +'</div>';
+
+      // Top FREE_LIMIT rows — fully visible
+      var topRows = field.slice(0, FREE_LIMIT).map(function(p,i){ return renderRow(p,i); }).join('');
+      document.getElementById('lab-cf-top5').innerHTML = tableHead + topRows + '</div>';
+
+      // Dummy blurred rows (use real data but it's blurred so content doesn't matter much)
+      var restRows = field.slice(FREE_LIMIT, FREE_LIMIT + DUMMY_ROWS)
+        .map(function(p, i){ return renderRow(p, FREE_LIMIT + i); }).join('');
+      document.getElementById('lab-cf-rest').innerHTML = tableHead + restRows + '</div>';
+
+      document.getElementById('lab-cf-loading').style.display = 'none';
+      document.getElementById('lab-cf-wrap').style.display = 'block';
+    })
+    .catch(function(){
+      document.getElementById('lab-cf-loading').textContent = 'Could not load course-fit rankings.';
+    });
 })();
 </script>
 </body>
