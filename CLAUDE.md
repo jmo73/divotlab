@@ -267,6 +267,56 @@ Pro subscribers access `/pro` by entering the email they subscribed with. The AP
 
 The Lab is free and public. Pro → is the gold CTA button linking to the gated premium hub.
 
+## Growth — Free Trials & Account Improvements
+
+Priority: get real users before optimizing revenue. Free trials → retention → word of mouth.
+
+### Current auth model (limitation)
+Email entered at gate → checked against Beehiiv Pro publication → 7-day localStorage token. No trial state, no referral tracking, no upgrade flow.
+
+### Phase 1 — Free Trial (build next)
+Goal: let anyone start a 14-day free trial without paying upfront.
+
+1. **Add `POST /api/start-trial` endpoint** in `api/server.js`
+   - Body: `{email}`
+   - Store trial in a lightweight KV store (Vercel KV / Upstash Redis) — key: email, value: `{started, expires, converted}`
+   - Return a trial token (7-day, same localStorage pattern as current auth)
+   - Rate limit: 1 trial per email, ever
+
+2. **Update gate on `/pro`** — add "Start Free Trial" button below the subscriber verify form
+   - Flow: enter email → if no active sub → offer 14-day trial → API creates trial → access granted
+   - Show trial expiry date in the user chip: "Trial · 11 days left"
+   - At expiry: gate re-appears with "Your trial ended" + Stripe subscribe link
+
+3. **Trial-to-paid email** (Beehiiv automation or manual for now)
+   - Day 7 of trial: send "You're halfway through your trial" + what you've accessed
+   - Day 13: "Trial ends tomorrow" + one-click subscribe
+
+### Phase 2 — Referral Tracking
+Currently: manual (subscribers reply with referral's name).
+
+1. **Add `referral_code` to Beehiiv subscriber custom fields** (or use a simple JSON file)
+2. **Stripe webhook** → on new Pro sub, check if referral code used → credit referring subscriber
+3. **Referral dashboard** in admin.html — shows who referred whom, credits earned
+
+### Phase 3 — Upgrade Flow
+1. Replace Stripe buy link with a proper upgrade page that:
+   - Pre-fills email from the trial session
+   - Shows "You've been using Pro for X days" with usage highlights
+   - One-click subscribe (Stripe Checkout)
+2. Post-payment webhook → auto-add to Beehiiv Pro publication → access continues seamlessly
+
+### What to build in what order
+1. **Trial system** (highest impact — removes the friction of asking for $9.99 upfront)
+2. **Referral code tracking** (the ask is in the launch email; need the infrastructure)
+3. **Trial expiry email** (manual first, then automate)
+4. **Upgrade flow** (after trials are converting)
+
+### Referral incentive (current)
+Free month per referral. Subscriber mentions referrer's name on signup → manual credit tracked in admin.html (to build). For now, handled by email reply.
+
+---
+
 ## Active Projects / In Progress
 
 - **Pro page (/pro)** — BUILT. Email-gated hub for Pro subscribers. Tabs: Course Fit (full field 0-100), Value Finder (sortable, edge + fit signal), H2H Tool (model insight), Live (live SG + Win%/Top5/10/20, auto-refresh 90s). "This Week's Card" above tabs from pro-picks.json.
