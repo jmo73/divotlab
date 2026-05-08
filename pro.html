@@ -410,6 +410,8 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .mu-market-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
 .mu-market-btn.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);color:var(--gold);}
 .mu-note{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.18);}
+.mu-legend{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.mu-legend-swatch{display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green-light);flex-shrink:0;}
 .mu-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .mu-table-head{display:grid;grid-template-columns:1fr 32px 1fr 88px 80px 68px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .mu-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
@@ -674,6 +676,10 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
         <button class="mu-market-btn" onclick="switchMuMarket('3_balls',this)">3-Ball</button>
       </div>
       <span class="mu-note">Model edge vs. live book lines · 30-min refresh</span>
+    </div>
+    <div class="mu-legend">
+      <span class="mu-legend-swatch"></span>
+      Green = model's pick &nbsp;&middot;&nbsp; Best odds and edge % are for that player to win the matchup &nbsp;&middot;&nbsp; — = no book line posted
     </div>
     <div id="muLoading" class="loading-msg"><div class="spin"></div><br>Loading matchup data…</div>
     <div id="muTable" style="display:none;"></div>
@@ -1355,10 +1361,10 @@ function renderMatchups(data, market){
   var matchups = Array.isArray(raw) ? raw : (raw&&typeof raw==='object' ? Object.values(raw) : []);
 
   if(!matchups||!matchups.length){
-    var keys = data?Object.keys(data).join(', '):'(empty)';
-    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">No matchups found</div>'
-      +'<div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.<br>'
-      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);">API keys: '+keys+'</span></div></div>';
+    var sub = market==='tournament_matchups'
+      ? 'Full-tournament lines are posted Tuesday–Thursday before play begins and are typically removed once the event starts. Try the Round or 3-Ball tabs during active rounds.'
+      : 'Matchup lines are typically posted Wednesday–Sunday of tournament week.';
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">No matchups found</div><div class="mu-empty-sub">'+sub+'</div></div>';
     loadEl.style.display='block';
     tableEl.style.display='none';
     return;
