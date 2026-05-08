@@ -1206,6 +1206,9 @@ nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rota
   .hero-email { flex-direction:column; }
   .hero-email button { width:100%; }
   .footer-grid { grid-template-columns:1fr; gap:28px; }
+  /* Tools strip — stack on mobile */
+  #toolsGrid { grid-template-columns:1fr !important; max-width:100% !important; }
+  #toolsSection { padding:32px 22px !important; }
 }
 
 /* =============================================
@@ -1819,24 +1822,24 @@ html[data-theme="light"] .footer-bottom {
 </div>
 
 <!-- ========== TOOLS ========== -->
-<div style="background:var(--black);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:40px 56px;">
-  <div style="max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
-    <div>
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(250,250,250,0.3);margin-bottom:6px;">Free Tools</div>
-      <div style="font-size:18px;font-weight:600;color:rgba(250,250,250,0.8);">Improve your game with data.</div>
+<div id="toolsSection" style="background:var(--black);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:40px 56px;">
+  <div style="max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+    <div style="flex-shrink:0;">
+      <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(250,250,250,0.3);margin-bottom:10px;">Free Tools</div>
+      <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(22px,2.4vw,30px);font-weight:500;font-style:italic;color:rgba(250,250,250,0.85);letter-spacing:-0.02em;line-height:1.18;">Improve your game<br>with data.</div>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <a href="/practice" style="display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;transition:all 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+    <div id="toolsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1;min-width:0;max-width:620px;">
+      <a href="/practice" style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px;transition:border-color 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
         <span style="font-size:13px;font-weight:600;color:rgba(250,250,250,0.85);">Practice Plan</span>
-        <span style="font-size:12px;color:rgba(250,250,250,0.35);">Personalized by handicap · $4.99</span>
+        <span style="font-size:12px;color:rgba(250,250,250,0.35);line-height:1.5;">Personalized by handicap</span>
       </a>
-      <a href="/practice-library" style="display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;transition:all 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+      <a href="/practice-library" style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px;transition:border-color 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
         <span style="font-size:13px;font-weight:600;color:rgba(250,250,250,0.85);">Practice Library</span>
-        <span style="font-size:12px;color:rgba(250,250,250,0.35);">100+ drills · Free</span>
+        <span style="font-size:12px;color:rgba(250,250,250,0.35);line-height:1.5;">100+ data-backed drills</span>
       </a>
-      <a href="/the-lab" style="display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;transition:all 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+      <a href="/the-lab" style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px;transition:border-color 0.2s;text-decoration:none;" onmouseover="this.style.borderColor='rgba(91,191,133,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
         <span style="font-size:13px;font-weight:600;color:rgba(250,250,250,0.85);">The Lab</span>
-        <span style="font-size:12px;color:rgba(250,250,250,0.35);">Live PGA Tour analytics · Free</span>
+        <span style="font-size:12px;color:rgba(250,250,250,0.35);line-height:1.5;">Live PGA Tour analytics</span>
       </a>
     </div>
   </div>
@@ -1851,7 +1854,7 @@ html[data-theme="light"] .footer-bottom {
     <div style="display:flex; gap:14px; justify-content:center; margin-top:8px;">
       <a href="/lab-notes" class="btn-fill" style="padding:14px 36px;">See Plans & Pricing</a>
     </div>
-    <p class="email-note" style="margin-top:18px;">Tiers starting at $4.99/mo. First week free.</p>
+    <p class="email-note" style="margin-top:18px;">Free forever · Pro from $9.99/mo · First week free.</p>
   </div>
 </section>
 
