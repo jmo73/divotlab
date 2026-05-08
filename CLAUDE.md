@@ -76,7 +76,10 @@ Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20
 ## Weekly Tasks — Must Be Done Every Tournament Week
 
 ### Wednesday (pick day)
-1. **Update `current-pick.json`** with the free pick for this week
+1. **Open `admin.html`** in browser (gitignored local tool, password: `divotlab2026`)
+   - Fill in the pick form → Download `current-pick.json` → replace file → deploy
+   - Use "Newsletter Output" tab to generate pre-filled Beehiiv Season Tracker HTML
+   - Alternatively: edit `current-pick.json` directly
    - Fields: `tournament`, `week_of`, `published`, `pick.player`, `pick.bet_type`, `pick.bet_detail`, `pick.odds`, `pick.book`, `pick.reasoning`, `pick.confidence`
    - Set `pick.result` to `null` (pending)
    - This file drives `picks.html` — the public free pick landing page
@@ -163,14 +166,27 @@ Dark mode is the default. Light mode toggle exists on most pages via `data-theme
 
 ---
 
+## DataGolf API — Rate Limits
+
+**45 requests per minute** — applies to ALL requests, not per-endpoint.
+Exceeding the limit results in a **5-minute suspension**.
+
+This is why the `/api/lab-data` endpoint fetches in batches of 3 with a 500ms delay between batches, and why caches are set aggressively (6hr pre-tournament, 5min during live play). Never add new parallel fetches without checking total request count against this limit.
+
 ## API Endpoints (divotlab-api.vercel.app)
 
 | Endpoint | Purpose |
 |---|---|
-| `POST /api/subscribe` | Subscribe email to Beehiiv. Body: `{email, utm_source}` |
-| `POST /api/auth/lab-picks` | Password auth for lab-picks.html. Body: `{password}` |
-| `GET /api/betting-odds` | DataGolf odds proxy. Params: `tour`, `market`, `odds_format` |
-| `GET /api/blog-posts/latest` | Blog post registry for homepage article grid |
+| `POST /api/subscribe` | Subscribe email to Beehiiv |
+| `POST /api/auth/lab-picks` | Password auth for lab-picks.html |
+| `GET /api/betting-odds` | DataGolf odds proxy |
+| `GET /api/course-fit` | Course-fit leaderboard — normalized 0-100 scores for full field |
+| `GET /api/derive-course-weights` | **Annual plan** — derives course weights from historical round SG data. Params: `event_id` (required), `top_n`, `years` |
+| `GET /api/historical-rounds` | **Annual plan** — round-level SG data. Params: `tour`, `event_id`, `year` |
+| `GET /api/historical-odds-outrights` | **Annual plan** — historical betting lines 2019–2025. Params: `book` (required), `tour`, `event_id`, `year`, `market` |
+| `GET /api/historical-odds-matchups` | **Annual plan** — historical H2H/3-ball lines |
+| `GET /api/historical-event-results` | **Annual plan** — actual finishes and earnings |
+| `GET /api/historical-dfs` | **Annual plan** — DFS salaries and ownership |
 
 ---
 
@@ -229,3 +245,4 @@ These pages fetch data client-side and update automatically when JSON files are 
 |---|---|---|
 | 2026-05-07 | Weekly update of `current-pick.json` | Created picks.html which fetches this file for the free pick landing page |
 | 2026-05-07 | Weekly update of `season-tracker.json` | Drives 3 pages (homepage, lab-notes, picks) auto-updating record displays |
+| 2026-05-07 | `admin.html` password is `divotlab2026` | Change directly in the file if needed (line ~175, ADMIN_PASSWORD variable) |

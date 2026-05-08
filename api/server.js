@@ -1041,6 +1041,285 @@ app.get('/api/historical-rounds', async (req, res) => {
 });
 
 // ============================================
+// HISTORICAL EVENT DATA (finishes, earnings)
+// ============================================
+
+app.get('/api/historical-event-list', async (req, res) => {
+  try {
+    const tour = req.query.tour || 'pga';
+    const result = await fetchDataGolf(
+      `/historical-event-data/event-list?tour=${tour}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `hist-event-list-${tour}`, 604800
+    );
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.get('/api/historical-event-results', async (req, res) => {
+  try {
+    const { tour, event_id, year } = req.query;
+    if (!tour || !event_id || !year) return res.status(400).json({ success: false, error: 'tour, event_id, year required' });
+    const result = await fetchDataGolf(
+      `/historical-event-data/events?tour=${tour}&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `hist-event-results-${tour}-${event_id}-${year}`, 604800
+    );
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// ============================================
+// HISTORICAL BETTING ODDS
+// ============================================
+
+app.get('/api/historical-odds-list', async (req, res) => {
+  try {
+    const tour = req.query.tour || 'pga';
+    const result = await fetchDataGolf(
+      `/historical-odds/event-list?tour=${tour}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `hist-odds-list-${tour}`, 604800
+    );
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.get('/api/historical-odds-outrights', async (req, res) => {
+  try {
+    const { tour, event_id, year, market, book, odds_format } = req.query;
+    if (!book) return res.status(400).json({ success: false, error: 'book is required' });
+    const t = tour || 'pga'; const m = market || 'win'; const fmt = odds_format || 'decimal';
+    const cacheKey = `hist-odds-outrights-${t}-${event_id}-${year}-${m}-${book}`;
+    let endpoint = `/historical-odds/outrights?tour=${t}&market=${m}&book=${book}&odds_format=${fmt}&file_format=json&key=${DATAGOLF_API_KEY}`;
+    if (event_id) endpoint += `&event_id=${event_id}`;
+    if (year) endpoint += `&year=${year}`;
+    const result = await fetchDataGolf(endpoint, cacheKey, 604800);
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.get('/api/historical-odds-matchups', async (req, res) => {
+  try {
+    const { tour, event_id, year, book, odds_format } = req.query;
+    if (!book) return res.status(400).json({ success: false, error: 'book is required' });
+    const t = tour || 'pga'; const fmt = odds_format || 'decimal';
+    const cacheKey = `hist-odds-matchups-${t}-${event_id}-${year}-${book}`;
+    let endpoint = `/historical-odds/matchups?tour=${t}&book=${book}&odds_format=${fmt}&file_format=json&key=${DATAGOLF_API_KEY}`;
+    if (event_id) endpoint += `&event_id=${event_id}`;
+    if (year) endpoint += `&year=${year}`;
+    const result = await fetchDataGolf(endpoint, cacheKey, 604800);
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// ============================================
+// HISTORICAL DFS DATA
+// ============================================
+
+app.get('/api/historical-dfs-list', async (req, res) => {
+  try {
+    const result = await fetchDataGolf(
+      `/historical-dfs-data/event-list?file_format=json&key=${DATAGOLF_API_KEY}`,
+      'hist-dfs-list', 604800
+    );
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.get('/api/historical-dfs', async (req, res) => {
+  try {
+    const { tour, site, event_id, year } = req.query;
+    if (!tour || !event_id || !year) return res.status(400).json({ success: false, error: 'tour, event_id, year required' });
+    const s = site || 'draftkings';
+    const result = await fetchDataGolf(
+      `/historical-dfs-data/points?tour=${tour}&site=${s}&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`,
+      `hist-dfs-${tour}-${s}-${event_id}-${year}`, 604800
+    );
+    res.json({ success: true, fromCache: result.fromCache, data: result.data });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// ============================================
+// COURSE WEIGHT DERIVATION PIPELINE
+// Pulls historical round SG data for N years,
+// identifies which categories separated top-N
+// finishers from the field, and converts those
+// gaps into normalized course-fit weights.
+// ============================================
+
+app.get('/api/derive-course-weights', async (req, res) => {
+  try {
+    const event_id = req.query.event_id;
+    if (!event_id) return res.status(400).json({ success: false, error: 'event_id required' });
+
+    const top_n   = Math.min(parseInt(req.query.top_n) || 10, 20);
+    const bustCache = req.query.bust === 'true';
+    const cacheKey = `derived-weights-${event_id}-top${top_n}`;
+    if (bustCache) cache.del(cacheKey);
+    const cached = cache.get(cacheKey);
+    if (cached) return res.json({ success: true, fromCache: true, ...cached });
+
+    // Default: last 4 completed seasons
+    const currentYear = new Date().getFullYear();
+    const defaultYears = [currentYear-1, currentYear-2, currentYear-3, currentYear-4].map(String);
+    const years = req.query.years ? req.query.years.split(',').map(s => s.trim()) : defaultYears;
+
+    console.log(`  Deriving weights: event_id=${event_id} years=${years.join(',')} top_n=${top_n}`);
+
+    // Fetch each year sequentially to respect rate limits (45/min)
+    const yearResults = [];
+    for (const year of years) {
+      try {
+        const data = await fetchDataGolfDirect(
+          `/historical-raw-data/rounds?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+        );
+        if (data) yearResults.push({ year, data });
+        console.log(`    Year ${year}: fetched (${(data.data||data.round_data||data.rounds||[]).length} records)`);
+      } catch (e) {
+        console.warn(`    Year ${year}: no data (${e.message})`);
+      }
+      // 200ms gap between calls — comfortably within 45 req/min
+      await new Promise(r => setTimeout(r, 220));
+    }
+
+    if (!yearResults.length) {
+      return res.status(404).json({ success: false, error: `No historical data found for event_id=${event_id}. Check the event ID using /api/historical-events.` });
+    }
+
+    // ── Process each year ──────────────────────────────────────────
+    const yearGaps = [];
+    for (const { year, data } of yearResults) {
+      // DataGolf may use different keys — try all known variants
+      const rounds = data.data || data.round_data || data.rounds || data.results || [];
+      if (!rounds.length) { console.warn(`    Year ${year}: empty rounds array`); continue; }
+
+      // Aggregate per player across all rounds
+      const playerMap = new Map();
+      for (const r of rounds) {
+        const id = r.dg_id || r.player_id;
+        if (!id) continue;
+        if (!playerMap.has(id)) {
+          playerMap.set(id, {
+            dg_id: id,
+            player_name: r.player_name || r.name || '',
+            sg_ott: 0, sg_app: 0, sg_arg: 0, sg_putt: 0, sg_total: 0,
+            rounds_played: 0
+          });
+        }
+        const p = playerMap.get(id);
+        // Handle both sg_ott and sg_off_the_tee naming conventions
+        p.sg_ott  += r.sg_ott  ?? r.sg_off_tee  ?? r.sg_off_the_tee  ?? 0;
+        p.sg_app  += r.sg_app  ?? r.sg_approach  ?? 0;
+        p.sg_arg  += r.sg_arg  ?? r.sg_around    ?? r.sg_short_game ?? 0;
+        p.sg_putt += r.sg_putt ?? r.sg_putting    ?? 0;
+        p.sg_total+= r.sg_total?? 0;
+        p.rounds_played++;
+      }
+
+      // Only players who completed the event (min 4 rounds)
+      const completers = [...playerMap.values()].filter(p => p.rounds_played >= 4);
+      if (completers.length < top_n + 5) {
+        console.warn(`    Year ${year}: only ${completers.length} completers — skipping`);
+        continue;
+      }
+
+      // Sort by total SG to derive implied finish ranking
+      completers.sort((a, b) => b.sg_total - a.sg_total);
+      const topN  = completers.slice(0, top_n);
+      const field = completers;
+      const N     = field.length;
+
+      const fieldMean = cat => field.reduce((s, p) => s + p[cat], 0) / N;
+      const topMean   = cat => topN.reduce((s, p) => s + p[cat], 0) / top_n;
+
+      const gaps = {
+        ott:  topMean('sg_ott')  - fieldMean('sg_ott'),
+        app:  topMean('sg_app')  - fieldMean('sg_app'),
+        arg:  topMean('sg_arg')  - fieldMean('sg_arg'),
+        putt: topMean('sg_putt') - fieldMean('sg_putt')
+      };
+
+      yearGaps.push({ year, field_size: N, top_n_sample: top_n, gaps });
+      console.log(`    Year ${year}: gaps ott=${gaps.ott.toFixed(3)} app=${gaps.app.toFixed(3)} arg=${gaps.arg.toFixed(3)} putt=${gaps.putt.toFixed(3)}`);
+    }
+
+    if (!yearGaps.length) {
+      return res.status(422).json({ success: false, error: 'Could not compute weights — insufficient round data' });
+    }
+
+    // ── Weight years (recency bias) and average gaps ───────────────
+    const recencyWeights = [1.0, 0.80, 0.65, 0.50, 0.40];
+    let wGaps = { ott: 0, app: 0, arg: 0, putt: 0 };
+    let wTotal = 0;
+    yearGaps.forEach(({ gaps }, i) => {
+      const w = recencyWeights[i] ?? 0.40;
+      wGaps.ott  += gaps.ott  * w;
+      wGaps.app  += gaps.app  * w;
+      wGaps.arg  += gaps.arg  * w;
+      wGaps.putt += gaps.putt * w;
+      wTotal += w;
+    });
+    const avgGaps = {
+      ott:  wGaps.ott  / wTotal,
+      app:  wGaps.app  / wTotal,
+      arg:  wGaps.arg  / wTotal,
+      putt: wGaps.putt / wTotal
+    };
+
+    // ── Convert gaps → weights with 10% floor ─────────────────────
+    const MIN_W = 0.10;
+    const clamped = {
+      ott:  Math.max(MIN_W, avgGaps.ott),
+      app:  Math.max(MIN_W, avgGaps.app),
+      arg:  Math.max(MIN_W, avgGaps.arg),
+      putt: Math.max(MIN_W, avgGaps.putt)
+    };
+    const clampSum = clamped.ott + clamped.app + clamped.arg + clamped.putt;
+    let dw = {
+      ott:  parseFloat((clamped.ott  / clampSum).toFixed(2)),
+      app:  parseFloat((clamped.app  / clampSum).toFixed(2)),
+      arg:  parseFloat((clamped.arg  / clampSum).toFixed(2)),
+      putt: parseFloat((clamped.putt / clampSum).toFixed(2))
+    };
+    // Fix any floating-point rounding so they sum to exactly 1.00
+    const dwSum = dw.ott + dw.app + dw.arg + dw.putt;
+    if (Math.abs(dwSum - 1.0) > 0.001) dw.app = parseFloat((dw.app + (1.0 - dwSum)).toFixed(2));
+
+    const eventName = yearResults[0]?.data?.event_name || '';
+    const editorial = getCourseWeights(eventName);
+
+    const result = {
+      event_id,
+      event_name: eventName,
+      years_analyzed:  yearGaps.map(y => y.year),
+      players_per_year: yearGaps.map(y => y.field_size),
+      top_n_used: top_n,
+      derived_weights: dw,
+      average_gaps: {
+        ott:  parseFloat(avgGaps.ott.toFixed(3)),
+        app:  parseFloat(avgGaps.app.toFixed(3)),
+        arg:  parseFloat(avgGaps.arg.toFixed(3)),
+        putt: parseFloat(avgGaps.putt.toFixed(3))
+      },
+      year_by_year: yearGaps.map(y => ({
+        year: y.year, field_size: y.field_size,
+        gaps: { ott: parseFloat(y.gaps.ott.toFixed(3)), app: parseFloat(y.gaps.app.toFixed(3)), arg: parseFloat(y.gaps.arg.toFixed(3)), putt: parseFloat(y.gaps.putt.toFixed(3)) }
+      })),
+      current_editorial_weights: { ott: editorial.ott, app: editorial.app, arg: editorial.arg, putt: editorial.putt, matched: editorial.matched },
+      confidence: yearGaps.length >= 3 ? 'high' : yearGaps.length >= 2 ? 'medium' : 'low',
+      total_sample_size: yearGaps.reduce((s, y) => s + y.field_size, 0),
+      methodology: 'Gap between top-N and field average SG per category, weighted by recency (most recent year = 1.0, each prior year -0.15). 10% floor applied before normalization.'
+    };
+
+    cache.set(cacheKey, result, 604800); // 7 days
+    console.log(`  ✓ Derived weights for ${eventName}: ott=${dw.ott} app=${dw.app} arg=${dw.arg} putt=${dw.putt} (${yearGaps.length} years, confidence: ${result.confidence})`);
+    res.json({ success: true, fromCache: false, ...result });
+
+  } catch (error) {
+    console.error('Derive course weights error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================
 // OPTIMIZED COMPOSITE ENDPOINTS
 // ============================================
 
@@ -2058,8 +2337,16 @@ app.listen(PORT, () => {
   GET  /api/matchup-all-pairings   (30min)
 
 📈 HISTORICAL DATA:
-  GET  /api/historical-events      (7day)
-  GET  /api/historical-rounds      (7day)
+  GET  /api/historical-events           (7day)
+  GET  /api/historical-rounds           (7day)
+  GET  /api/historical-event-list       (7day)
+  GET  /api/historical-event-results    (7day)
+  GET  /api/historical-odds-list        (7day)
+  GET  /api/historical-odds-outrights   (7day) ⭐ ANNUAL PLAN
+  GET  /api/historical-odds-matchups    (7day) ⭐ ANNUAL PLAN
+  GET  /api/historical-dfs-list         (7day) ⭐ ANNUAL PLAN
+  GET  /api/historical-dfs              (7day) ⭐ ANNUAL PLAN
+  GET  /api/derive-course-weights       (7day) ⭐ ANNUAL PLAN
 
 🎁 OPTIMIZED COMPOSITES:
   GET  /api/homepage-stats         (6hr) ⭐ PGA FILTERED
