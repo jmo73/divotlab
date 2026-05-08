@@ -4,6 +4,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
 <meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pro — Divot Lab</title>
 <meta name="description" content="Lab Notes Pro subscriber analytics hub. Full course-fit rankings, value finder, and H2H comparison tool for every PGA Tour event.">
@@ -219,6 +220,116 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 /* ── DISCLAIMER ── */
 .pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
 
+/* ── THEME TOGGLE ── */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(250,250,250,0.6);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.theme-toggle:hover{background:rgba(255,255,255,0.15);color:rgba(250,250,250,0.9);}
+
+/* ── LIGHT MODE ── */
+html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
+html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
+html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
+html[data-theme="light"] .nav-wordmark{color:#1C1B18!important;}
+html[data-theme="light"] .nav-links a{color:rgba(28,27,24,0.6)!important;}
+html[data-theme="light"] .nav-links a:hover{color:#1C1B18!important;}
+html[data-theme="light"] .nav-pro-btn{background:var(--gold)!important;color:var(--black)!important;}
+html[data-theme="light"] .hamburger span{background:#1C1B18!important;}
+html[data-theme="light"] .drawer{background:rgba(245,244,240,0.97)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
+html[data-theme="light"] .drawer a{color:rgba(28,27,24,0.7)!important;}
+html[data-theme="light"] .theme-toggle{background:rgba(28,27,24,0.07);border-color:rgba(28,27,24,0.14);color:rgba(28,27,24,0.55);}
+html[data-theme="light"] .theme-toggle:hover{background:rgba(28,27,24,0.13);color:rgba(28,27,24,0.85);}
+/* Gate */
+html[data-theme="light"] #gate{background:#EDECEA;}
+html[data-theme="light"] .gate-card{background:#FFFFFF;border-color:rgba(201,168,76,0.25);}
+html[data-theme="light"] .gate-title{color:#1C1B18;}
+html[data-theme="light"] .gate-sub{color:rgba(28,27,24,0.55);}
+html[data-theme="light"] .gate-perks li{color:rgba(28,27,24,0.65);}
+html[data-theme="light"] .gate-input{background:rgba(28,27,24,0.05);border-color:rgba(28,27,24,0.15);color:#1C1B18;}
+html[data-theme="light"] .gate-input::placeholder{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .gate-note{color:rgba(28,27,24,0.35);}
+/* Tournament header */
+html[data-theme="light"] .tourney-head{background:#ECEBE6;border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .tourney-name{color:#1C1B18;}
+html[data-theme="light"] .chip-dim{color:rgba(28,27,24,0.45);background:rgba(28,27,24,0.06);border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .user-chip{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .signout-btn{border-color:rgba(28,27,24,0.15);color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .signout-btn:hover{border-color:rgba(28,27,24,0.3);color:rgba(28,27,24,0.7);}
+html[data-theme="light"] .weights-strip{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .w-label{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .w-name{color:rgba(28,27,24,0.5);}
+html[data-theme="light"] .w-pct{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .w-bar-outer{background:rgba(28,27,24,0.1);}
+/* Tabs */
+html[data-theme="light"] .pro-tabs{background:#F5F4F0;border-bottom-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .pro-tab{color:rgba(28,27,24,0.38);}
+html[data-theme="light"] .pro-tab:hover{color:rgba(28,27,24,0.7);}
+html[data-theme="light"] .pro-tab.active{color:#B8960C;border-bottom-color:#B8960C;}
+/* Loading */
+html[data-theme="light"] .loading-msg{color:rgba(28,27,24,0.35);}
+/* Course Fit table */
+html[data-theme="light"] .cf-table-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .cf-table-head{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .cf-th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .cf-row{border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .cf-row:hover{background:rgba(28,27,24,0.02);}
+html[data-theme="light"] .cf-row.top3{background:rgba(201,168,76,0.04);}
+html[data-theme="light"] .cf-rank{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cf-rank.r1{color:#B8960C;}
+html[data-theme="light"] .cf-rank.r2{color:rgba(184,150,12,0.6);}
+html[data-theme="light"] .cf-rank.r3{color:rgba(184,150,12,0.4);}
+html[data-theme="light"] .cf-player{color:#1C1B18;}
+html[data-theme="light"] .cf-country{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .cf-score{color:#1B4D3E;}
+html[data-theme="light"] .cf-score.dim{color:rgba(28,27,24,0.2);}
+html[data-theme="light"] .sg-lbl{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .sg-track{background:rgba(28,27,24,0.08);}
+html[data-theme="light"] .sg-val.pos{color:#1B4D3E;}
+html[data-theme="light"] .sg-val.neg{color:#C0392B;}
+html[data-theme="light"] .sg-val.zero{color:rgba(28,27,24,0.25);}
+html[data-theme="light"] .sg-fill.pos{background:#1B4D3E;}
+html[data-theme="light"] .sg-fill.neg{background:#C0392B;}
+html[data-theme="light"] .odds-num{color:rgba(28,27,24,0.65);}
+html[data-theme="light"] .odds-book{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .vbadge-none{background:rgba(28,27,24,0.05);color:rgba(28,27,24,0.35);border-color:rgba(28,27,24,0.1);}
+/* Value Finder */
+html[data-theme="light"] .vf-filter{background:rgba(28,27,24,0.04);border-color:rgba(28,27,24,0.1);color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .vf-filter:hover{color:rgba(28,27,24,0.75);}
+html[data-theme="light"] .vf-filter.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);color:#B8960C;}
+html[data-theme="light"] .vf-toggle{color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .vf-table{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .vf-head{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .vf-th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .vf-th.sorted{color:#B8960C;}
+html[data-theme="light"] .vf-row{border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .vf-row:hover{background:rgba(28,27,24,0.02);}
+html[data-theme="light"] .vf-row.high{background:rgba(27,77,62,0.04);}
+html[data-theme="light"] .vf-player{color:#1C1B18;}
+html[data-theme="light"] .vf-cell{color:rgba(28,27,24,0.55);}
+html[data-theme="light"] .vf-cell.green{color:#1B4D3E;}
+html[data-theme="light"] .vf-cell.gold{color:#B8960C;}
+html[data-theme="light"] .conf-strong{color:#1B4D3E;}
+html[data-theme="light"] .conf-moderate{color:#B8960C;}
+html[data-theme="light"] .bet-top5{background:rgba(27,77,62,0.08);color:#1B4D3E;}
+html[data-theme="light"] .bet-top10{background:rgba(44,95,124,0.08);color:#2C5F7C;}
+html[data-theme="light"] .bet-top20{background:rgba(44,95,124,0.06);color:#2C5F7C;}
+html[data-theme="light"] .bet-win{background:rgba(184,150,12,0.1);color:#B8960C;}
+/* H2H */
+html[data-theme="light"] .h2h-select-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .h2h-select-label{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .h2h-select{background:rgba(28,27,24,0.04);border-color:rgba(28,27,24,0.12);color:#1C1B18;}
+html[data-theme="light"] .h2h-result{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .h2h-header{border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .h2h-vs{color:rgba(28,27,24,0.28);}
+html[data-theme="light"] .h2h-score-display{border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .h2h-score-sep{background:rgba(28,27,24,0.1);}
+html[data-theme="light"] .h2h-score-label{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
+html[data-theme="light"] .h2h-val{color:rgba(28,27,24,0.6);}
+html[data-theme="light"] .h2h-breakdown{background:#F8F7F3;}
+/* Disclaimer */
+html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.25);}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px;}
@@ -247,6 +358,7 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
     <a href="/the-lab">The Lab</a>
     <a href="/articles">Articles</a>
     <a href="/lab-notes">Lab Notes</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
     <a href="/pro" class="nav-pro-btn active">Pro</a>
   </div>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -803,5 +915,6 @@ function runH2H(){
 // ── INIT ──────────────────────────────────────────────────────────────────────
 checkAuth();
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>
