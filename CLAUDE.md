@@ -10,7 +10,7 @@ Claude should read this at the start of every session and update it whenever new
 ## What Divot Lab Is
 
 Data-driven golf analytics brand. Two products:
-- **Lab Notes** — weekly golf analytics newsletter (free + $4.99/mo + $9.99/mo Pro tiers), delivered via Beehiiv
+- **Lab Notes** — weekly golf analytics newsletter (free + $9.99/mo Pro tier), delivered via Beehiiv
 - **Lab Picks** — golf betting picks inside Lab Notes Pro. Course-fit model + odds comparison across 6 sportsbooks. Public track record.
 
 Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20 visitors/week, 320 Instagram followers. 2026 picks record: 55% hit rate, +30% ROI, 7 events.
@@ -46,7 +46,12 @@ Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20
   about.html
 
   current-pick.json         ← THIS WEEK'S FREE PICK — update every Wednesday
+  pro-picks.json            ← THIS WEEK'S PRO PICKS (all 4–5) — update every Wednesday
+  pro.html                  ← email-gated Pro analytics hub (Course Fit, Value Finder, H2H, Live)
+  leaderboard.html          ← public course-fit rankings (top 10 free, rest paywalled)
+  picks.html                ← free pick public landing page
   
+
 /lab-notes/
   CLAUDE.md                 ← newsletter generation instructions (separate)
   /lab-picks/
@@ -77,12 +82,14 @@ Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20
 
 ### Wednesday (pick day)
 1. **Open `admin.html`** in browser (gitignored local tool, password: `divotlab2026`)
-   - Fill in the pick form → Download `current-pick.json` → replace file → deploy
-   - Use "Newsletter Output" tab to generate pre-filled Beehiiv Season Tracker HTML
-   - Alternatively: edit `current-pick.json` directly
+   - **New Pick tab**: fill free pick → Download `current-pick.json` → replace → deploy
+   - **Pro Picks tab**: fill all 4–5 picks → Download `pro-picks.json` → replace → deploy
+     - Click "Pull from New Pick tab" to auto-fill tournament info
+     - Click "Generate Newsletter HTML" → Copy → paste into Beehiiv as HTML Snippet
    - Fields: `tournament`, `week_of`, `published`, `pick.player`, `pick.bet_type`, `pick.bet_detail`, `pick.odds`, `pick.book`, `pick.reasoning`, `pick.confidence`
    - Set `pick.result` to `null` (pending)
-   - This file drives `picks.html` — the public free pick landing page
+   - `current-pick.json` drives `picks.html` (public free pick landing page)
+   - `pro-picks.json` drives the "This Week's Card" section on `/pro`
 2. **Create `lab-notes/lab-picks/YYYY-MM-DD-[tournament]-picks.html`** from the picks template for Beehiiv
 
 ### Tuesday (newsletter day)
@@ -91,10 +98,13 @@ Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20
    - See `lab-notes/CLAUDE.md` for the full newsletter generation workflow
 
 ### Sunday evening / Monday
-1. **Update `current-pick.json`**:
+1. **Update `current-pick.json`** (Mark Result tab in admin.html):
    - Set `pick.result` to `"win"` or `"loss"`
    - Set `pick.result_detail` to a short result note (e.g. "Finished T4")
-2. **Update `lab-notes/lab-picks/season-tracker.json`**:
+2. **Update `pro-picks.json`** (Pro Picks tab in admin.html — Load Current Values → update results → regenerate → download)
+   - Each pick has `result` (win/loss/push/null) and `result_detail` fields
+   - Results auto-show as WIN/LOSS badges on the Pro page picks card
+3. **Update `lab-notes/lab-picks/season-tracker.json`**:
    - Update `totals` block: `total_picks`, `total_hits`, `hit_rate_pct`, `units.*`, `events_tracked`
    - Add the week's picks to `weekly_picks` array
    - This file drives: homepage tracker, lab-notes page tracker, picks.html record bar — all auto-update on deploy
@@ -124,6 +134,29 @@ Current metrics (as of May 2026): 13 free subscribers, 1 paying ($9.99 Pro), ~20
   "teaser": "X more picks in Lab Notes Pro this week."
 }
 ```
+
+### `pro-picks.json`
+```json
+{
+  "tournament": "Tournament Name",
+  "week_of": "May 7–11, 2026",
+  "published": "2026-05-07",
+  "picks": [
+    {
+      "player": "Player Name",
+      "bet_type": "Top 10 / H2H / Top 5 / Top 20 / Outright Win",
+      "bet_detail": "over [opponent] OR null",
+      "odds": "+350",
+      "book": "DraftKings",
+      "reasoning": "1–2 sentences backing the pick.",
+      "confidence": "High / Medium / Low",
+      "result": null,
+      "result_detail": null
+    }
+  ]
+}
+```
+Up to 5 picks. Empty player name = slot skipped. Generated via admin.html Pro Picks tab.
 
 ### `season-tracker.json` — key fields to update weekly
 ```json
@@ -212,6 +245,7 @@ These pages fetch data client-side and update automatically when JSON files are 
 | `index.html` | `season-tracker.json` | Season tracker section |
 | `lab-notes.html` | `season-tracker.json` | Season tracker section |
 | `picks.html` | `current-pick.json` + `season-tracker.json` | Pick card + record bar + recent results |
+| `pro.html` | `pro-picks.json` | "This Week's Card" section above tabs — all Pro picks with status badges |
 
 **Deploy after updating any JSON file** — Vercel auto-deploys on push to main.
 
@@ -235,8 +269,9 @@ The Lab is free and public. Pro → is the gold CTA button linking to the gated 
 
 ## Active Projects / In Progress
 
-- **Course-fit leaderboard** — BUILT. `leaderboard.html` + `/api/course-fit` endpoint in `api/server.js`. Top 10 free, full field paywalled. Next: add course history component (how players have historically finished vs. their pre-tournament model rank at this venue).
-- **Course-fit model** — IMPROVED. Now: 40+ course profiles, form blending (65% L24 + 35% L12), 0-100 normalized score, server-side computation. Next improvement: derive weights from historical round data rather than editorial judgment.
+- **Pro page (/pro)** — BUILT. Email-gated hub for Pro subscribers. Tabs: Course Fit (full field 0-100), Value Finder (sortable, edge + fit signal), H2H Tool (model insight), Live (live SG stats + pick tracking, auto-refresh 90s). "This Week's Card" section above tabs loads from pro-picks.json. API endpoints: /api/course-fit, /api/betting-odds (4 markets), /api/live-stats, /api/live-tournament.
+- **Course-fit leaderboard** — BUILT. `leaderboard.html` + `/api/course-fit`. Top 10 free, full field paywalled. Next: course history component.
+- **Course-fit model** — IMPROVED. 40+ course profiles, form blending (65% L24 + 35% L12), 0-100 normalized score. Next: derive weights from historical data via /api/derive-course-weights.
 - **Between the Ears app partnership** — collaboration in early discussion. They integrate Divot Lab analytics, display "Powered by Divot Lab."
 - **Twitter/X account** — just launched. Templates and evergreen tweet library built. Focus: pick reveals, data takes, reply engagement during tournament rounds.
 
@@ -252,6 +287,8 @@ The Lab is free and public. Pro → is the gold CTA button linking to the gated 
 - **Gitignored files** — instagram-library.html, partnership-guide.html, twitter-*.html, lab-notes/issues/*, lab-notes/lab-picks/20*.html are intentionally not tracked
 - **season-tracker.json is the single source of truth** for all pick records. Never hardcode stats in HTML — always fetch from this file
 - **current-pick.json is the single source of truth** for the live free pick. Never hardcode pick details in picks.html
+- **pro-picks.json is the single source of truth** for all Pro picks this week. Drives the "This Week's Card" on /pro and the newsletter HTML. Generated via admin.html Pro Picks tab — never edit manually
+- **Admin tool Pro Picks tab workflow**: Wednesday → fill picks → generate pro-picks.json → deploy. Monday → Load Current Values → update result dropdowns → regenerate → deploy
 
 ---
 
@@ -262,3 +299,4 @@ The Lab is free and public. Pro → is the gold CTA button linking to the gated 
 | 2026-05-07 | Weekly update of `current-pick.json` | Created picks.html which fetches this file for the free pick landing page |
 | 2026-05-07 | Weekly update of `season-tracker.json` | Drives 3 pages (homepage, lab-notes, picks) auto-updating record displays |
 | 2026-05-07 | `admin.html` password is `divotlab2026` | Change directly in the file if needed (line ~175, ADMIN_PASSWORD variable) |
+| 2026-05-08 | Weekly update of `pro-picks.json` | Drives "This Week's Card" on /pro page; also used to generate Pro newsletter HTML via admin.html Pro Picks tab |

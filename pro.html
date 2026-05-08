@@ -347,6 +347,57 @@ html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 
+/* ── PICKS CARD ── */
+.picks-card-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
+.picks-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.picks-card-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:20px;}
+.picks-card-tourney{font-size:12px;color:rgba(250,250,250,0.3);}
+.picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.pick-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;}
+.pick-card.win{border-color:rgba(91,191,133,0.3);}
+.pick-card.loss{border-color:rgba(217,72,72,0.2);}
+.pick-player{font-size:15px;font-weight:600;margin-bottom:6px;padding-right:62px;}
+.pick-meta{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
+.pick-bet-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(90,143,168,0.15);border:1px solid rgba(90,143,168,0.25);color:var(--blue-mid);padding:3px 7px;border-radius:4px;}
+.pick-odds{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--gold);}
+.pick-book{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);}
+.pick-confidence{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;font-weight:600;padding:2px 7px;border-radius:3px;text-transform:uppercase;}
+.pick-confidence.high{color:var(--green-light);background:rgba(91,191,133,0.1);}
+.pick-confidence.medium{color:var(--gold);background:rgba(201,168,76,0.1);}
+.pick-confidence.low{color:rgba(250,250,250,0.3);background:rgba(255,255,255,0.05);}
+.pick-reasoning{font-size:12px;color:rgba(250,250,250,0.4);line-height:1.55;margin-top:8px;border-top:1px solid rgba(255,255,255,0.05);padding-top:8px;}
+.pick-result-badge{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;}
+.pick-result-win{background:rgba(91,191,133,0.15);color:var(--green-light);border:1px solid rgba(91,191,133,0.3);}
+.pick-result-loss{background:rgba(217,72,72,0.1);color:var(--red);border:1px solid rgba(217,72,72,0.2);}
+.pick-result-pending{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.22);border:1px solid rgba(255,255,255,0.07);}
+
+/* ── LIVE TAB ── */
+.live-status{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green-light);box-shadow:0 0 0 3px rgba(91,191,133,0.15);animation:livepulse 2s infinite;}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 3px rgba(91,191,133,0.15);}50%{box-shadow:0 0 0 7px rgba(91,191,133,0.04);}}
+.live-updated{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.28);}
+.live-refresh-btn{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.4);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .2s;}
+.live-refresh-btn:hover{color:var(--white);background:rgba(255,255,255,0.09);}
+.live-note{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.18);margin-left:auto;}
+.live-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.live-table-head{display:grid;grid-template-columns:48px 1fr 68px 68px 70px 70px 70px 70px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.live-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.live-row{display:grid;grid-template-columns:48px 1fr 68px 68px 70px 70px 70px 70px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.live-row:hover{background:rgba(255,255,255,0.025);}
+.live-row.is-pick{background:rgba(201,168,76,0.05);border-left:2px solid rgba(201,168,76,0.5);}
+.live-row.is-pick .live-player-name{color:var(--gold);}
+.live-pos{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.45);}
+.live-player-name{font-size:13px;font-weight:500;}
+.live-pick-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.25);padding:2px 5px;border-radius:3px;margin-left:6px;vertical-align:middle;}
+.live-score{font-family:var(--mono);font-size:12px;}
+.live-pos-score{color:var(--green-light);}
+.live-neg-score{color:var(--red);}
+.live-zero{color:rgba(250,250,250,0.35);}
+.live-sg{font-family:var(--mono);font-size:11px;}
+.live-empty{padding:60px 20px;text-align:center;}
+.live-empty-title{font-size:15px;font-weight:600;color:rgba(250,250,250,0.35);margin-bottom:8px;}
+.live-empty-sub{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.7;}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px;}
@@ -383,6 +434,22 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
   .h2h-header{grid-template-columns:1fr 60px 1fr;}
   .h2h-pname{font-size:16px;}
   .h2h-cat-row{gap:8px;}
+
+  /* Picks Card */
+  .picks-card-wrap{padding:16px 16px;}
+  .picks-grid{grid-template-columns:1fr;}
+
+  /* Live Tab — 5 cols on mobile: Pos, Player, Total, Today, Win% */
+  .live-table-head,.live-row{grid-template-columns:36px 1fr 52px 52px 60px !important;}
+  .live-table-head .live-th:nth-child(5),
+  .live-table-head .live-th:nth-child(6),
+  .live-table-head .live-th:nth-child(7),
+  .live-table-head .live-th:nth-child(8),
+  .live-row>div:nth-child(5),
+  .live-row>div:nth-child(6),
+  .live-row>div:nth-child(7),
+  .live-row>div:nth-child(8){display:none !important;}
+  .live-note{display:none;}
 }
 </style>
 </head>
@@ -467,11 +534,21 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
     </div>
   </div>
 
+  <!-- This Week's Card -->
+  <div class="picks-card-wrap" id="picksCardWrap" style="display:none;">
+    <div class="picks-card-header">
+      <span class="picks-card-badge">This Week's Card</span>
+      <span class="picks-card-tourney" id="picksCardTourney"></span>
+    </div>
+    <div class="picks-grid" id="picksGrid"></div>
+  </div>
+
   <!-- Tabs -->
   <div class="pro-tabs">
     <button class="pro-tab active" onclick="switchTab('coursefit',this)">Course Fit</button>
     <button class="pro-tab" onclick="switchTab('value',this)">Value Finder</button>
     <button class="pro-tab" onclick="switchTab('h2h',this)">H2H Tool</button>
+    <button class="pro-tab" onclick="switchTab('live',this)">Live</button>
   </div>
 
   <!-- Tab 1: Course Fit -->
@@ -515,6 +592,18 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
     <div class="h2h-result" id="h2hResult"></div>
   </div>
 
+  <!-- Tab 4: Live -->
+  <div class="tab-content" id="tab-live">
+    <div class="live-status">
+      <div class="live-dot" id="liveDot" style="display:none;"></div>
+      <span class="live-updated" id="liveUpdated">Loading…</span>
+      <button class="live-refresh-btn" onclick="loadLiveData(true)">Refresh</button>
+      <span class="live-note">Auto-refreshes every 90s during rounds</span>
+    </div>
+    <div id="liveLoading" class="loading-msg"><div class="spin"></div><br>Loading live data…</div>
+    <div id="liveTable" style="display:none;"></div>
+  </div>
+
   <div class="pro-disclaimer">
     <strong style="color:rgba(250,250,250,0.25);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
   </div>
@@ -525,8 +614,11 @@ var API = window.location.hostname==='localhost'?'http://localhost:3001':'https:
 var courseFitData = null;
 var valueBetsData = [];
 var currentVfFilter = 'all';
-var top10OddsMap = {}; // player_name → {am, book, impliedProb}
-var vfSort = {col:'edge', dir:-1}; // col: 'odds'|'edge'|'fit'|'prob' · dir: 1=asc, -1=desc
+var top10OddsMap = {};
+var vfSort = {col:'edge', dir:-1};
+var proPicksData = null;
+var liveRefreshTimer = null;
+var isLiveTabActive = false;
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -588,6 +680,7 @@ function showApp(email){
   initPlayerCard();
   initTooltips();
   loadAllData();
+  loadProPicks();
 }
 function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
 
@@ -597,6 +690,14 @@ function switchTab(id, btn){
   document.querySelectorAll('.pro-tab').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  isLiveTabActive = (id==='live');
+  if(id==='live'){
+    loadLiveData(true);
+    if(liveRefreshTimer) clearInterval(liveRefreshTimer);
+    liveRefreshTimer = setInterval(function(){ if(isLiveTabActive) loadLiveData(false); }, 90000);
+  } else {
+    if(liveRefreshTimer){ clearInterval(liveRefreshTimer); liveRefreshTimer=null; }
+  }
 }
 
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
@@ -1098,6 +1199,175 @@ function runH2H(){
   var result = document.getElementById('h2hResult');
   result.innerHTML = html;
   result.classList.add('show');
+}
+
+// ── PRO PICKS CARD ────────────────────────────────────────────────────────────
+async function loadProPicks(){
+  try {
+    var res = await fetch('/pro-picks.json?_='+Date.now());
+    var d = await res.json();
+    proPicksData = d;
+    renderPicksCard(d);
+  } catch(e){
+    document.getElementById('picksCardWrap').style.display='none';
+  }
+}
+
+function renderPicksCard(d){
+  if(!d||!d.picks||!d.picks.length){
+    document.getElementById('picksCardWrap').style.display='none';
+    return;
+  }
+  var tourney = d.tournament+(d.week_of?' · '+d.week_of:'');
+  document.getElementById('picksCardTourney').textContent = tourney;
+
+  var html = d.picks.map(function(p){
+    var resultClass = p.result==='win'?'win':p.result==='loss'?'loss':'';
+    var resultBadge = p.result==='win'
+      ?'<span class="pick-result-badge pick-result-win">WIN</span>'
+      :p.result==='loss'
+      ?'<span class="pick-result-badge pick-result-loss">LOSS</span>'
+      :'<span class="pick-result-badge pick-result-pending">PENDING</span>';
+    var confCls = (p.confidence||'medium').toLowerCase();
+    return '<div class="pick-card '+resultClass+'">'
+      +resultBadge
+      +'<div class="pick-player">'+p.player+'</div>'
+      +'<div class="pick-meta">'
+        +'<span class="pick-bet-badge">'+p.bet_type+'</span>'
+        +(p.bet_detail?'<span style="font-size:11px;color:rgba(250,250,250,0.4);">'+p.bet_detail+'</span>':'')
+        +'<span class="pick-odds">'+p.odds+'</span>'
+        +'<span class="pick-book">'+p.book+'</span>'
+      +'</div>'
+      +'<span class="pick-confidence '+confCls+'">'+p.confidence+'</span>'
+      +(p.reasoning?'<div class="pick-reasoning">'+p.reasoning+'</div>':'')
+    +'</div>';
+  }).join('');
+
+  document.getElementById('picksGrid').innerHTML = html;
+  document.getElementById('picksCardWrap').style.display='block';
+}
+
+// ── LIVE TAB ──────────────────────────────────────────────────────────────────
+async function loadLiveData(showSpinner){
+  var loadEl = document.getElementById('liveLoading');
+  var tableEl = document.getElementById('liveTable');
+  if(showSpinner){
+    loadEl.innerHTML = '<div class="spin"></div><br>Loading live data…';
+    loadEl.style.display='block';
+    tableEl.style.display='none';
+  }
+  try {
+    var [statsRes, predRes] = await Promise.all([
+      fetch(API+'/api/live-stats?stats=sg_putt,sg_arg,sg_app,sg_ott,sg_total&round=event_avg&display=value'),
+      fetch(API+'/api/live-tournament?odds_format=percent')
+    ]);
+    var stats = await statsRes.json();
+    var preds = await predRes.json();
+    renderLiveTable(stats.data, preds.data);
+  } catch(e){
+    loadEl.innerHTML='<div class="live-empty"><div class="live-empty-title">Could not load live data</div><div class="live-empty-sub">Check your connection or try again during round play.</div></div>';
+    loadEl.style.display='block';
+    tableEl.style.display='none';
+  }
+}
+
+function renderLiveTable(statsData, predData){
+  var loadEl = document.getElementById('liveLoading');
+  var tableEl = document.getElementById('liveTable');
+
+  // Normalize rows — DataGolf live_stats field name
+  var rows = [];
+  if(statsData){
+    rows = statsData.live_stats || statsData.data || (Array.isArray(statsData)?statsData:[]);
+  }
+
+  // Update timestamp
+  var updated = statsData&&statsData.last_updated;
+  document.getElementById('liveUpdated').textContent = updated?'Updated: '+updated:'Ready';
+  document.getElementById('liveDot').style.display = rows.length?'block':'none';
+
+  if(!rows.length){
+    loadEl.innerHTML='<div class="live-empty">'
+      +'<div class="live-empty-title">No active round</div>'
+      +'<div class="live-empty-sub">Live SG stats are available Thursday–Sunday during play.<br>Check back when the tournament begins.</div>'
+    +'</div>';
+    loadEl.style.display='block';
+    tableEl.style.display='none';
+    return;
+  }
+
+  // Build win% lookup from live predictions
+  var winMap = {};
+  if(predData){
+    var predRows = predData.live_details||predData.data||(Array.isArray(predData)?predData:[]);
+    predRows.forEach(function(p){ if(p.player_name) winMap[p.player_name]=p; });
+  }
+
+  // Build picks name set for highlighting
+  var pickNames = new Set();
+  if(proPicksData&&proPicksData.picks){
+    proPicksData.picks.forEach(function(p){ pickNames.add(p.player); });
+  }
+
+  // Sort: picks first, then by total score (lower = better in golf)
+  rows = rows.slice().sort(function(a,b){
+    var ap=pickNames.has(a.player_name)?0:1, bp=pickNames.has(b.player_name)?0:1;
+    if(ap!==bp) return ap-bp;
+    return (a.total||0)-(b.total||0);
+  });
+
+  function scoreStr(v){
+    if(v==null) return '—';
+    if(v===0) return 'E';
+    return v>0?'+'+v:''+v;
+  }
+  function scoreCls(v){
+    return v==null?'live-zero':v<0?'live-pos-score':v>0?'live-neg-score':'live-zero';
+  }
+  function sgCell(v){
+    if(v==null) return '<span class="live-sg" style="color:rgba(250,250,250,0.25);">—</span>';
+    var s=(v>=0?'+':'')+v.toFixed(2);
+    var c=v>0.01?'var(--green-light)':v<-0.01?'var(--red)':'rgba(250,250,250,0.35)';
+    return '<span class="live-sg" style="color:'+c+';">'+s+'</span>';
+  }
+
+  var html = '<div class="live-table-wrap">'
+    +'<div class="live-table-head">'
+    +'<span class="live-th">Pos</span>'
+    +'<span class="live-th">Player</span>'
+    +'<span class="live-th">Total</span>'
+    +'<span class="live-th">Today</span>'
+    +'<span class="live-th">'+tip('App','SG: Approach this tournament — event average')+'</span>'
+    +'<span class="live-th">'+tip('OTT','SG: Off the Tee this tournament — event average')+'</span>'
+    +'<span class="live-th">'+tip('ARG','SG: Around the Green this tournament — event average')+'</span>'
+    +'<span class="live-th">'+tip('Putt','SG: Putting this tournament — event average')+'</span>'
+    +'<span class="live-th">'+tip('Win%','DataGolf model win probability — updated live during rounds')+'</span>'
+    +'</div>';
+
+  rows.forEach(function(p){
+    var isPick = pickNames.has(p.player_name);
+    var pred = winMap[p.player_name];
+    var winStr = pred&&pred.win!=null?pred.win.toFixed(1)+'%':'—';
+    var pos = p.current_pos||p.position||'—';
+    var total = scoreStr(p.total);
+    var today = scoreStr(p.today);
+    html += '<div class="live-row'+(isPick?' is-pick':'')+'">'
+      +'<div class="live-pos">'+pos+'</div>'
+      +'<div><span class="live-player-name">'+p.player_name+'</span>'+(isPick?'<span class="live-pick-badge">PICK</span>':'')+'</div>'
+      +'<div class="live-score '+scoreCls(p.total)+'">'+total+'</div>'
+      +'<div class="live-score '+scoreCls(p.today)+'">'+today+'</div>'
+      +'<div>'+sgCell(p.sg_app)+'</div>'
+      +'<div>'+sgCell(p.sg_ott)+'</div>'
+      +'<div>'+sgCell(p.sg_arg)+'</div>'
+      +'<div>'+sgCell(p.sg_putt)+'</div>'
+      +'<div><span class="live-sg" style="color:rgba(250,250,250,0.6);">'+winStr+'</span></div>'
+    +'</div>';
+  });
+  html += '</div>';
+
+  loadEl.style.display='none';
+  tableEl.innerHTML=html;
+  tableEl.style.display='block';
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
