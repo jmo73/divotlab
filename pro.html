@@ -77,9 +77,10 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 #proApp.show{display:block;}
 
 /* ── TOURNEY HEADER ── */
-.tourney-head{background:var(--black-mid);border-bottom:1px solid var(--border);padding:18px 40px;}
+.tourney-head{background:var(--black-mid);border-bottom:1px solid var(--border);padding:22px 40px;}
 .tourney-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-.tourney-name{font-family:var(--display);font-size:20px;font-weight:500;font-style:italic;letter-spacing:-0.01em;color:var(--white);}
+.tourney-label{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--gold);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px;}
+.tourney-name{font-family:var(--display);font-size:clamp(26px,3vw,38px);font-weight:500;font-style:italic;letter-spacing:-0.01em;color:var(--white);}
 .tourney-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .t-chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:4px;}
 .chip-g{color:var(--green-light);background:rgba(91,191,133,0.08);border:1px solid rgba(91,191,133,0.2);}
@@ -352,8 +353,9 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .picks-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .picks-card-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:20px;}
 .picks-card-tourney{font-size:12px;color:rgba(250,250,250,0.3);}
-.picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,300px));gap:12px;}
-.pick-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;}
+.picks-grid{display:flex;flex-wrap:nowrap;gap:12px;}
+.picks-expand-btn{display:none;}
+.pick-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;flex:1 1 0;min-width:0;}
 .pick-card.win{border-color:rgba(91,191,133,0.3);}
 .pick-card.loss{border-color:rgba(217,72,72,0.2);}
 .pick-player{font-size:15px;font-weight:600;margin-bottom:6px;padding-right:62px;}
@@ -476,9 +478,19 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
   .mu3-row>div:nth-child(5),.mu3-row>div:nth-child(6){display:none !important;}
   .mu-note{display:none;}
 
-  /* Picks Card */
-  .picks-card-wrap{padding:16px 16px;}
-  .picks-grid{grid-template-columns:1fr;}
+  /* Picks Card — horizontal scroll snap carousel */
+  .picks-card-wrap{padding:16px 16px 12px;}
+  .picks-grid{overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
+  .picks-grid::-webkit-scrollbar{display:none;}
+  .pick-card{flex:0 0 82%;min-width:0;scroll-snap-align:start;}
+  /* Expanded state — stack vertically */
+  .picks-card-wrap.expanded .picks-grid{overflow-x:visible;scroll-snap-type:none;flex-wrap:wrap;}
+  .picks-card-wrap.expanded .pick-card{flex:0 0 100%;}
+  /* Expand toggle button */
+  .picks-expand-btn{display:block;font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.4);background:none;border:none;cursor:pointer;margin-top:10px;padding:0;letter-spacing:0.06em;transition:color .2s;}
+  .picks-expand-btn:hover{color:var(--white);}
+  /* Header bigger on mobile too */
+  .tourney-head{padding:16px 16px;}
 
   /* Live Tab — 5 cols on mobile: Pos, Player, Total, Win%, Top10% */
   .live-table-head,.live-row{grid-template-columns:36px 1fr 52px 54px 54px !important;}
@@ -565,7 +577,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
   <div class="tourney-head">
     <div class="tourney-inner">
       <div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:0.16em;margin-bottom:4px;">LAB NOTES PRO · ANALYTICS</div>
+        <div class="tourney-label">Lab Notes Pro · Analytics</div>
         <div class="tourney-name" id="appTourneyName">Loading…</div>
       </div>
       <div class="tourney-chips" id="appChips"></div>
@@ -588,6 +600,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
       <span class="picks-card-tourney" id="picksCardTourney"></span>
     </div>
     <div class="picks-grid" id="picksGrid"></div>
+    <button class="picks-expand-btn" id="picksExpandBtn" onclick="togglePicksExpand()">Show all ↓</button>
   </div>
 
   <!-- Tabs -->
@@ -1312,7 +1325,7 @@ function muGetVal(row, field, player){
 function renderMatchups(data, market){
   var loadEl = document.getElementById('muLoading');
   var tableEl = document.getElementById('muTable');
-  var matchups = data.matchups||data.data||(Array.isArray(data)?data:[]);
+  var matchups = data.match_list||data.matchups||data.bets||data.data||(Array.isArray(data)?data:[]);
 
   if(!matchups||!matchups.length){
     var keys = data?Object.keys(data).join(', '):'(empty)';
@@ -1355,8 +1368,8 @@ function renderMatchups(data, market){
       +'</div>';
 
     matchups.forEach(function(row){
-      var p1 = row.p1_player_name||row.player1_name||'';
-      var p2 = row.p2_player_name||row.player2_name||'';
+      var p1 = row.p1_player_name||row.player1_name||(row.p1&&row.p1.player_name)||'';
+      var p2 = row.p2_player_name||row.player2_name||(row.p2&&row.p2.player_name)||'';
       if(!p1||!p2) return;
 
       // DataGolf model american odds for each player
@@ -1405,9 +1418,9 @@ function renderMatchups(data, market){
 
     matchups.forEach(function(row){
       var players = [
-        {name:row.p1_player_name||'',prefix:'p1'},
-        {name:row.p2_player_name||'',prefix:'p2'},
-        {name:row.p3_player_name||'',prefix:'p3'}
+        {name:row.p1_player_name||row.player1_name||(row.p1&&row.p1.player_name)||'',prefix:'p1'},
+        {name:row.p2_player_name||row.player2_name||(row.p2&&row.p2.player_name)||'',prefix:'p2'},
+        {name:row.p3_player_name||row.player3_name||(row.p3&&row.p3.player_name)||'',prefix:'p3'}
       ].filter(function(p){return p.name;});
       if(players.length<2) return;
 
@@ -1491,7 +1504,17 @@ function renderPicksCard(d){
   }).join('');
 
   document.getElementById('picksGrid').innerHTML = html;
+  var expandBtn = document.getElementById('picksExpandBtn');
+  if(expandBtn) expandBtn.textContent = 'Show all '+d.picks.length+' ↓';
   document.getElementById('picksCardWrap').style.display='block';
+}
+
+function togglePicksExpand(){
+  var wrap = document.getElementById('picksCardWrap');
+  var btn = document.getElementById('picksExpandBtn');
+  wrap.classList.toggle('expanded');
+  var count = proPicksData&&proPicksData.picks?proPicksData.picks.length:5;
+  btn.textContent = wrap.classList.contains('expanded')?'Show less ↑':'Show all '+count+' ↓';
 }
 
 function sortLive(col){
