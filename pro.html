@@ -677,7 +677,7 @@ function initPlayerCard(){
     var target = e.target.closest('.cf-player,.vf-player,.h2h-pname');
     if(!target) return;
     var name = target.textContent.trim();
-    showPlayerCard(name, target);
+    showPlayerCard(name, e.clientX, e.clientY);
   });
   document.getElementById('proApp').addEventListener('mouseout', function(e){
     var target = e.target.closest('.cf-player,.vf-player,.h2h-pname');
@@ -689,7 +689,7 @@ function initPlayerCard(){
   document.getElementById('playerCard').addEventListener('mouseleave', hidePlayerCard);
 }
 
-function showPlayerCard(name, triggerEl){
+function showPlayerCard(name, mouseX, mouseY){
   if(!courseFitData||!courseFitData.field) return;
   var p = courseFitData.field.find(function(f){ return f.player_name===name; });
   if(!p) return;
@@ -727,11 +727,10 @@ function showPlayerCard(name, triggerEl){
     oddsRow.style.display='none';
   }
 
-  // Position card
-  var rect = triggerEl.getBoundingClientRect();
-  var cardLeft = rect.right + 16;
-  if(cardLeft + 280 > window.innerWidth) cardLeft = rect.left - 286;
-  var cardTop = Math.max(8, Math.min(rect.top - 10, window.innerHeight - 320));
+  // Position card next to cursor (works for both block and inline elements)
+  var cardLeft = mouseX + 20;
+  if(cardLeft + 278 > window.innerWidth) cardLeft = mouseX - 290;
+  var cardTop = Math.max(8, Math.min(mouseY - 20, window.innerHeight - 320));
   playerCard.style.left = cardLeft+'px';
   playerCard.style.top = cardTop+'px';
   playerCard.classList.add('show');
@@ -782,7 +781,7 @@ function renderCourseFit(d){
     +'<span class="cf-th">#</span>'
     +'<span class="cf-th">Player</span>'
     +'<span class="cf-th">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+'</span>'
-    +'<span class="cf-th">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong><strong>App</strong> = Approach the Green<strong>OTT</strong> = Off the Tee<strong>ARG</strong> = Around the Green<strong>Putt</strong> = Putting<br>Values are 24-month rolling averages blended with recent 12-month form. Positive = above tour average.')+'</span>'
+    +'<span class="cf-th">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Positive = above tour average.')+'</span>'
     +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. Loaded at page open — check books for current lines.',true)+'</span>'
     +'<span class="cf-th">'+tip('Signal','<strong>Course-Fit Signal</strong><strong>Strong Fit</strong> = top 15% of field<strong>Good Fit</strong> = top 35% of field<strong>Neutral</strong> = below that threshold<br>Based on fit score percentile rank within this week\'s field.',true)+'</span>'
     +'</div>';
