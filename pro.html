@@ -246,8 +246,6 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 /* ── DISCLAIMER ── */
 .pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
 
-/* (light mode removed — /pro is always dark) */
-/*
 html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
 html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
 html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
@@ -348,21 +346,43 @@ html[data-theme="light"] .h2h-score-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
-html[data-theme="light"] .h2h-val{color:rgba(28,27,24,0.6);}
-*/
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px;}
-  .nav-links{display:none;}
-  .hamburger{display:flex;}
-  .tourney-head,.weights-strip,.pro-tabs,.tab-content,.pro-disclaimer{padding-left:20px;padding-right:20px;}
-  .cf-table-head,.cf-row{grid-template-columns:40px 1fr 72px;}
-  .cf-table-head .cf-th:nth-child(n+4),.cf-row>*:nth-child(n+4){display:none;}
-  .vf-head,.vf-row{grid-template-columns:1fr 80px 80px 70px;}
-  .vf-head .vf-th:nth-child(n+5),.vf-row>*:nth-child(n+5){display:none;}
-  .h2h-selectors{grid-template-columns:1fr;}
+  .nav-links{display:none !important;}
+  .hamburger{display:flex !important;}
+  .tourney-head{padding:12px 16px;}
+  .tourney-inner{flex-direction:column;align-items:flex-start;gap:8px;}
+  .weights-strip{padding:10px 16px;}
+  .weights-inner{gap:14px;}
+  .pro-tabs{padding:0 16px;overflow-x:auto;}
+  .pro-tab{padding:11px 14px;font-size:12px;white-space:nowrap;}
+  .tab-content{padding:20px 12px 60px;}
+  .pro-disclaimer{padding:0 16px 24px;}
+
+  /* Course Fit — 3 columns on mobile, rest hidden */
+  .cf-table-head,.cf-row{grid-template-columns:40px 1fr 68px !important;}
+  .cf-table-head span:nth-child(n+4),.cf-row>*:nth-child(n+4){display:none !important;}
   .cf-score{font-size:16px;}
+  .cf-player{font-size:13px;}
+  .cf-table-wrap{overflow-x:hidden;}
+
+  /* Value Finder — 4 columns on mobile (Player, Odds, Edge%, Signal) */
+  .vf-head,.vf-row{grid-template-columns:1fr 80px 80px 76px !important;}
+  .vf-head span:nth-child(n+4),.vf-row>*:nth-child(n+4){display:none !important;}
+  /* Keep Signal (last column) by hiding columns 4-6, showing 1-3 and last */
+  .vf-head span:nth-child(4),.vf-head span:nth-child(5),.vf-head span:nth-child(6),
+  .vf-row>*:nth-child(4),.vf-row>*:nth-child(5),.vf-row>*:nth-child(6){display:none !important;}
+  .vf-head span:nth-child(7),.vf-row>*:nth-child(7){display:block !important;}
+  .vf-player{font-size:12px;}
+  .vf-toolbar{flex-direction:column;align-items:flex-start;gap:10px;}
+
+  /* H2H */
+  .h2h-selectors{grid-template-columns:1fr;}
+  .h2h-header{grid-template-columns:1fr 60px 1fr;}
+  .h2h-pname{font-size:16px;}
+  .h2h-cat-row{gap:8px;}
 }
 </style>
 </head>
@@ -901,7 +921,7 @@ function renderValueFinder(bets, market){
   function arrow(col){ return vfSort.col===col?(vfSort.dir===-1?'↓':'↑'):''; }
 
   var html = '<div class="vf-table">'
-    +'<div class="vf-head" style="grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;">'
+    +'<div class="vf-head">'
     +'<span class="vf-th">Player</span>'
     +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.',false,arrow('odds'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced. A 15% edge means 15% more expected value than fair odds.',false,arrow('edge'))+'</span>'
@@ -938,7 +958,7 @@ function renderValueFinder(bets, market){
   // Update vf-head grid cols to match new column count (7)
   var style = document.getElementById('vfDynStyle');
   if(!style){ style=document.createElement('style'); style.id='vfDynStyle'; document.head.appendChild(style); }
-  style.textContent = '.vf-row{grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;}';
+  style.textContent = '.vf-head,.vf-row{grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;}';
 
   document.getElementById('vfTable').innerHTML=html;
   document.getElementById('vfTable').style.display='block';
