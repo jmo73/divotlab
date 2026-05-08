@@ -217,6 +217,22 @@ These pages fetch data client-side and update automatically when JSON files are 
 
 ---
 
+## Authentication — /pro page
+
+Pro subscribers access `/pro` by entering the email they subscribed with. The API checks Beehiiv's Pro publication for an active subscription and grants 7-day browser access via localStorage.
+
+**Required Vercel env var**: `BEEHIIV_PRO_PUB_ID` — the publication ID of the separate Lab Notes Pro Beehiiv publication (not the same as `BEEHIIV_PUB_ID` which is the free newsletter).
+
+**API endpoint**: `POST /api/verify-pro` — body: `{email}`, returns `{verified: true/false}`
+
+## Navigation — Final Structure (all pages)
+
+```
+[Logo] · Lab Picks (/picks) · The Lab (/the-lab) · Articles · Lab Notes · [Pro →] (/pro)
+```
+
+The Lab is free and public. Pro → is the gold CTA button linking to the gated premium hub.
+
 ## Active Projects / In Progress
 
 - **Course-fit leaderboard** — BUILT. `leaderboard.html` + `/api/course-fit` endpoint in `api/server.js`. Top 10 free, full field paywalled. Next: add course history component (how players have historically finished vs. their pre-tournament model rank at this venue).

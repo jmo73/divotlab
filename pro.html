@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro — Divot Lab</title>
+<meta name="description" content="Lab Notes Pro subscriber analytics hub. Full course-fit rankings, value finder, and H2H comparison tool for every PGA Tour event.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0A0A0A;--black-mid:#111110;--black-card:#161614;--black-card2:#1C1C19;
+  --white:#FAFAFA;--green:#1B4D3E;--green-light:#5BBF85;--blue-mid:#5A8FA8;
+  --gold:#C9A84C;--red:#D94848;--border:rgba(255,255,255,0.07);
+  --display:'Cormorant Garamond',Georgia,serif;
+  --body:'DM Sans','Helvetica Neue',sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 48px;display:flex;align-items:center;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo svg{width:22px;height:22px;color:var(--white);}
+.nav-wordmark{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--white);}
+.nav-wordmark span{font-weight:300;opacity:.5;}
+.nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;}
+.nav-links a{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(250,250,250,.6);transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-links a.active{color:var(--gold);}
+.nav-pro-btn{background:var(--gold);color:var(--black)!important;padding:8px 20px;border-radius:5px;font-weight:700;transition:background .2s;}
+.nav-pro-btn:hover{background:#D4B45E;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;margin-left:auto;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+nav.open .hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+nav.open .hamburger span:nth-child(2){opacity:0;}
+nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.drawer{position:fixed;top:64px;left:0;right:0;z-index:199;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 0 20px;display:flex;flex-direction:column;align-items:center;gap:4px;max-height:0;overflow:hidden;opacity:0;pointer-events:none;transition:max-height .35s,opacity .25s;}
+.drawer.open{max-height:300px;opacity:1;pointer-events:auto;}
+.drawer a{font-size:15px;font-weight:500;color:rgba(250,250,250,.7);padding:10px;width:100%;text-align:center;transition:color .2s;}
+.drawer a:hover{color:var(--white);}
+.drawer .nav-pro-btn{margin-top:8px;width:auto;padding:10px 32px;}
+
+/* ── GATE ── */
+#gate{position:fixed;inset:0;z-index:100;background:var(--black);display:flex;align-items:center;justify-content:center;padding:20px;background-image:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(201,168,76,0.1) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(44,95,124,0.1) 0%,transparent 60%);}
+#gate.hidden{display:none;}
+.gate-card{background:var(--black-card);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:48px 44px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;}
+.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--green-light) 60%,transparent);}
+.gate-badge{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);padding:5px 14px;border-radius:20px;margin-bottom:24px;}
+.gate-title{font-family:var(--display);font-size:clamp(2rem,5vw,3rem);font-weight:500;font-style:italic;line-height:1.1;margin-bottom:12px;}
+.gate-sub{font-size:14px;color:rgba(250,250,250,0.42);margin-bottom:28px;line-height:1.7;}
+.gate-perks{list-style:none;text-align:left;margin-bottom:32px;display:flex;flex-direction:column;gap:10px;}
+.gate-perks li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(250,250,250,0.6);line-height:1.5;}
+.gate-perks li::before{content:'→';color:var(--gold);flex-shrink:0;font-weight:700;margin-top:1px;}
+.gate-form{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.gate-input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:14px 18px;font-family:var(--body);font-size:14px;color:var(--white);outline:none;transition:border-color .2s;text-align:center;}
+.gate-input:focus{border-color:rgba(201,168,76,0.5);}
+.gate-input::placeholder{color:rgba(250,250,250,0.3);}
+.gate-btn{background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:14px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:background .2s,transform .15s;letter-spacing:0.02em;}
+.gate-btn:hover{background:#D4B45E;transform:translateY(-1px);}
+.gate-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.gate-error{font-size:13px;color:var(--red);margin-top:-4px;display:none;}
+.gate-error.show{display:block;}
+.gate-note{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.6;}
+.gate-note a{color:rgba(201,168,76,0.5);text-decoration:underline;}
+
+/* ── PRO APP ── */
+#proApp{display:none;padding-top:64px;min-height:100vh;}
+#proApp.show{display:block;}
+
+/* ── TOURNEY HEADER ── */
+.tourney-head{background:var(--black-mid);border-bottom:1px solid var(--border);padding:18px 40px;}
+.tourney-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.tourney-name{font-family:var(--display);font-size:20px;font-weight:500;font-style:italic;letter-spacing:-0.01em;color:var(--white);}
+.tourney-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.t-chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:4px;}
+.chip-g{color:var(--green-light);background:rgba(91,191,133,0.08);border:1px solid rgba(91,191,133,0.2);}
+.chip-gold{color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);}
+.chip-b{color:var(--blue-mid);background:rgba(90,143,168,0.08);border:1px solid rgba(90,143,168,0.18);}
+.user-chip{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);display:flex;align-items:center;gap:6px;}
+.signout-btn{background:none;border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);cursor:pointer;transition:all .2s;}
+.signout-btn:hover{border-color:rgba(250,250,250,0.25);color:rgba(250,250,250,0.6);}
+
+/* Weights strip */
+.weights-strip{background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.04);padding:10px 40px;}
+.weights-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.w-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);letter-spacing:0.1em;}
+.w-item{display:flex;align-items:center;gap:6px;}
+.w-name{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.4);letter-spacing:0.05em;}
+.w-bar-outer{width:48px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.w-bar-fill{height:100%;border-radius:2px;}
+.w-pct{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);}
+
+/* ── TABS ── */
+.pro-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 40px;background:var(--black);}
+.pro-tab{padding:13px 20px;font-size:13px;font-weight:600;color:rgba(250,250,250,0.35);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;font-family:var(--body);letter-spacing:0.03em;transition:all .18s;white-space:nowrap;}
+.pro-tab:hover{color:rgba(250,250,250,0.7);}
+.pro-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;max-width:1200px;margin:0 auto;padding:28px 40px 80px;}
+.tab-content.active{display:block;}
+
+/* ── LOADING ── */
+.loading-msg{text-align:center;padding:60px 20px;color:rgba(250,250,250,0.25);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(201,168,76,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── COURSE FIT TABLE ── */
+.cf-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.cf-table-head{display:grid;grid-template-columns:52px 1fr 90px 240px 110px 90px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.cf-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.cf-row{display:grid;grid-template-columns:52px 1fr 90px 240px 110px 90px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.cf-row:hover{background:rgba(255,255,255,0.02);}
+.cf-row:last-child{border-bottom:none;}
+.cf-row.top3{background:rgba(201,168,76,0.03);}
+.cf-rank{font-family:var(--mono);font-size:13px;font-weight:600;color:rgba(250,250,250,0.28);}
+.cf-rank.r1{color:var(--gold);}
+.cf-rank.r2{color:rgba(201,168,76,0.65);}
+.cf-rank.r3{color:rgba(201,168,76,0.45);}
+.cf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.9);}
+.cf-country{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);margin-top:2px;letter-spacing:0.05em;}
+.cf-score{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--green-light);text-align:center;}
+.cf-score.dim{color:rgba(250,250,250,0.2);}
+.cf-bars{display:flex;flex-direction:column;gap:4px;}
+.sg-br{display:flex;align-items:center;gap:6px;}
+.sg-lbl{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);width:28px;flex-shrink:0;}
+.sg-track{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+.sg-fill{height:100%;border-radius:2px;}
+.sg-fill.pos{background:var(--green-light);}
+.sg-fill.neg{background:var(--red);}
+.sg-val{font-family:var(--mono);font-size:9px;width:32px;text-align:right;flex-shrink:0;}
+.sg-val.pos{color:var(--green-light);}
+.sg-val.neg{color:var(--red);}
+.sg-val.zero{color:rgba(250,250,250,0.2);}
+.cf-odds-col{text-align:center;}
+.odds-num{font-family:var(--mono);font-size:12px;font-weight:500;color:rgba(250,250,250,0.5);}
+.odds-book{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);}
+.value-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;text-align:center;}
+.vbadge-strong{background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
+.vbadge-moderate{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.vbadge-none{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.25);border:1px solid rgba(255,255,255,0.07);}
+
+/* ── VALUE FINDER TAB ── */
+.vf-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.vf-filter{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(250,250,250,0.4);cursor:pointer;transition:all .18s;font-family:var(--body);}
+.vf-filter:hover{color:rgba(250,250,250,0.75);}
+.vf-filter.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.28);color:var(--gold);}
+.vf-table{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.vf-head{display:grid;grid-template-columns:1fr 90px 90px 90px 90px 90px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.vf-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.vf-row{display:grid;grid-template-columns:1fr 90px 90px 90px 90px 90px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.vf-row:hover{background:rgba(255,255,255,0.02);}
+.vf-row:last-child{border-bottom:none;}
+.vf-row.high{background:rgba(91,191,133,0.04);}
+.vf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.9);}
+.vf-bet-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;padding:2px 7px;border-radius:3px;margin-left:6px;}
+.bet-top5{background:rgba(91,191,133,0.12);color:var(--green-light);}
+.bet-top10{background:rgba(90,143,168,0.12);color:var(--blue-mid);}
+.bet-top20{background:rgba(90,143,168,0.08);color:var(--blue-mid);}
+.bet-win{background:rgba(201,168,76,0.12);color:var(--gold);}
+.vf-cell{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.5);text-align:center;}
+.vf-cell.green{color:var(--green-light);font-weight:600;}
+.vf-cell.gold{color:var(--gold);font-weight:600;}
+.conf-strong{color:var(--green-light);}
+.conf-moderate{color:var(--gold);}
+
+/* ── H2H TAB ── */
+.h2h-selectors{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.h2h-select-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.h2h-select-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);margin-bottom:10px;}
+.h2h-select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-family:var(--body);font-size:14px;color:var(--white);outline:none;cursor:pointer;transition:border-color .2s;}
+.h2h-select:focus{border-color:rgba(201,168,76,0.4);}
+.h2h-select option{background:var(--black-card);}
+.h2h-compare-btn{display:block;width:100%;max-width:280px;margin:0 auto 32px;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:0.02em;}
+.h2h-compare-btn:hover{background:#D4B45E;}
+.h2h-result{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
+.h2h-result.show{display:block;}
+.h2h-header{display:grid;grid-template-columns:1fr 100px 1fr;padding:20px 24px;border-bottom:1px solid var(--border);align-items:center;text-align:center;}
+.h2h-pname{font-family:var(--display);font-size:22px;font-weight:600;font-style:italic;line-height:1.1;}
+.h2h-vs{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.25);letter-spacing:0.1em;}
+.h2h-score-display{padding:20px 24px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.h2h-score-side{text-align:center;padding:16px;}
+.h2h-score-side.winner{background:rgba(91,191,133,0.04);}
+.h2h-score-num{font-family:var(--mono);font-size:48px;font-weight:500;line-height:1;margin-bottom:6px;}
+.h2h-score-num.a-wins{color:var(--green-light);}
+.h2h-score-num.b-wins{color:var(--gold);}
+.h2h-score-label{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);letter-spacing:0.1em;}
+.h2h-score-sep{width:1px;background:rgba(255,255,255,0.06);margin:16px 0;}
+.h2h-breakdown{padding:20px 24px;}
+.h2h-cat-row{display:grid;grid-template-columns:1fr 120px 1fr;gap:12px;align-items:center;margin-bottom:14px;}
+.h2h-cat-row:last-child{margin-bottom:0;}
+.h2h-bar-a{display:flex;align-items:center;gap:6px;justify-content:flex-end;}
+.h2h-bar-b{display:flex;align-items:center;gap:6px;}
+.h2h-val{font-family:var(--mono);font-size:12px;}
+.h2h-track{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;max-width:120px;}
+.h2h-fill-a{height:100%;border-radius:3px;background:var(--green-light);}
+.h2h-fill-b{height:100%;border-radius:3px;background:var(--gold);}
+.h2h-cat-label{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);text-align:center;letter-spacing:0.08em;}
+.h2h-weight-note{font-size:11px;color:rgba(250,250,250,0.25);text-align:center;margin-top:4px;font-style:italic;}
+
+/* ── DISCLAIMER ── */
+.pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .tourney-head,.weights-strip,.pro-tabs,.tab-content,.pro-disclaimer{padding-left:20px;padding-right:20px;}
+  .cf-table-head,.cf-row{grid-template-columns:40px 1fr 72px;}
+  .cf-table-head .cf-th:nth-child(n+4),.cf-row>*:nth-child(n+4){display:none;}
+  .vf-head,.vf-row{grid-template-columns:1fr 80px 80px 70px;}
+  .vf-head .vf-th:nth-child(n+5),.vf-row>*:nth-child(n+5){display:none;}
+  .h2h-selectors{grid-template-columns:1fr;}
+  .cf-score{font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Lab Picks</a>
+    <a href="/the-lab">The Lab</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Lab Notes</a>
+    <a href="/pro" class="nav-pro-btn active">Pro</a>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="drawer" id="drawer">
+  <a href="/picks">Lab Picks</a>
+  <a href="/the-lab">The Lab</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Lab Notes</a>
+  <a href="/pro" class="nav-pro-btn">Pro</a>
+</div>
+
+<!-- EMAIL GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">Lab Notes Pro</div>
+    <h1 class="gate-title">Your analytics hub.</h1>
+    <p class="gate-sub">Enter the email address you subscribed with to access your Pro content.</p>
+    <ul class="gate-perks">
+      <li>Full course-fit rankings for every player in the field — with value flags</li>
+      <li>Value finder: model edge crossed with course-fit for every bet type</li>
+      <li>H2H comparison tool — see who the course favors in any matchup</li>
+    </ul>
+    <div class="gate-form">
+      <input type="email" id="gateEmail" class="gate-input" placeholder="your@email.com" autocomplete="email">
+      <button class="gate-btn" id="gateBtn" onclick="verifyEmail()">Access Pro →</button>
+    </div>
+    <div class="gate-error" id="gateErr">This email isn't in our Pro subscriber list. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to Lab Notes Pro →</a></div>
+    <p class="gate-note">Access is tied to your subscriber email. Verified for 7 days per device.</p>
+  </div>
+</div>
+
+<!-- PRO APP -->
+<div id="proApp">
+  <!-- Tournament header -->
+  <div class="tourney-head">
+    <div class="tourney-inner">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:0.16em;margin-bottom:4px;">LAB NOTES PRO · ANALYTICS</div>
+        <div class="tourney-name" id="appTourneyName">Loading…</div>
+      </div>
+      <div class="tourney-chips" id="appChips"></div>
+      <div class="user-chip">
+        <span id="appUserEmail"></span>
+        <button class="signout-btn" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <div class="weights-strip">
+    <div class="weights-inner" id="weightsRow">
+      <span class="w-label">Course weights:</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="pro-tabs">
+    <button class="pro-tab active" onclick="switchTab('coursefit',this)">Course Fit</button>
+    <button class="pro-tab" onclick="switchTab('value',this)">Value Finder</button>
+    <button class="pro-tab" onclick="switchTab('h2h',this)">H2H Tool</button>
+  </div>
+
+  <!-- Tab 1: Course Fit -->
+  <div class="tab-content active" id="tab-coursefit">
+    <div id="cfLoading" class="loading-msg"><div class="spin"></div><br>Loading course-fit rankings…</div>
+    <div id="cfTable" style="display:none;"></div>
+  </div>
+
+  <!-- Tab 2: Value Finder -->
+  <div class="tab-content" id="tab-value">
+    <div class="vf-filters">
+      <button class="vf-filter active" onclick="filterValue('all',this)">All Markets</button>
+      <button class="vf-filter" onclick="filterValue('top5',this)">Top 5</button>
+      <button class="vf-filter" onclick="filterValue('top10',this)">Top 10</button>
+      <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
+      <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
+    </div>
+    <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
+    <div id="vfTable" style="display:none;"></div>
+  </div>
+
+  <!-- Tab 3: H2H Tool -->
+  <div class="tab-content" id="tab-h2h">
+    <div class="h2h-selectors">
+      <div class="h2h-select-wrap">
+        <div class="h2h-select-label">Player A</div>
+        <select class="h2h-select" id="h2hA"><option value="">Select a player…</option></select>
+      </div>
+      <div class="h2h-select-wrap">
+        <div class="h2h-select-label">Player B</div>
+        <select class="h2h-select" id="h2hB"><option value="">Select a player…</option></select>
+      </div>
+    </div>
+    <button class="h2h-compare-btn" onclick="runH2H()">Compare →</button>
+    <div class="h2h-result" id="h2hResult"></div>
+  </div>
+
+  <div class="pro-disclaimer">
+    <strong style="color:rgba(250,250,250,0.25);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
+  </div>
+</div>
+
+<script>
+var API = window.location.hostname==='localhost'?'http://localhost:3001':'https://divotlab-api.vercel.app';
+var courseFitData = null;
+var valueBetsData = [];
+var currentVfFilter = 'all';
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+var hbg = document.getElementById('hamburger');
+var drw = document.getElementById('drawer');
+var nav = document.getElementById('nav');
+hbg.addEventListener('click',function(){nav.classList.toggle('open');drw.classList.toggle('open');document.body.style.overflow=drw.classList.contains('open')?'hidden':'';});
+drw.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');drw.classList.remove('open');document.body.style.overflow='';});});
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+function getToken(){ try{ return JSON.parse(localStorage.getItem('divotlab-pro-auth')||'null'); }catch(e){ return null; } }
+
+function checkAuth(){
+  var t = getToken();
+  if(t && t.expires > Date.now()){
+    showApp(t.email);
+  } else {
+    if(t) localStorage.removeItem('divotlab-pro-auth');
+    showGate();
+  }
+}
+
+async function verifyEmail(){
+  var email = document.getElementById('gateEmail').value.trim().toLowerCase();
+  if(!email || !email.includes('@')) return;
+  var btn = document.getElementById('gateBtn');
+  var err = document.getElementById('gateErr');
+  btn.disabled = true; btn.textContent = 'Verifying…';
+  err.classList.remove('show');
+
+  try {
+    var res = await fetch(API+'/api/verify-pro',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email})
+    });
+    var data = await res.json();
+    if(data.verified){
+      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
+        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000
+      }));
+      showApp(email);
+    } else {
+      err.classList.add('show');
+      btn.disabled = false; btn.textContent = 'Access Pro →';
+    }
+  } catch(e){
+    err.textContent = 'Connection error. Try again.';
+    err.classList.add('show');
+    btn.disabled = false; btn.textContent = 'Access Pro →';
+  }
+}
+
+document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') verifyEmail(); });
+
+function showGate(){ document.getElementById('gate').classList.remove('hidden'); document.getElementById('proApp').classList.remove('show'); }
+function showApp(email){
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('proApp').classList.add('show');
+  document.getElementById('appUserEmail').textContent = email;
+  loadAllData();
+}
+function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.pro-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── DATA LOADING ──────────────────────────────────────────────────────────────
+async function loadAllData(){
+  await loadCourseFit();
+  await loadValueData();
+}
+
+async function loadCourseFit(){
+  try {
+    var res = await fetch(API+'/api/course-fit');
+    var d = await res.json();
+    if(!d.success) throw new Error(d.error);
+    courseFitData = d;
+    renderTourneyHeader(d);
+    renderCourseFit(d);
+    populateH2HSelects(d.field||[]);
+  } catch(e){
+    document.getElementById('cfLoading').innerHTML = '<div style="color:rgba(250,250,250,0.3);font-size:13px;">Could not load course-fit data. '+e.message+'</div>';
+  }
+}
+
+async function loadValueData(){
+  try {
+    var markets = ['top_5','top_10','top_20','win'];
+    var results = await Promise.all(markets.map(function(m){
+      return fetch(API+'/api/betting-odds?tour=pga&market='+m+'&odds_format=decimal').then(function(r){return r.json();});
+    }));
+    var bets = [];
+    results.forEach(function(r,i){
+      if(!r.success||!r.data||!r.data.odds) return;
+      var market = markets[i];
+      var books = ['draftkings','fanduel','betmgm','pinnacle','bet365','caesars'];
+      r.data.odds.forEach(function(p){
+        var dgOdds = p.datagolf&&p.datagolf.baseline_history_fit;
+        if(!dgOdds) return;
+        var dgProb = 1/dgOdds;
+        var bestOdds=0, bestBook='';
+        books.forEach(function(b){ if(p[b]&&p[b]>bestOdds){bestOdds=p[b];bestBook=b;} });
+        if(!bestOdds) return;
+        var edge = (dgProb*bestOdds)-1;
+        bets.push({ player:p.player_name, dg_id:p.dg_id, market, dgOdds, bestOdds, bestBook, edge, edgePct:parseFloat((edge*100).toFixed(1)) });
+      });
+    });
+    bets.sort(function(a,b){return b.edge-a.edge;});
+    valueBetsData = bets;
+    renderValueFinder(bets, currentVfFilter);
+  } catch(e){
+    document.getElementById('vfLoading').innerHTML='<div style="color:rgba(250,250,250,0.3);font-size:13px;">Could not load value data.</div>';
+  }
+}
+
+// ── TOURNEY HEADER ────────────────────────────────────────────────────────────
+function renderTourneyHeader(d){
+  document.getElementById('appTourneyName').textContent = d.tournament.event_name || 'Current Tournament';
+  var chips = document.getElementById('appChips');
+  chips.innerHTML =
+    '<span class="t-chip chip-g">'+(d.tournament.field_size||'—')+' players</span>'+
+    '<span class="t-chip '+(d.course_weights.matched?'chip-gold':'chip-b')+'">'+
+      (d.course_weights.matched?'Venue profile matched':'Default weights')+'</span>'+
+    '<span class="t-chip chip-b">'+(d.meta&&d.meta.form_blended?'65% Skill + 35% Form':'Skill only')+'</span>';
+
+  var wr = document.getElementById('weightsRow');
+  var cats=[{k:'app',n:'Approach',c:'#5BBF85'},{k:'ott',n:'OTT',c:'#5A8FA8'},{k:'arg',n:'ARG',c:'#C9A84C'},{k:'putt',n:'Putting',c:'rgba(250,250,250,0.4)'}];
+  var html='<span class="w-label">Course weights:</span>';
+  cats.forEach(function(cat){
+    var pct=Math.round((d.course_weights[cat.k]||0)*100);
+    html+='<div class="w-item"><span class="w-name">'+cat.n+'</span><div class="w-bar-outer"><div class="w-bar-fill" style="width:'+pct+'%;background:'+cat.c+'"></div></div><span class="w-pct">'+pct+'%</span></div>';
+  });
+  wr.innerHTML=html;
+}
+
+// ── COURSE FIT ────────────────────────────────────────────────────────────────
+function sgToW(v){ return Math.min(100,Math.max(0,((v+2)/4)*100)); }
+function fmtSG(v){
+  if(v==null) return {s:'—',c:'zero'};
+  return {s:(v>=0?'+':'')+v.toFixed(2), c:v>0.005?'pos':v<-0.005?'neg':'zero'};
+}
+function sgBarHTML(lbl,val){
+  var f=fmtSG(val); var w=val!=null?sgToW(val)+'%':'0%'; var fc=val==null?'':(val>=0?'pos':'neg');
+  return '<div class="sg-br"><span class="sg-lbl">'+lbl+'</span><div class="sg-track"><div class="sg-fill '+fc+'" style="width:'+w+'"></div></div><span class="sg-val '+f.c+'">'+f.s+'</span></div>';
+}
+function decToAm(d){ if(d>=2) return '+'+Math.round((d-1)*100); return Math.round(-100/(d-1)); }
+
+function renderCourseFit(d){
+  var field = d.field||[];
+  var cfFitMap = {};
+  field.forEach(function(p){ cfFitMap[p.player_name] = p.fitScore; });
+
+  var html = '<div class="cf-table-wrap">'
+    +'<div class="cf-table-head"><span class="cf-th">#</span><span class="cf-th">Player</span><span class="cf-th">Fit</span><span class="cf-th">SG Breakdown</span><span class="cf-th">Best Odds</span><span class="cf-th">Signal</span></div>';
+
+  field.forEach(function(p,i){
+    var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    var score = p.fitScore!=null?p.fitScore:'—';
+    var scoreCls = p.fitScore!=null?'':'dim';
+    var topPct = p.percentile!=null?p.percentile:0;
+    var signalBadge, signalCls;
+    if(topPct>=85){ signalBadge='Strong Fit'; signalCls='vbadge-strong'; }
+    else if(topPct>=65){ signalBadge='Good Fit'; signalCls='vbadge-moderate'; }
+    else { signalBadge='Neutral'; signalCls='vbadge-none'; }
+
+    html += '<div class="cf-row'+(i<3?' top3':'')+'">'+
+      '<div class="cf-rank '+rc+'">'+(i+1)+'</div>'+
+      '<div><div class="cf-player">'+p.player_name+'</div>'+(p.country?'<div class="cf-country">'+p.country+'</div>':'')+'</div>'+
+      '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
+      '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
+      '<div class="cf-odds-col"><div class="odds-num">—</div><div class="odds-book">odds loading</div></div>'+
+      '<div><span class="value-badge '+signalCls+'">'+signalBadge+'</span></div>'+
+    '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('cfLoading').style.display='none';
+  var cfEl = document.getElementById('cfTable');
+  cfEl.innerHTML = html;
+  cfEl.style.display='block';
+}
+
+// ── VALUE FINDER ──────────────────────────────────────────────────────────────
+function filterValue(market, btn){
+  currentVfFilter = market;
+  document.querySelectorAll('.vf-filter').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderValueFinder(valueBetsData, market);
+}
+
+function renderValueFinder(bets, market){
+  var filtered = market==='all' ? bets : bets.filter(function(b){
+    if(market==='top5') return b.market==='top_5';
+    if(market==='top10') return b.market==='top_10';
+    if(market==='top20') return b.market==='top_20';
+    if(market==='win') return b.market==='win';
+    return true;
+  });
+  filtered = filtered.slice(0,25);
+
+  var marketLabels = {top_5:'TOP 5',top_10:'TOP 10',top_20:'TOP 20',win:'WIN'};
+  var marketBadge = {top_5:'bet-top5',top_10:'bet-top10',top_20:'bet-top20',win:'bet-win'};
+
+  var cfMap = {};
+  if(courseFitData&&courseFitData.field){
+    courseFitData.field.forEach(function(p){ cfMap[p.player_name]=p.fitScore; });
+  }
+
+  document.getElementById('vfLoading').style.display='none';
+
+  if(!filtered.length){
+    document.getElementById('vfTable').innerHTML='<div class="loading-msg">No value bets found for this filter.</div>';
+    document.getElementById('vfTable').style.display='block';
+    return;
+  }
+
+  var html = '<div class="vf-table">'
+    +'<div class="vf-head"><span class="vf-th">Player</span><span class="vf-th">Book Odds</span><span class="vf-th">Edge %</span><span class="vf-th">Fit Score</span><span class="vf-th">Best Book</span><span class="vf-th">Signal</span></div>';
+
+  filtered.forEach(function(b){
+    var am = decToAm(b.bestOdds);
+    var amStr = am>=0?'+'+am:''+am;
+    var edgeCls = b.edgePct>=15?'green':b.edgePct>=8?'gold':'';
+    var fitScore = cfMap[b.player]!=null?cfMap[b.player]:'—';
+    var highFit = typeof fitScore==='number'&&fitScore>=70;
+    var highEdge = b.edgePct>=8;
+    var signal, sigCls;
+    if(highFit&&highEdge){ signal='High Conf'; sigCls='conf-strong'; }
+    else if(highFit||highEdge){ signal='Watch'; sigCls='conf-moderate'; }
+    else { signal='—'; sigCls=''; }
+
+    html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'">'+
+      '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
+      '<div class="vf-cell gold">'+amStr+'</div>'+
+      '<div class="vf-cell '+(edgeCls?edgeCls:'')+'">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
+      '<div class="vf-cell">'+fitScore+'</div>'+
+      '<div class="vf-cell">'+b.bestBook.toUpperCase()+'</div>'+
+      '<div class="vf-cell '+sigCls+'">'+signal+'</div>'+
+    '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('vfTable').innerHTML=html;
+  document.getElementById('vfTable').style.display='block';
+}
+
+// ── H2H TOOL ──────────────────────────────────────────────────────────────────
+function populateH2HSelects(field){
+  var sorted = field.slice().sort(function(a,b){return (a.player_name||'').localeCompare(b.player_name||'');});
+  var opts = '<option value="">Select a player…</option>'+sorted.map(function(p){return '<option value="'+p.player_name+'">'+p.player_name+'</option>';}).join('');
+  document.getElementById('h2hA').innerHTML=opts;
+  document.getElementById('h2hB').innerHTML=opts;
+}
+
+function runH2H(){
+  var nameA = document.getElementById('h2hA').value;
+  var nameB = document.getElementById('h2hB').value;
+  if(!nameA||!nameB||nameA===nameB){ alert('Select two different players.'); return; }
+  if(!courseFitData||!courseFitData.field) return;
+
+  var pA = courseFitData.field.find(function(p){return p.player_name===nameA;});
+  var pB = courseFitData.field.find(function(p){return p.player_name===nameB;});
+  if(!pA||!pB) return;
+
+  var w = courseFitData.course_weights;
+  var cats = [
+    {key:'sg_app',label:'Approach',weight:w.app,color_a:'#5BBF85',color_b:'#C9A84C'},
+    {key:'sg_ott', label:'Off-the-Tee',weight:w.ott,color_a:'#5BBF85',color_b:'#C9A84C'},
+    {key:'sg_arg', label:'Around Green',weight:w.arg,color_a:'#5BBF85',color_b:'#C9A84C'},
+    {key:'sg_putt',label:'Putting',weight:w.putt,color_a:'#5BBF85',color_b:'#C9A84C'}
+  ];
+
+  var scoreA = 0, scoreB = 0;
+  cats.forEach(function(c){
+    scoreA += (pA[c.key]||0) * c.weight;
+    scoreB += (pB[c.key]||0) * c.weight;
+  });
+
+  var aWins = scoreA > scoreB;
+  var margin = Math.abs(scoreA - scoreB).toFixed(2);
+
+  var html = '<div class="h2h-header">'
+    +'<div class="h2h-pname" style="color:var(--green-light);">'+nameA+'</div>'
+    +'<div class="h2h-vs">vs</div>'
+    +'<div class="h2h-pname" style="color:var(--gold);">'+nameB+'</div>'
+    +'</div>';
+
+  html += '<div class="h2h-score-display">'
+    +'<div class="h2h-score-side'+(aWins?' winner':'')+'">'
+      +'<div class="h2h-score-num'+(aWins?' a-wins':'')+'">'+(pA.fitScore!=null?pA.fitScore:'—')+'</div>'
+      +'<div class="h2h-score-label">Course-Fit Score</div>'
+      +(aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--green-light);margin-top:6px;letter-spacing:0.1em;">▲ +'+margin+' weighted SG edge</div>':'')
+    +'</div>'
+    +'<div class="h2h-score-sep"></div>'
+    +'<div class="h2h-score-side'+(!aWins?' winner':'')+'">'
+      +'<div class="h2h-score-num'+(!aWins?' b-wins':'')+'">'+(pB.fitScore!=null?pB.fitScore:'—')+'</div>'
+      +'<div class="h2h-score-label">Course-Fit Score</div>'
+      +(!aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-top:6px;letter-spacing:0.1em;">▲ +'+margin+' weighted SG edge</div>':'')
+    +'</div>'
+    +'</div>';
+
+  html += '<div class="h2h-breakdown">';
+  cats.forEach(function(c){
+    var vA = pA[c.key]||0; var vB = pB[c.key]||0;
+    var max = Math.max(Math.abs(vA), Math.abs(vB), 0.5);
+    var wA = Math.min(100,Math.round((vA+max)/(max*2)*100));
+    var wB = Math.min(100,Math.round((vB+max)/(max*2)*100));
+    var fA = fmtSG(pA[c.key]); var fB = fmtSG(pB[c.key]);
+    html += '<div class="h2h-cat-row">'
+      +'<div class="h2h-bar-a">'
+        +'<span class="h2h-val" style="color:var(--green-light)">'+fA.s+'</span>'
+        +'<div class="h2h-track"><div class="h2h-fill-a" style="width:'+wA+'%"></div></div>'
+      +'</div>'
+      +'<div style="text-align:center;">'
+        +'<div class="h2h-cat-label">'+c.label+'</div>'
+        +'<div class="h2h-weight-note">×'+Math.round(c.weight*100)+'%</div>'
+      +'</div>'
+      +'<div class="h2h-bar-b">'
+        +'<div class="h2h-track"><div class="h2h-fill-b" style="width:'+wB+'%"></div></div>'
+        +'<span class="h2h-val" style="color:var(--gold)">'+fB.s+'</span>'
+      +'</div>'
+      +'</div>';
+  });
+  html += '</div>';
+
+  var result = document.getElementById('h2hResult');
+  result.innerHTML = html;
+  result.classList.add('show');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+checkAuth();
+</script>
+</body>
+</html>

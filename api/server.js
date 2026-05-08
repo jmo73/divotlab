@@ -1852,6 +1852,51 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================
+// PRO SUBSCRIBER VERIFICATION
+// Checks if an email is active in the separate
+// Lab Notes Pro Beehiiv publication.
+// Env var required: BEEHIIV_PRO_PUB_ID
+// ============================================
+
+app.post('/api/verify-pro', async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email required' });
+    }
+
+    const apiKey  = process.env.BEEHIIV_API_KEY;
+    const proPubId = process.env.BEEHIIV_PRO_PUB_ID;
+
+    if (!apiKey || !proPubId) {
+      console.error('⚠️  BEEHIIV_PRO_PUB_ID not configured — pro verification unavailable');
+      return res.status(500).json({ success: false, error: 'Pro verification not configured' });
+    }
+
+    const response = await fetch(
+      `https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions?email=${encodeURIComponent(email.trim().toLowerCase())}`,
+      { headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' } }
+    );
+
+    if (!response.ok) {
+      console.error('Beehiiv verify-pro error:', response.status);
+      return res.status(500).json({ success: false, error: 'Verification service unavailable' });
+    }
+
+    const data = await response.json();
+    const subscribers = data.data || [];
+    const isVerified = subscribers.some(s => s.status === 'active');
+
+    console.log(`  Pro verify: ${email} → ${isVerified ? 'VERIFIED' : 'not found'}`);
+    res.json({ success: true, verified: isVerified });
+
+  } catch (error) {
+    console.error('Pro verification error:', error);
+    res.status(500).json({ success: false, error: 'Verification failed' });
+  }
+});
+
+// ============================================
 // BEEHIIV SUBSCRIBE PROXY
 // Accepts email from lab-notes page, subscribes via Beehiiv API
 // Env vars: BEEHIIV_API_KEY, BEEHIIV_PUB_ID
