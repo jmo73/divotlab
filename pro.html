@@ -148,6 +148,47 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .vbadge-moderate{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
 .vbadge-none{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.25);border:1px solid rgba(255,255,255,0.07);}
 
+/* ── TOOLTIPS ── */
+.tip{position:relative;display:inline-flex;align-items:center;gap:3px;cursor:help;}
+.tip-icon{font-size:9px;color:rgba(250,250,250,0.3);background:rgba(255,255,255,0.06);border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-style:normal;}
+.tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:230px;background:rgba(10,10,10,0.97);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;font-size:11px;font-weight:400;line-height:1.6;color:rgba(250,250,250,0.72);opacity:0;pointer-events:none;transition:opacity .15s;z-index:500;text-transform:none;letter-spacing:0;white-space:normal;font-family:'DM Sans',sans-serif;}
+.tip:hover .tip-box{opacity:1;}
+.tip-box strong{color:var(--white);display:block;margin-bottom:3px;font-size:12px;}
+/* Position leftward when near right edge */
+.tip.tip-left .tip-box{left:auto;right:0;transform:none;}
+
+/* ── PLAYER HOVER CARD ── */
+#playerCard{position:fixed;z-index:400;width:270px;background:rgba(12,12,12,0.97);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 20px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 12px 40px rgba(0,0,0,0.5);}
+#playerCard.show{opacity:1;}
+.pc-name{font-family:var(--display);font-size:17px;font-weight:600;font-style:italic;color:var(--white);line-height:1.1;margin-bottom:2px;}
+.pc-country{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);letter-spacing:0.08em;margin-bottom:12px;}
+.pc-fit-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.pc-fit-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.3);letter-spacing:0.1em;text-transform:uppercase;}
+.pc-fit-score{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--green-light);}
+.pc-sg-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.pc-sg-lbl{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);width:30px;flex-shrink:0;}
+.pc-sg-track{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.pc-sg-fill{height:100%;border-radius:2px;}
+.pc-sg-val{font-family:var(--mono);font-size:9px;width:32px;text-align:right;flex-shrink:0;}
+.pc-odds-row{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}
+.pc-odds-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);letter-spacing:0.08em;}
+.pc-odds-val{font-family:var(--mono);font-size:13px;color:var(--gold);}
+.pc-odds-book{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.22);}
+/* light mode */
+html[data-theme="light"] .tip-icon{color:rgba(28,27,24,0.4);background:rgba(28,27,24,0.08);}
+html[data-theme="light"] .tip-box{background:rgba(255,255,255,0.98);border-color:rgba(28,27,24,0.12);color:rgba(28,27,24,0.72);}
+html[data-theme="light"] .tip-box strong{color:#1C1B18;}
+html[data-theme="light"] #playerCard{background:rgba(255,255,255,0.98);border-color:rgba(28,27,24,0.12);box-shadow:0 12px 40px rgba(0,0,0,0.12);}
+html[data-theme="light"] .pc-name{color:#1C1B18;}
+html[data-theme="light"] .pc-country{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .pc-fit-score{color:#1B4D3E;}
+html[data-theme="light"] .pc-fit-label,.pc-sg-lbl,.pc-odds-label{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .pc-fit-row{border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .pc-odds-row{border-top-color:rgba(28,27,24,0.07);}
+html[data-theme="light"] .pc-sg-track{background:rgba(28,27,24,0.08);}
+html[data-theme="light"] .pc-odds-val{color:#B8960C;}
+html[data-theme="light"] .pc-odds-book{color:rgba(28,27,24,0.3);}
+
 /* ── VALUE FINDER TAB ── */
 .vf-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
 .vf-filters{display:flex;gap:8px;flex-wrap:wrap;}
@@ -371,6 +412,20 @@ html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.25);}
   <a href="/pro" class="nav-pro-btn">Pro</a>
 </div>
 
+<!-- PLAYER HOVER CARD -->
+<div id="playerCard">
+  <div class="pc-name" id="pcName"></div>
+  <div class="pc-country" id="pcCountry"></div>
+  <div class="pc-fit-row">
+    <div><div class="pc-fit-label">Course-Fit Score</div><div class="pc-fit-score" id="pcFit">—</div></div>
+    <div style="text-align:right;"><div class="pc-fit-label">Field Rank</div><div style="font-family:var(--mono);font-size:18px;font-weight:500;color:rgba(250,250,250,0.5);" id="pcRank">—</div></div>
+  </div>
+  <div id="pcSGRows"></div>
+  <div class="pc-odds-row" id="pcOddsRow" style="display:none;">
+    <div><div class="pc-odds-label">Best Top-10 Odds</div><div class="pc-odds-val" id="pcOdds"></div><div class="pc-odds-book" id="pcBook"></div></div>
+  </div>
+</div>
+
 <!-- EMAIL GATE -->
 <div id="gate">
   <div class="gate-card">
@@ -540,6 +595,7 @@ function showApp(email){
   document.getElementById('gate').classList.add('hidden');
   document.getElementById('proApp').classList.add('show');
   document.getElementById('appUserEmail').textContent = email;
+  initPlayerCard();
   loadAllData();
 }
 function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
@@ -614,6 +670,88 @@ async function loadValueData(){
   }
 }
 
+// ── TOOLTIP HELPER ────────────────────────────────────────────────────────────
+function tip(label, tipHtml, leftAlign){
+  return '<span class="tip'+(leftAlign?' tip-left':'')+'">'
+    +label
+    +'<i class="tip-icon">?</i>'
+    +'<span class="tip-box">'+tipHtml+'</span>'
+    +'</span>';
+}
+
+// ── PLAYER HOVER CARD ─────────────────────────────────────────────────────────
+var playerCard = null;
+function initPlayerCard(){
+  playerCard = document.getElementById('playerCard');
+  // Event delegation on the whole app container
+  document.getElementById('proApp').addEventListener('mouseover', function(e){
+    var target = e.target.closest('.cf-player,.vf-player,.h2h-pname');
+    if(!target) return;
+    var name = target.textContent.trim();
+    showPlayerCard(name, target);
+  });
+  document.getElementById('proApp').addEventListener('mouseout', function(e){
+    var target = e.target.closest('.cf-player,.vf-player,.h2h-pname');
+    if(!target) return;
+    if(!e.relatedTarget || !e.relatedTarget.closest('.cf-player,.vf-player,.h2h-pname,#playerCard')){
+      hidePlayerCard();
+    }
+  });
+  document.getElementById('playerCard').addEventListener('mouseleave', hidePlayerCard);
+}
+
+function showPlayerCard(name, triggerEl){
+  if(!courseFitData||!courseFitData.field) return;
+  var p = courseFitData.field.find(function(f){ return f.player_name===name; });
+  if(!p) return;
+
+  document.getElementById('pcName').textContent = name;
+  document.getElementById('pcCountry').textContent = p.country||'';
+  document.getElementById('pcFit').textContent = p.fitScore!=null?p.fitScore:'—';
+  document.getElementById('pcRank').textContent = p.rank ? '#'+p.rank : (courseFitData.field.indexOf(p)+1 ? '#'+(courseFitData.field.indexOf(p)+1):'—');
+
+  var sgRows = [
+    {l:'App', v:p.sg_app},
+    {l:'OTT', v:p.sg_ott},
+    {l:'ARG', v:p.sg_arg},
+    {l:'Putt',v:p.sg_putt}
+  ];
+  var maxSG = 2;
+  document.getElementById('pcSGRows').innerHTML = sgRows.map(function(r){
+    var val = r.v; var pos = val!=null&&val>0.005; var neg = val!=null&&val<-0.005;
+    var pct = val!=null?Math.min(100,Math.max(0,((val+maxSG)/(maxSG*2))*100)):50;
+    var fc = pos?'#27AE60':neg?'#E53935':'rgba(255,255,255,0.1)';
+    var vc = pos?'var(--green-light)':neg?'var(--red)':'rgba(250,250,250,0.25)';
+    var vs = val!=null?(val>=0?'+':'')+val.toFixed(2):'—';
+    return '<div class="pc-sg-row"><span class="pc-sg-lbl">'+r.l+'</span>'
+      +'<div class="pc-sg-track"><div class="pc-sg-fill" style="width:'+pct+'%;background:'+fc+';"></div></div>'
+      +'<span class="pc-sg-val" style="color:'+vc+'">'+vs+'</span></div>';
+  }).join('');
+
+  var odds = top10OddsMap[name];
+  var oddsRow = document.getElementById('pcOddsRow');
+  if(odds){
+    document.getElementById('pcOdds').textContent = fmtAm(odds.am);
+    document.getElementById('pcBook').textContent = odds.book.toUpperCase()+' · Top 10';
+    oddsRow.style.display='flex';
+  } else {
+    oddsRow.style.display='none';
+  }
+
+  // Position card
+  var rect = triggerEl.getBoundingClientRect();
+  var cardLeft = rect.right + 16;
+  if(cardLeft + 280 > window.innerWidth) cardLeft = rect.left - 286;
+  var cardTop = Math.max(8, Math.min(rect.top - 10, window.innerHeight - 320));
+  playerCard.style.left = cardLeft+'px';
+  playerCard.style.top = cardTop+'px';
+  playerCard.classList.add('show');
+}
+
+function hidePlayerCard(){
+  if(playerCard) playerCard.classList.remove('show');
+}
+
 // ── TOURNEY HEADER ────────────────────────────────────────────────────────────
 function renderTourneyHeader(d){
   document.getElementById('appTourneyName').textContent = d.tournament.event_name || 'Current Tournament';
@@ -651,7 +789,14 @@ function fmtAm(am){ return am>=0?'+'+am:''+am; }
 function renderCourseFit(d){
   var field = d.field||[];
   var html = '<div class="cf-table-wrap">'
-    +'<div class="cf-table-head"><span class="cf-th">#</span><span class="cf-th">Player</span><span class="cf-th">Fit</span><span class="cf-th">SG Breakdown</span><span class="cf-th">Top 10 Odds</span><span class="cf-th">Signal</span></div>';
+    +'<div class="cf-table-head">'
+    +'<span class="cf-th">#</span>'
+    +'<span class="cf-th">Player</span>'
+    +'<span class="cf-th">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+'</span>'
+    +'<span class="cf-th">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong><strong>App</strong> = Approach the Green<strong>OTT</strong> = Off the Tee<strong>ARG</strong> = Around the Green<strong>Putt</strong> = Putting<br>Values are 24-month rolling averages blended with recent 12-month form. Positive = above tour average.')+'</span>'
+    +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. Loaded at page open — check books for current lines.',true)+'</span>'
+    +'<span class="cf-th">'+tip('Signal','<strong>Course-Fit Signal</strong><strong>Strong Fit</strong> = top 15% of field<strong>Good Fit</strong> = top 35% of field<strong>Neutral</strong> = below that threshold<br>Based on fit score percentile rank within this week\'s field.',true)+'</span>'
+    +'</div>';
 
   field.forEach(function(p,i){
     var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
@@ -777,12 +922,12 @@ function renderValueFinder(bets, market){
   var html = '<div class="vf-table">'
     +'<div class="vf-head">'
     +'<span class="vf-th">Player</span>'
-    +th('Odds','odds')
-    +th('Edge %','edge')
-    +th('Hit Prob','prob')
-    +th('Fit Score','fit')
-    +'<span class="vf-th">Best Book</span>'
-    +'<span class="vf-th">Signal</span>'
+    +'<span class="vf-th '+( vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.')+'<span class="sort-arrow">'+(vfSort.col==='odds'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
+    +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced by the market. A 15% edge means the model sees 15% more expected value than fair odds.')+'<span class="sort-arrow">'+(vfSort.col==='edge'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
+    +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability that this specific outcome occurs — e.g., finishing top 10. This is NOT an outright win probability. A top-20 bet may show 60% — meaning the model gives 60% odds of finishing inside the top 20.')+'<span class="sort-arrow">'+(vfSort.col==='prob'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
+    +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')">'+tip('Fit Score','<strong>Course-Fit Score</strong>This player\'s 0–100 score for how well their strokes gained profile matches this week\'s venue. Higher = better course fit. Combined with edge, a high fit + high edge bet is the strongest signal.')+'<span class="sort-arrow">'+(vfSort.col==='fit'?(vfSort.dir===-1?'↓':'↑'):'')+'</span></span>'
+    +'<span class="vf-th">'+tip('Best Book','<strong>Best Sportsbook</strong>The book offering the highest odds for this bet at time of page load. Always verify current lines before placing — odds move.',true)+'</span>'
+    +'<span class="vf-th">'+tip('Signal','<strong>Signal Rating</strong><strong>High Conf</strong> = positive edge AND course-fit score ≥ 70. Both the odds value AND the course fit agree.<strong>Watch</strong> = one condition met but not both.<strong>—</strong> = neither condition strongly met.',true)+'</span>'
     +'</div>';
 
   filtered.forEach(function(b){
@@ -906,6 +1051,37 @@ function runH2H(){
       +'</div>';
   });
   html += '</div>';
+
+  // ── Key Insight ──────────────────────────────────────────────────────────
+  // Find which category contributes most to the weighted advantage
+  var catAdvs = cats.map(function(c){
+    var diff = (pA[c.key]||0) - (pB[c.key]||0); // + means A leads
+    return { label:c.label, weight:c.weight, diff:diff, weighted: diff*c.weight };
+  }).sort(function(a,b){ return Math.abs(b.weighted)-Math.abs(a.weighted); });
+
+  var keycat = catAdvs[0];
+  var keywinner = keycat.diff > 0.01 ? nameA : keycat.diff < -0.01 ? nameB : null;
+  var overallWinner = aWins ? nameA : nameB;
+  var gap = Math.abs(scoreA-scoreB);
+  var conf = gap>=25?'Strong':gap>=12?'Moderate':'Marginal';
+  var confCol = gap>=25?'var(--green-light)':gap>=12?'var(--gold)':'rgba(250,250,250,0.35)';
+
+  var insightLine = keywinner
+    ? overallWinner+' leads on <strong>'+keycat.label+'</strong>'
+      +' ('+Math.round(keycat.weight*100)+'% of this week\'s score), '
+      +'the biggest differentiator for this venue.'
+    : 'The two players are closely matched across all categories for this course.';
+
+  html += '<div style="padding:16px 24px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);">'
+    +'<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,250,250,0.28);font-family:var(--mono);margin-bottom:8px;">Model Insight</div>'
+    +'<div style="font-size:13px;color:rgba(250,250,250,0.6);line-height:1.6;margin-bottom:8px;">'+insightLine+'</div>'
+    +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
+      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);">Confidence:</span>'
+      +'<span style="font-family:var(--mono);font-size:12px;font-weight:600;color:'+confCol+';">'+conf+'</span>'
+      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);">·</span>'
+      +'<span style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);">Weighted gap: <strong style="color:rgba(250,250,250,0.5);">'+gap+' pts</strong></span>'
+    +'</div>'
+    +'</div>';
 
   var result = document.getElementById('h2hResult');
   result.innerHTML = html;
