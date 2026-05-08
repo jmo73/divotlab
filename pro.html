@@ -91,7 +91,7 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 
 /* Weights strip */
 .weights-strip{background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.04);padding:10px 40px;}
-.weights-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.weights-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
 .w-label{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);letter-spacing:0.1em;}
 .w-item{display:flex;align-items:center;gap:6px;}
 .w-name{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.4);letter-spacing:0.05em;}
@@ -148,7 +148,17 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .vbadge-none{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.25);border:1px solid rgba(255,255,255,0.07);}
 
 /* ── VALUE FINDER TAB ── */
-.vf-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.vf-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+.vf-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.vf-toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(250,250,250,0.4);cursor:pointer;user-select:none;}
+.vf-toggle input{width:32px;height:18px;appearance:none;background:rgba(255,255,255,0.1);border-radius:9px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.vf-toggle input:checked{background:var(--green-light);}
+.vf-toggle input::after{content:'';position:absolute;top:3px;left:3px;width:12px;height:12px;background:#fff;border-radius:50%;transition:left .2s;}
+.vf-toggle input:checked::after{left:17px;}
+.vf-th{cursor:pointer;user-select:none;}
+.vf-th:hover{color:rgba(250,250,250,0.7);}
+.vf-th.sorted{color:var(--gold);}
+.sort-arrow{font-size:9px;margin-left:3px;}
 .vf-filter{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(250,250,250,0.4);cursor:pointer;transition:all .18s;font-family:var(--body);}
 .vf-filter:hover{color:rgba(250,250,250,0.75);}
 .vf-filter.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.28);color:var(--gold);}
@@ -185,14 +195,15 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .h2h-header{display:grid;grid-template-columns:1fr 100px 1fr;padding:20px 24px;border-bottom:1px solid var(--border);align-items:center;text-align:center;}
 .h2h-pname{font-family:var(--display);font-size:22px;font-weight:600;font-style:italic;line-height:1.1;}
 .h2h-vs{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.25);letter-spacing:0.1em;}
-.h2h-score-display{padding:20px 24px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.h2h-score-display{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;}
 .h2h-score-side{text-align:center;padding:16px;}
 .h2h-score-side.winner{background:rgba(91,191,133,0.04);}
 .h2h-score-num{font-family:var(--mono);font-size:48px;font-weight:500;line-height:1;margin-bottom:6px;}
 .h2h-score-num.a-wins{color:var(--green-light);}
 .h2h-score-num.b-wins{color:var(--gold);}
 .h2h-score-label{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);letter-spacing:0.1em;}
-.h2h-score-sep{width:1px;background:rgba(255,255,255,0.06);margin:16px 0;}
+.h2h-score-sep{width:1px;background:rgba(255,255,255,0.06);margin:16px 0;flex-shrink:0;}
+.h2h-score-side{flex:1;}
 .h2h-breakdown{padding:20px 24px;}
 .h2h-cat-row{display:grid;grid-template-columns:1fr 120px 1fr;gap:12px;align-items:center;margin-bottom:14px;}
 .h2h-cat-row:last-child{margin-bottom:0;}
@@ -305,12 +316,18 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 
   <!-- Tab 2: Value Finder -->
   <div class="tab-content" id="tab-value">
-    <div class="vf-filters">
-      <button class="vf-filter active" onclick="filterValue('all',this)">All Markets</button>
-      <button class="vf-filter" onclick="filterValue('top5',this)">Top 5</button>
-      <button class="vf-filter" onclick="filterValue('top10',this)">Top 10</button>
-      <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
-      <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
+    <div class="vf-toolbar">
+      <div class="vf-filters">
+        <button class="vf-filter active" onclick="filterValue('all',this)">All Markets</button>
+        <button class="vf-filter" onclick="filterValue('top5',this)">Top 5</button>
+        <button class="vf-filter" onclick="filterValue('top10',this)">Top 10</button>
+        <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
+        <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
+      </div>
+      <label class="vf-toggle">
+        <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
+        Hide longshots (&gt;+1500)
+      </label>
     </div>
     <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
     <div id="vfTable" style="display:none;"></div>
@@ -342,6 +359,8 @@ var API = window.location.hostname==='localhost'?'http://localhost:3001':'https:
 var courseFitData = null;
 var valueBetsData = [];
 var currentVfFilter = 'all';
+var top10OddsMap = {}; // player_name → {am, book, impliedProb}
+var vfSort = {col:'edge', dir:-1}; // col: 'odds'|'edge'|'fit'|'book' · dir: 1=asc, -1=desc
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -414,8 +433,9 @@ function switchTab(id, btn){
 
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
 async function loadAllData(){
-  await loadCourseFit();
-  await loadValueData();
+  await loadCourseFit();       // renders table with — odds initially
+  await loadValueData();       // builds top10OddsMap as side effect
+  updateCourseFitOdds();       // patches odds cells without re-rendering
 }
 
 async function loadCourseFit(){
@@ -451,7 +471,18 @@ async function loadValueData(){
         books.forEach(function(b){ if(p[b]&&p[b]>bestOdds){bestOdds=p[b];bestBook=b;} });
         if(!bestOdds) return;
         var edge = (dgProb*bestOdds)-1;
-        bets.push({ player:p.player_name, dg_id:p.dg_id, market, dgOdds, bestOdds, bestBook, edge, edgePct:parseFloat((edge*100).toFixed(1)) });
+        var impliedProb = 1/bestOdds;
+        var amOdds = toAm(bestOdds);
+        bets.push({
+          player:p.player_name, dg_id:p.dg_id, market, dgOdds, bestOdds,
+          bestBook, edge, edgePct:parseFloat((edge*100).toFixed(1)),
+          impliedProb, amOdds,
+          dgProbPct: parseFloat((dgProb*100).toFixed(1))
+        });
+        // Build top10 odds map for Course Fit column
+        if(market==='top_10' && (!top10OddsMap[p.player_name] || bestOdds < top10OddsMap[p.player_name].decimal)){
+          top10OddsMap[p.player_name] = { am: amOdds, book: bestBook, decimal: bestOdds };
+        }
       });
     });
     bets.sort(function(a,b){return b.edge-a.edge;});
@@ -492,15 +523,14 @@ function sgBarHTML(lbl,val){
   var f=fmtSG(val); var w=val!=null?sgToW(val)+'%':'0%'; var fc=val==null?'':(val>=0?'pos':'neg');
   return '<div class="sg-br"><span class="sg-lbl">'+lbl+'</span><div class="sg-track"><div class="sg-fill '+fc+'" style="width:'+w+'"></div></div><span class="sg-val '+f.c+'">'+f.s+'</span></div>';
 }
-function decToAm(d){ if(d>=2) return '+'+Math.round((d-1)*100); return Math.round(-100/(d-1)); }
+// American odds from decimal — no + prefix (display code adds it)
+function toAm(d){ if(d>=2) return Math.round((d-1)*100); return Math.round(-100/(d-1)); }
+function fmtAm(am){ return am>=0?'+'+am:''+am; }
 
 function renderCourseFit(d){
   var field = d.field||[];
-  var cfFitMap = {};
-  field.forEach(function(p){ cfFitMap[p.player_name] = p.fitScore; });
-
   var html = '<div class="cf-table-wrap">'
-    +'<div class="cf-table-head"><span class="cf-th">#</span><span class="cf-th">Player</span><span class="cf-th">Fit</span><span class="cf-th">SG Breakdown</span><span class="cf-th">Best Odds</span><span class="cf-th">Signal</span></div>';
+    +'<div class="cf-table-head"><span class="cf-th">#</span><span class="cf-th">Player</span><span class="cf-th">Fit</span><span class="cf-th">SG Breakdown</span><span class="cf-th">Top 10 Odds</span><span class="cf-th">Signal</span></div>';
 
   field.forEach(function(p,i){
     var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
@@ -511,13 +541,17 @@ function renderCourseFit(d){
     if(topPct>=85){ signalBadge='Strong Fit'; signalCls='vbadge-strong'; }
     else if(topPct>=65){ signalBadge='Good Fit'; signalCls='vbadge-moderate'; }
     else { signalBadge='Neutral'; signalCls='vbadge-none'; }
+    var o = top10OddsMap[p.player_name];
+    var oddsHTML = o
+      ? '<div class="odds-num">'+fmtAm(o.am)+'</div><div class="odds-book">'+o.book.toUpperCase()+'</div>'
+      : '<div class="odds-num" style="color:rgba(250,250,250,0.2);">—</div><div class="odds-book"></div>';
 
-    html += '<div class="cf-row'+(i<3?' top3':'')+'">'+
+    html += '<div class="cf-row'+(i<3?' top3':'')+'" data-player="'+p.player_name+'">'+
       '<div class="cf-rank '+rc+'">'+(i+1)+'</div>'+
       '<div><div class="cf-player">'+p.player_name+'</div>'+(p.country?'<div class="cf-country">'+p.country+'</div>':'')+'</div>'+
       '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
       '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
-      '<div class="cf-odds-col"><div class="odds-num">—</div><div class="odds-book">odds loading</div></div>'+
+      '<div class="cf-odds-col">'+oddsHTML+'</div>'+
       '<div><span class="value-badge '+signalCls+'">'+signalBadge+'</span></div>'+
     '</div>';
   });
@@ -529,6 +563,19 @@ function renderCourseFit(d){
   cfEl.style.display='block';
 }
 
+// Patch odds cells after value data loads (avoids re-rendering entire table)
+function updateCourseFitOdds(){
+  document.querySelectorAll('.cf-row[data-player]').forEach(function(row){
+    var name = row.getAttribute('data-player');
+    var o = top10OddsMap[name];
+    var oddsCol = row.querySelector('.cf-odds-col');
+    if(!oddsCol) return;
+    if(o){
+      oddsCol.innerHTML = '<div class="odds-num">'+fmtAm(o.am)+'</div><div class="odds-book">'+o.book.toUpperCase()+'</div>';
+    }
+  });
+}
+
 // ── VALUE FINDER ──────────────────────────────────────────────────────────────
 function filterValue(market, btn){
   currentVfFilter = market;
@@ -537,18 +584,46 @@ function filterValue(market, btn){
   renderValueFinder(valueBetsData, market);
 }
 
+function sortVF(col){
+  if(vfSort.col===col) vfSort.dir *= -1; else { vfSort.col=col; vfSort.dir=-1; }
+  renderValueFinder(valueBetsData, currentVfFilter);
+}
+
 function renderValueFinder(bets, market){
-  var filtered = market==='all' ? bets : bets.filter(function(b){
+  var hideLong = document.getElementById('hideLongshotsToggle') && document.getElementById('hideLongshotsToggle').checked;
+
+  var filtered = (market==='all' ? bets : bets.filter(function(b){
     if(market==='top5') return b.market==='top_5';
     if(market==='top10') return b.market==='top_10';
     if(market==='top20') return b.market==='top_20';
     if(market==='win') return b.market==='win';
     return true;
+  })).filter(function(b){
+    // Hide very long odds (implied prob < 6.25%, i.e. > +1500 American)
+    if(hideLong && b.amOdds > 1500) return false;
+    // Only show positive edge
+    return b.edge > 0;
   });
-  filtered = filtered.slice(0,25);
+
+  // Apply sort
+  filtered = filtered.slice().sort(function(a,b){
+    var va, vb;
+    if(vfSort.col==='odds'){ va=a.bestOdds; vb=b.bestOdds; }
+    else if(vfSort.col==='edge'){ va=a.edge; vb=b.edge; }
+    else if(vfSort.col==='fit'){
+      var cfMap2={};
+      if(courseFitData&&courseFitData.field) courseFitData.field.forEach(function(p){cfMap2[p.player_name]=p.fitScore||0;});
+      va=cfMap2[a.player]||0; vb=cfMap2[b.player]||0;
+    }
+    else if(vfSort.col==='prob'){ va=a.impliedProb; vb=b.impliedProb; }
+    else { va=a.edge; vb=b.edge; }
+    return vfSort.dir*(va-vb);
+  });
+
+  filtered = filtered.slice(0,30);
 
   var marketLabels = {top_5:'TOP 5',top_10:'TOP 10',top_20:'TOP 20',win:'WIN'};
-  var marketBadge = {top_5:'bet-top5',top_10:'bet-top10',top_20:'bet-top20',win:'bet-win'};
+  var marketBadge  = {top_5:'bet-top5',top_10:'bet-top10',top_20:'bet-top20',win:'bet-win'};
 
   var cfMap = {};
   if(courseFitData&&courseFitData.field){
@@ -558,17 +633,30 @@ function renderValueFinder(bets, market){
   document.getElementById('vfLoading').style.display='none';
 
   if(!filtered.length){
-    document.getElementById('vfTable').innerHTML='<div class="loading-msg">No value bets found for this filter.</div>';
+    document.getElementById('vfTable').innerHTML='<div class="loading-msg" style="padding:40px 20px;">No value bets match the current filters.</div>';
     document.getElementById('vfTable').style.display='block';
     return;
   }
 
+  function th(label, col){
+    var isActive = vfSort.col===col;
+    var arrow = isActive ? (vfSort.dir===-1?' ↓':' ↑') : '';
+    return '<span class="vf-th'+(isActive?' sorted':'')+'" onclick="sortVF(\''+col+'\')">'+label+'<span class="sort-arrow">'+arrow+'</span></span>';
+  }
+
   var html = '<div class="vf-table">'
-    +'<div class="vf-head"><span class="vf-th">Player</span><span class="vf-th">Book Odds</span><span class="vf-th">Edge %</span><span class="vf-th">Fit Score</span><span class="vf-th">Best Book</span><span class="vf-th">Signal</span></div>';
+    +'<div class="vf-head">'
+    +'<span class="vf-th">Player</span>'
+    +th('Odds','odds')
+    +th('Edge %','edge')
+    +th('Win Prob','prob')
+    +th('Fit Score','fit')
+    +'<span class="vf-th">Best Book</span>'
+    +'<span class="vf-th">Signal</span>'
+    +'</div>';
 
   filtered.forEach(function(b){
-    var am = decToAm(b.bestOdds);
-    var amStr = am>=0?'+'+am:''+am;
+    var amStr = fmtAm(b.amOdds);
     var edgeCls = b.edgePct>=15?'green':b.edgePct>=8?'gold':'';
     var fitScore = cfMap[b.player]!=null?cfMap[b.player]:'—';
     var highFit = typeof fitScore==='number'&&fitScore>=70;
@@ -577,17 +665,24 @@ function renderValueFinder(bets, market){
     if(highFit&&highEdge){ signal='High Conf'; sigCls='conf-strong'; }
     else if(highFit||highEdge){ signal='Watch'; sigCls='conf-moderate'; }
     else { signal='—'; sigCls=''; }
+    var probStr = b.dgProbPct ? b.dgProbPct.toFixed(1)+'%' : '—';
 
     html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'">'+
       '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
       '<div class="vf-cell gold">'+amStr+'</div>'+
       '<div class="vf-cell '+(edgeCls?edgeCls:'')+'">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
+      '<div class="vf-cell">'+probStr+'</div>'+
       '<div class="vf-cell">'+fitScore+'</div>'+
       '<div class="vf-cell">'+b.bestBook.toUpperCase()+'</div>'+
       '<div class="vf-cell '+sigCls+'">'+signal+'</div>'+
     '</div>';
   });
   html += '</div>';
+
+  // Update vf-head grid cols to match new column count (7)
+  var style = document.getElementById('vfDynStyle');
+  if(!style){ style=document.createElement('style'); style.id='vfDynStyle'; document.head.appendChild(style); }
+  style.textContent = '.vf-head,.vf-row{grid-template-columns:1fr 80px 80px 80px 72px 80px 80px;}';
 
   document.getElementById('vfTable').innerHTML=html;
   document.getElementById('vfTable').style.display='block';
@@ -634,18 +729,28 @@ function runH2H(){
     +'<div class="h2h-pname" style="color:var(--gold);">'+nameB+'</div>'
     +'</div>';
 
+  // Get top-10 odds for each player if available
+  var oddsA = top10OddsMap[nameA];
+  var oddsB = top10OddsMap[nameB];
+
   html += '<div class="h2h-score-display">'
-    +'<div class="h2h-score-side'+(aWins?' winner':'')+'">'
-      +'<div class="h2h-score-num'+(aWins?' a-wins':'')+'">'+(pA.fitScore!=null?pA.fitScore:'—')+'</div>'
+    +'<div class="h2h-score-side'+(aWins?' winner':'')+'" style="flex:1;padding:20px 24px;text-align:center;">'
+      +'<div class="h2h-score-num'+(aWins?' a-wins':'')+'" style="color:'+(aWins?'var(--green-light)':'rgba(250,250,250,0.35)')+'">'+(pA.fitScore!=null?pA.fitScore:'—')+'</div>'
       +'<div class="h2h-score-label">Course-Fit Score</div>'
-      +(aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--green-light);margin-top:6px;letter-spacing:0.1em;">▲ +'+margin+' weighted SG edge</div>':'')
+      +(oddsA?'<div style="font-family:var(--mono);font-size:13px;color:var(--green-light);margin-top:10px;">'+fmtAm(oddsA.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);margin-top:2px;">Top 10 · '+oddsA.book.toUpperCase()+'</div>':'')
+      +(aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--green-light);margin-top:10px;letter-spacing:0.08em;">▲ Course-fit edge</div>':'')
     +'</div>'
     +'<div class="h2h-score-sep"></div>'
-    +'<div class="h2h-score-side'+(!aWins?' winner':'')+'">'
-      +'<div class="h2h-score-num'+(!aWins?' b-wins':'')+'">'+(pB.fitScore!=null?pB.fitScore:'—')+'</div>'
+    +'<div class="h2h-score-side'+(!aWins?' winner':'')+'" style="flex:1;padding:20px 24px;text-align:center;">'
+      +'<div class="h2h-score-num'+(!aWins?' b-wins':'')+'" style="color:'+(!aWins?'var(--gold)':'rgba(250,250,250,0.35)')+'">'+(pB.fitScore!=null?pB.fitScore:'—')+'</div>'
       +'<div class="h2h-score-label">Course-Fit Score</div>'
-      +(!aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-top:6px;letter-spacing:0.1em;">▲ +'+margin+' weighted SG edge</div>':'')
+      +(oddsB?'<div style="font-family:var(--mono);font-size:13px;color:var(--gold);margin-top:10px;">'+fmtAm(oddsB.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);margin-top:2px;">Top 10 · '+oddsB.book.toUpperCase()+'</div>':'')
+      +(!aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-top:10px;letter-spacing:0.08em;">▲ Course-fit edge</div>':'')
     +'</div>'
+    +'</div>'
+    +'<div style="padding:14px 24px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);font-size:13px;color:rgba(250,250,250,0.45);text-align:center;">'
+      +'Model favors <strong style="color:'+(aWins?'var(--green-light)':'var(--gold)');+'">'+(aWins?nameA:nameB)+'</strong>'
+      +' by <strong>+'+margin+' weighted SG</strong> for this week\'s course demands.'
     +'</div>';
 
   html += '<div class="h2h-breakdown">';
