@@ -5,7 +5,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro — Divot Lab</title>
+<title>Divot Lab Pro</title>
 <meta name="description" content="Lab Notes Pro subscriber analytics hub. Full course-fit rankings, value finder, and H2H comparison tool for every PGA Tour event.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="/favicon.png">
@@ -931,9 +931,11 @@ function showPlayerCard(name, mouseX, mouseY){
     oddsRow.style.display='none';
   }
 
-  // Position card next to cursor (works for both block and inline elements)
+  // Position card next to cursor — clamp to both edges so it never goes off-screen
+  var cardW = 278;
   var cardLeft = mouseX + 20;
-  if(cardLeft + 278 > window.innerWidth) cardLeft = mouseX - 290;
+  if(cardLeft + cardW > window.innerWidth - 8) cardLeft = mouseX - cardW - 12;
+  cardLeft = Math.max(8, Math.min(cardLeft, window.innerWidth - cardW - 8));
   var cardTop = Math.max(8, Math.min(mouseY - 20, window.innerHeight - 320));
   playerCard.style.left = cardLeft+'px';
   playerCard.style.top = cardTop+'px';
@@ -1381,8 +1383,15 @@ function renderMatchups(data, market){
     return;
   }
 
+  // Log first row so we can inspect the exact DataGolf field names
+  if(matchups.length){
+    console.log('[DivotLab] Matchup first row keys:', Object.keys(matchups[0]));
+    console.log('[DivotLab] Matchup first row:', JSON.stringify(matchups[0]));
+  }
+
   // Detect available book fields from actual data
   var books = matchups.length ? muDetectBooks(matchups[0]) : [];
+  console.log('[DivotLab] Detected books:', books, '| DG field test:', muGetDG(matchups[0]||{},'p1'));
 
   var is3ball = market==='3_balls';
   var pickNames = new Set();
@@ -1668,11 +1677,16 @@ function renderLiveTable(statsData, predData){
   function scoreCls(v){
     return v==null?'live-zero':v<0?'live-pos-score':v>0?'live-neg-score':'live-zero';
   }
+  function sgGradColor(v){
+    if(v==null||Math.abs(v)<0.01) return 'rgba(250,250,250,0.25)';
+    var t = Math.min(1, Math.abs(v) / 1.5); // 0 near zero → 1 at ±1.5+
+    var a = (0.28 + 0.72*t).toFixed(2);      // 28% opacity near 0 → 100% at max
+    return v>0?'rgba(91,191,133,'+a+')':'rgba(217,72,72,'+a+')';
+  }
   function sgCell(v){
     if(v==null) return '<span class="live-sg" style="color:rgba(250,250,250,0.25);">—</span>';
     var s=(v>=0?'+':'')+v.toFixed(2);
-    var c=v>0.01?'var(--green-light)':v<-0.01?'var(--red)':'rgba(250,250,250,0.35)';
-    return '<span class="live-sg" style="color:'+c+';">'+s+'</span>';
+    return '<span class="live-sg" style="color:'+sgGradColor(v)+';">'+s+'</span>';
   }
 
   function probCell(v, highlight){
