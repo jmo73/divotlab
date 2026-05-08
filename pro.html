@@ -1317,52 +1317,33 @@ async function loadMatchupData(market){
   }
 }
 
+// DataGolf wraps all odds under row.odds.{bookname}.{p1|p2}
+// Values are strings like "+103", "-105" — parse to int before use
+function muParseAm(v){
+  if(v==null) return null;
+  var n = typeof v==='string'?parseInt(v,10):v;
+  return isNaN(n)?null:n;
+}
+
 function muGetOdds(row, bookKey, playerPrefix){
-  // Try every reasonable field naming pattern DataGolf might use
-  var patterns = [
-    row[bookKey] && row[bookKey][playerPrefix],           // nested: row.draftkings.p1
-    row[playerPrefix+'_'+bookKey],                         // flat: row.p1_draftkings
-    row[bookKey+'_'+playerPrefix],                         // flat: row.draftkings_p1
-    row[playerPrefix+'_'+bookKey.replace('draftkings','dk').replace('fanduel','fd').replace('betmgm','mgm').replace('caesars','cs').replace('pinnacle','pin')]
-  ];
-  for(var i=0;i<patterns.length;i++){
-    if(patterns[i]!=null && patterns[i]!==0) return patterns[i];
-  }
-  return null;
+  var odds = row.odds || row;
+  var container = odds[bookKey];
+  if(!container) return null;
+  return muParseAm(container[playerPrefix]);
 }
 
 function muGetDG(row, playerPrefix){
-  // Try every pattern DataGolf uses for model probability field
-  var dgFields = ['datagolf','datagolf_baseline','dg','dg_baseline','model'];
-  for(var i=0;i<dgFields.length;i++){
-    var f = dgFields[i];
-    var v = (row[f]&&row[f][playerPrefix]!=null) ? row[f][playerPrefix]
-          : row[playerPrefix+'_'+f] != null       ? row[playerPrefix+'_'+f]
-          : row[f+'_'+playerPrefix] != null        ? row[f+'_'+playerPrefix]
-          : null;
-    if(v!=null) return v;
-  }
-  return null;
+  var odds = row.odds || row;
+  var dg = odds.datagolf || odds.dg;
+  if(!dg) return null;
+  return muParseAm(dg[playerPrefix]);
 }
 
 function muDetectBooks(firstRow){
-  // Scan the first row to find which p1_* fields are numeric (book odds)
+  var odds = firstRow.odds || firstRow;
   var known = ['draftkings','fanduel','betmgm','bet365','caesars','pinnacle',
-               'dk','fd','mgm','b365','cs','pin','bovada','bov','pointsbet','pb'];
-  var found = [];
-  // First try known book names
-  known.forEach(function(b){ if(muGetOdds(firstRow,b,'p1')!=null) found.push(b); });
-  if(found.length) return found;
-  // Fallback: scan all p1_* numeric keys that aren't player_name or dg_id
-  Object.keys(firstRow).forEach(function(k){
-    if(k.startsWith('p1_')&&k!=='p1_player_name'&&k!=='p1_dg_id'){
-      var v=firstRow[k];
-      if(v!=null&&typeof v==='number'&&Math.abs(v)>1&&Math.abs(v)<10000){
-        found.push(k.slice(3));
-      }
-    }
-  });
-  return found;
+               'bovada','betonline','unibet','pointsbet','bov','dk','fd','mgm'];
+  return known.filter(function(b){ return odds[b]!=null; });
 }
 
 function renderMatchups(data, market){
@@ -1383,21 +1364,14 @@ function renderMatchups(data, market){
     return;
   }
 
-  // Log first row so we can inspect the exact DataGolf field names
-  if(matchups.length){
-    console.log('[DivotLab] Matchup first row keys:', Object.keys(matchups[0]));
-    console.log('[DivotLab] Matchup first row:', JSON.stringify(matchups[0]));
-  }
-
   // Detect available book fields from actual data
   var books = matchups.length ? muDetectBooks(matchups[0]) : [];
-  console.log('[DivotLab] Detected books:', books, '| DG field test:', muGetDG(matchups[0]||{},'p1'));
 
   var is3ball = market==='3_balls';
   var pickNames = new Set();
   if(proPicksData&&proPicksData.picks) proPicksData.picks.forEach(function(p){ pickNames.add(p.player); });
 
-  function amToProb(am){ if(!am||am===0) return null; return am>0?100/(am+100):(-am)/((-am)+100); }
+  function amToProb(am){ var v=muParseAm(am); if(v==null||v===0) return null; return v>0?100/(v+100):(-v)/((-v)+100); }
   function fmtAm(am){ if(am==null) return '—'; return am>0?'+'+am:''+am; }
 
   function playerCell(name, favored){
