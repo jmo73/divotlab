@@ -444,6 +444,9 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .mu-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .mu-table-head{display:grid;grid-template-columns:1fr 32px 1fr 88px 80px 68px 72px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .mu-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.mu-th.sorted{color:var(--gold)!important;}
+.mu-th[onclick]{cursor:pointer;}
+.mu-th[onclick]:hover{color:rgba(250,250,250,0.6);}
 .mu-row{display:grid;grid-template-columns:1fr 32px 1fr 88px 80px 68px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .mu-row:hover{background:rgba(255,255,255,0.025);}
 .mu-row.has-value{background:rgba(91,191,133,0.03);}
@@ -733,6 +736,7 @@ var liveRefreshTimer = null;
 var isLiveTabActive = false;
 var muMarket = 'tournament_matchups';
 var muCache = {};
+var muSort = {col:'edge', dir:-1};
 var liveSort = {col:'total', dir:1};   // dir: 1=asc (lower=better for score), -1=desc
 var liveStatsCache = null;
 var livePredCache = null;
@@ -1109,7 +1113,7 @@ function buildApproachPanel(dgId){
       +(low ? '<div class="cfap-low">low sample</div>' : '')
       +'</div>';
   }).join('');
-  return '<div class="cfap-header">SG: Approach / Shot &nbsp;·&nbsp; L24 &nbsp;·&nbsp; Fairway</div>'
+  return '<div class="cfap-header">SG: Approach per shot &nbsp;·&nbsp; L24 &nbsp;·&nbsp; Fairway only &nbsp;·&nbsp; Does not sum to total SG: App</div>'
     +'<div class="cfap-buckets">'+bHTML+'</div>';
 }
 
@@ -1385,6 +1389,7 @@ function runH2H(){
 // ── MATCHUP MARKET ───────────────────────────────────────────────────────────
 function switchMuMarket(market, btn){
   muMarket = market;
+  muSort = {col:'edge', dir:-1};
   document.querySelectorAll('.mu-market-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   if(muCache[market]){
@@ -1442,6 +1447,11 @@ function muDetectBooks(firstRow){
   return known.filter(function(b){ return odds[b]!=null; });
 }
 
+function sortMu(col){
+  if(muSort.col===col) muSort.dir*=-1; else {muSort.col=col; muSort.dir=-1;}
+  if(muCache[muMarket]) renderMatchups(muCache[muMarket], muMarket);
+}
+
 function renderMatchups(data, market){
   var loadEl = document.getElementById('muLoading');
   var tableEl = document.getElementById('muTable');
@@ -1490,86 +1500,99 @@ function renderMatchups(data, market){
       signalHtml:'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'};
   }
 
-  var html = '<div class="mu-table-wrap">';
+  function muThSort(label, col, tipText, right){
+    var isActive = muSort.col===col;
+    var arrow = isActive?(muSort.dir===-1?' ↓':' ↑'):'';
+    return '<span class="mu-th'+(isActive?' sorted':'')+'" onclick="sortMu(\''+col+'\')" style="cursor:pointer;">'
+      +tip(label+arrow, tipText, right)+'</span>';
+  }
 
-  if(!is3ball){
-    html += '<div class="mu-table-head">'
-      +'<span class="mu-th">Player A</span><span class="mu-th"></span><span class="mu-th">Player B</span>'
-      +'<span class="mu-th">'+tip('Best Odds','Best American odds for the model-favored player.')+'</span>'
-      +'<span class="mu-th">'+tip('Book','Book with the best line.',true)+'</span>'
-      +'<span class="mu-th">'+tip('Edge','Model probability minus book implied probability.',true)+'</span>'
-      +'<span class="mu-th">'+tip('Signal','Value = edge ≥ 8%. Watch = edge ≥ 4%.',true)+'</span>'
-      +'</div>';
-
-    matchups.forEach(function(row){
+  // Pre-process all rows to compute edge/odds for sorting
+  var processed = matchups.map(function(row){
+    if(!is3ball){
       var p1 = row.p1_player_name||row.player1_name||(row.p1&&row.p1.player_name)||'';
       var p2 = row.p2_player_name||row.player2_name||(row.p2&&row.p2.player_name)||'';
-      if(!p1||!p2) return;
-
+      if(!p1||!p2) return null;
       var dg1am = muGetDG(row,'p1'), dg2am = muGetDG(row,'p2');
       var prob1 = dg1am!=null?amToProb(dg1am):null;
       var prob2 = dg2am!=null?amToProb(dg2am):null;
       var hasModel = prob1!=null||prob2!=null;
-      // Favored = player with higher model probability (only color when we have model data)
-      var favP1 = hasModel ? (prob1||0)>=(prob2||0) : null;
+      var favP1 = hasModel?(prob1||0)>=(prob2||0):null;
       var favPrefix = favP1===false?'p2':'p1';
-
       var bestAmo=null, bestBook='';
       books.forEach(function(b){
-        var o = muGetOdds(row,b,favPrefix);
+        var o=muGetOdds(row,b,favPrefix);
         if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
       });
-
       var er = edgeRow(favP1!==null?(favP1?prob1:prob2):null, bestAmo, bestBook);
-      html += '<div class="mu-row'+(er.hasVal?' has-value':'')+'">'
-        +playerCell(p1, favP1===true)+'<div class="mu-vs">vs</div>'+playerCell(p2, favP1===false)
-        +er.oddsHtml+er.bookHtml+er.edgeHtml+er.signalHtml+'</div>';
-    });
-  } else {
-    html += '<div class="mu3-table-head">'
-      +'<span class="mu-th">Player A</span><span class="mu-th">Player B</span><span class="mu-th">Player C</span>'
-      +'<span class="mu-th">'+tip('Best Odds','Best odds for the model-favored player.')+'</span>'
-      +'<span class="mu-th">'+tip('Book','Best book.',true)+'</span>'
-      +'<span class="mu-th">'+tip('Edge','Model prob minus implied prob.',true)+'</span>'
-      +'<span class="mu-th">'+tip('Signal','Value ≥ 8%. Watch ≥ 4%.',true)+'</span>'
-      +'</div>';
-
-    matchups.forEach(function(row){
+      return {row:row,p1:p1,p2:p2,favP1:favP1,er:er,bestAmo:bestAmo};
+    } else {
       var players = [
         {name:row.p1_player_name||row.player1_name||(row.p1&&row.p1.player_name)||'',prefix:'p1'},
         {name:row.p2_player_name||row.player2_name||(row.p2&&row.p2.player_name)||'',prefix:'p2'},
         {name:row.p3_player_name||row.player3_name||(row.p3&&row.p3.player_name)||'',prefix:'p3'}
       ].filter(function(p){return p.name;});
-      if(players.length<2) return;
-
-      players.forEach(function(p){
-        var dgAm = muGetDG(row, p.prefix);
-        p.prob = dgAm!=null?amToProb(dgAm):null;
-      });
+      if(players.length<2) return null;
+      players.forEach(function(p){ var a=muGetDG(row,p.prefix); p.prob=a!=null?amToProb(a):null; });
       var hasModel = players.some(function(p){return p.prob!=null;});
-
-      var favored = hasModel
-        ? players.slice().sort(function(a,b){return (b.prob||0)-(a.prob||0);})[0]
-        : null;
+      var favored = hasModel?players.slice().sort(function(a,b){return (b.prob||0)-(a.prob||0);})[0]:null;
       var bestAmo=null, bestBook='';
-      if(favored){
-        books.forEach(function(b){
-          var o = muGetOdds(row,b,favored.prefix);
-          if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
-        });
-      } else {
-        // No model data — just find any best odds for p1
-        books.forEach(function(b){
-          var o = muGetOdds(row,b,'p1');
-          if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
-        });
-      }
+      books.forEach(function(b){
+        var prefix = favored?favored.prefix:'p1';
+        var o=muGetOdds(row,b,prefix);
+        if(o!=null&&(bestAmo===null||o>bestAmo)){bestAmo=o;bestBook=b;}
+      });
       var er = edgeRow(favored&&favored.prob!=null?favored.prob:null, bestAmo, bestBook);
+      return {row:row,players:players,favored:favored,hasModel:hasModel,er:er,bestAmo:bestAmo};
+    }
+  }).filter(Boolean);
+
+  // Sort (dir=-1 = descending/highest first, dir=1 = ascending)
+  processed.sort(function(a,b){
+    var va, vb;
+    if(muSort.col==='odds'){
+      va = a.bestAmo!=null?a.bestAmo:-9999;
+      vb = b.bestAmo!=null?b.bestAmo:-9999;
+    } else {
+      va = a.er.edgePct!=null?a.er.edgePct:-9999;
+      vb = b.er.edgePct!=null?b.er.edgePct:-9999;
+    }
+    return muSort.dir*(va-vb);
+  });
+
+  var html = '<div class="mu-table-wrap">';
+
+  if(!is3ball){
+    html += '<div class="mu-table-head">'
+      +'<span class="mu-th">Player A</span><span class="mu-th"></span><span class="mu-th">Player B</span>'
+      +muThSort('Best Odds','odds','Best American odds for the model-favored player.')
+      +'<span class="mu-th">'+tip('Book','Book with the best line.',true)+'</span>'
+      +muThSort('Edge','edge','Model probability minus book implied probability.',true)
+      +'<span class="mu-th">'+tip('Signal','Value = edge ≥ 8%. Watch = edge ≥ 4%.',true)+'</span>'
+      +'</div>';
+
+    processed.forEach(function(item){
+      var er=item.er, favP1=item.favP1;
+      html += '<div class="mu-row'+(er.hasVal?' has-value':'')+'">'
+        +playerCell(item.p1, favP1===true)+'<div class="mu-vs">vs</div>'+playerCell(item.p2, favP1===false)
+        +er.oddsHtml+er.bookHtml+er.edgeHtml+er.signalHtml+'</div>';
+    });
+  } else {
+    html += '<div class="mu3-table-head">'
+      +'<span class="mu-th">Player A</span><span class="mu-th">Player B</span><span class="mu-th">Player C</span>'
+      +muThSort('Best Odds','odds','Best odds for the model-favored player.')
+      +'<span class="mu-th">'+tip('Book','Best book.',true)+'</span>'
+      +muThSort('Edge','edge','Model prob minus implied prob.',true)
+      +'<span class="mu-th">'+tip('Signal','Value ≥ 8%. Watch ≥ 4%.',true)+'</span>'
+      +'</div>';
+
+    processed.forEach(function(item){
+      var er=item.er, favored=item.favored, hasModel=item.hasModel;
       html += '<div class="mu3-row'+(er.hasVal?' has-value':'')+'">';
-      players.forEach(function(p){
+      item.players.forEach(function(p){
         html += playerCell(p.name, favored&&p.prefix===favored.prefix&&hasModel);
       });
-      if(players.length<3) html += '<div></div>';
+      if(item.players.length<3) html += '<div></div>';
       html += er.oddsHtml+er.bookHtml+er.edgeHtml+er.signalHtml+'</div>';
     });
   }
@@ -1720,7 +1743,7 @@ function renderLiveTable(statsData, predData){
     pos:    function(r){ return posNum(r); },
     player: function(r){ return (r.player_name||'').split(',')[0].trim().toLowerCase(); },
     total:  function(r){ return r.total!=null?r.total:999; },
-    today:  function(r){ return r.today!=null?r.today:999; },
+    today:  function(r){ var w=winMap[r.player_name]; return r.today!=null?r.today:(w&&w.today!=null?w.today:999); },
     sg_ott: function(r){ return r.sg_ott!=null?r.sg_ott:-99; },
     sg_app: function(r){ return r.sg_app!=null?r.sg_app:-99; },
     sg_arg: function(r){ return r.sg_arg!=null?r.sg_arg:-99; },
@@ -1794,14 +1817,15 @@ function renderLiveTable(statsData, predData){
   rows.forEach(function(p){
     var isPick = pickNames.has(p.player_name);
     var pred = winMap[p.player_name];
-    var pos = p.current_pos||p.position||'—';
-    var total = scoreStr(p.total);
-    var today = scoreStr(p.today);
+    var pos = p.current_pos||p.position||(pred&&pred.current_pos)||'—';
+    var todayVal = p.today!=null?p.today:(pred&&pred.today!=null?pred.today:null);
+    var total = scoreStr(p.total!=null?p.total:(pred&&pred.total!=null?pred.total:null));
+    var today = scoreStr(todayVal);
     html += '<div class="live-row'+(isPick?' is-pick':'')+'">'
       +'<div class="live-pos">'+pos+'</div>'
       +'<div><span class="live-player-name">'+p.player_name+'</span>'+(isPick?'<span class="live-pick-badge">PICK</span>':'')+'</div>'
-      +'<div class="live-score '+scoreCls(p.total)+'">'+total+'</div>'
-      +'<div class="live-score '+scoreCls(p.today)+'">'+today+'</div>'
+      +'<div class="live-score '+scoreCls(p.total!=null?p.total:(pred&&pred.total!=null?pred.total:null))+'">'+total+'</div>'
+      +'<div class="live-score '+scoreCls(todayVal)+'">'+today+'</div>'
       +'<div>'+sgCell(p.sg_ott)+'</div>'
       +'<div>'+sgCell(p.sg_app)+'</div>'
       +'<div>'+sgCell(p.sg_arg)+'</div>'
