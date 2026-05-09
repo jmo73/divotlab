@@ -1688,6 +1688,15 @@ function rateCls(hits, picks){
   return r>=0.65?'good':r>=0.45?'ok':'bad';
 }
 
+function toggleAccDetail(eventId){
+  var panel = document.getElementById('accd-'+eventId);
+  var btn = document.getElementById('accdb-'+eventId);
+  if(!panel||!btn) return;
+  var open = panel.style.display!=='none';
+  panel.style.display = open?'none':'block';
+  btn.textContent = open?'↓':'↑';
+}
+
 function renderAccuracy(d){
   var loadEl = document.getElementById('accLoading');
   var contentEl = document.getElementById('accContent');
@@ -1696,36 +1705,35 @@ function renderAccuracy(d){
 
   var top10Rate = s.top10_picks ? (s.top10_hits/s.top10_picks*100).toFixed(0)+'%' : '—';
   var top5Rate  = s.top5_picks  ? (s.top5_hits /s.top5_picks *100).toFixed(0)+'%' : '—';
+  var top1Top5Rate = s.events ? s.top1_top5+'/'+s.events : '—';
 
   var html = '<div class="acc-summary">'
     +'<div class="acc-stat"><div class="acc-stat-val">'+top10Rate+'</div><div class="acc-stat-lbl">Top-10 Hit Rate</div><div class="acc-stat-sub">'+s.top10_hits+' of '+s.top10_picks+' model top-10 picks</div></div>'
     +'<div class="acc-stat"><div class="acc-stat-val">'+top5Rate+'</div><div class="acc-stat-lbl">Top-5 Hit Rate</div><div class="acc-stat-sub">'+s.top5_hits+' of '+s.top5_picks+' model top-5 picks</div></div>'
-    +'<div class="acc-stat"><div class="acc-stat-val">'+s.top1_wins+'/'+s.events+'</div><div class="acc-stat-lbl">Model #1 Won</div><div class="acc-stat-sub">Events where top win% pick won</div></div>'
+    +'<div class="acc-stat"><div class="acc-stat-val">'+top1Top5Rate+'</div><div class="acc-stat-lbl">Top Pick Finished Top 5</div><div class="acc-stat-sub">Events where #1 win% pick hit the board</div></div>'
     +'<div class="acc-stat"><div class="acc-stat-val">'+s.events+'</div><div class="acc-stat-lbl">Events Analyzed</div><div class="acc-stat-sub">2026 PGA Tour season</div></div>'
     +'</div>';
 
   // Calibration section
   var bins = s.bins;
+  var highBin = bins.high;
+  var calibNote = (highBin.n && (highBin.h/highBin.n) >= 0.40)
+    ? 'The model is well-calibrated at the top end — players it rates ≥25% for a top-10 finish are hitting at ' + Math.round(highBin.h/highBin.n*100) + '%, close to the expected ~50% for field sizes of 150+.'
+    : 'Calibration shows whether the model\'s probability estimates reflect reality. A well-calibrated model at 25%+ probability should produce ~50% top-10 hit rates given typical field sizes.';
+
   html += '<div class="acc-section-label">Calibration: Top-10 Model Probability vs Actual Results</div>'
     +'<div class="acc-calib-wrap">';
-  var calibRows = [
-    { lbl:'≥25% prob', bin: bins.high, expected: 0.50 },
-    { lbl:'10–25% prob', bin: bins.mid,  expected: 0.25 },
-    { lbl:'5–10% prob', bin: bins.low,  expected: 0.10 }
-  ];
-  calibRows.forEach(function(cr){
+  [{lbl:'≥25% prob', bin:bins.high},{lbl:'10–25% prob', bin:bins.mid},{lbl:'5–10% prob', bin:bins.low}].forEach(function(cr){
     var b = cr.bin;
-    if(!b.n){ return; }
-    var rate = b.h/b.n;
-    var barPct = Math.round(rate*100);
+    if(!b.n) return;
+    var barPct = Math.round(b.h/b.n*100);
     html += '<div class="acc-calib-row">'
       +'<div class="acc-calib-lbl">'+cr.lbl+'</div>'
       +'<div class="acc-calib-bar-wrap"><div class="acc-calib-bar" style="width:'+barPct+'%;"></div></div>'
       +'<div class="acc-calib-num">'+b.h+'/'+b.n+' &nbsp;('+barPct+'%)</div>'
       +'</div>';
   });
-  html += '<div class="acc-note">Calibration shows whether the model\'s probability estimates reflect reality. A well-calibrated model at 25%+ probability should hit ~50% of top-10 finishes given field sizes.</div>'
-    +'</div>';
+  html += '<div class="acc-note">'+calibNote+'</div></div>';
 
   // Per-event table
   if(events.length){
@@ -1733,16 +1741,16 @@ function renderAccuracy(d){
       +'<div class="acc-table-wrap">'
       +'<div class="acc-table-head">'
       +'<span class="acc-th">Event</span>'
-      +'<span class="acc-th">Model #1 Pick</span>'
-      +'<span class="acc-th">Actual Winner</span>'
-      +'<span class="acc-th">'+tip('Top 5','Model\'s top 5 by win probability — how many finished top 5.')+'</span>'
-      +'<span class="acc-th">'+tip('Top 10','Model\'s top 10 by top-10 probability — how many finished top 10.')+'</span>'
+      +'<span class="acc-th">Top Pick &nbsp;· Finish</span>'
+      +'<span class="acc-th">Winner</span>'
+      +'<span class="acc-th">'+tip('Top 5','Model\'s top 5 by win% — how many finished top 5. Click to expand.')+'</span>'
+      +'<span class="acc-th">'+tip('Top 10','Model\'s top 10 by top-10% — how many finished top 10. Click to expand.')+'</span>'
       +'<span class="acc-th">Result</span>'
       +'</div>';
 
     events.forEach(function(e){
+      var eid = e.event_id;
       var date = e.start_date ? e.start_date.slice(0,7) : '';
-      var winnerMatch = e.winner && e.model_top1 && e.winner===e.model_top1;
       var top5Cls = rateCls(e.top5_hits, e.top5_picks);
       var top10Cls = rateCls(e.top10_hits, e.top10_picks);
       var resultBadge = e.model_top1_won
@@ -1750,14 +1758,43 @@ function renderAccuracy(d){
         : e.model_top1_top5
         ? '<span class="value-badge vbadge-moderate">Top 5</span>'
         : '<span class="value-badge vbadge-none">—</span>';
-      html += '<div class="acc-row">'
+
+      html += '<div class="acc-row" style="cursor:pointer;" onclick="toggleAccDetail(\''+eid+'\')">'
         +'<div><div class="acc-event">'+e.event_name+'</div><div class="acc-date">'+date+'</div></div>'
-        +'<div class="acc-player'+(e.model_top1_won?' correct':'')+'">'+e.model_top1+'</div>'
-        +'<div class="acc-player'+(winnerMatch?' correct':'')+'">'+e.winner+'</div>'
-        +'<div class="acc-rate '+top5Cls+'">'+fmtRate(e.top5_hits,e.top5_picks)+'</div>'
-        +'<div class="acc-rate '+top10Cls+'">'+fmtRate(e.top10_hits,e.top10_picks)+'</div>'
-        +'<div>'+resultBadge+'</div>'
+        +'<div><div class="acc-player'+(e.model_top1_top5?' correct':'')+'">'+e.model_top1+'</div>'
+          +'<div class="acc-date">'+(e.model_top1_finish||'—')+'</div></div>'
+        +'<div class="acc-player">'+e.winner+'</div>'
+        +'<div class="acc-rate '+top5Cls+'" style="cursor:pointer;">'+fmtRate(e.top5_hits,e.top5_picks)+'</div>'
+        +'<div class="acc-rate '+top10Cls+'" style="cursor:pointer;">'+fmtRate(e.top10_hits,e.top10_picks)+'</div>'
+        +'<div style="display:flex;align-items:center;gap:8px;">'+resultBadge
+          +'<span id="accdb-'+eid+'" style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.25);">↓</span>'
+        +'</div>'
         +'</div>';
+
+      // Expandable picks detail
+      if(e.top10_detail && e.top10_detail.length){
+        var detailHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,0.06);">';
+        var labels = ['<div style="grid-column:1;padding:10px 20px 6px;"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.22);">Top 5 picks</span></div>',
+                      '<div style="grid-column:2;padding:10px 20px 6px;border-left:1px solid rgba(255,255,255,0.04);"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.22);">Picks 6–10</span></div>'];
+        detailHtml += labels.join('');
+        for(var i=0;i<5;i++){
+          var p5 = e.top10_detail[i];
+          var p10 = e.top10_detail[i+5];
+          function pickRow(p, threshold){
+            if(!p) return '<div style="padding:5px 20px;"></div>';
+            var hit = p.finish<=threshold;
+            var finColor = hit?'var(--green-light)':'rgba(250,250,250,0.3)';
+            return '<div style="padding:5px 20px;display:flex;justify-content:space-between;align-items:center;">'
+              +'<span style="font-size:12px;color:rgba(250,250,250,'+(hit?'0.85':'0.4')+');">'+(p.player||'').split(',').reverse().join(' ').trim()+'</span>'
+              +'<span style="font-family:var(--mono);font-size:11px;font-weight:600;color:'+finColor+';">'+p.finish_text+'</span>'
+              +'</div>';
+          }
+          detailHtml += pickRow(p5,5);
+          detailHtml += '<div style="border-left:1px solid rgba(255,255,255,0.04);">'+pickRow(p10,10).replace('<div style="padding','<div style="padding')+'</div>';
+        }
+        detailHtml += '</div>';
+        html += '<div id="accd-'+eid+'" style="display:none;background:rgba(255,255,255,0.015);">'+detailHtml+'</div>';
+      }
     });
     html += '</div>';
   } else {

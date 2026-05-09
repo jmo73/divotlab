@@ -1253,8 +1253,26 @@ app.get('/api/model-accuracy', async (req, res) => {
 
           // Did model's #1 win?
           const modelTop1 = sorted10[0];
-          const modelTop1Won = modelTop1 && (resultMap[modelTop1.dg_id] || 999) === 1;
-          const modelTop1InTop5 = modelTop1 && (resultMap[modelTop1.dg_id] || 999) <= 5;
+          const modelTop1Finish = modelTop1 ? (resultMap[modelTop1.dg_id] || 999) : 999;
+          const modelTop1Won = modelTop1Finish === 1;
+          const modelTop1InTop5 = modelTop1Finish <= 5;
+
+          function fmtFin(pos) {
+            if (pos >= 999) return 'MC';
+            if (pos === 1) return '1st';
+            if (pos === 2) return '2nd';
+            if (pos === 3) return '3rd';
+            return 'T' + pos;
+          }
+
+          // Per-pick detail for top 10
+          const top10Detail = sorted10.slice(0, 10).map((p, i) => ({
+            player: p.player_name,
+            finish: resultMap[p.dg_id] || 999,
+            finish_text: fmtFin(resultMap[p.dg_id] || 999),
+            hit5:  (resultMap[p.dg_id] || 999) <= 5,
+            hit10: (resultMap[p.dg_id] || 999) <= 10
+          }));
 
           // Calibration bins: for each player, group by model top_10 prob bucket
           const bins = { high: {n:0,h:0}, mid: {n:0,h:0}, low: {n:0,h:0} };
@@ -1272,12 +1290,14 @@ app.get('/api/model-accuracy', async (req, res) => {
             start_date: evt.start_date,
             winner: winnerName,
             model_top1: modelTop1 ? modelTop1.player_name : '',
+            model_top1_finish: fmtFin(modelTop1Finish),
             model_top1_won: modelTop1Won,
             model_top1_top5: modelTop1InTop5,
             top5_picks: 5,
             top5_hits: top5hits,
             top10_picks: 10,
             top10_hits: top10hits,
+            top10_detail: top10Detail,
             bins
           };
         } catch (err) {
@@ -1296,13 +1316,14 @@ app.get('/api/model-accuracy', async (req, res) => {
       acc.top5_hits  += e.top5_hits;
       acc.top10_picks += e.top10_picks;
       acc.top10_hits  += e.top10_hits;
-      if (e.model_top1_won) acc.top1_wins++;
+      if (e.model_top1_won)   acc.top1_wins++;
+      if (e.model_top1_top5) acc.top1_top5++;
       ['high','mid','low'].forEach(b => {
         acc.bins[b].n += e.bins[b].n;
         acc.bins[b].h += e.bins[b].h;
       });
       return acc;
-    }, { events:0, top5_picks:0, top5_hits:0, top10_picks:0, top10_hits:0, top1_wins:0,
+    }, { events:0, top5_picks:0, top5_hits:0, top10_picks:0, top10_hits:0, top1_wins:0, top1_top5:0,
          bins:{high:{n:0,h:0},mid:{n:0,h:0},low:{n:0,h:0}} });
 
     const payload = {
