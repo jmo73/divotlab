@@ -597,16 +597,25 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
   .mu3-row>div:nth-child(5),.mu3-row>div:nth-child(6){display:none !important;}
   .mu-note{display:none;}
 
-  /* Track Record — 3 columns on mobile */
+  /* Track Record — Event + Top 10 + Result on mobile */
   .acc-summary{grid-template-columns:1fr 1fr;}
-  .acc-table-head,.acc-row{grid-template-columns:1fr 110px 70px !important;}
-  .acc-table-head .acc-th:nth-child(n+4),.acc-row>*:nth-child(n+4){display:none !important;}
+  .acc-table-head,.acc-row{grid-template-columns:1fr 72px 76px !important;}
+  .acc-table-head .acc-th:nth-child(2),.acc-table-head .acc-th:nth-child(3),.acc-table-head .acc-th:nth-child(4),
+  .acc-row>*:nth-child(2),.acc-row>*:nth-child(3),.acc-row>*:nth-child(4){display:none !important;}
+  .acc-table-head .acc-th:nth-child(5),.acc-table-head .acc-th:nth-child(6),
+  .acc-row>*:nth-child(5),.acc-row>*:nth-child(6){display:block !important;}
 
   /* Best Bets */
   .bb-wrap{padding:16px;}
   .bb-grid{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
   .bb-grid::-webkit-scrollbar{display:none;}
   .bb-card{flex:0 0 85%;scroll-snap-align:start;}
+
+  /* Keep badge + tourney on one line */
+  .picks-card-header,.bb-header{flex-wrap:nowrap;}
+  .picks-card-badge,.bb-badge{white-space:nowrap;flex-shrink:0;}
+  .picks-card-tourney,.bb-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;}
+  .card-chevron{flex-shrink:0;}
 
   /* Picks Card — horizontal scroll snap carousel */
   .picks-card-wrap{padding:16px 16px 12px;}
@@ -971,27 +980,29 @@ function renderBestBets(){
   scored.forEach(function(item){
     var b = item.b;
     var isStrong = b.edgePct>=10 && item.fitScore>=65;
-    var signalLbl = isStrong?'Strong':'Watch';
-    var signalCls = isStrong?'strong':'watch';
-    html += '<div class="bb-card'+(isStrong?'':' watch')+'">'
-      +'<div class="bb-signal '+signalCls+'">'+signalLbl+'</div>'
-      +'<div class="bb-player">'+b.player+'</div>'
-      +'<div class="bb-meta">'
-        +'<span class="bb-market">'+marketLabel[b.market]+'</span>'
-        +'<span class="bb-odds">'+fmtAm(b.amOdds)+'</span>'
-        +'<span class="bb-book">'+b.bestBook.replace('draftkings','DK').replace('fanduel','FD').replace('betmgm','MGM').replace('bet365','B365').replace('caesars','CZR').replace('pinnacle','PIN').toUpperCase()+'</span>'
+    var badgeCls = isStrong ? 'pick-result-win' : 'pick-result-pending';
+    var signalLbl = isStrong ? 'Strong' : 'Watch';
+    var bookShort = b.bestBook.replace('draftkings','DK').replace('fanduel','FD').replace('betmgm','MGM').replace('bet365','B365').replace('caesars','CZR').replace('pinnacle','PIN').toUpperCase();
+    html += '<div class="pick-card">'
+      +'<span class="pick-result-badge '+badgeCls+'" style="'+(isStrong?'':'color:var(--gold);background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);')+'">'+signalLbl+'</span>'
+      +'<div class="pick-player">'+b.player+'</div>'
+      +'<div class="pick-meta">'
+        +'<span class="pick-bet-badge">'+marketLabel[b.market]+'</span>'
+        +'<span class="pick-odds">'+fmtAm(b.amOdds)+'</span>'
+        +'<span class="pick-book">'+bookShort+'</span>'
       +'</div>'
-      +'<div class="bb-stats">'
-        +'<div class="bb-stat"><div class="bb-stat-val green">+'+(b.edgePct).toFixed(1)+'%</div><div class="bb-stat-lbl">Edge</div></div>'
-        +'<div class="bb-stat"><div class="bb-stat-val gold">'+(item.fitScore||'—')+'</div><div class="bb-stat-lbl">Fit Score</div></div>'
-        +'<div class="bb-stat"><div class="bb-stat-val">'+(b.dgProbPct||'—')+'%</div><div class="bb-stat-lbl">Model Prob</div></div>'
-      +'</div>'
+      +'<div class="pick-reasoning">Edge: +'+(b.edgePct).toFixed(1)+'% &nbsp;·&nbsp; Fit: '+(item.fitScore||'—')+'&nbsp;·&nbsp; Model: '+(b.dgProbPct||'—')+'%</div>'
       +'</div>';
   });
 
   html += '</div></div></div>';
   card.innerHTML = html;
   card.style.display = 'block';
+  // Default collapsed
+  var body = document.getElementById('bbBody');
+  var wrap = document.getElementById('bbWrap');
+  var chev = document.getElementById('bbChevron');
+  if(body&&wrap&&chev){ body.classList.add('hidden'); wrap.classList.add('collapsed'); chev.classList.add('up'); }
 }
 
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
@@ -1964,7 +1975,12 @@ function renderPicksCard(d){
   document.getElementById('picksGrid').innerHTML = html;
   var expandBtn = document.getElementById('picksExpandBtn');
   if(expandBtn) expandBtn.textContent = 'Show all '+d.picks.length+' ↓';
-  document.getElementById('picksCardWrap').style.display='block';
+  var wrap = document.getElementById('picksCardWrap');
+  wrap.style.display='block';
+  // Default collapsed
+  var body = document.getElementById('picksBody');
+  var chev = document.getElementById('picksChevron');
+  if(body&&chev){ body.classList.add('hidden'); wrap.classList.add('collapsed'); chev.classList.add('up'); }
 }
 
 function togglePicksCard(){
