@@ -1151,6 +1151,7 @@ app.get('/api/historical-dfs', async (req, res) => {
 
 app.get('/api/model-accuracy', async (req, res) => {
   const cacheKey = 'model-accuracy-2026';
+  if (req.query.bust === 'true') { cache.del(cacheKey); ['556','33','559','560','561','562','563','564'].forEach(id => cache.del(`results-event-${id}-2026`)); }
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1228,7 +1229,7 @@ app.get('/api/model-accuracy', async (req, res) => {
             cache.set(resultsCacheKey, resultsRaw, 604800);
           }
 
-          const resultsArr = resultsRaw.results || resultsRaw.data || [];
+          const resultsArr = resultsRaw.event_stats || resultsRaw.results || resultsRaw.data || [];
           const resultMap = {};
           resultsArr.forEach(r => {
             const pos = parseFinish(r.fin_text || r.position || r.fin || r.place);
