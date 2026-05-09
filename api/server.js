@@ -1175,8 +1175,16 @@ app.get('/api/course-history', async (req, res) => {
         const data = await fetchDataGolfDirect(
           `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
         );
-        return { year, stats: data.event_stats || [] };
+        // DataGolf returns an error object for missing data rather than throwing
+        if (data.error || data.message) {
+          console.log(`  Course history ${event_id}/${year}: ${data.error || data.message}`);
+          return { year, stats: [] };
+        }
+        const stats = data.event_stats || data.results || data.data || [];
+        console.log(`  Course history ${event_id}/${year}: ${stats.length} players`);
+        return { year, stats };
       } catch (e) {
+        console.warn(`  Course history ${event_id}/${year} failed:`, e.message);
         return { year, stats: [] };
       }
     }));
