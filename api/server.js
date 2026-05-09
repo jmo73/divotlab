@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const NodeCache = require('node-cache');
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -196,6 +197,9 @@ app.use(cors({
     return callback(new Error('Not allowed by CORS'), false);
   }
 }));
+
+// Stripe webhook MUST be registered before express.json() — needs raw body for signature verification
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 
 app.use(express.json());
 
@@ -905,6 +909,13 @@ app.get('/api/course-fit', async (req, res) => {
         sg_arg:      l24 ? (l24.sg_arg  != null ? +l24.sg_arg.toFixed(3)  : null) : null,
         sg_putt:     l24 ? (l24.sg_putt != null ? +l24.sg_putt.toFixed(3) : null) : null,
         sg_total:    l24 ? (l24.sg_total != null ? +l24.sg_total.toFixed(3): null) : null,
+        // L12 skill breakdown (for trajectory comparison)
+        sg_ott_l12:  l12 ? (l12.sg_ott  != null ? +l12.sg_ott.toFixed(3)  : null) : null,
+        sg_app_l12:  l12 ? (l12.sg_app  != null ? +l12.sg_app.toFixed(3)  : null) : null,
+        sg_arg_l12:  l12 ? (l12.sg_arg  != null ? +l12.sg_arg.toFixed(3)  : null) : null,
+        sg_putt_l12: l12 ? (l12.sg_putt != null ? +l12.sg_putt.toFixed(3) : null) : null,
+        sg_arg_l12:  l12 ? (l12.sg_arg  != null ? +l12.sg_arg.toFixed(3)  : null) : null,
+        sg_putt_l12: l12 ? (l12.sg_putt != null ? +l12.sg_putt.toFixed(3) : null) : null,
         // Form info
         form_blended: formApplied,
         has_full_data: !!(l24 && l24.sg_ott != null && l24.sg_app != null && l24.sg_arg != null && l24.sg_putt != null)
@@ -1897,6 +1908,140 @@ app.post('/api/verify-pro', async (req, res) => {
 });
 
 // ============================================
+// STRIPE WEBHOOK + BEEHIIV PRO SYNC
+// Automatically adds/removes Beehiiv Pro subscribers
+// when a Stripe trial starts or subscription ends.
+// Env vars: STRIPE_WEBHOOK_SECRET, STRIPE_SECRET_KEY,
+//           BEEHIIV_API_KEY, BEEHIIV_PRO_PUB_ID
+// ============================================
+
+function verifyStripeSignature(rawBody, sigHeader, secret) {
+  const tPart = sigHeader.split(',').find(p => p.startsWith('t='));
+  const v1Part = sigHeader.split(',').find(p => p.startsWith('v1='));
+  if (!tPart || !v1Part) return false;
+  const timestamp = tPart.slice(2);
+  const received = v1Part.slice(3);
+  const payload = `${timestamp}.${rawBody}`;
+  const expected = crypto.createHmac('sha256', secret).update(payload, 'utf8').digest('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(received, 'hex'), Buffer.from(expected, 'hex'));
+  } catch (e) {
+    return false;
+  }
+}
+
+async function beehiivAddProSubscriber(email) {
+  const apiKey = process.env.BEEHIIV_API_KEY;
+  const proPubId = process.env.BEEHIIV_PRO_PUB_ID;
+  if (!apiKey || !proPubId) throw new Error('Beehiiv Pro not configured');
+  const res = await fetch(`https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ email: email.trim().toLowerCase(), reactivate_existing: true, send_welcome_email: false })
+  });
+  if (!res.ok && res.status !== 409) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Beehiiv add failed: ${res.status} ${err.message || ''}`);
+  }
+  console.log(`✓ Beehiiv Pro: added ${email}`);
+}
+
+async function beehiivRemoveProSubscriber(email) {
+  const apiKey = process.env.BEEHIIV_API_KEY;
+  const proPubId = process.env.BEEHIIV_PRO_PUB_ID;
+  if (!apiKey || !proPubId) throw new Error('Beehiiv Pro not configured');
+  // Look up subscriber ID by email
+  const searchRes = await fetch(
+    `https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions?email=${encodeURIComponent(email.trim().toLowerCase())}`,
+    { headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' } }
+  );
+  if (!searchRes.ok) throw new Error(`Beehiiv lookup failed: ${searchRes.status}`);
+  const data = await searchRes.json();
+  const sub = (data.data || []).find(s => s.status === 'active');
+  if (!sub) { console.log(`  Beehiiv Pro: ${email} not found or already inactive`); return; }
+  const delRes = await fetch(
+    `https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions/${sub.id}`,
+    { method: 'DELETE', headers: { 'Authorization': `Bearer ${apiKey}` } }
+  );
+  if (!delRes.ok) throw new Error(`Beehiiv delete failed: ${delRes.status}`);
+  console.log(`✓ Beehiiv Pro: removed ${email}`);
+}
+
+async function getStripeCustomerEmail(customerId) {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) throw new Error('STRIPE_SECRET_KEY not configured');
+  const res = await fetch(`https://api.stripe.com/v1/customers/${customerId}`, {
+    headers: { 'Authorization': `Bearer ${secretKey}` }
+  });
+  if (!res.ok) throw new Error(`Stripe customer fetch failed: ${res.status}`);
+  const customer = await res.json();
+  return customer.email || null;
+}
+
+async function handleStripeWebhook(req, res) {
+  const sig = req.headers['stripe-signature'];
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!secret) {
+    console.error('⚠️  STRIPE_WEBHOOK_SECRET not configured');
+    return res.status(500).send('Webhook not configured');
+  }
+
+  const rawBody = req.body.toString('utf8');
+
+  if (!verifyStripeSignature(rawBody, sig || '', secret)) {
+    console.warn('⚠️  Stripe webhook signature verification failed');
+    return res.status(400).send('Invalid signature');
+  }
+
+  let event;
+  try {
+    event = JSON.parse(rawBody);
+  } catch (e) {
+    return res.status(400).send('Invalid JSON');
+  }
+
+  console.log(`Stripe webhook: ${event.type}`);
+
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      // Only handle subscription checkouts (not one-time payments)
+      if (session.mode !== 'subscription') return res.json({ received: true });
+      const email = session.customer_email || session.customer_details?.email;
+      if (email) {
+        await beehiivAddProSubscriber(email);
+      } else {
+        console.warn('  checkout.session.completed: no email found in session');
+      }
+
+    } else if (event.type === 'customer.subscription.deleted') {
+      const sub = event.data.object;
+      const email = await getStripeCustomerEmail(sub.customer);
+      if (email) {
+        await beehiivRemoveProSubscriber(email);
+      } else {
+        console.warn('  customer.subscription.deleted: could not resolve customer email');
+      }
+
+    } else if (event.type === 'customer.subscription.updated') {
+      // Catch cancellations that come through as status change before deletion
+      const sub = event.data.object;
+      const prevStatus = event.data.previous_attributes?.status;
+      if (sub.status === 'canceled' && prevStatus && prevStatus !== 'canceled') {
+        const email = await getStripeCustomerEmail(sub.customer);
+        if (email) await beehiivRemoveProSubscriber(email);
+      }
+    }
+  } catch (err) {
+    console.error('Stripe webhook handler error:', err.message);
+    // Still return 200 so Stripe doesn't retry — log the error and investigate manually
+  }
+
+  res.json({ received: true });
+}
+
+// ============================================
 // BEEHIIV SUBSCRIBE PROXY
 // Accepts email from lab-notes page, subscribes via Beehiiv API
 // Env vars: BEEHIIV_API_KEY, BEEHIIV_PUB_ID
@@ -2396,6 +2541,11 @@ app.listen(PORT, () => {
 🎁 OPTIMIZED COMPOSITES:
   GET  /api/homepage-stats         (6hr) ⭐ PGA FILTERED
   GET  /api/lab-data               (6hr) ⭐ PGA FILTERED
+
+💳 STRIPE / SUBSCRIPTIONS:
+  POST /api/stripe-webhook      (Stripe → Beehiiv Pro sync)
+  POST /api/verify-pro          (check active Pro sub)
+  POST /api/subscribe           (free newsletter signup)
 
 🔧 UTILITIES:
   GET  /api/cache-status
