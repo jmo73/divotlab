@@ -1249,10 +1249,14 @@ function moveBadge(player, market){
 async function loadCourseHistory(){
   if(courseHistoryData !== null) return;
   courseHistoryData = {};
-  var eventId = courseFitData && courseFitData.tournament && courseFitData.tournament.event_id;
+  var t = courseFitData && courseFitData.tournament;
+  var eventId = t && t.event_id;
   if(!eventId) return;
   try {
-    var res = await fetch(API+'/api/course-history?event_id='+eventId);
+    var params = 'event_id='+eventId
+      +(t.event_name?'&event_name='+encodeURIComponent(t.event_name):'')
+      +(t.course?'&course='+encodeURIComponent(t.course):'');
+    var res = await fetch(API+'/api/course-history?'+params);
     var d = await res.json();
     if(d.success) courseHistoryData = d;
   } catch(e){ console.warn('Course history load failed:', e.message); }

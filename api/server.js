@@ -1168,29 +1168,59 @@ app.get('/api/course-history', async (req, res) => {
   const currentYear = new Date().getFullYear();
   const years = [currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4];
 
+  // Build keyword set from event_name for fuzzy schedule matching
+  // Strip sponsor words (first word often changes year-to-year) — match on last meaningful word
+  const eventName = req.query.event_name || '';
+  const course = req.query.course || '';
+  const courseKeyword = course.toLowerCase().split(/[\s,]+/).find(w => w.length > 4) || '';
+  const eventKeyword = eventName.toLowerCase().split(/[\s,]+/).filter(w => w.length > 4).slice(-2).join(' ');
+
+  async function fetchForYear(year) {
+    // First: try same event_id directly
+    try {
+      const data = await fetchDataGolfDirect(
+        `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+      );
+      const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
+      if (stats.length) { console.log(`  Course history ${event_id}/${year} (same id): ${stats.length}`); return stats; }
+    } catch(e) {}
+
+    // Fallback: search that year's schedule for a matching event
+    if (!eventKeyword && !courseKeyword) return [];
+    try {
+      const sched = await fetchDataGolfDirect(
+        `/get-schedule?tour=pga&season=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+      );
+      const events = sched.schedule || [];
+      const match = events.find(e => {
+        const en = (e.event_name || '').toLowerCase();
+        const cr = (e.course || e.course_name || '').toLowerCase();
+        return (eventKeyword && en.includes(eventKeyword.split(' ')[0])) ||
+               (courseKeyword && cr.includes(courseKeyword));
+      });
+      if (!match) { console.log(`  Course history ${year}: no schedule match`); return []; }
+      console.log(`  Course history ${year}: matched "${match.event_name}" (id ${match.event_id})`);
+      const data = await fetchDataGolfDirect(
+        `/historical-event-data/events?tour=pga&event_id=${match.event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+      );
+      const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
+      console.log(`  Course history ${year}: ${stats.length} players`);
+      return stats;
+    } catch(e) {
+      console.warn(`  Course history ${year} fallback failed:`, e.message);
+      return [];
+    }
+  }
+
   const yearData = [];
   for (let i = 0; i < years.length; i += 2) {
     const batch = years.slice(i, i + 2);
     const results = await Promise.all(batch.map(async year => {
-      try {
-        const data = await fetchDataGolfDirect(
-          `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
-        );
-        // DataGolf returns an error object for missing data rather than throwing
-        if (data.error || data.message) {
-          console.log(`  Course history ${event_id}/${year}: ${data.error || data.message}`);
-          return { year, stats: [] };
-        }
-        const stats = data.event_stats || data.results || data.data || [];
-        console.log(`  Course history ${event_id}/${year}: ${stats.length} players`);
-        return { year, stats };
-      } catch (e) {
-        console.warn(`  Course history ${event_id}/${year} failed:`, e.message);
-        return { year, stats: [] };
-      }
+      const stats = await fetchForYear(year);
+      return { year, stats };
     }));
     yearData.push(...results);
-    if (i + 2 < years.length) await new Promise(r => setTimeout(r, 500));
+    if (i + 2 < years.length) await new Promise(r => setTimeout(r, 600));
   }
 
   const players = {};
