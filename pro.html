@@ -474,9 +474,9 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .acc-stat-sub{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);margin-top:2px;}
 .acc-section-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);margin:0 0 12px;}
 .acc-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
-.acc-table-head{display:grid;grid-template-columns:1fr 130px 130px 90px 90px 80px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.acc-table-head{display:grid;grid-template-columns:1fr 150px 160px 80px 80px 80px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .acc-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
-.acc-row{display:grid;grid-template-columns:1fr 130px 130px 90px 90px 80px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;}
+.acc-row{display:grid;grid-template-columns:1fr 150px 160px 80px 80px 80px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;}
 .acc-row:last-child{border-bottom:none;}
 .acc-event{font-size:13px;font-weight:600;color:rgba(250,250,250,0.85);}
 .acc-date{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.25);margin-top:2px;}
@@ -492,7 +492,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .acc-calib-lbl{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,250,250,0.35);width:100px;flex-shrink:0;}
 .acc-calib-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;}
 .acc-calib-bar{height:100%;border-radius:4px;background:var(--green-light);transition:width .4s;}
-.acc-calib-num{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.5);width:80px;text-align:right;flex-shrink:0;}
+.acc-calib-num{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.5);width:120px;text-align:right;flex-shrink:0;white-space:nowrap;}
 .acc-note{font-size:11px;color:rgba(250,250,250,0.22);line-height:1.6;margin-top:16px;}
 html[data-theme="light"] .acc-stat{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
 html[data-theme="light"] .acc-stat-val{color:#1B4D3E;}
@@ -558,7 +558,7 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 
   /* Track Record — 3 columns on mobile */
   .acc-summary{grid-template-columns:1fr 1fr;}
-  .acc-table-head,.acc-row{grid-template-columns:1fr 100px 80px !important;}
+  .acc-table-head,.acc-row{grid-template-columns:1fr 110px 70px !important;}
   .acc-table-head .acc-th:nth-child(n+4),.acc-row>*:nth-child(n+4){display:none !important;}
 
   /* Picks Card — horizontal scroll snap carousel */
@@ -1694,7 +1694,8 @@ function toggleAccDetail(eventId){
   if(!panel||!btn) return;
   var open = panel.style.display!=='none';
   panel.style.display = open?'none':'block';
-  btn.textContent = open?'↓':'↑';
+  btn.textContent = open?'›':'↓';
+  btn.style.color = open?'rgba(250,250,250,0.2)':'rgba(250,250,250,0.5)';
 }
 
 function renderAccuracy(d){
@@ -1741,7 +1742,7 @@ function renderAccuracy(d){
       +'<div class="acc-table-wrap">'
       +'<div class="acc-table-head">'
       +'<span class="acc-th">Event</span>'
-      +'<span class="acc-th">Top Pick &nbsp;· Finish</span>'
+      +'<span class="acc-th">Top Pick</span>'
       +'<span class="acc-th">Winner</span>'
       +'<span class="acc-th">'+tip('Top 5','Model\'s top 5 by win% — how many finished top 5. Click to expand.')+'</span>'
       +'<span class="acc-th">'+tip('Top 10','Model\'s top 10 by top-10% — how many finished top 10. Click to expand.')+'</span>'
@@ -1760,15 +1761,15 @@ function renderAccuracy(d){
         : '<span class="value-badge vbadge-none">—</span>';
 
       html += '<div class="acc-row" style="cursor:pointer;" onclick="toggleAccDetail(\''+eid+'\')">'
-        +'<div><div class="acc-event">'+e.event_name+'</div><div class="acc-date">'+date+'</div></div>'
+        +'<div><div class="acc-event">'+e.event_name
+          +' <span id="accdb-'+eid+'" style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);margin-left:4px;">›</span>'
+          +'</div><div class="acc-date">'+date+'</div></div>'
         +'<div><div class="acc-player'+(e.model_top1_top5?' correct':'')+'">'+e.model_top1+'</div>'
           +'<div class="acc-date">'+(e.model_top1_finish||'—')+'</div></div>'
         +'<div class="acc-player">'+e.winner+'</div>'
-        +'<div class="acc-rate '+top5Cls+'" style="cursor:pointer;">'+fmtRate(e.top5_hits,e.top5_picks)+'</div>'
-        +'<div class="acc-rate '+top10Cls+'" style="cursor:pointer;">'+fmtRate(e.top10_hits,e.top10_picks)+'</div>'
-        +'<div style="display:flex;align-items:center;gap:8px;">'+resultBadge
-          +'<span id="accdb-'+eid+'" style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.25);">↓</span>'
-        +'</div>'
+        +'<div class="acc-rate '+top5Cls+'">'+fmtRate(e.top5_hits,e.top5_picks)+'</div>'
+        +'<div class="acc-rate '+top10Cls+'">'+fmtRate(e.top10_hits,e.top10_picks)+'</div>'
+        +'<div>'+resultBadge+'</div>'
         +'</div>';
 
       // Expandable picks detail
