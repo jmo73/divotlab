@@ -1173,57 +1173,52 @@ app.get('/api/course-history', async (req, res) => {
   const startDate = req.query.start_date || '';
   const startMMDD = startDate.slice(5); // "04-30" from "2026-04-30"
 
-  async function fetchForYear(year) {
-    // First: try same event_id directly (works when tournament kept same ID)
+  async function fetchForYear(year, log) {
+    // First: try same event_id directly
     try {
       const data = await fetchDataGolfDirect(
         `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
-      if (stats.length) { console.log(`  Course history ${year} (same id): ${stats.length} players`); return stats; }
-    } catch(e) {}
+      if (stats.length) { log.push(`${year}: same-id hit, ${stats.length} players`); return stats; }
+      log.push(`${year}: same-id empty (${data.message||data.error||'no event_stats'})`);
+    } catch(e) { log.push(`${year}: same-id threw: ${e.message}`); }
 
-    // Fallback: find same-week event in historical schedule by date proximity
-    if (!startMMDD) return [];
+    if (!startMMDD) { log.push(`${year}: no start_date, skipping fallback`); return []; }
+
     try {
       const sched = await fetchDataGolfDirect(
         `/get-schedule?tour=pga&season=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
-      const events = sched.schedule || [];
-      // Find event whose start_date is within 14 days of the same calendar slot
-      const targetMMDD = startMMDD; // "04-30"
-      const targetDayOfYear = (d => { const p = d.split('-'); return parseInt(p[0])*30 + parseInt(p[1]); })(targetMMDD);
+      const events = (sched.schedule || []).filter(e => e.start_date);
+      const refDate = new Date(`${year}-${startMMDD}`);
       let best = null, bestDiff = 999;
       events.forEach(e => {
-        if (!e.start_date) return;
-        const eMM = e.start_date.slice(5); // "MM-DD"
-        const eDOY = (d => { const p = d.split('-'); return parseInt(p[0])*30 + parseInt(p[1]); })(eMM);
-        const diff = Math.abs(eDOY - targetDayOfYear);
+        const diff = Math.abs(new Date(e.start_date) - refDate) / 86400000;
         if (diff < bestDiff) { bestDiff = diff; best = e; }
       });
-      if (!best || bestDiff > 14) { console.log(`  Course history ${year}: no date match (best diff ${bestDiff})`); return []; }
-      console.log(`  Course history ${year}: matched "${best.event_name}" id=${best.event_id} (diff ${bestDiff} days)`);
+      log.push(`${year}: schedule has ${events.length} events, best="${best&&best.event_name}" id=${best&&best.event_id} diff=${bestDiff.toFixed(1)}d`);
+      if (!best || bestDiff > 21) { log.push(`${year}: diff too large, skip`); return []; }
+      await new Promise(r => setTimeout(r, 300));
       const data = await fetchDataGolfDirect(
         `/historical-event-data/events?tour=pga&event_id=${best.event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
-      console.log(`  Course history ${year}: ${stats.length} players`);
+      log.push(`${year}: results for "${best.event_name}" → ${stats.length} players (${data.error||data.message||'ok'})`);
       return stats;
     } catch(e) {
-      console.warn(`  Course history ${year} fallback failed:`, e.message);
+      log.push(`${year}: fallback threw: ${e.message}`);
       return [];
     }
   }
 
   const yearData = [];
-  for (let i = 0; i < years.length; i += 2) {
-    const batch = years.slice(i, i + 2);
-    const results = await Promise.all(batch.map(async year => {
-      const stats = await fetchForYear(year);
-      return { year, stats };
-    }));
-    yearData.push(...results);
-    if (i + 2 < years.length) await new Promise(r => setTimeout(r, 600));
+  const debugLog = [];
+  // Run sequentially to avoid rate limits
+  for (const year of years) {
+    const stats = await fetchForYear(year, debugLog);
+    yearData.push({ year, stats });
+    await new Promise(r => setTimeout(r, 400));
   }
 
   const players = {};
@@ -1241,7 +1236,7 @@ app.get('/api/course-history', async (req, res) => {
 
   const payload = { event_id, years, players };
   cache.set(cacheKey, payload, 604800);
-  res.json({ success: true, fromCache: false, ...payload });
+  res.json({ success: true, fromCache: false, debug: debugLog, ...payload });
 });
 
 // MODEL ACCURACY / BACKTESTING
