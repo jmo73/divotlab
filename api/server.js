@@ -909,13 +909,6 @@ app.get('/api/course-fit', async (req, res) => {
         sg_arg:      l24 ? (l24.sg_arg  != null ? +l24.sg_arg.toFixed(3)  : null) : null,
         sg_putt:     l24 ? (l24.sg_putt != null ? +l24.sg_putt.toFixed(3) : null) : null,
         sg_total:    l24 ? (l24.sg_total != null ? +l24.sg_total.toFixed(3): null) : null,
-        // L12 skill breakdown (for trajectory comparison)
-        sg_ott_l12:  l12 ? (l12.sg_ott  != null ? +l12.sg_ott.toFixed(3)  : null) : null,
-        sg_app_l12:  l12 ? (l12.sg_app  != null ? +l12.sg_app.toFixed(3)  : null) : null,
-        sg_arg_l12:  l12 ? (l12.sg_arg  != null ? +l12.sg_arg.toFixed(3)  : null) : null,
-        sg_putt_l12: l12 ? (l12.sg_putt != null ? +l12.sg_putt.toFixed(3) : null) : null,
-        sg_arg_l12:  l12 ? (l12.sg_arg  != null ? +l12.sg_arg.toFixed(3)  : null) : null,
-        sg_putt_l12: l12 ? (l12.sg_putt != null ? +l12.sg_putt.toFixed(3) : null) : null,
         // Form info
         form_blended: formApplied,
         has_full_data: !!(l24 && l24.sg_ott != null && l24.sg_app != null && l24.sg_arg != null && l24.sg_putt != null)
@@ -1146,6 +1139,182 @@ app.get('/api/historical-dfs', async (req, res) => {
     );
     res.json({ success: true, fromCache: result.fromCache, data: result.data });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// ============================================
+// MODEL ACCURACY / BACKTESTING
+// For each completed event this season:
+//   - Pull pre-tournament predictions from archive
+//   - Pull actual finishing positions
+//   - Compute top-N hit rates + calibration bins
+// ============================================
+
+app.get('/api/model-accuracy', async (req, res) => {
+  const cacheKey = 'model-accuracy-2026';
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ success: true, fromCache: true, ...cached });
+
+  try {
+    const [schedule, fieldUpdates] = await Promise.all([
+      fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
+      fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`)
+    ]);
+
+    const fullSchedule = schedule.schedule || [];
+    const currentEventId = String(fieldUpdates.event_id || '');
+
+    // Find completed events (same dedup logic as lab-data)
+    const allCompleted = fullSchedule.filter(e =>
+      e.event_id && e.status === 'completed' && String(e.event_id) !== currentEventId
+    );
+    allCompleted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+    const completedEvents = [];
+    const used = new Set();
+    for (let i = 0; i < allCompleted.length; i++) {
+      if (used.has(allCompleted[i].event_id)) continue;
+      let mainEvent = allCompleted[i];
+      for (let j = i + 1; j < allCompleted.length; j++) {
+        if (used.has(allCompleted[j].event_id)) continue;
+        const daysDiff = Math.abs((new Date(allCompleted[j].start_date) - new Date(allCompleted[i].start_date)) / 86400000);
+        if (daysDiff <= 3) {
+          const iHasWeights = getCourseWeights(allCompleted[i].event_name).matched;
+          const jHasWeights = getCourseWeights(allCompleted[j].event_name).matched;
+          if (jHasWeights && !iHasWeights) mainEvent = allCompleted[j];
+          used.add(allCompleted[i].event_id);
+          used.add(allCompleted[j].event_id);
+          break;
+        }
+      }
+      used.add(mainEvent.event_id);
+      completedEvents.push(mainEvent);
+    }
+    completedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+    const recentEvents = completedEvents.slice(0, 8);
+
+    console.log(`  Model accuracy: analyzing ${recentEvents.length} completed events`);
+
+    function parseFinish(finText) {
+      if (!finText) return 999;
+      const s = String(finText).replace(/[TtCcWwDd]/g, '').replace('MC','').replace('MDF','').trim();
+      if (!s || finText.toString().toUpperCase().match(/^(MC|MDF|WD|DQ|CUT)$/)) return 999;
+      const n = parseInt(s);
+      return isNaN(n) ? 999 : n;
+    }
+
+    // Fetch archive + results for each event, batched
+    const eventResults = [];
+    for (let i = 0; i < recentEvents.length; i += 3) {
+      const batch = recentEvents.slice(i, i + 3);
+      const batchData = await Promise.all(batch.map(async evt => {
+        try {
+          const archiveCacheKey = `archive-event-${evt.event_id}-2026`;
+          let archiveEntry = cache.get(archiveCacheKey);
+          if (!archiveEntry) {
+            const raw = await fetchDataGolfDirect(
+              `/preds/pre-tournament-archive?event_id=${evt.event_id}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`
+            );
+            const preds = raw.baseline_history_fit || raw.baseline || [];
+            archiveEntry = { event_id: evt.event_id, event_name: raw.event_name || evt.event_name, predictions: Array.isArray(preds) ? preds : [] };
+            cache.set(archiveCacheKey, archiveEntry, 604800);
+          }
+
+          const resultsCacheKey = `results-event-${evt.event_id}-2026`;
+          let resultsRaw = cache.get(resultsCacheKey);
+          if (!resultsRaw) {
+            resultsRaw = await fetchDataGolfDirect(
+              `/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`
+            );
+            cache.set(resultsCacheKey, resultsRaw, 604800);
+          }
+
+          const resultsArr = resultsRaw.results || resultsRaw.data || [];
+          const resultMap = {};
+          resultsArr.forEach(r => {
+            const pos = parseFinish(r.fin_text || r.position || r.fin || r.place);
+            resultMap[r.dg_id] = pos;
+          });
+
+          // Find actual winner
+          const winner = resultsArr.find(r => parseFinish(r.fin_text || r.position || r.fin || r.place) === 1);
+          const winnerName = winner ? (winner.player_name || '') : '';
+
+          const preds = archiveEntry.predictions;
+          if (!preds.length) return null;
+
+          // Top 10 by model's top_10 probability
+          const sorted10 = preds.slice().sort((a, b) => (b.top_10 || 0) - (a.top_10 || 0));
+          const top10picks = sorted10.slice(0, 10);
+          const top10hits = top10picks.filter(p => (resultMap[p.dg_id] || 999) <= 10).length;
+
+          const top5picks = sorted10.slice(0, 5);
+          const top5hits = top5picks.filter(p => (resultMap[p.dg_id] || 999) <= 5).length;
+
+          // Did model's #1 win?
+          const modelTop1 = sorted10[0];
+          const modelTop1Won = modelTop1 && (resultMap[modelTop1.dg_id] || 999) === 1;
+          const modelTop1InTop5 = modelTop1 && (resultMap[modelTop1.dg_id] || 999) <= 5;
+
+          // Calibration bins: for each player, group by model top_10 prob bucket
+          const bins = { high: {n:0,h:0}, mid: {n:0,h:0}, low: {n:0,h:0} };
+          preds.forEach(p => {
+            const prob = p.top_10 || 0;
+            const hit = (resultMap[p.dg_id] || 999) <= 10 ? 1 : 0;
+            if (prob >= 0.25)      { bins.high.n++; bins.high.h += hit; }
+            else if (prob >= 0.10) { bins.mid.n++;  bins.mid.h  += hit; }
+            else if (prob >= 0.05) { bins.low.n++;  bins.low.h  += hit; }
+          });
+
+          return {
+            event_name: archiveEntry.event_name || evt.event_name,
+            event_id: evt.event_id,
+            start_date: evt.start_date,
+            winner: winnerName,
+            model_top1: modelTop1 ? modelTop1.player_name : '',
+            model_top1_won: modelTop1Won,
+            model_top1_top5: modelTop1InTop5,
+            top5_picks: 5,
+            top5_hits: top5hits,
+            top10_picks: 10,
+            top10_hits: top10hits,
+            bins
+          };
+        } catch (err) {
+          console.warn(`  ⚠️ Model accuracy: skipped ${evt.event_name}:`, err.message);
+          return null;
+        }
+      }));
+      eventResults.push(...batchData.filter(Boolean));
+      if (i + 3 < recentEvents.length) await new Promise(r => setTimeout(r, 500));
+    }
+
+    // Season totals
+    const season = eventResults.reduce((acc, e) => {
+      acc.events++;
+      acc.top5_picks += e.top5_picks;
+      acc.top5_hits  += e.top5_hits;
+      acc.top10_picks += e.top10_picks;
+      acc.top10_hits  += e.top10_hits;
+      if (e.model_top1_won) acc.top1_wins++;
+      ['high','mid','low'].forEach(b => {
+        acc.bins[b].n += e.bins[b].n;
+        acc.bins[b].h += e.bins[b].h;
+      });
+      return acc;
+    }, { events:0, top5_picks:0, top5_hits:0, top10_picks:0, top10_hits:0, top1_wins:0,
+         bins:{high:{n:0,h:0},mid:{n:0,h:0},low:{n:0,h:0}} });
+
+    const payload = {
+      events: eventResults.sort((a,b) => new Date(b.start_date) - new Date(a.start_date)),
+      season
+    };
+    cache.set(cacheKey, payload, 3600);
+    res.json({ success: true, fromCache: false, ...payload });
+
+  } catch (err) {
+    console.error('Model accuracy error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // ============================================
