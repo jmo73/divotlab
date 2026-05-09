@@ -165,6 +165,34 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .cfap-low{font-family:var(--mono);font-size:8px;color:rgba(201,168,76,0.45);margin-top:3px;}
 .cfap-none{font-size:12px;color:rgba(250,250,250,0.22);padding:2px 0;}
 
+/* ── COURSE HISTORY PANEL ── */
+.cf-history-btn{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,250,250,0.28);background:none;border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:2px 7px;cursor:pointer;margin-top:5px;margin-left:5px;display:inline-block;transition:all .15s;}
+.cf-history-btn:hover{color:rgba(250,250,250,0.7);border-color:rgba(255,255,255,0.2);}
+.cf-history-btn.open{color:var(--gold);border-color:rgba(201,168,76,0.3);}
+.cf-history-panel{display:none;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(201,168,76,0.02);padding:14px 20px 16px;}
+.cfhp-header{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.22);margin-bottom:10px;}
+.cfhp-years{display:flex;gap:10px;flex-wrap:wrap;}
+.cfhp-year{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:9px 14px;min-width:80px;}
+.cfhp-yr{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);margin-bottom:5px;letter-spacing:0.05em;}
+.cfhp-fin{font-family:var(--mono);font-size:17px;font-weight:500;}
+.cfhp-fin.top5{color:var(--green-light);}
+.cfhp-fin.top20{color:var(--gold);}
+.cfhp-fin.mc{color:rgba(250,250,250,0.22);}
+.cfhp-none{font-size:12px;color:rgba(250,250,250,0.22);padding:2px 0;}
+html[data-theme="light"] .cf-history-btn{color:rgba(28,27,24,0.3);border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .cf-history-btn.open{color:#B8960C;border-color:rgba(184,150,12,0.3);}
+html[data-theme="light"] .cf-history-panel{background:rgba(201,168,76,0.02);}
+html[data-theme="light"] .cfhp-year{background:rgba(28,27,24,0.02);border-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .cfhp-yr{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cfhp-fin.top5{color:#1B4D3E;}
+html[data-theme="light"] .cfhp-fin.top20{color:#B8960C;}
+html[data-theme="light"] .cfhp-fin.mc{color:rgba(28,27,24,0.22);}
+
+/* ── LINE MOVEMENT ── */
+.move-badge{font-family:var(--mono);font-size:9px;font-weight:700;margin-left:4px;vertical-align:middle;}
+.move-up{color:var(--green-light);}
+.move-dn{color:var(--red);}
+
 /* ── TOOLTIPS ── */
 .tip{position:relative;display:inline-flex;align-items:center;gap:3px;cursor:help;}
 .tip-icon{font-size:9px;color:rgba(250,250,250,0.3);background:rgba(255,255,255,0.06);border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-style:normal;}
@@ -857,6 +885,9 @@ var muMarket = 'tournament_matchups';
 var muCache = {};
 var muSort = {col:'edge', dir:-1};
 var accDataLoaded = false;
+var courseHistoryData = null;   // null=not loaded, object=loaded
+var oddsSnapshot = {};          // {player_market: amOdds} captured on first load
+var oddsMovement = {};          // {player_market: delta} updated on repoll
 var liveSort = {col:'total', dir:1};   // dir: 1=asc (lower=better for score), -1=desc
 var liveStatsCache = null;
 var livePredCache = null;
@@ -1012,6 +1043,9 @@ async function loadAllData(){
   await loadValueData();       // builds top10OddsMap as side effect
   updateCourseFitOdds();       // patches odds cells without re-rendering
   renderBestBets();            // synthesizes edge × fit after both datasets ready
+  captureOddsSnapshot();       // snapshot current odds for line movement tracking
+  setTimeout(pollOddsRefresh, 15*60*1000); // begin polling for line movement
+  loadCourseHistory();         // pre-fetch course history in background
 }
 
 async function loadCourseFit(){
@@ -1203,6 +1237,98 @@ function sgBarHTML(lbl,val){
 // American odds from decimal — no + prefix (display code adds it)
 function toAm(d){ if(d>=2) return Math.round((d-1)*100); return Math.round(-100/(d-1)); }
 function fmtAm(am){ return am>=0?'+'+am:''+am; }
+function moveBadge(player, market){
+  var delta = oddsMovement[player+'|'+market];
+  if(!delta) return '';
+  return delta>0
+    ? '<span class="move-badge move-up">▲'+(delta>0?'+':'')+delta+'</span>'
+    : '<span class="move-badge move-dn">▼'+delta+'</span>';
+}
+
+// ── COURSE HISTORY ───────────────────────────────────────────────────────────
+async function loadCourseHistory(){
+  if(courseHistoryData !== null) return;
+  courseHistoryData = {};
+  var eventId = courseFitData && courseFitData.tournament && courseFitData.tournament.event_id;
+  if(!eventId) return;
+  try {
+    var res = await fetch(API+'/api/course-history?event_id='+eventId);
+    var d = await res.json();
+    if(d.success) courseHistoryData = d;
+  } catch(e){ console.warn('Course history load failed:', e.message); }
+}
+
+function buildCourseHistoryPanel(playerName){
+  if(!courseHistoryData || !courseHistoryData.players) return '<div class="cfhp-none">No history data available.</div>';
+  var playerHistory = courseHistoryData.players[playerName];
+  if(!playerHistory || !Object.keys(playerHistory).length) return '<div class="cfhp-none">No results at this venue in last 4 seasons.</div>';
+  var years = (courseHistoryData.years || []).slice().sort(function(a,b){return b-a;});
+  var yearCards = years.map(function(yr){
+    var entry = playerHistory[yr];
+    if(!entry) return '<div class="cfhp-year"><div class="cfhp-yr">'+yr+'</div><div class="cfhp-fin mc">—</div></div>';
+    var finCls = entry.finish<=5?'top5':entry.finish<=20?'top20':'mc';
+    return '<div class="cfhp-year"><div class="cfhp-yr">'+yr+'</div><div class="cfhp-fin '+finCls+'">'+entry.fin_text+'</div></div>';
+  }).join('');
+  var eventName = courseHistoryData.event_name || (courseFitData&&courseFitData.tournament&&courseFitData.tournament.course) || 'this venue';
+  return '<div class="cfhp-header">Course History · '+eventName+'</div><div class="cfhp-years">'+yearCards+'</div>';
+}
+
+async function toggleCourseHistory(dgId, playerName, btn){
+  var panel = document.getElementById('cfhp-'+dgId);
+  if(!panel) return;
+  if(panel.style.display !== 'none'){
+    panel.style.display='none'; btn.textContent='History ▾'; btn.classList.remove('open'); return;
+  }
+  if(courseHistoryData === null){ btn.textContent='Loading…'; await loadCourseHistory(); }
+  panel.innerHTML = buildCourseHistoryPanel(playerName);
+  panel.style.display='block'; btn.textContent='History ▴'; btn.classList.add('open');
+}
+
+// ── ODDS SNAPSHOT + LINE MOVEMENT ────────────────────────────────────────────
+function captureOddsSnapshot(){
+  if(Object.keys(oddsSnapshot).length) return; // only capture once
+  valueBetsData.forEach(function(b){ oddsSnapshot[b.player+'|'+b.market] = b.amOdds; });
+}
+
+function computeOddsMovement(freshBets){
+  oddsMovement = {};
+  freshBets.forEach(function(b){
+    var key = b.player+'|'+b.market;
+    var prev = oddsSnapshot[key];
+    if(prev == null) return;
+    var delta = b.amOdds - prev;
+    if(Math.abs(delta) >= 5) oddsMovement[key] = delta;
+  });
+}
+
+async function pollOddsRefresh(){
+  try {
+    var markets = ['top_5','top_10','top_20','win'];
+    var results = await Promise.all(markets.map(function(m){
+      return fetch(API+'/api/betting-odds?tour=pga&market='+m+'&odds_format=decimal').then(function(r){return r.json();});
+    }));
+    var freshBets = [];
+    var books = ['draftkings','fanduel','betmgm','pinnacle','bet365','caesars'];
+    results.forEach(function(r,i){
+      if(!r.success||!r.data||!r.data.odds) return;
+      r.data.odds.forEach(function(p){
+        var dgOdds = p.datagolf&&p.datagolf.baseline_history_fit;
+        if(!dgOdds) return;
+        var bestOdds=0, bestBook='';
+        books.forEach(function(b){ if(p[b]&&p[b]>bestOdds){bestOdds=p[b];bestBook=b;} });
+        if(!bestOdds) return;
+        var amOdds = toAm(bestOdds);
+        freshBets.push({player:p.player_name, market:markets[i], amOdds, bestOdds});
+      });
+    });
+    computeOddsMovement(freshBets);
+    // Re-render value finder with movement data if it's the active tab
+    if(document.getElementById('tab-value').classList.contains('active')){
+      renderValueFinder(valueBetsData, currentVfFilter);
+    }
+  } catch(e){}
+  setTimeout(pollOddsRefresh, 15*60*1000);
+}
 
 function renderCourseFit(d){
   var field = d.field||[];
@@ -1231,15 +1357,18 @@ function renderCourseFit(d){
       : '<div class="odds-num" style="color:rgba(250,250,250,0.2);">—</div><div class="odds-book"></div>';
 
     var expandBtn = p.dg_id ? '<button class="cf-approach-btn" onclick="toggleApproach('+p.dg_id+',this)">Approach ▾</button>' : '';
+    var histBtn = p.dg_id ? '<button class="cf-history-btn" onclick="toggleCourseHistory('+p.dg_id+',\''+p.player_name.replace(/'/g,"\\'")
+      +'\',this)">History ▾</button>' : '';
     html += '<div class="cf-row'+(i<3?' top3':'')+'" data-player="'+p.player_name+'">'+
       '<div class="cf-rank '+rc+'">'+(i+1)+'</div>'+
-      '<div><div class="cf-player">'+p.player_name+'</div>'+(p.country?'<div class="cf-country">'+p.country+'</div>':'')+expandBtn+'</div>'+
+      '<div><div class="cf-player">'+p.player_name+'</div>'+(p.country?'<div class="cf-country">'+p.country+'</div>':'')+expandBtn+histBtn+'</div>'+
       '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
       '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
       '<div class="cf-odds-col">'+oddsHTML+'</div>'+
       '<div><span class="value-badge '+signalCls+'">'+signalBadge+'</span></div>'+
     '</div>';
     if(p.dg_id) html += '<div class="cf-approach-panel" id="cfap-'+p.dg_id+'" style="display:none;"></div>';
+    if(p.dg_id) html += '<div class="cf-history-panel" id="cfhp-'+p.dg_id+'" style="display:none;"></div>';
   });
   html += '</div>';
 
@@ -1414,7 +1543,7 @@ function renderValueFinder(bets, market){
 
     html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'">'+
       '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
-      '<div class="vf-cell gold">'+amStr+'</div>'+
+      '<div class="vf-cell gold">'+amStr+moveBadge(b.player,b.market)+'</div>'+
       '<div class="vf-cell '+(edgeCls?edgeCls:'')+'">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
       '<div class="vf-cell">'+probStr+'</div>'+
       '<div class="vf-cell">'+fitScore+'</div>'+
@@ -1563,6 +1692,26 @@ function runH2H(){
       +'<div style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.22);">Δ'+gapDisplay+' wSG</div>'
     +'</div>'
     +'</div>';
+
+  // ── Course History section ────────────────────────────────────────────────
+  if(courseHistoryData && courseHistoryData.players) {
+    var hA = courseHistoryData.players[nameA];
+    var hB = courseHistoryData.players[nameB];
+    var years = (courseHistoryData.years||[]).slice().sort(function(a,b){return b-a;});
+    if(hA||hB) {
+      function histCell(entry){ if(!entry) return '<span style="color:rgba(250,250,250,0.18);">—</span>'; var fin=entry.finish; var c=fin<=5?'var(--green-light)':fin<=20?'var(--gold)':'rgba(250,250,250,0.3)'; return '<span style="font-family:var(--mono);font-weight:600;color:'+c+';">'+entry.fin_text+'</span>'; }
+      html += '<div style="border-top:1px solid var(--border);padding:16px 24px;">'
+        +'<div style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.22);margin-bottom:12px;">Course History</div>'
+        +'<table style="width:100%;border-collapse:collapse;font-size:12px;">'
+        +'<tr><td style="padding:4px 0;color:rgba(250,250,250,0.28);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.08em;width:120px;">Year</td>'
+        +years.map(function(yr){ return '<td style="padding:4px 8px;text-align:center;font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.25);">'+yr+'</td>'; }).join('')+'</tr>'
+        +'<tr><td style="padding:5px 0;font-size:12px;color:rgba(250,250,250,0.75);">'+nameA.split(',').reverse().join(' ').trim()+'</td>'
+        +years.map(function(yr){ return '<td style="padding:5px 8px;text-align:center;">'+histCell(hA&&hA[yr])+'</td>'; }).join('')+'</tr>'
+        +'<tr><td style="padding:5px 0;font-size:12px;color:rgba(250,250,250,0.75);">'+nameB.split(',').reverse().join(' ').trim()+'</td>'
+        +years.map(function(yr){ return '<td style="padding:5px 8px;text-align:center;">'+histCell(hB&&hB[yr])+'</td>'; }).join('')+'</tr>'
+        +'</table></div>';
+    }
+  }
 
   var result = document.getElementById('h2hResult');
   result.innerHTML = html;

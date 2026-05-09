@@ -1142,6 +1142,66 @@ app.get('/api/historical-dfs', async (req, res) => {
 });
 
 // ============================================
+// ============================================
+// COURSE HISTORY
+// Returns a player-indexed map of results at a
+// given venue over the last 4 seasons.
+// ============================================
+
+function parseFinishNum(finText) {
+  if (!finText) return 999;
+  const s = String(finText).replace(/[Tt]/g, '').trim();
+  if (['MC','MDF','WD','DQ','CUT','DNP'].includes(s.toUpperCase())) return 999;
+  const n = parseInt(s);
+  return isNaN(n) ? 999 : n;
+}
+
+app.get('/api/course-history', async (req, res) => {
+  const { event_id } = req.query;
+  if (!event_id) return res.status(400).json({ success: false, error: 'event_id required' });
+
+  const cacheKey = `course-history-${event_id}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ success: true, fromCache: true, ...cached });
+
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4];
+
+  const yearData = [];
+  for (let i = 0; i < years.length; i += 2) {
+    const batch = years.slice(i, i + 2);
+    const results = await Promise.all(batch.map(async year => {
+      try {
+        const data = await fetchDataGolfDirect(
+          `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+        );
+        return { year, stats: data.event_stats || [] };
+      } catch (e) {
+        return { year, stats: [] };
+      }
+    }));
+    yearData.push(...results);
+    if (i + 2 < years.length) await new Promise(r => setTimeout(r, 500));
+  }
+
+  const players = {};
+  yearData.forEach(({ year, stats }) => {
+    stats.forEach(p => {
+      if (!p.player_name) return;
+      if (!players[p.player_name]) players[p.player_name] = {};
+      players[p.player_name][year] = {
+        fin_text: p.fin_text || '—',
+        finish: parseFinishNum(p.fin_text),
+        made_cut: parseFinishNum(p.fin_text) < 999
+      };
+    });
+  });
+
+  const payload = { event_id, years, players };
+  cache.set(cacheKey, payload, 604800);
+  res.json({ success: true, fromCache: false, ...payload });
+});
+
 // MODEL ACCURACY / BACKTESTING
 // For each completed event this season:
 //   - Pull pre-tournament predictions from archive
