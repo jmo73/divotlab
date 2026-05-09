@@ -1161,6 +1161,7 @@ app.get('/api/course-history', async (req, res) => {
   if (!event_id) return res.status(400).json({ success: false, error: 'event_id required' });
 
   const cacheKey = `course-history-${event_id}`;
+  if (req.query.bust === 'true') cache.del(cacheKey);
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
