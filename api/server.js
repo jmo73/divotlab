@@ -1173,19 +1173,21 @@ app.get('/api/course-history', async (req, res) => {
   const startDate = req.query.start_date || '';
   const startMMDD = startDate.slice(5); // "04-30" from "2026-04-30"
 
-  async function fetchForYear(year, log) {
-    // First: try same event_id directly
+  async function fetchForYear(year) {
+    // Try same event_id directly
     try {
       const data = await fetchDataGolfDirect(
         `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
-      if (stats.length) { log.push(`${year}: same-id hit, ${stats.length} players`); return stats; }
-      log.push(`${year}: same-id empty (${data.message||data.error||'no event_stats'})`);
-    } catch(e) { log.push(`${year}: same-id threw: ${e.message}`); }
+      if (stats.length) return stats;
+    } catch(e) {
+      if (e.message.includes('400')) return null; // plan limit — stop trying earlier years
+    }
 
-    if (!startMMDD) { log.push(`${year}: no start_date, skipping fallback`); return []; }
+    if (!startMMDD) return [];
 
+    // Fallback: match by calendar week in historical schedule
     try {
       const sched = await fetchDataGolfDirect(
         `/get-schedule?tour=pga&season=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
@@ -1197,27 +1199,25 @@ app.get('/api/course-history', async (req, res) => {
         const diff = Math.abs(new Date(e.start_date) - refDate) / 86400000;
         if (diff < bestDiff) { bestDiff = diff; best = e; }
       });
-      log.push(`${year}: schedule has ${events.length} events, best="${best&&best.event_name}" id=${best&&best.event_id} diff=${bestDiff.toFixed(1)}d`);
-      if (!best || bestDiff > 21) { log.push(`${year}: diff too large, skip`); return []; }
+      if (!best || bestDiff > 21) return [];
       await new Promise(r => setTimeout(r, 300));
       const data = await fetchDataGolfDirect(
         `/historical-event-data/events?tour=pga&event_id=${best.event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
-      const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
-      log.push(`${year}: results for "${best.event_name}" → ${stats.length} players (${data.error||data.message||'ok'})`);
-      return stats;
+      return (!data.error && !data.message) ? (data.event_stats || []) : [];
     } catch(e) {
-      log.push(`${year}: fallback threw: ${e.message}`);
+      if (e.message.includes('400')) return null; // plan limit
       return [];
     }
   }
 
   const yearData = [];
-  const debugLog = [];
-  // Run sequentially to avoid rate limits
+  // Run sequentially; stop early if we hit consecutive plan-limit 400s
+  let consecutive400s = 0;
   for (const year of years) {
-    const stats = await fetchForYear(year, debugLog);
-    yearData.push({ year, stats });
+    if (consecutive400s >= 2) break; // plan doesn't support this far back
+    const stats = await fetchForYear(year);
+    if (stats === null) { consecutive400s++; } else { consecutive400s = 0; yearData.push({ year, stats }); }
     await new Promise(r => setTimeout(r, 400));
   }
 
@@ -1234,9 +1234,11 @@ app.get('/api/course-history', async (req, res) => {
     });
   });
 
-  const payload = { event_id, years, players };
+  // Only return years we actually have data for
+  const availableYears = yearData.filter(yd => yd.stats.length > 0).map(yd => yd.year);
+  const payload = { event_id, years: availableYears, players };
   cache.set(cacheKey, payload, 604800);
-  res.json({ success: true, fromCache: false, debug: debugLog, ...payload });
+  res.json({ success: true, fromCache: false, ...payload });
 });
 
 // MODEL ACCURACY / BACKTESTING
