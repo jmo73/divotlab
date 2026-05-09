@@ -1168,40 +1168,43 @@ app.get('/api/course-history', async (req, res) => {
   const currentYear = new Date().getFullYear();
   const years = [currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4];
 
-  // Build keyword set from event_name for fuzzy schedule matching
-  // Strip sponsor words (first word often changes year-to-year) — match on last meaningful word
-  const eventName = req.query.event_name || '';
-  const course = req.query.course || '';
-  const courseKeyword = course.toLowerCase().split(/[\s,]+/).find(w => w.length > 4) || '';
-  const eventKeyword = eventName.toLowerCase().split(/[\s,]+/).filter(w => w.length > 4).slice(-2).join(' ');
+  // Use the event's start_date to find the same-week tournament in historical years.
+  // Sponsored names change (Wells Fargo → Cadillac) but the calendar slot stays fixed.
+  const startDate = req.query.start_date || '';
+  const startMMDD = startDate.slice(5); // "04-30" from "2026-04-30"
 
   async function fetchForYear(year) {
-    // First: try same event_id directly
+    // First: try same event_id directly (works when tournament kept same ID)
     try {
       const data = await fetchDataGolfDirect(
         `/historical-event-data/events?tour=pga&event_id=${event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
-      if (stats.length) { console.log(`  Course history ${event_id}/${year} (same id): ${stats.length}`); return stats; }
+      if (stats.length) { console.log(`  Course history ${year} (same id): ${stats.length} players`); return stats; }
     } catch(e) {}
 
-    // Fallback: search that year's schedule for a matching event
-    if (!eventKeyword && !courseKeyword) return [];
+    // Fallback: find same-week event in historical schedule by date proximity
+    if (!startMMDD) return [];
     try {
       const sched = await fetchDataGolfDirect(
         `/get-schedule?tour=pga&season=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const events = sched.schedule || [];
-      const match = events.find(e => {
-        const en = (e.event_name || '').toLowerCase();
-        const cr = (e.course || e.course_name || '').toLowerCase();
-        return (eventKeyword && en.includes(eventKeyword.split(' ')[0])) ||
-               (courseKeyword && cr.includes(courseKeyword));
+      // Find event whose start_date is within 14 days of the same calendar slot
+      const targetMMDD = startMMDD; // "04-30"
+      const targetDayOfYear = (d => { const p = d.split('-'); return parseInt(p[0])*30 + parseInt(p[1]); })(targetMMDD);
+      let best = null, bestDiff = 999;
+      events.forEach(e => {
+        if (!e.start_date) return;
+        const eMM = e.start_date.slice(5); // "MM-DD"
+        const eDOY = (d => { const p = d.split('-'); return parseInt(p[0])*30 + parseInt(p[1]); })(eMM);
+        const diff = Math.abs(eDOY - targetDayOfYear);
+        if (diff < bestDiff) { bestDiff = diff; best = e; }
       });
-      if (!match) { console.log(`  Course history ${year}: no schedule match`); return []; }
-      console.log(`  Course history ${year}: matched "${match.event_name}" (id ${match.event_id})`);
+      if (!best || bestDiff > 14) { console.log(`  Course history ${year}: no date match (best diff ${bestDiff})`); return []; }
+      console.log(`  Course history ${year}: matched "${best.event_name}" id=${best.event_id} (diff ${bestDiff} days)`);
       const data = await fetchDataGolfDirect(
-        `/historical-event-data/events?tour=pga&event_id=${match.event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
+        `/historical-event-data/events?tour=pga&event_id=${best.event_id}&year=${year}&file_format=json&key=${DATAGOLF_API_KEY}`
       );
       const stats = (!data.error && !data.message) ? (data.event_stats || []) : [];
       console.log(`  Course history ${year}: ${stats.length} players`);
