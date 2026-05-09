@@ -377,6 +377,35 @@ html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 
+/* ── BEST BETS CARD ── */
+.bb-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
+.bb-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.bb-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.1);border:1px solid rgba(91,191,133,0.2);padding:4px 12px;border-radius:20px;}
+.bb-sub{font-size:12px;color:rgba(250,250,250,0.25);}
+.bb-grid{display:flex;gap:12px;flex-wrap:nowrap;}
+.bb-card{background:var(--black-card);border:1px solid rgba(91,191,133,0.15);border-radius:10px;padding:16px;flex:1 1 0;min-width:0;position:relative;}
+.bb-card.watch{border-color:rgba(201,168,76,0.2);}
+.bb-signal{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:3px;}
+.bb-signal.strong{background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
+.bb-signal.watch{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.bb-player{font-size:15px;font-weight:600;margin-bottom:5px;padding-right:60px;}
+.bb-meta{display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.bb-market{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(90,143,168,0.15);border:1px solid rgba(90,143,168,0.25);color:var(--blue-mid);padding:3px 7px;border-radius:4px;}
+.bb-odds{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--gold);}
+.bb-book{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);}
+.bb-stats{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);}
+.bb-stat{display:flex;flex-direction:column;gap:2px;}
+.bb-stat-val{font-family:var(--mono);font-size:13px;font-weight:500;}
+.bb-stat-val.green{color:var(--green-light);}
+.bb-stat-val.gold{color:var(--gold);}
+.bb-stat-lbl{font-family:var(--mono);font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,250,250,0.22);}
+html[data-theme="light"] .bb-wrap{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .bb-card{background:#FFFFFF;border-color:rgba(27,77,62,0.2);}
+html[data-theme="light"] .bb-card.watch{border-color:rgba(184,150,12,0.25);}
+html[data-theme="light"] .bb-player{color:#1C1B18;}
+html[data-theme="light"] .bb-book{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .bb-stat-lbl{color:rgba(28,27,24,0.3);}
+
 /* ── PICKS CARD ── */
 .picks-card-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
 .picks-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
@@ -561,6 +590,12 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
   .acc-table-head,.acc-row{grid-template-columns:1fr 110px 70px !important;}
   .acc-table-head .acc-th:nth-child(n+4),.acc-row>*:nth-child(n+4){display:none !important;}
 
+  /* Best Bets */
+  .bb-wrap{padding:16px;}
+  .bb-grid{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
+  .bb-grid::-webkit-scrollbar{display:none;}
+  .bb-card{flex:0 0 85%;scroll-snap-align:start;}
+
   /* Picks Card — horizontal scroll snap carousel */
   .picks-card-wrap{padding:16px 16px 12px;}
   .picks-grid{overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
@@ -685,6 +720,9 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
     <div class="picks-grid" id="picksGrid"></div>
     <button class="picks-expand-btn" id="picksExpandBtn" onclick="togglePicksExpand()">Show all ↓</button>
   </div>
+
+  <!-- Best Bets Card -->
+  <div id="bestBetsCard" style="display:none;"></div>
 
   <!-- Tabs -->
   <div class="pro-tabs">
@@ -883,11 +921,68 @@ function switchTab(id, btn){
   }
 }
 
+// ── BEST BETS ─────────────────────────────────────────────────────────────────
+function renderBestBets(){
+  var card = document.getElementById('bestBetsCard');
+  if(!card||!valueBetsData.length||!courseFitData||!courseFitData.field) return;
+
+  var cfMap = {};
+  courseFitData.field.forEach(function(p){ cfMap[p.player_name] = p; });
+
+  var marketLabel = {top_5:'Top 5',top_10:'Top 10',top_20:'Top 20',win:'Outright'};
+  var marketBadgeCls = {top_5:'bet-top5',top_10:'bet-top10',top_20:'bet-top20',win:'bet-win'};
+
+  // Score each bet: edge weighted up by course fit
+  var scored = valueBetsData
+    .filter(function(b){ return b.edgePct>=5 && b.bestOdds<=15; })
+    .map(function(b){
+      var cf = cfMap[b.player];
+      var fitScore = cf ? (cf.fitScore||0) : 0;
+      var fitMult = fitScore>=80?1.5:fitScore>=65?1.25:fitScore>=50?1.0:0.75;
+      return { b:b, fitScore:fitScore, composite: b.edgePct * fitMult };
+    })
+    .sort(function(a,b){ return b.composite-a.composite; })
+    .slice(0,4);
+
+  if(!scored.length){ card.style.display='none'; return; }
+
+  var html = '<div class="bb-wrap"><div class="bb-header">'
+    +'<span class="bb-badge">Best Bets</span>'
+    +'<span class="bb-sub">Model edge × course fit &nbsp;·&nbsp; '+courseFitData.tournament.event_name+'</span>'
+    +'</div><div class="bb-grid">';
+
+  scored.forEach(function(item){
+    var b = item.b;
+    var isStrong = b.edgePct>=10 && item.fitScore>=65;
+    var signalLbl = isStrong?'Strong':'Watch';
+    var signalCls = isStrong?'strong':'watch';
+    html += '<div class="bb-card'+(isStrong?'':' watch')+'">'
+      +'<div class="bb-signal '+signalCls+'">'+signalLbl+'</div>'
+      +'<div class="bb-player">'+b.player+'</div>'
+      +'<div class="bb-meta">'
+        +'<span class="bb-market">'+marketLabel[b.market]+'</span>'
+        +'<span class="bb-odds">'+fmtAm(b.amOdds)+'</span>'
+        +'<span class="bb-book">'+b.bestBook.replace('draftkings','DK').replace('fanduel','FD').replace('betmgm','MGM').replace('bet365','B365').replace('caesars','CZR').replace('pinnacle','PIN').toUpperCase()+'</span>'
+      +'</div>'
+      +'<div class="bb-stats">'
+        +'<div class="bb-stat"><div class="bb-stat-val green">+'+(b.edgePct).toFixed(1)+'%</div><div class="bb-stat-lbl">Edge</div></div>'
+        +'<div class="bb-stat"><div class="bb-stat-val gold">'+(item.fitScore||'—')+'</div><div class="bb-stat-lbl">Fit Score</div></div>'
+        +'<div class="bb-stat"><div class="bb-stat-val">'+(b.dgProbPct||'—')+'%</div><div class="bb-stat-lbl">Model Prob</div></div>'
+      +'</div>'
+      +'</div>';
+  });
+
+  html += '</div></div>';
+  card.innerHTML = html;
+  card.style.display = 'block';
+}
+
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
 async function loadAllData(){
   await loadCourseFit();       // renders table with — odds initially
   await loadValueData();       // builds top10OddsMap as side effect
   updateCourseFitOdds();       // patches odds cells without re-rendering
+  renderBestBets();            // synthesizes edge × fit after both datasets ready
 }
 
 async function loadCourseFit(){
