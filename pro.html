@@ -379,6 +379,7 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 
 /* ── BEST BETS CARD ── */
 .bb-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
+.bb-wrap.collapsed .bb-header{margin-bottom:0;}
 .bb-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .bb-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.1);border:1px solid rgba(91,191,133,0.2);padding:4px 12px;border-radius:20px;}
 .bb-sub{font-size:12px;color:rgba(250,250,250,0.25);}
@@ -406,9 +407,20 @@ html[data-theme="light"] .bb-player{color:#1C1B18;}
 html[data-theme="light"] .bb-book{color:rgba(28,27,24,0.35);}
 html[data-theme="light"] .bb-stat-lbl{color:rgba(28,27,24,0.3);}
 
+/* ── COLLAPSIBLE CARD SHARED ── */
+.card-header-toggle{cursor:pointer;user-select:none;}
+.card-header-toggle:hover .card-chevron{border-color:rgba(250,250,250,0.55);}
+.card-chevron{width:8px;height:8px;border-right:1.5px solid rgba(250,250,250,0.3);border-bottom:1.5px solid rgba(250,250,250,0.3);transform:rotate(45deg);transition:transform .22s ease,border-color .15s;flex-shrink:0;margin-left:auto;}
+.card-chevron.up{transform:rotate(-135deg);}
+.card-body{overflow:hidden;transition:opacity .2s;}
+.card-body.hidden{display:none;}
+html[data-theme="light"] .card-chevron{border-color:rgba(28,27,24,0.28);}
+html[data-theme="light"] .card-header-toggle:hover .card-chevron{border-color:rgba(28,27,24,0.55);}
+
 /* ── PICKS CARD ── */
 .picks-card-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
 .picks-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.picks-card-wrap.collapsed .picks-card-header{margin-bottom:0;}
 .picks-card-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:20px;}
 .picks-card-tourney{font-size:12px;color:rgba(250,250,250,0.3);}
 .picks-grid{display:flex;flex-wrap:nowrap;gap:12px;}
@@ -598,6 +610,7 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 
   /* Picks Card — horizontal scroll snap carousel */
   .picks-card-wrap{padding:16px 16px 12px;}
+  .bb-wrap{padding:16px;}
   .picks-grid{overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
   .picks-grid::-webkit-scrollbar{display:none;}
   .pick-card{flex:0 0 82%;min-width:0;scroll-snap-align:start;}
@@ -713,12 +726,15 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 
   <!-- This Week's Card -->
   <div class="picks-card-wrap" id="picksCardWrap" style="display:none;">
-    <div class="picks-card-header">
+    <div class="picks-card-header card-header-toggle" onclick="togglePicksCard()">
       <span class="picks-card-badge">This Week's Card</span>
       <span class="picks-card-tourney" id="picksCardTourney"></span>
+      <span class="card-chevron" id="picksChevron"></span>
     </div>
-    <div class="picks-grid" id="picksGrid"></div>
-    <button class="picks-expand-btn" id="picksExpandBtn" onclick="togglePicksExpand()">Show all ↓</button>
+    <div class="card-body" id="picksBody">
+      <div class="picks-grid" id="picksGrid"></div>
+      <button class="picks-expand-btn" id="picksExpandBtn" onclick="togglePicksExpand(); event.stopPropagation();">Show all ↓</button>
+    </div>
   </div>
 
   <!-- Best Bets Card -->
@@ -934,7 +950,7 @@ function renderBestBets(){
 
   // Score each bet: edge weighted up by course fit
   var scored = valueBetsData
-    .filter(function(b){ return b.edgePct>=5 && b.bestOdds<=15; })
+    .filter(function(b){ return b.edgePct>=5 && b.bestOdds<=15 && b.dgProbPct>=20; })
     .map(function(b){
       var cf = cfMap[b.player];
       var fitScore = cf ? (cf.fitScore||0) : 0;
@@ -946,10 +962,11 @@ function renderBestBets(){
 
   if(!scored.length){ card.style.display='none'; return; }
 
-  var html = '<div class="bb-wrap"><div class="bb-header">'
+  var html = '<div class="bb-wrap" id="bbWrap"><div class="bb-header card-header-toggle" onclick="toggleBestBets()">'
     +'<span class="bb-badge">Best Bets</span>'
     +'<span class="bb-sub">Model edge × course fit &nbsp;·&nbsp; '+courseFitData.tournament.event_name+'</span>'
-    +'</div><div class="bb-grid">';
+    +'<span class="card-chevron" id="bbChevron"></span>'
+    +'</div><div class="card-body" id="bbBody"><div class="bb-grid">';
 
   scored.forEach(function(item){
     var b = item.b;
@@ -972,7 +989,7 @@ function renderBestBets(){
       +'</div>';
   });
 
-  html += '</div></div>';
+  html += '</div></div></div>';
   card.innerHTML = html;
   card.style.display = 'block';
 }
@@ -1948,6 +1965,26 @@ function renderPicksCard(d){
   var expandBtn = document.getElementById('picksExpandBtn');
   if(expandBtn) expandBtn.textContent = 'Show all '+d.picks.length+' ↓';
   document.getElementById('picksCardWrap').style.display='block';
+}
+
+function togglePicksCard(){
+  var wrap = document.getElementById('picksCardWrap');
+  var body = document.getElementById('picksBody');
+  var chev = document.getElementById('picksChevron');
+  if(!wrap||!body||!chev) return;
+  var collapsed = body.classList.toggle('hidden');
+  wrap.classList.toggle('collapsed', collapsed);
+  chev.classList.toggle('up', collapsed);
+}
+
+function toggleBestBets(){
+  var wrap = document.getElementById('bbWrap');
+  var body = document.getElementById('bbBody');
+  var chev = document.getElementById('bbChevron');
+  if(!wrap||!body||!chev) return;
+  var collapsed = body.classList.toggle('hidden');
+  wrap.classList.toggle('collapsed', collapsed);
+  chev.classList.toggle('up', collapsed);
 }
 
 function togglePicksExpand(){
