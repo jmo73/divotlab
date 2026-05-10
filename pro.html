@@ -669,6 +669,10 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 .dfs-builder-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.05);}
 .dfs-builder-totals{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.3);}
 .dfs-builder-totals strong{color:var(--green-light);font-size:15px;}
+.dfs-builder-hint{font-size:11px;color:rgba(250,250,250,0.2);line-height:1.55;margin-top:4px;max-width:380px;}
+.dfs-builder-hint strong{color:rgba(250,250,250,0.38);font-weight:600;}
+html[data-theme="light"] .dfs-builder-hint{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .dfs-builder-hint strong{color:rgba(28,27,24,0.5);}
 .dfs-builder-actions{display:flex;gap:6px;}
 .dfs-act-btn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.06em;padding:8px 16px;border-radius:5px;border:1px solid rgba(255,255,255,0.13);background:none;color:rgba(250,250,250,0.45);cursor:pointer;transition:all .18s;}
 .dfs-act-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.28);}
@@ -779,6 +783,7 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   .dfs-legend{display:none;}
   .dfs-stacks-wrap{grid-template-columns:1fr;}
   .dfs-builder-footer{flex-direction:column;gap:10px;align-items:stretch;}
+  .dfs-builder-hint{max-width:100%;}
   .dfs-builder-actions{justify-content:stretch;}
   .dfs-act-btn{flex:1;}
 
@@ -1056,11 +1061,14 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
       <div class="card-body hidden" id="dfsBuilderBody">
         <div class="dfs-slots-grid" id="dfsSlots"></div>
         <div class="dfs-builder-footer">
-          <div class="dfs-builder-totals" id="dfsPanelTotals" style="visibility:hidden;">
-            <span>Total projected: </span><strong id="dfsTotalPts">—</strong>
+          <div>
+            <div class="dfs-builder-totals" id="dfsPanelTotals" style="visibility:hidden;">
+              <span>Total projected: </span><strong id="dfsTotalPts">—</strong>
+            </div>
+            <div class="dfs-builder-hint">Click players to pick, then <strong>Optimize</strong> to complete the highest-value lineup. Already picked players are locked in — Optimize fills the remaining slots around them.</div>
           </div>
           <div class="dfs-builder-actions">
-            <button class="dfs-act-btn primary" onclick="generateLineup()">Auto-fill →</button>
+            <button class="dfs-act-btn primary" onclick="generateLineup()">Optimize →</button>
             <button class="dfs-act-btn" onclick="resetLineup()">Clear all</button>
             <button class="dfs-act-btn" id="dfsCopyBtn" onclick="copyLineup()" style="display:none;">Copy lineup</button>
           </div>
