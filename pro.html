@@ -596,6 +596,58 @@ html[data-theme="light"] .acc-calib-lbl{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .acc-calib-bar-wrap{background:rgba(28,27,24,0.08);}
 html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 
+/* ── DFS ── */
+.dfs-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.dfs-site-btns,.dfs-mode-btns{display:flex;gap:4px;}
+.dfs-site-btn,.dfs-mode-btn{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.08em;padding:7px 14px;border-radius:5px;border:1px solid rgba(255,255,255,0.1);background:none;color:rgba(250,250,250,0.4);cursor:pointer;transition:all .18s;}
+.dfs-site-btn:hover,.dfs-mode-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2);}
+.dfs-site-btn.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.dfs-mode-btn.active{background:rgba(90,143,168,0.1);border-color:rgba(90,143,168,0.25);color:var(--blue-mid);}
+.dfs-updated{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.2);margin-left:auto;}
+.dfs-legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.dfs-legend-item{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.28);display:flex;align-items:center;gap:6px;}
+.dfs-sig-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dfs-sig-dot.strong{background:var(--green-light);}
+.dfs-sig-dot.gpp{background:var(--gold);}
+.dfs-sig-dot.value{background:var(--blue-mid);}
+.dfs-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.dfs-table-head{display:grid;grid-template-columns:1fr 90px 90px 72px 90px 72px 64px 80px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.dfs-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.dfs-th.sorted{color:var(--gold)!important;}
+.dfs-th[onclick]{cursor:pointer;}
+.dfs-th[onclick]:hover{color:rgba(250,250,250,0.6);}
+.dfs-row{display:grid;grid-template-columns:1fr 90px 90px 72px 90px 72px 64px 80px;padding:11px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.dfs-row:hover{background:rgba(255,255,255,0.02);}
+.dfs-row:last-child{border-bottom:none;}
+.dfs-row.signal-strong{background:rgba(91,191,133,0.03);}
+.dfs-player{font-size:13px;font-weight:600;color:rgba(250,250,250,0.88);}
+.dfs-wave{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.22);margin-top:2px;}
+.dfs-val{font-family:var(--mono);font-size:12px;color:rgba(250,250,250,0.6);}
+.dfs-val.green{color:var(--green-light);}
+.dfs-val.gold{color:var(--gold);}
+.dfs-val.dim{color:rgba(250,250,250,0.22);}
+.dfs-salary{font-family:var(--mono);font-size:13px;font-weight:600;color:rgba(250,250,250,0.7);}
+.dfs-pts{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--white);}
+.dfs-pts-sub{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.22);margin-top:1px;}
+.dfs-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:4px;overflow:hidden;}
+.dfs-bar-fill{height:100%;border-radius:2px;background:var(--green-light);}
+.dfs-signal-badge{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:4px;}
+.dsig-strong{background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
+.dsig-gpp{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.dsig-value{background:rgba(90,143,168,0.1);color:var(--blue-mid);border:1px solid rgba(90,143,168,0.2);}
+.dsig-none{background:rgba(255,255,255,0.03);color:rgba(250,250,250,0.2);border:1px solid rgba(255,255,255,0.06);}
+.dfs-empty{padding:60px 20px;text-align:center;color:rgba(250,250,250,0.28);font-size:13px;}
+html[data-theme="light"] .dfs-site-btn,.dfs-mode-btn{border-color:rgba(28,27,24,0.1);color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .dfs-site-btn.active{background:rgba(184,150,12,0.08);border-color:rgba(184,150,12,0.25);color:#B8960C;}
+html[data-theme="light"] .dfs-mode-btn.active{background:rgba(44,95,124,0.08);border-color:rgba(44,95,124,0.2);color:#2C5F7C;}
+html[data-theme="light"] .dfs-table-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .dfs-table-head{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .dfs-th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .dfs-row{border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .dfs-player{color:#1C1B18;}
+html[data-theme="light"] .dfs-salary{color:rgba(28,27,24,0.7);}
+html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28,27,24,0.25);border-color:rgba(28,27,24,0.08);}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px;}
@@ -650,6 +702,12 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
   .acc-row>*:nth-child(2),.acc-row>*:nth-child(3),.acc-row>*:nth-child(4){display:none !important;}
   .acc-table-head .acc-th:nth-child(5),.acc-table-head .acc-th:nth-child(6),
   .acc-row>*:nth-child(5),.acc-row>*:nth-child(6){display:block !important;}
+
+  /* DFS — Player + Proj Pts + Salary on mobile */
+  .dfs-table-head,.dfs-row{grid-template-columns:1fr 80px 80px !important;}
+  .dfs-table-head .dfs-th:nth-child(n+4),.dfs-row>*:nth-child(n+4){display:none !important;}
+  .dfs-toolbar{gap:8px;}
+  .dfs-legend{display:none;}
 
   /* Best Bets */
   .bb-wrap{padding:16px;}
@@ -810,6 +868,7 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
     <button class="pro-tab" onclick="switchTab('live',this)">Live</button>
     <button class="pro-tab" onclick="switchTab('matchup',this)">Matchups</button>
     <button class="pro-tab" onclick="switchTab('accuracy',this)">Track Record</button>
+    <button class="pro-tab" onclick="switchTab('dfs',this)">DFS</button>
   </div>
 
   <!-- Tab 1: Course Fit -->
@@ -889,6 +948,30 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
     <div id="accContent" style="display:none;"></div>
   </div>
 
+  <!-- Tab 7: DFS -->
+  <div class="tab-content" id="tab-dfs">
+    <div class="dfs-toolbar">
+      <div class="dfs-site-btns">
+        <button class="dfs-site-btn active" onclick="switchDfsSite('draftkings',this)">DraftKings</button>
+        <button class="dfs-site-btn" onclick="switchDfsSite('fanduel',this)">FanDuel</button>
+      </div>
+      <div class="dfs-mode-btns">
+        <button class="dfs-mode-btn active" onclick="switchDfsMode('all',this)">All</button>
+        <button class="dfs-mode-btn" onclick="switchDfsMode('cash',this)">Cash</button>
+        <button class="dfs-mode-btn" onclick="switchDfsMode('gpp',this)">GPP</button>
+        <button class="dfs-mode-btn" onclick="switchDfsMode('value',this)">Value</button>
+      </div>
+      <span class="dfs-updated" id="dfsUpdated"></span>
+    </div>
+    <div class="dfs-legend">
+      <span class="dfs-legend-item"><span class="dfs-sig-dot strong"></span>Strong — high proj pts + course fit + value</span>
+      <span class="dfs-legend-item"><span class="dfs-sig-dot gpp"></span>GPP — low ownership + high ceiling</span>
+      <span class="dfs-legend-item"><span class="dfs-sig-dot value"></span>Value — underpriced salary</span>
+    </div>
+    <div id="dfsLoading" class="loading-msg"><div class="spin"></div><br>Loading DFS projections…</div>
+    <div id="dfsTable" style="display:none;"></div>
+  </div>
+
   <div class="pro-disclaimer">
     <strong style="color:rgba(250,250,250,0.25);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
   </div>
@@ -909,6 +992,10 @@ var muMarket = 'tournament_matchups';
 var muCache = {};
 var muSort = {col:'edge', dir:-1};
 var accDataLoaded = false;
+var dfsData = {};        // {draftkings: [...], fanduel: [...]}
+var dfsSite = 'draftkings';
+var dfsMode = 'all';
+var dfsSort = {col:'pts', dir:-1};
 var courseHistoryData = null;   // null=not loaded, object=loaded
 var oddsSnapshot = {};          // {player_market: amOdds} captured on first load
 var oddsMovement = {};          // {player_market: delta} updated on repoll
@@ -1077,6 +1164,9 @@ function switchTab(id, btn){
   }
   if(id==='accuracy' && !accDataLoaded){
     loadAccuracyData();
+  }
+  if(id==='dfs' && !dfsData[dfsSite]){
+    loadDfsData(dfsSite);
   }
 }
 
@@ -2036,6 +2126,162 @@ function renderMatchups(data, market){
     });
   }
 
+  html += '</div>';
+  loadEl.style.display='none';
+  tableEl.innerHTML=html;
+  tableEl.style.display='block';
+}
+
+// ── DFS ──────────────────────────────────────────────────────────────────────
+async function loadDfsData(site){
+  var loadEl = document.getElementById('dfsLoading');
+  var tableEl = document.getElementById('dfsTable');
+  loadEl.style.display='block'; tableEl.style.display='none';
+  try {
+    var res = await fetch(API+'/api/fantasy-projections?tour=pga&site='+site+'&slate=main');
+    var d = await res.json();
+    if(!d.success) throw new Error(d.error);
+    dfsData[site] = d.data;
+    if(dfsSite===site) renderDfs();
+  } catch(e){
+    loadEl.innerHTML='<div style="color:rgba(250,250,250,0.3);font-size:13px;padding:40px 20px;">Could not load DFS data. '+e.message+'</div>';
+  }
+}
+
+function switchDfsSite(site, btn){
+  dfsSite = site;
+  document.querySelectorAll('.dfs-site-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  if(dfsData[site]) renderDfs();
+  else loadDfsData(site);
+}
+
+function switchDfsMode(mode, btn){
+  dfsMode = mode;
+  document.querySelectorAll('.dfs-mode-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderDfs();
+}
+
+function sortDfs(col){
+  if(dfsSort.col===col) dfsSort.dir*=-1; else {dfsSort.col=col; dfsSort.dir=-1;}
+  renderDfs();
+}
+
+function renderDfs(){
+  var loadEl = document.getElementById('dfsLoading');
+  var tableEl = document.getElementById('dfsTable');
+  var raw = dfsData[dfsSite];
+  if(!raw || !raw.projections) return;
+
+  var players = raw.projections.slice();
+
+  // Update timestamp
+  var upd = document.getElementById('dfsUpdated');
+  if(upd && raw.last_updated) upd.textContent = 'Updated: '+raw.last_updated.replace(' UTC','');
+
+  // Build course-fit lookup
+  var cfMap = {};
+  if(courseFitData && courseFitData.field){
+    courseFitData.field.forEach(function(p){ cfMap[p.dg_id] = p.fitScore; });
+  }
+
+  // Compute median proj_pts for signal thresholds
+  var sorted = players.slice().sort(function(a,b){return b.proj_points_total-a.proj_points_total;});
+  var medIdx = Math.floor(sorted.length/2);
+  var medPts = sorted[medIdx] ? sorted[medIdx].proj_points_total : 60;
+  var maxPts = sorted[0] ? sorted[0].proj_points_total : 100;
+
+  // Compute signal for each player
+  players = players.map(function(p){
+    var fit = cfMap[p.dg_id] != null ? cfMap[p.dg_id] : null;
+    var isValuePlay = p.value >= 1.0;
+    var isHighPts = p.proj_points_total >= medPts;
+    var isLowOwn = p.proj_ownership <= 15;
+    var isHighCeiling = p.std_dev >= 22;
+    var isGoodFit = fit != null && fit >= 65;
+    var signal;
+    if(isHighPts && isGoodFit && isValuePlay) signal = 'strong';
+    else if(isLowOwn && isHighCeiling && isHighPts) signal = 'gpp';
+    else if(isValuePlay && p.value >= 1.1) signal = 'value';
+    else signal = 'none';
+    return Object.assign({}, p, {fit:fit, signal:signal});
+  });
+
+  // Filter by mode
+  if(dfsMode==='cash') players = players.filter(function(p){return p.std_dev<=22&&p.proj_points_total>=medPts;});
+  else if(dfsMode==='gpp') players = players.filter(function(p){return p.proj_ownership<=20||p.std_dev>=22;});
+  else if(dfsMode==='value') players = players.filter(function(p){return p.value>=1.0;});
+
+  // Sort
+  var colMap = {
+    player: function(p){return p.player_name;},
+    salary: function(p){return p.salary||0;},
+    pts: function(p){return p.proj_points_total||0;},
+    value: function(p){return p.value||0;},
+    own: function(p){return p.proj_ownership||0;},
+    ceil: function(p){return p.std_dev||0;},
+    fit: function(p){return p.fit!=null?p.fit:-1;}
+  };
+  var sorter = colMap[dfsSort.col] || colMap.pts;
+  players.sort(function(a,b){
+    if(dfsSort.col==='player') return dfsSort.dir*(sorter(a)<sorter(b)?-1:sorter(a)>sorter(b)?1:0);
+    return dfsSort.dir*(sorter(a)-sorter(b));
+  });
+
+  function dfsThSort(label, col, tipText){
+    var isActive = dfsSort.col===col;
+    var arrow = isActive?(dfsSort.dir===-1?' ↓':' ↑'):'';
+    return '<span class="dfs-th'+(isActive?' sorted':'')+'" onclick="sortDfs(\''+col+'\')">'
+      +tip(label+arrow, tipText||label, false)+'</span>';
+  }
+
+  var isFD = dfsSite==='fanduel';
+  var currency = isFD ? '$' : '$';
+
+  var html = '<div class="dfs-table-wrap"><div class="dfs-table-head">'
+    +dfsThSort('Player','player','Player name — sort alphabetically')
+    +dfsThSort('Salary','salary','DFS salary — '+( isFD?'FanDuel $35k budget':'DraftKings $50k budget'))
+    +dfsThSort('Proj Pts','pts','Projected total fantasy points — scoring + finish position bonus')
+    +dfsThSort('Value','value','Salary efficiency — values above 1.0 are underpriced relative to projections')
+    +dfsThSort('Ownership','own','Projected ownership % — lower = more tournament leverage')
+    +dfsThSort('Ceiling','ceil','Standard deviation — higher = more volatile, higher upside for GPP')
+    +dfsThSort('Fit','fit','Course-fit score (0–100) — from the Divot Lab model for this week\'s venue',true)
+    +'<span class="dfs-th">Signal</span>'
+    +'</div>';
+
+  var signalLabels = {strong:'Strong',gpp:'GPP',value:'Value',none:'—'};
+  var signalCls = {strong:'dsig-strong',gpp:'dsig-gpp',value:'dsig-value',none:'dsig-none'};
+
+  if(!players.length){
+    html += '<div class="dfs-empty">No players match the current filter.</div>';
+  } else {
+    players.forEach(function(p){
+      var name = p.player_name.split(',').reverse().join(' ').trim();
+      var wave = p.early_late_wave===1?'AM wave':'PM wave';
+      var salary = currency+(p.salary||0).toLocaleString();
+      var pts = (p.proj_points_total||0).toFixed(1);
+      var ptsSub = 'Scr '+(p.proj_points_scoring||0).toFixed(1)+' + Fin '+(p.proj_points_finish||0).toFixed(1);
+      var valStr = (p.value||0).toFixed(2);
+      var valCls = p.value>=1.1?'green':p.value>=1.0?'gold':'dim';
+      var ownStr = (p.proj_ownership||0).toFixed(1)+'%';
+      var ownCls = p.proj_ownership<=10?'green':p.proj_ownership>=30?'dim':'';
+      var ceilStr = (p.std_dev||0).toFixed(1);
+      var fitStr = p.fit!=null?p.fit:'—';
+      var fitCls = p.fit>=80?'green':p.fit>=65?'gold':'dim';
+      var barPct = Math.round((p.proj_points_total/maxPts)*100);
+      html += '<div class="dfs-row'+(p.signal==='strong'?' signal-strong':'')+'">'
+        +'<div><div class="dfs-player">'+name+'</div><div class="dfs-wave">'+wave+' &nbsp;·&nbsp; '+p.r1_teetime+'</div></div>'
+        +'<div class="dfs-salary">'+salary+'</div>'
+        +'<div><div class="dfs-pts">'+pts+'</div><div class="dfs-pts-sub">'+ptsSub+'</div><div class="dfs-bar"><div class="dfs-bar-fill" style="width:'+barPct+'%"></div></div></div>'
+        +'<div class="dfs-val '+valCls+'">'+valStr+'</div>'
+        +'<div class="dfs-val '+ownCls+'">'+ownStr+'</div>'
+        +'<div class="dfs-val">'+ceilStr+'</div>'
+        +'<div class="dfs-val '+fitCls+'">'+fitStr+'</div>'
+        +'<div><span class="dfs-signal-badge '+signalCls[p.signal]+'">'+signalLabels[p.signal]+'</span></div>'
+        +'</div>';
+    });
+  }
   html += '</div>';
   loadEl.style.display='none';
   tableEl.innerHTML=html;
