@@ -2537,10 +2537,7 @@ function renderDfs(){
   // Render stacks from all players (not filtered)
   renderStacks(allPlayers);
 
-  // Show optimizer panel
-  var optWrap = document.getElementById('dfsOptWrap');
-  if(optWrap) optWrap.style.display='block';
-  renderLineupPanel();
+  updateLineupPanel();
 
   var players = allPlayers.slice();
   if(dfsMode==='cash') players=players.filter(function(p){return p.std_dev<=22&&p.proj_points_total>=medPts;});
