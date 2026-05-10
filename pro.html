@@ -71,6 +71,23 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .gate-error.show{display:block;}
 .gate-note{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.6;}
 .gate-note a{color:rgba(201,168,76,0.5);text-decoration:underline;}
+.gate-divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px;color:rgba(250,250,250,0.18);font-size:12px;}
+.gate-divider::before,.gate-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
+.trial-btn{width:100%;background:none;border:1.5px solid var(--green-light);color:var(--green-light);border-radius:8px;padding:13px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:0.02em;margin-bottom:8px;}
+.trial-btn:hover{background:rgba(91,191,133,0.08);transform:translateY(-1px);}
+.trial-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.trial-note{font-size:11px;color:rgba(250,250,250,0.22);text-align:center;margin:0;}
+.trial-offer{display:none;}
+.trial-offer.show{display:block;}
+.trial-chip{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);padding:2px 8px;border-radius:3px;margin-left:6px;}
+.trial-expired-msg{font-size:13px;color:var(--gold);margin-top:8px;display:none;}
+.trial-expired-msg.show{display:block;}
+html[data-theme="light"] .gate-divider{color:rgba(28,27,24,0.28);}
+html[data-theme="light"] .gate-divider::before,.gate-divider::after{background:rgba(28,27,24,0.08);}
+html[data-theme="light"] .trial-btn{border-color:#1B4D3E;color:#1B4D3E;}
+html[data-theme="light"] .trial-btn:hover{background:rgba(27,77,62,0.06);}
+html[data-theme="light"] .trial-note{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3E;border-color:rgba(27,77,62,0.2);}
 
 /* ── PRO APP ── */
 #proApp{display:none;padding-top:64px;min-height:100vh;}
@@ -725,7 +742,7 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
   <div class="gate-card">
     <div class="gate-badge">Lab Notes Pro</div>
     <h1 class="gate-title">Your analytics hub.</h1>
-    <p class="gate-sub">Enter the email address you subscribed with to access your Pro content.</p>
+    <p class="gate-sub">Enter your email to access your Pro dashboard.</p>
     <ul class="gate-perks">
       <li>Full course-fit rankings for every player in the field — with value flags</li>
       <li>Value finder: model edge crossed with course-fit for every bet type</li>
@@ -735,8 +752,14 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
       <input type="email" id="gateEmail" class="gate-input" placeholder="your@email.com" autocomplete="email">
       <button class="gate-btn" id="gateBtn" onclick="verifyEmail()">Access Pro →</button>
     </div>
-    <div class="gate-error" id="gateErr">This email isn't in our Pro subscriber list. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to Lab Notes Pro →</a></div>
-    <p class="gate-note">Access is tied to your subscriber email. Verified for 7 days per device.</p>
+    <div class="gate-error" id="gateErr">Email not found in our subscriber list. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe →</a></div>
+    <div class="trial-expired-msg" id="gateTrialExpired">Your free trial has ended. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to keep access →</a></div>
+    <div class="trial-offer" id="gateTrialOffer">
+      <div class="gate-divider">or try it free</div>
+      <button class="trial-btn" id="trialBtn" onclick="startTrial()">Start 14-day free trial →</button>
+      <p class="trial-note">No credit card needed. Full Pro access for 14 days.</p>
+    </div>
+    <p class="gate-note" id="gateNote">Already a subscriber? Enter your email above. Verified for 7 days per device.</p>
   </div>
 </div>
 
@@ -752,6 +775,7 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
       <div class="tourney-chips" id="appChips"></div>
       <div class="user-chip">
         <span id="appUserEmail"></span>
+        <span class="trial-chip" id="trialChip" style="display:none;"></span>
         <button class="signout-btn" onclick="signOut()">Sign out</button>
       </div>
     </div>
@@ -902,7 +926,7 @@ drw.querySelectorAll('a').forEach(function(a){a.addEventListener('click',functio
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 function getToken(){ try{ return JSON.parse(localStorage.getItem('divotlab-pro-auth')||'null'); }catch(e){ return null; } }
 
-function checkAuth(){
+function checkAuth_OLD(){
   var t = getToken();
   if(t && t.expires > Date.now()){
     showApp(t.email);
@@ -917,8 +941,12 @@ async function verifyEmail(){
   if(!email || !email.includes('@')) return;
   var btn = document.getElementById('gateBtn');
   var err = document.getElementById('gateErr');
+  var trialOffer = document.getElementById('gateTrialOffer');
+  var trialExpired = document.getElementById('gateTrialExpired');
   btn.disabled = true; btn.textContent = 'Verifying…';
   err.classList.remove('show');
+  trialOffer.classList.remove('show');
+  trialExpired.classList.remove('show');
 
   try {
     var res = await fetch(API+'/api/verify-pro',{
@@ -927,12 +955,23 @@ async function verifyEmail(){
     });
     var data = await res.json();
     if(data.verified){
+      // Full subscriber
       localStorage.setItem('divotlab-pro-auth', JSON.stringify({
         email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000
       }));
       showApp(email);
+    } else if(data.trial){
+      // Active trial
+      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
+        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
+        trial: true, trialExpires: data.expires, trialDaysLeft: data.days_left
+      }));
+      showApp(email, data.days_left);
     } else {
+      // Not a subscriber and no active trial — show options
       err.classList.add('show');
+      trialOffer.classList.add('show');
+      document.getElementById('gateNote').textContent = 'Have a trial? Enter the same email you used to start it.';
       btn.disabled = false; btn.textContent = 'Access Pro →';
     }
   } catch(e){
@@ -942,19 +981,82 @@ async function verifyEmail(){
   }
 }
 
+async function startTrial(){
+  var email = document.getElementById('gateEmail').value.trim().toLowerCase();
+  if(!email || !email.includes('@')){ alert('Enter your email above first.'); return; }
+  var btn = document.getElementById('trialBtn');
+  btn.disabled = true; btn.textContent = 'Starting trial…';
+
+  try {
+    var res = await fetch(API+'/api/start-trial',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email})
+    });
+    var data = await res.json();
+    if(data.success){
+      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
+        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
+        trial: true, trialExpires: data.expires, trialDaysLeft: data.days_left
+      }));
+      showApp(email, data.days_left);
+    } else if(data.expired){
+      document.getElementById('gateTrialOffer').classList.remove('show');
+      document.getElementById('gateTrialExpired').classList.add('show');
+      btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
+    } else {
+      btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
+      alert(data.error || 'Could not start trial. Try again.');
+    }
+  } catch(e){
+    btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
+    alert('Connection error. Try again.');
+  }
+}
+
 document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') verifyEmail(); });
 
-function showGate(){ document.getElementById('gate').classList.remove('hidden'); document.getElementById('proApp').classList.remove('show'); }
-function showApp(email){
+function showGate(){
+  document.getElementById('gate').classList.remove('hidden');
+  document.getElementById('proApp').classList.remove('show');
+}
+
+function showApp(email, trialDaysLeft){
   document.getElementById('gate').classList.add('hidden');
   document.getElementById('proApp').classList.add('show');
   document.getElementById('appUserEmail').textContent = email;
+  var chip = document.getElementById('trialChip');
+  if(trialDaysLeft != null){
+    chip.textContent = 'Trial · '+trialDaysLeft+'d left';
+    chip.style.display = 'inline';
+  } else {
+    chip.style.display = 'none';
+  }
   initPlayerCard();
   initTooltips();
   loadAllData();
   loadProPicks();
 }
+
 function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
+
+function checkAuth(){
+  var t = getToken();
+  if(t && t.expires > Date.now()){
+    // For trial tokens, also verify the trial itself hasn't expired
+    if(t.trial && t.trialExpires && t.trialExpires <= Date.now()){
+      localStorage.removeItem('divotlab-pro-auth');
+      showGate();
+      return;
+    }
+    var daysLeft = t.trial && t.trialExpires
+      ? Math.ceil((t.trialExpires - Date.now()) / 86400000)
+      : null;
+    showApp(t.email, daysLeft);
+  } else {
+    if(t) localStorage.removeItem('divotlab-pro-auth');
+    showGate();
+  }
+}
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function switchTab(id, btn){

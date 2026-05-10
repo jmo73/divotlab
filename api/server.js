@@ -2188,8 +2188,21 @@ app.post('/api/verify-pro', async (req, res) => {
     const subscribers = data.data || [];
     const isVerified = subscribers.some(s => s.status === 'active');
 
-    console.log(`  Pro verify: ${email} → ${isVerified ? 'VERIFIED' : 'not found'}`);
-    res.json({ success: true, verified: isVerified });
+    if (isVerified) {
+      console.log(`  Pro verify: ${email} → VERIFIED (subscriber)`);
+      return res.json({ success: true, verified: true });
+    }
+
+    // Not a subscriber — check for active trial
+    const trial = await kvGet(`trial:${email.trim().toLowerCase()}`);
+    if (trial && trial.expires > Date.now()) {
+      const daysLeft = Math.ceil((trial.expires - Date.now()) / 86400000);
+      console.log(`  Pro verify: ${email} → TRIAL (${daysLeft} days left)`);
+      return res.json({ success: true, verified: false, trial: true, days_left: daysLeft, expires: trial.expires });
+    }
+
+    console.log(`  Pro verify: ${email} → not found`);
+    res.json({ success: true, verified: false });
 
   } catch (error) {
     console.error('Pro verification error:', error);
@@ -2198,6 +2211,78 @@ app.post('/api/verify-pro', async (req, res) => {
 });
 
 // ============================================
+// ============================================
+// UPSTASH KV HELPERS
+// Uses KV_REST_API_URL + KV_REST_API_TOKEN
+// set automatically by the Vercel integration
+// ============================================
+
+async function kvGet(key) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return null;
+  try {
+    const res = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!data.result) return null;
+    return JSON.parse(data.result);
+  } catch (e) { return null; }
+}
+
+async function kvSet(key, value, ttlSeconds) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return;
+  try {
+    await fetch(`${url}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', ttlSeconds]])
+    });
+  } catch (e) { console.error('KV set error:', e.message); }
+}
+
+// ============================================
+// FREE TRIAL ENDPOINTS
+// POST /api/start-trial  — creates a 14-day trial (1 per email, ever)
+// verify-pro also checks trial status
+// ============================================
+
+app.post('/api/start-trial', async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email required' });
+    }
+
+    const normalEmail = email.trim().toLowerCase();
+    const key = `trial:${normalEmail}`;
+    const existing = await kvGet(key);
+
+    if (existing) {
+      const daysLeft = Math.ceil((existing.expires - Date.now()) / 86400000);
+      if (existing.expires > Date.now()) {
+        // Trial still active — let them back in
+        return res.json({ success: true, already_active: true, days_left: daysLeft, expires: existing.expires });
+      }
+      // Trial expired
+      return res.json({ success: false, expired: true, error: 'Your free trial has ended. Subscribe to continue.' });
+    }
+
+    // Create new trial
+    const expires = Date.now() + 14 * 24 * 60 * 60 * 1000;
+    const trial = { email: normalEmail, started: Date.now(), expires, converted: false };
+    await kvSet(key, trial, 14 * 24 * 60 * 60); // 14 days TTL
+    console.log(`✓ Trial started: ${normalEmail}`);
+    res.json({ success: true, trial: true, days_left: 14, expires });
+  } catch (error) {
+    console.error('Start trial error:', error);
+    res.status(500).json({ success: false, error: 'Could not start trial' });
+  }
+});
+
 // STRIPE WEBHOOK + BEEHIIV PRO SYNC
 // Automatically adds/removes Beehiiv Pro subscribers
 // when a Stripe trial starts or subscription ends.
