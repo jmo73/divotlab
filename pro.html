@@ -615,12 +615,12 @@ html[data-theme="light"] .acc-note{color:rgba(28,27,24,0.3);}
 .dfs-sig-dot.gpp{background:var(--gold);}
 .dfs-sig-dot.value{background:var(--blue-mid);}
 .dfs-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:640px;}
-.dfs-table-head{display:grid;grid-template-columns:20px 1fr 88px 100px 68px 72px 80px 60px 76px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.dfs-table-head{display:grid;grid-template-columns:20px minmax(120px,1fr) 92px 130px 76px 80px 86px 64px 82px;column-gap:8px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .dfs-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
 .dfs-th.sorted{color:var(--gold)!important;}
 .dfs-th[onclick]{cursor:pointer;}
 .dfs-th[onclick]:hover{color:rgba(250,250,250,0.6);}
-.dfs-row{display:grid;grid-template-columns:20px 1fr 88px 100px 68px 72px 80px 60px 76px;padding:11px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.dfs-row{display:grid;grid-template-columns:20px minmax(120px,1fr) 92px 130px 76px 80px 86px 64px 82px;column-gap:8px;padding:11px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .dfs-row:hover{background:rgba(255,255,255,0.02);}
 .dfs-row:last-child{border-bottom:none;}
 .dfs-row.signal-strong{background:rgba(91,191,133,0.03);}
@@ -773,7 +773,7 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   /* DFS mobile */
   .dfs-slots-grid{grid-template-columns:1fr 1fr;}
   .dfs-builder-bar-wrap{display:none;}
-  .dfs-table-head,.dfs-row{grid-template-columns:20px 1fr 80px 80px !important;}
+  .dfs-table-head,.dfs-row{grid-template-columns:20px 1fr 88px 110px !important;column-gap:4px;}
   .dfs-table-head .dfs-th:nth-child(n+5),.dfs-row>*:nth-child(n+5){display:none !important;}
   .dfs-toolbar{gap:8px;}
   .dfs-legend{display:none;}
@@ -2390,27 +2390,69 @@ function generateLineup(){
   });
 
   var existing = dfsLineup.slice();
-  var usedIds = new Set(existing.map(function(p){return p.dg_id;}));
-  var usedSal = existing.reduce(function(s,p){return s+p.salary;},0);
-  var available = all.filter(function(p){return !usedIds.has(p.dg_id);});
-  available.sort(function(a,b){return b.composite-a.composite;});
+  var existingIds = new Set(existing.map(function(p){return p.dg_id;}));
+  var available = all.filter(function(p){return !existingIds.has(p.dg_id);});
+  var minSal = dfsSite==='fanduel'?5000:6000;
 
-  var lineup=existing.slice(), rem=cap-usedSal;
-  available.forEach(function(p){
-    if(lineup.length>=spots) return;
-    if(p.salary<=rem){lineup.push(p);rem-=p.salary;}
-  });
-  // Fallback: cheapest that fit
-  if(lineup.length<spots){
-    var used2=new Set(lineup.map(function(p){return p.dg_id;}));
-    available.filter(function(p){return !used2.has(p.dg_id);})
-      .sort(function(a,b){return a.salary-b.salary;})
-      .forEach(function(p){
-        if(lineup.length>=spots) return;
-        if(p.salary<=rem){lineup.push(p);rem-=p.salary;}
-      });
+  // Build a lineup greedily using a given sort key
+  function buildGreedy(sortFn){
+    var pool = available.slice().sort(sortFn);
+    var lineup = existing.slice();
+    var used = new Set(lineup.map(function(p){return p.dg_id;}));
+    var rem = cap - existing.reduce(function(s,p){return s+p.salary;},0);
+    pool.forEach(function(p){
+      if(lineup.length>=spots) return;
+      if(used.has(p.dg_id)) return;
+      var budget = rem - (spots-lineup.length-1)*minSal;
+      if(p.salary<=budget){ lineup.push(p); used.add(p.dg_id); rem-=p.salary; }
+    });
+    return lineup.length===spots ? lineup : null;
   }
-  if(lineup.length<spots){alert('Could not fill lineup within salary cap.');return;}
+
+  // Local search: try swapping each player with any available alternative that raises total pts
+  function localSearch(lineup){
+    var best = lineup.slice();
+    var improved = true;
+    while(improved){
+      improved = false;
+      var bestPts = best.reduce(function(s,p){return s+p.proj_points_total;},0);
+      var bestSal = best.reduce(function(s,p){return s+p.salary;},0);
+      for(var i=0;i<best.length;i++){
+        if(existingIds.has(best[i].dg_id)) continue; // don't swap locked players
+        var inIds = new Set(best.map(function(p){return p.dg_id;}));
+        var budgetAfterRemove = cap - bestSal + best[i].salary;
+        for(var j=0;j<available.length;j++){
+          var cand = available[j];
+          if(inIds.has(cand.dg_id)) continue;
+          if(cand.salary > budgetAfterRemove) continue;
+          var newSal = bestSal - best[i].salary + cand.salary;
+          if(newSal > cap) continue;
+          var newPts = bestPts - best[i].proj_points_total + cand.proj_points_total;
+          if(newPts > bestPts){
+            best = best.slice(); best[i]=cand;
+            bestPts=newPts; bestSal=newSal;
+            improved=true; break;
+          }
+        }
+        if(improved) break;
+      }
+    }
+    return best;
+  }
+
+  // Generate 3 starting lineups with different sort strategies, optimize each, pick best
+  var strategies = [
+    function(a,b){ return b.composite-a.composite; },                           // composite (pts + fit)
+    function(a,b){ return b.proj_points_total-a.proj_points_total; },           // pure projected pts
+    function(a,b){ return (b.proj_points_total/b.salary)-(a.proj_points_total/a.salary); } // pts per dollar
+  ];
+  var candidates = strategies.map(buildGreedy).filter(Boolean);
+  if(!candidates.length){alert('Could not build a complete lineup within the salary cap. Try clearing your current selections.');return;}
+  var optimized = candidates.map(localSearch);
+  var lineup = optimized.sort(function(a,b){
+    return b.reduce(function(s,p){return s+p.proj_points_total;},0)
+          -a.reduce(function(s,p){return s+p.proj_points_total;},0);
+  })[0];
   dfsLineup=lineup.slice(0,spots);
   updateLineupPanel();
   updateDfsRowStates();
