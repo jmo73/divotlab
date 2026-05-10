@@ -404,6 +404,44 @@ Full plan for expanding /pro with all available DataGolf data. Build in priority
 
 ---
 
+## Course-Fit Model — Priority Improvements
+
+The course-fit model is the core differentiator of Divot Lab. Build these in order:
+
+### 1. Historical course-fit accuracy (the proof of concept)
+- Does our top fit pick outperform a random pick at each venue over time?
+- Use `prediction_archive` + `historical-event-results` to compute: for each completed event, where did our #1 course-fit pick finish? What % finished top 10? top 20?
+- Compare against field average finish and DataGolf model #1 pick
+- Display as a per-venue accuracy table on the Track Record tab
+- This is the scientific validation that justifies the model — critical for influencer/creator marketing
+
+### 2. Custom course weights for all PGA Tour stops
+- Currently 40+ venues have custom weights, rest use `_default` (balanced 0.25 each)
+- Goal: all 50 PGA Tour regular stops should have custom weights
+- Derive weights from `historical-raw/rounds` SG data using `/api/derive-course-weights`
+- Add a warning in the UI when default weights are used (already partially done in UI)
+- Priority venues without weights: all remaining regular tour stops
+
+### 3. Divot Lab Score — single composite number
+- One number per player per week combining: course fit (0-100) + model edge vs market + value score
+- Weighted: fit (50%) + edge (30%) + value (20%)
+- Show prominently in Course Fit tab, Value Finder, and DFS tab
+- Becomes the shareable "marketing number" — "Scheffler has a 94 Divot Lab Score this week"
+- Makes the product explainable in one sentence for creators/influencers
+
+### 4. DFS lineup builder elite UX (in progress)
+- Click-to-add player flow (not lock/exclude button flow)
+- Persistent sidebar lineup panel with salary bar
+- Auto-fill, clear, copy functionality
+- Wave balance and budget indicators
+
+### 5. DFS historical venue performance
+- Use `/api/historical-dfs` to show past DFS scoring at this specific venue
+- Average DK/FD points at this course over last 2-3 years
+- Differentiates from other DFS tools — nobody shows venue-specific DFS history
+
+---
+
 ## Conventions Claude Should Follow
 
 - **No comments in code** unless the WHY is non-obvious
