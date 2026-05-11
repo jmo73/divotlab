@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-05-07",
+  "last_updated": "2026-05-11",
   "tracking_started": "January 2026",
-  "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7).",
+  "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 29,
-    "total_hits": 16,
-    "hit_rate_pct": 55.2,
-    "events_tracked": 7,
+    "total_picks": 33,
+    "total_hits": 17,
+    "hit_rate_pct": 51.5,
+    "events_tracked": 8,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
       "top_5":   { "picks": 3,  "hits": 2 },
-      "top_10":  { "picks": 12, "hits": 7 },
-      "top_20":  { "picks": 5,  "hits": 3 },
-      "matchup": { "picks": 8,  "hits": 4 }
+      "top_10":  { "picks": 13, "hits": 7 },
+      "top_20":  { "picks": 6,  "hits": 4 },
+      "matchup": { "picks": 10, "hits": 4 }
     },
     "units": {
-      "wagered":      29.0,
-      "returned":     37.75,
-      "profit_loss":  8.75,
-      "roi_pct":      30.2
+      "wagered":      33.0,
+      "returned":     40.50,
+      "profit_loss":  7.50,
+      "roi_pct":      22.7
     }
   },
 
@@ -55,18 +55,19 @@
     {
       "event": "Truist Championship",
       "date": "2026-05-07",
-      "picks_count": 5,
-      "hits_count": null,
-      "net_units": null,
+      "picks_count": 4,
+      "hits_count": 1,
+      "net_units": -1.25,
+      "notes": "Knapp voided (withdrew R1 sprained thumb) — not counted in picks_count or units.",
       "picks": [
-        { "player": "Kim, Si Woo",        "bet": "H2H over Cantlay",     "book": "Bet365", "odds": -125, "type": "matchup", "units": 1.0, "result": null, "profit": null },
-        { "player": "Spaun, J.J.",        "bet": "Top 20",               "book": "FanDuel","odds": 175,  "type": "top_20",  "units": 1.0, "result": null, "profit": null },
-        { "player": "Schauffele, Xander", "bet": "H2H over Fitzpatrick", "book": "Bovada", "odds": -125, "type": "matchup", "units": 1.0, "result": null, "profit": null },
-        { "player": "Lee, Min Woo",       "bet": "Top 10",               "book": "FanDuel","odds": 340,  "type": "top_10",  "units": 1.0, "result": null, "profit": null },
-        { "player": "Knapp, Jake",        "bet": "Top 10",               "book": "FanDuel","odds": 430,  "type": "top_10",  "units": 1.0, "result": null, "profit": null }
+        { "player": "Kim, Si Woo",        "bet": "H2H over Cantlay",     "book": "Bet365", "odds": -125, "type": "matchup", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Kim T65, Cantlay T10" },
+        { "player": "Spaun, J.J.",        "bet": "Top 20",               "book": "FanDuel","odds": 175,  "type": "top_20",  "units": 1.0, "result": "win",  "profit": 1.75,  "note": "Finished T5" },
+        { "player": "Schauffele, Xander", "bet": "H2H over Fitzpatrick", "book": "Bovada", "odds": -125, "type": "matchup", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Schauffele T60, Fitzpatrick T52" },
+        { "player": "Lee, Min Woo",       "bet": "Top 10",               "book": "FanDuel","odds": 340,  "type": "top_10",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T14" },
+        { "player": "Knapp, Jake",        "bet": "Top 10",               "book": "FanDuel","odds": 430,  "type": "top_10",  "units": 0,   "result": "void", "profit": 0,     "note": "Withdrew before R1 — sprained left thumb. Not counted." }
       ],
       "sleepers": [
-        { "player": "Gotterup, Chris", "bet": "Top 5", "odds": 900, "book": "FanDuel", "result": null, "note": "Not counted in totals" }
+        { "player": "Gotterup, Chris", "bet": "Top 5", "odds": 900, "book": "FanDuel", "result": "loss", "note": "Finished T14. Not counted in totals." }
       ]
     }
   ]

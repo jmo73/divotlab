@@ -466,3 +466,4 @@ The course-fit model is the core differentiator of Divot Lab. Build these in ord
 | 2026-05-07 | `admin.html` password is `divotlab2026` | Change directly in the file if needed (line ~175, ADMIN_PASSWORD variable) |
 | 2026-05-08 | Weekly update of `pro-picks.json` | Drives "This Week's Card" on /pro page; also used to generate Pro newsletter HTML via admin.html Pro Picks tab |
 | 2026-05-09 | Free trial system live | Upstash Redis (divotlab-trials) via Vercel KV integration. Env vars: KV_REST_API_URL, KV_REST_API_TOKEN. `POST /api/start-trial` creates 14-day trial (1 per email). `POST /api/verify-pro` now also checks trial status. Trial stored as `trial:{email}` key with 14-day TTL. |
+| 2026-05-11 | Truist Championship results updated | Jake Knapp voided (WD sprained thumb, 2nd consecutive sig event WD). Kim LOSS (T65), Spaun WIN (T5), Schauffele LOSS (T60), Lee LOSS (T14). Season: 33 picks, 17 hits, 51.5%, +7.50u, 22.7% ROI, 8 events. |

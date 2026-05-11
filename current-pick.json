@@ -1,18 +1,18 @@
 {
-  "tournament": "Truist Championship",
+  "tournament": "PGA Championship",
   "tour": "PGA Tour",
-  "week_of": "May 7–11, 2026",
-  "published": "2026-05-07",
+  "week_of": "May 15–18, 2026",
+  "published": "2026-05-14",
   "pick": {
-    "player": "Si Woo Kim",
-    "bet_type": "H2H",
-    "bet_detail": "over Patrick Cantlay",
-    "odds": "-125",
-    "book": "Bet365",
-    "reasoning": "Course-fit model ranks Kim in the top tier of the field this week. His SG: Approach over the last 8 events places him well above Cantlay for this venue's demands, and the matchup is mispriced relative to what the model shows.",
-    "confidence": "Medium",
+    "player": "J.J. Spaun",
+    "bet_type": "Top 20",
+    "bet_detail": null,
+    "odds": "+310",
+    "book": "DraftKings",
+    "reasoning": "The model gives Spaun a 27% probability of finishing top 20 — DraftKings offers +310, which is 11% better than model fair value. He's coming off a T5 at the Truist Championship last week with 71% driving accuracy, the exact profile that holds up at a major.",
+    "confidence": "High",
     "result": null,
     "result_detail": null
   },
-  "teaser": "4 more picks including a top-10, top-20, and the sleeper are in this week's Lab Notes Pro email."
+  "teaser": "3 more picks including top-10s and another top-20 are in this week's Lab Notes Pro email."
 }

@@ -11,8 +11,8 @@
       "book": "Bet365",
       "confidence": "High",
       "reasoning": "DG prices Kim as -133 fair. Bet365 at -125 gives 8 cents of edge. Kim ranks 6th in the full model, Cantlay 12th.",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Kim T65, Cantlay T10"
     },
     {
       "player": "J.J. Spaun",
@@ -22,8 +22,8 @@
       "book": "FanDuel",
       "confidence": "High",
       "reasoning": "FD +175 vs DG fair +168 — one of the only Top 20 bets on the board where the book offers more than model fair value.",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "Finished T5"
     },
     {
       "player": "Xander Schauffele",
@@ -32,9 +32,9 @@
       "odds": "-125",
       "book": "Bovada",
       "confidence": "Medium",
-      "reasoning": "DG has Schauffele as -123 fair over Fitzpatrick. Bovada void line at -125 is essentially flat to model fair. Two runner-up finishes at Quail Hollow.",
-      "result": null,
-      "result_detail": null
+      "reasoning": "DG has Schauffele as -123 fair over Fitzpatrick. Bovada line at -125 is essentially flat to model fair.",
+      "result": "loss",
+      "result_detail": "Schauffele T60, Fitzpatrick T52"
     },
     {
       "player": "Min Woo Lee",
@@ -44,8 +44,8 @@
       "book": "FanDuel",
       "confidence": "Medium",
       "reasoning": "Cleanest Top 10 on the board: FD +340 vs DG fair +358, only 18 cents off. Lee ranks 9th in the full model.",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T14"
     },
     {
       "player": "Jake Knapp",
@@ -55,8 +55,8 @@
       "book": "FanDuel",
       "confidence": "Medium",
       "reasoning": "FD +430 vs DG fair +444 — 14 cents off. Distance profile fits a course that has favored bombers. Small unit.",
-      "result": null,
-      "result_detail": null
+      "result": "void",
+      "result_detail": "Withdrew before R1 — sprained left thumb. Bet voided."
     }
   ]
 }
