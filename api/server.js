@@ -43,7 +43,7 @@ const LAB_PICKS_PASSWORD = process.env.LAB_PICKS_PASSWORD || 'lab2026picks';
 const COURSE_WEIGHTS = {
   // ── MAJORS ──────────────────────────────
   'masters tournament':         { ott: 0.25, app: 0.32, arg: 0.25, putt: 0.18, notes: 'Augusta — approach to slopes, elite short game, premium around greens' },
-  'pga championship':           { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25, notes: 'Venue rotates — balanced, typically penalizes rough misses' },
+  'pga championship':           { ott: 0.20, app: 0.36, arg: 0.24, putt: 0.20, notes: 'Aronimink 2026 — Donald Ross design, accuracy off tee, approach to defended greens, tough chipping areas' },
   'u.s. open':                  { ott: 0.18, app: 0.38, arg: 0.26, putt: 0.18, notes: 'Accuracy premium, brutal rough, approach precision critical' },
   'the open championship':      { ott: 0.30, app: 0.25, arg: 0.25, putt: 0.20, notes: 'Links — driving lines, creativity, wind management' },
   // ── SIGNATURE / ELEVATED ────────────────
