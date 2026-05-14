@@ -1668,7 +1668,7 @@ function renderCourseFit(d){
     else if(cfSort.col==='sg_arg'){ va=a.sg_arg||0; vb=b.sg_arg||0; }
     else if(cfSort.col==='sg_putt'){ va=a.sg_putt||0; vb=b.sg_putt||0; }
     else { va=a.fitScore||0; vb=b.fitScore||0; }
-    return cfSort.dir*(vb-va);
+    return cfSort.dir*(va-vb);
   });
 
   var html = '<div class="cf-table-wrap">'
