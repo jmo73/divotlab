@@ -1373,7 +1373,7 @@ async function loadAllData(){
   updateCourseFitOdds();       // patches odds cells without re-rendering
   renderBestBets();            // synthesizes edge × fit after both datasets ready
   captureOddsSnapshot();       // snapshot current odds for line movement tracking
-  setTimeout(pollOddsRefresh, 15*60*1000); // begin polling for line movement
+  setTimeout(pollOddsRefresh, 5*60*1000); // begin polling for line movement
   loadCourseHistory();         // pre-fetch course history in background
 }
 
@@ -1661,7 +1661,7 @@ async function pollOddsRefresh(){
       renderValueFinder(valueBetsData, currentVfFilter);
     }
   } catch(e){}
-  setTimeout(pollOddsRefresh, 15*60*1000);
+  setTimeout(pollOddsRefresh, 5*60*1000);
 }
 
 function calcDivotLabScore(fitScore, edgePct){
@@ -1706,7 +1706,7 @@ function renderCourseFit(d){
       +'<span class="cf-th-sort'+cfSortCls('sg_arg')+'" onclick="sortCF(\'sg_arg\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">ARG'+cfSortArrow('sg_arg')+'</span>'
       +'<span class="cf-th-sort'+cfSortCls('sg_putt')+'" onclick="sortCF(\'sg_putt\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">Putt'+cfSortArrow('sg_putt')+'</span>'
     +'</span>'
-    +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. Loaded at page open — check books for current lines.',true)+'</span>'
+    +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars.<br><br>These reflect pre-round lines. Books typically suspend outright markets during live play — use these for reference, always verify at the book before betting.',true)+'</span>'
     +'<span class="cf-th cf-th-sort'+cfSortCls('dls')+'" onclick="sortCF(\'dls\')" style="cursor:pointer;">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week.',true)+' <span class="sort-arrow">'+cfSortArrow('dls')+'</span></span>'
     +'</div>';
 
@@ -1954,7 +1954,7 @@ function renderValueFinder(bets, market){
   var html = '<div class="vf-table">'
     +'<div class="vf-head">'
     +'<span class="vf-th">Player</span>'
-    +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.',false,arrow('odds'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.<br><br>Reflects pre-round lines — books often suspend outright markets during live play.',false,arrow('odds'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced. A 15% edge means 15% more expected value than fair odds.',false,arrow('edge'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')" style="white-space:nowrap;">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability this specific outcome occurs (e.g., top-10 finish). NOT an outright win probability — a top-20 bet showing 60% means 60% chance of finishing top 20.',false,arrow('prob'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')" style="white-space:nowrap;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what wins at this venue. High fit + high edge = strongest signal.',false,arrow('fit'))+'</span>'

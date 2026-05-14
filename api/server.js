@@ -771,7 +771,7 @@ app.get('/api/betting-odds', async (req, res) => {
     const result = await fetchDataGolf(
       `/betting-tools/outrights?tour=${tour}&market=${market}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      1800 // 30min cache
+      1800 // 30min cache — DataGolf sources these pre-round; books often suspend outrights during play
     );
 
     res.json({
@@ -799,7 +799,7 @@ app.get('/api/matchup-odds', async (req, res) => {
     const result = await fetchDataGolf(
       `/betting-tools/matchups?tour=${tour}&market=${market}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      1800 // 30min cache
+      1800 // 30min cache — matchup lines may be suspended during live rounds
     );
 
     res.json({
