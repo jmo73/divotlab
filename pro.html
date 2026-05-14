@@ -431,7 +431,6 @@ html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 .bb-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.1);border:1px solid rgba(91,191,133,0.2);padding:4px 12px;border-radius:20px;}
 .bb-sub{font-size:12px;color:rgba(250,250,250,0.25);}
 .bb-grid{display:flex;gap:12px;flex-wrap:nowrap;}
-.bb-grid .pick-card{flex:0 1 260px;min-width:0;}
 .bb-card{background:var(--black-card);border:1px solid rgba(91,191,133,0.15);border-radius:10px;padding:16px;flex:1 1 0;min-width:0;position:relative;}
 .bb-card.watch{border-color:rgba(201,168,76,0.2);}
 .bb-signal{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:3px;}
@@ -472,7 +471,6 @@ html[data-theme="light"] .card-header-toggle:hover .card-chevron{border-color:rg
 .picks-card-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:20px;}
 .picks-card-tourney{font-size:12px;color:rgba(250,250,250,0.3);}
 .picks-grid{display:flex;flex-wrap:nowrap;gap:12px;}
-.picks-expand-btn{display:none;}
 .pick-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;flex:1 1 0;min-width:0;}
 .pick-card.win{border-color:rgba(91,191,133,0.3);}
 .pick-card.loss{border-color:rgba(217,72,72,0.2);}
@@ -791,7 +789,6 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   .bb-wrap{padding:16px;}
   .bb-grid{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
   .bb-grid::-webkit-scrollbar{display:none;}
-  .bb-card{flex:0 0 85%;scroll-snap-align:start;}
 
   /* Keep badge + tourney on one line */
   .picks-card-header,.bb-header{flex-wrap:nowrap;}
@@ -804,10 +801,6 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   .picks-grid{overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
   .picks-grid::-webkit-scrollbar{display:none;}
   .pick-card{flex:0 0 82%;min-width:0;scroll-snap-align:start;}
-  .picks-card-wrap.expanded .picks-grid{overflow-x:visible;scroll-snap-type:none;flex-wrap:wrap;}
-  .picks-card-wrap.expanded .pick-card{flex:0 0 100%;}
-  .picks-expand-btn{display:block;font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.4);background:none;border:none;cursor:pointer;margin-top:10px;padding:0;letter-spacing:0.06em;transition:color .2s;}
-  .picks-expand-btn:hover{color:var(--white);}
 
   /* Live Tab — 5 cols: Pos, Player, Total, Win%, Top10% */
   .live-table-head,.live-row{grid-template-columns:34px 1fr 52px 54px 54px !important;padding-left:10px;padding-right:10px;}
@@ -926,7 +919,6 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
     </div>
     <div class="card-body" id="picksBody">
       <div class="picks-grid" id="picksGrid"></div>
-      <button class="picks-expand-btn" id="picksExpandBtn" onclick="togglePicksExpand(); event.stopPropagation();">Show all ↓</button>
     </div>
   </div>
 
@@ -2825,8 +2817,6 @@ function renderPicksCard(d){
   }).join('');
 
   document.getElementById('picksGrid').innerHTML = html;
-  var expandBtn = document.getElementById('picksExpandBtn');
-  if(expandBtn) expandBtn.textContent = 'Show all '+d.picks.length+' ↓';
   var wrap = document.getElementById('picksCardWrap');
   wrap.style.display='block';
   // Default collapsed
@@ -2855,13 +2845,6 @@ function toggleBestBets(){
   chev.classList.toggle('up', collapsed);
 }
 
-function togglePicksExpand(){
-  var wrap = document.getElementById('picksCardWrap');
-  var btn = document.getElementById('picksExpandBtn');
-  wrap.classList.toggle('expanded');
-  var count = proPicksData&&proPicksData.picks?proPicksData.picks.length:5;
-  btn.textContent = wrap.classList.contains('expanded')?'Show less ↑':'Show all '+count+' ↓';
-}
 
 function sortLive(col){
   if(liveSort.col===col){ liveSort.dir*=-1; }
