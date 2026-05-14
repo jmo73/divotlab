@@ -136,6 +136,8 @@ html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3
 .cf-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:600px;}
 .cf-table-head{display:grid;grid-template-columns:52px 1fr 90px 240px 110px 90px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .cf-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+.cf-th-sort{transition:color .15s;}
+.cf-th-sort.sorted{color:var(--gold);}
 .cf-row{display:grid;grid-template-columns:52px 1fr 90px 240px 110px 90px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .cf-row:hover{background:rgba(255,255,255,0.02);}
 .cf-table-wrap>div:last-child{border-bottom:none;}
@@ -229,7 +231,8 @@ html[data-theme="light"] .cfhp-fin.mc{color:rgba(28,27,24,0.22);}
 .tip{position:relative;display:inline-flex;align-items:center;gap:3px;cursor:help;}
 .tip-icon{font-size:9px;color:rgba(250,250,250,0.3);background:rgba(255,255,255,0.06);border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-style:normal;}
 .tip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:230px;background:rgba(10,10,10,0.97);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;font-size:11px;font-weight:400;line-height:1.6;color:rgba(250,250,250,0.72);opacity:0;pointer-events:none;transition:opacity .15s;z-index:500;text-transform:none;letter-spacing:0;white-space:normal;font-family:'DM Sans',sans-serif;}
-.tip:hover .tip-box{opacity:1;}
+.tip:hover .tip-box{opacity:1;pointer-events:auto;}
+.tip-box::before{content:'';position:absolute;bottom:-8px;left:0;right:0;height:8px;}
 .tip-box strong{color:var(--white);display:block;margin-bottom:3px;font-size:12px;}
 /* Position leftward when near right edge */
 .tip.tip-left .tip-box{left:auto;right:0;transform:none;}
@@ -1092,6 +1095,7 @@ var valueBetsData = [];
 var currentVfFilter = 'all';
 var top10OddsMap = {};
 var vfSort = {col:'edge', dir:-1};
+var cfSort = {col:'fit', dir:-1};
 var proPicksData = null;
 var liveRefreshTimer = null;
 var isLiveTabActive = false;
@@ -1638,7 +1642,7 @@ async function pollOddsRefresh(){
 
 function calcDivotLabScore(fitScore, edgePct){
   if(fitScore==null) return null;
-  var edgeNorm = edgePct!=null ? Math.min(Math.max(edgePct,0),25)*4 : 0;
+  var edgeNorm = edgePct!=null ? Math.min(Math.max(edgePct,0),15)/15*100 : 0;
   var highFit = fitScore>=70, highEdge = edgePct!=null && edgePct>=8;
   var valueNorm = (highFit&&highEdge)?100:(highFit||highEdge)?50:0;
   return Math.round(fitScore*0.5 + edgeNorm*0.3 + valueNorm*0.2);
@@ -1648,16 +1652,38 @@ function dlsCls(dls){
   return dls>=75?'dls-elite':dls>=60?'dls-strong':dls>=45?'dls-watch':'dls-dim';
 }
 
+function cfSortArrow(col){ return cfSort.col===col?(cfSort.dir===-1?' ↓':' ↑'):''; }
+function cfSortCls(col){ return cfSort.col===col?' sorted':''; }
+
 function renderCourseFit(d){
-  var field = d.field||[];
+  var field = (d.field||[]).slice();
+
+  // Sort field by chosen column
+  field.sort(function(a,b){
+    var va, vb;
+    if(cfSort.col==='fit'){ va=a.fitScore||0; vb=b.fitScore||0; }
+    else if(cfSort.col==='dls'){ va=a.dlsScore!=null?a.dlsScore:-1; vb=b.dlsScore!=null?b.dlsScore:-1; }
+    else if(cfSort.col==='sg_app'){ va=a.sg_app||0; vb=b.sg_app||0; }
+    else if(cfSort.col==='sg_ott'){ va=a.sg_ott||0; vb=b.sg_ott||0; }
+    else if(cfSort.col==='sg_arg'){ va=a.sg_arg||0; vb=b.sg_arg||0; }
+    else if(cfSort.col==='sg_putt'){ va=a.sg_putt||0; vb=b.sg_putt||0; }
+    else { va=a.fitScore||0; vb=b.fitScore||0; }
+    return cfSort.dir*(vb-va);
+  });
+
   var html = '<div class="cf-table-wrap">'
     +'<div class="cf-table-head">'
     +'<span class="cf-th">#</span>'
     +'<span class="cf-th">Player</span>'
-    +'<span class="cf-th">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+'</span>'
-    +'<span class="cf-th">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Positive = above tour average.')+'</span>'
+    +'<span class="cf-th cf-th-sort'+cfSortCls('fit')+'" onclick="sortCF(\'fit\')" style="cursor:pointer;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+' <span class="sort-arrow">'+cfSortArrow('fit')+'</span></span>'
+    +'<span class="cf-th" style="cursor:default;">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Click App / OTT / ARG / Putt labels below to sort by that category.')+'&nbsp;'
+      +'<span class="cf-th-sort'+cfSortCls('sg_app')+'" onclick="sortCF(\'sg_app\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">App'+cfSortArrow('sg_app')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_ott')+'" onclick="sortCF(\'sg_ott\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">OTT'+cfSortArrow('sg_ott')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_arg')+'" onclick="sortCF(\'sg_arg\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">ARG'+cfSortArrow('sg_arg')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_putt')+'" onclick="sortCF(\'sg_putt\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">Putt'+cfSortArrow('sg_putt')+'</span>'
+    +'</span>'
     +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. Loaded at page open — check books for current lines.',true)+'</span>'
-    +'<span class="cf-th">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Our composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week. <a href="/model" style="color:var(--gold)">How it\'s calculated →</a>',true)+'</span>'
+    +'<span class="cf-th cf-th-sort'+cfSortCls('dls')+'" onclick="sortCF(\'dls\')" style="cursor:pointer;">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week.',true)+' <span class="sort-arrow">'+cfSortArrow('dls')+'</span></span>'
     +'</div>';
 
   field.forEach(function(p,i){
@@ -1678,12 +1704,15 @@ function renderCourseFit(d){
       '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
       '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
       '<div class="cf-odds-col">'+oddsHTML+'</div>'+
-      '<div><div class="cf-dls dls-dim">—</div><div class="cf-dls-sub">DL Score</div></div>'+
+      '<div>'+(p.dlsScore!=null?'<div class="cf-dls '+dlsCls(p.dlsScore)+'">'+p.dlsScore+'</div>':'<div class="cf-dls dls-dim">—</div>')+'<div class="cf-dls-sub">DL Score</div></div>'+
     '</div>';
     if(p.dg_id) html += '<div class="cf-approach-panel" id="cfap-'+p.dg_id+'" style="display:none;"></div>';
     if(p.dg_id) html += '<div class="cf-history-panel" id="cfhp-'+p.dg_id+'" style="display:none;"></div>';
   });
-  html += '</div>';
+  html += '</div>'
+    +'<div style="padding:10px 20px;border-top:1px solid rgba(255,255,255,0.04);text-align:right;">'
+    +'<a href="/model" style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(201,168,76,0.5);text-decoration:none;transition:color .2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(201,168,76,0.5)\'">How DL Score is calculated →</a>'
+    +'</div>';
 
   document.getElementById('cfLoading').style.display='none';
   var cfEl = document.getElementById('cfTable');
@@ -1711,6 +1740,7 @@ function updateCourseFitOdds(){
       if(best>-Infinity) edgePct = best;
     }
     var dls = calcDivotLabScore(fitScore, edgePct);
+    if(dls!=null && cfPlayer) cfPlayer.dlsScore = dls;
     var dlsEl = row.querySelector('.cf-dls');
     if(dlsEl && dls!=null){ dlsEl.textContent=dls; dlsEl.className='cf-dls '+dlsCls(dls); }
   });
@@ -1779,6 +1809,13 @@ function filterValue(market, btn){
   document.querySelectorAll('.vf-filter').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   renderValueFinder(valueBetsData, market);
+}
+
+function sortCF(col){
+  if(cfSort.col===col) cfSort.dir*=-1; else { cfSort.col=col; cfSort.dir=-1; }
+  if(!courseFitData) return;
+  renderCourseFit(courseFitData);
+  updateCourseFitOdds();
 }
 
 function sortVF(col){
