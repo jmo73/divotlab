@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEX1MKH2LP');</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Model — How Divot Lab's Analytics Work</title>
+<meta name="description" content="How Divot Lab builds course-fit models, calculates the Divot Lab Score, and identifies market edge. Full methodology.">
+<link rel="canonical" href="https://www.divotlab.com/model">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0A0A0A;--black-mid:#111110;--black-card:#161614;--black-card2:#1C1C19;
+  --white:#FAFAFA;--green:#1B4D3E;--green-light:#5BBF85;--blue-mid:#5A8FA8;
+  --gold:#C9A84C;--red:#D94848;--border:rgba(255,255,255,0.07);
+  --display:'Cormorant Garamond',Georgia,serif;
+  --body:'DM Sans','Helvetica Neue',sans-serif;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:64px;display:flex;align-items:center;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.06);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo svg{width:22px;height:22px;color:var(--white);}
+.nav-wordmark{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--white);}
+.nav-wordmark span{font-weight:300;opacity:.5;}
+.nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;}
+.nav-links a{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(250,250,250,.6);transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-pro-btn{background:var(--gold);color:var(--black)!important;padding:8px 20px;border-radius:5px;font-weight:700;transition:background .2s;}
+.nav-pro-btn:hover{background:#D4B45E;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;margin-left:auto;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+nav.open .hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+nav.open .hamburger span:nth-child(2){opacity:0;}
+nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.drawer{position:fixed;top:64px;left:0;right:0;z-index:99;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 0 20px;display:flex;flex-direction:column;align-items:center;gap:4px;max-height:0;overflow:hidden;opacity:0;pointer-events:none;transition:max-height .35s,opacity .25s;}
+.drawer.open{max-height:300px;opacity:1;pointer-events:auto;}
+.drawer a{font-size:15px;font-weight:500;color:rgba(250,250,250,.7);padding:10px;width:100%;text-align:center;transition:color .2s;}
+.drawer .nav-pro-btn{margin-top:8px;width:auto;padding:10px 32px;}
+
+/* HERO */
+.hero{padding:120px 48px 72px;background:var(--black);background-image:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(91,191,133,0.07) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 85% 80%,rgba(201,168,76,0.07) 0%,transparent 60%);position:relative;}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(91,191,133,0.4) 40%,rgba(201,168,76,0.4) 60%,transparent);}
+.hero-inner{max-width:760px;margin:0 auto;}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--green-light);margin-bottom:20px;}
+.hero h1{font-family:var(--display);font-size:clamp(2.8rem,5vw,4.2rem);font-weight:500;font-style:italic;line-height:1.08;letter-spacing:-0.02em;margin-bottom:18px;}
+.hero-lead{font-size:17px;color:rgba(250,250,250,0.5);line-height:1.75;max-width:600px;}
+
+/* CONTENT */
+.content{max-width:760px;margin:0 auto;padding:0 48px 80px;}
+
+.section{border-top:1px solid var(--border);padding:56px 0 0;margin-top:56px;}
+.section:first-child{border-top:none;padding-top:48px;margin-top:0;}
+
+.section-num{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(250,250,250,0.2);margin-bottom:10px;}
+.section h2{font-family:var(--display);font-size:clamp(1.7rem,3vw,2.4rem);font-weight:500;font-style:italic;letter-spacing:-0.01em;margin-bottom:20px;line-height:1.15;}
+.section h2 em{color:var(--gold);}
+.section p{font-size:15px;color:rgba(250,250,250,0.58);line-height:1.8;margin-bottom:16px;}
+.section p:last-child{margin-bottom:0;}
+.section p strong{color:var(--white);font-weight:600;}
+
+/* SG GRID */
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
+.sg-card{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;}
+.sg-card-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.3);margin-bottom:6px;}
+.sg-card-name{font-size:15px;font-weight:600;color:var(--white);margin-bottom:6px;}
+.sg-card-desc{font-size:13px;color:rgba(250,250,250,0.45);line-height:1.6;}
+
+/* COURSE WEIGHTS TABLE */
+.weights-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:13px;}
+.weights-table th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.weights-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+.weights-table tr:last-child td{border-bottom:none;}
+.weights-table tr:hover td{background:rgba(255,255,255,0.015);}
+.venue-name{font-weight:600;color:rgba(250,250,250,0.88);}
+.venue-notes{font-size:11px;color:rgba(250,250,250,0.3);margin-top:2px;}
+.w-bar-wrap{display:flex;align-items:center;gap:6px;}
+.w-bar{height:5px;border-radius:3px;flex-shrink:0;}
+.w-bar.app{background:var(--green-light);}
+.w-bar.ott{background:var(--blue-mid);}
+.w-bar.arg{background:var(--gold);}
+.w-bar.putt{background:rgba(250,250,250,0.3);}
+.w-pct{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.5);width:32px;text-align:right;}
+
+/* DLS FORMULA */
+.formula-box{background:var(--black-card);border:1px solid var(--border);border-radius:12px;padding:28px 28px 24px;margin:24px 0;position:relative;overflow:hidden;}
+.formula-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green-light),var(--gold),var(--blue-mid));}
+.formula-title{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(250,250,250,0.28);margin-bottom:16px;}
+.formula-eq{font-family:var(--mono);font-size:13px;color:rgba(250,250,250,0.55);margin-bottom:24px;line-height:1.8;}
+.formula-eq strong{color:var(--white);}
+.formula-components{display:flex;flex-direction:column;gap:12px;}
+.formula-comp{display:flex;align-items:center;gap:14px;}
+.formula-comp-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.formula-comp-bar{height:100%;border-radius:3px;}
+.formula-comp-bar.fit{background:var(--green-light);}
+.formula-comp-bar.edge{background:var(--gold);}
+.formula-comp-bar.signal{background:var(--blue-mid);}
+.formula-comp-label{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.5);white-space:nowrap;width:180px;}
+.formula-comp-pct{font-family:var(--mono);font-size:11px;font-weight:600;width:32px;text-align:right;}
+.formula-comp-pct.fit{color:var(--green-light);}
+.formula-comp-pct.edge{color:var(--gold);}
+.formula-comp-pct.signal{color:var(--blue-mid);}
+
+/* DLS RANGE */
+.dls-ranges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0;}
+.dls-range{background:var(--black-card);border:1px solid var(--border);border-radius:8px;padding:14px 12px;text-align:center;}
+.dls-range-num{font-family:var(--mono);font-size:18px;font-weight:500;margin-bottom:4px;}
+.dls-range-num.elite{color:var(--gold);}
+.dls-range-num.strong{color:var(--green-light);}
+.dls-range-num.watch{color:var(--blue-mid);}
+.dls-range-num.dim{color:rgba(250,250,250,0.25);}
+.dls-range-label{font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,250,250,0.3);}
+
+/* CALLOUT */
+.callout{background:rgba(91,191,133,0.04);border:1px solid rgba(91,191,133,0.15);border-radius:10px;padding:18px 20px;margin:20px 0;font-size:14px;color:rgba(250,250,250,0.6);line-height:1.7;}
+.callout strong{color:var(--green-light);}
+
+/* DATA SOURCES */
+.source-row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.source-row:last-child{border-bottom:none;}
+.source-icon{width:32px;height:32px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);font-size:9px;font-weight:700;color:rgba(250,250,250,0.3);}
+.source-body{flex:1;}
+.source-name{font-size:14px;font-weight:600;color:rgba(250,250,250,0.85);margin-bottom:3px;}
+.source-desc{font-size:13px;color:rgba(250,250,250,0.4);line-height:1.6;}
+
+/* CTA */
+.cta-wrap{margin-top:64px;padding:40px;background:var(--black-card);border:1px solid var(--border);border-radius:14px;text-align:center;position:relative;overflow:hidden;}
+.cta-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--green-light) 60%,transparent);}
+.cta-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.cta-title{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:500;font-style:italic;margin-bottom:10px;line-height:1.2;}
+.cta-sub{font-size:14px;color:rgba(250,250,250,0.4);margin-bottom:24px;line-height:1.7;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.cta-btn-primary{background:var(--gold);color:var(--black);padding:12px 28px;border-radius:7px;font-weight:700;font-size:14px;letter-spacing:0.02em;transition:background .2s;}
+.cta-btn-primary:hover{background:#D4B45E;}
+.cta-btn-secondary{border:1.5px solid rgba(91,191,133,0.4);color:var(--green-light);padding:12px 28px;border-radius:7px;font-weight:600;font-size:14px;letter-spacing:0.02em;transition:all .2s;}
+.cta-btn-secondary:hover{background:rgba(91,191,133,0.07);}
+
+/* LIGHT MODE */
+html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
+html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
+html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
+html[data-theme="light"] .nav-wordmark{color:#1C1B18!important;}
+html[data-theme="light"] .nav-links a{color:rgba(28,27,24,0.6)!important;}
+html[data-theme="light"] .nav-links a:hover{color:#1C1B18!important;}
+html[data-theme="light"] .hamburger span{background:#1C1B18!important;}
+html[data-theme="light"] .drawer{background:rgba(245,244,240,0.97)!important;}
+html[data-theme="light"] .drawer a{color:rgba(28,27,24,0.7)!important;}
+html[data-theme="light"] .section p{color:rgba(28,27,24,0.6);}
+html[data-theme="light"] .sg-card{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .sg-card-label{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .sg-card-name{color:#1C1B18;}
+html[data-theme="light"] .sg-card-desc{color:rgba(28,27,24,0.5);}
+html[data-theme="light"] .weights-table th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .weights-table td{border-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .venue-name{color:#1C1B18;}
+html[data-theme="light"] .venue-notes{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .w-pct{color:rgba(28,27,24,0.5);}
+html[data-theme="light"] .formula-box{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .formula-title{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .formula-eq{color:rgba(28,27,24,0.55);}
+html[data-theme="light"] .formula-eq strong{color:#1C1B18;}
+html[data-theme="light"] .formula-comp-label{color:rgba(28,27,24,0.5);}
+html[data-theme="light"] .formula-comp-bar-wrap{background:rgba(28,27,24,0.07);}
+html[data-theme="light"] .dls-range{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .dls-range-label{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .dls-range-num.dim{color:rgba(28,27,24,0.2);}
+html[data-theme="light"] .callout{background:rgba(27,77,62,0.04);border-color:rgba(27,77,62,0.15);}
+html[data-theme="light"] .callout strong{color:#1B4D3E;}
+html[data-theme="light"] .source-icon{background:rgba(28,27,24,0.04);border-color:rgba(28,27,24,0.1);color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .source-name{color:#1C1B18;}
+html[data-theme="light"] .source-desc{color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .cta-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .cta-sub{color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .cta-btn-secondary{border-color:rgba(27,77,62,0.35);color:#1B4D3E;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none!important;}
+  .hamburger{display:flex!important;}
+  .hero{padding:100px 20px 48px;}
+  .content{padding:0 20px 60px;}
+  .sg-grid{grid-template-columns:1fr;}
+  .dls-ranges{grid-template-columns:1fr 1fr;}
+  .formula-comp-label{width:auto;font-size:9px;}
+  .weights-table{font-size:12px;}
+  .weights-table th,.weights-table td{padding:8px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Lab Picks</a>
+    <a href="/the-lab">Live Stats</a>
+    <a href="/model" style="color:var(--white)">The Model</a>
+    <a href="/lab-notes">Lab Notes</a>
+    <a href="/pro" class="nav-pro-btn">Pro →</a>
+  </div>
+  <button class="hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="drawer" id="navDrawer">
+  <a href="/picks">Lab Picks</a>
+  <a href="/the-lab">Live Stats</a>
+  <a href="/model">The Model</a>
+  <a href="/lab-notes">Lab Notes</a>
+  <a href="/pro" class="nav-pro-btn">Pro →</a>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Divot Lab · Methodology</div>
+    <h1>How the analytics work.</h1>
+    <p class="hero-lead">Every pick we post is backed by a quantitative model. This page explains exactly how it works — the data, the math, and why we built it this way.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- SECTION 1: STROKES GAINED -->
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2>The foundation: <em>Strokes Gained</em></h2>
+    <p>Modern golf analytics is built on <strong>Strokes Gained</strong> — a statistical framework developed by Columbia professor Mark Broadie that measures a player's performance in each facet of the game relative to the tour average. Every shot is compared to the expected score from that position, accounting for distance, lie, and course conditions.</p>
+    <p>We track four categories. Together they account for nearly all variance in scoring relative to the field:</p>
+    <div class="sg-grid">
+      <div class="sg-card">
+        <div class="sg-card-label">SG: OTT</div>
+        <div class="sg-card-name">Off the Tee</div>
+        <div class="sg-card-desc">Driving distance and accuracy. Measures how well a player positions themselves for their second shot. High-value at wide-open courses where length is rewarded.</div>
+      </div>
+      <div class="sg-card">
+        <div class="sg-card-label">SG: App</div>
+        <div class="sg-card-name">Approach</div>
+        <div class="sg-card-desc">Iron play and proximity to the hole from all distances. Historically the strongest predictor of scoring on the PGA Tour — critical at demanding, narrow courses.</div>
+      </div>
+      <div class="sg-card">
+        <div class="sg-card-label">SG: ARG</div>
+        <div class="sg-card-name">Around the Green</div>
+        <div class="sg-card-desc">Chipping, pitching, and bunker play from inside 30 yards. Elevated at links-style and firm courses where approaches routinely miss greens.</div>
+      </div>
+      <div class="sg-card">
+        <div class="sg-card-label">SG: Putt</div>
+        <div class="sg-card-name">Putting</div>
+        <div class="sg-card-desc">Performance on the greens from all distances. Highest weight at courses with fast, undulating, or Bermuda greens where putting separates contenders from the field.</div>
+      </div>
+    </div>
+    <p>Each player's SG profile is computed as a <strong>blended rolling average</strong>: 65% weight on the last 24 months, 35% weight on the last 12 months. This balances sustained skill with recent form — preventing one bad stretch from tanking a great player's profile while still capturing momentum.</p>
+  </div>
+
+  <!-- SECTION 2: COURSE FIT SCORE -->
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2>Course-Fit Score <em>(0–100)</em></h2>
+    <p>A player's raw SG numbers don't tell the whole story. A great driver has more value at a long, open course than at a tight, tree-lined one. A putting specialist is more valuable when the greens are fast and sloped. The Course-Fit Score captures this venue-specific signal.</p>
+    <p>The calculation has three steps:</p>
+    <p><strong>1. Weight the player's SG profile by what the course rewards.</strong> Each venue has custom weights for the four SG categories. A player's weighted score = (SG_app × w_app) + (SG_ott × w_ott) + (SG_arg × w_arg) + (SG_putt × w_putt).</p>
+    <p><strong>2. Rank across the full field.</strong> Every player in the field gets a weighted score. We then normalize across all players to produce a 0–100 score: 100 = strongest course fit in the field, 0 = weakest.</p>
+    <p><strong>3. No guesswork on the player side.</strong> The SG data comes directly from DataGolf's tour-average-adjusted strokes gained model, updated continuously throughout the season.</p>
+
+    <div class="callout">
+      <strong>Why normalize?</strong> Raw weighted SG values are hard to interpret week to week because field strength varies. Normalizing to 0–100 always tells you where this player ranks relative to this week's specific field — not just how good they are in absolute terms.
+    </div>
+  </div>
+
+  <!-- SECTION 3: COURSE WEIGHTS -->
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2>Course weights: <em>how they're set</em></h2>
+    <p>The weights are what make this model course-specific. We use a two-step process to set them.</p>
+    <p><strong>Step 1 — Historical derivation.</strong> For each venue, we analyze the last 2–4 years of results and compute the average SG gap between top-10 finishers and the full field in each category. Categories where top finishers consistently outperform the field by a wider margin earn a higher weight. We apply recency weighting (most recent year counts most) and enforce a 10% floor so no category is ignored entirely.</p>
+    <p><strong>Step 2 — Editorial refinement.</strong> Where historical samples are small or the result is counterintuitive, we apply domain knowledge. Firm conditions, weather patterns, and course setup tendencies inform adjustments. The goal is the most accurate representation of what actually wins at each venue.</p>
+    <p>We currently have custom weight profiles for all major PGA Tour events. Below are a few examples:</p>
+
+    <table class="weights-table">
+      <thead>
+        <tr>
+          <th>Venue</th>
+          <th style="color:var(--green-light)">App</th>
+          <th style="color:var(--blue-mid)">OTT</th>
+          <th style="color:var(--gold)">ARG</th>
+          <th style="color:rgba(250,250,250,0.3)">Putt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="venue-name">Augusta National</div>
+            <div class="venue-notes">Masters Tournament</div>
+          </td>
+          <td><div class="w-bar-wrap"><div class="w-bar app" style="width:38px"></div><span class="w-pct">32%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar ott" style="width:30px"></div><span class="w-pct">25%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar arg" style="width:30px"></div><span class="w-pct">25%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar putt" style="width:22px"></div><span class="w-pct">18%</span></div></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="venue-name">TPC Sawgrass</div>
+            <div class="venue-notes">The Players Championship</div>
+          </td>
+          <td><div class="w-bar-wrap"><div class="w-bar app" style="width:50px"></div><span class="w-pct">42%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar ott" style="width:18px"></div><span class="w-pct">15%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar arg" style="width:22px"></div><span class="w-pct">18%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar putt" style="width:30px"></div><span class="w-pct">25%</span></div></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="venue-name">Harbour Town GL</div>
+            <div class="venue-notes">RBC Heritage</div>
+          </td>
+          <td><div class="w-bar-wrap"><div class="w-bar app" style="width:46px"></div><span class="w-pct">38%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar ott" style="width:17px"></div><span class="w-pct">14%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar arg" style="width:31px"></div><span class="w-pct">26%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar putt" style="width:26px"></div><span class="w-pct">22%</span></div></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="venue-name">Torrey Pines (South)</div>
+            <div class="venue-notes">Farmers Insurance Open / U.S. Open</div>
+          </td>
+          <td><div class="w-bar-wrap"><div class="w-bar app" style="width:42px"></div><span class="w-pct">35%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar ott" style="width:26px"></div><span class="w-pct">22%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar arg" style="width:26px"></div><span class="w-pct">22%</span></div></td>
+          <td><div class="w-bar-wrap"><div class="w-bar putt" style="width:26px"></div><span class="w-pct">21%</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>At Augusta, approach play (32%) carries the most weight — the severe slopes of Amen Corner and the back nine demand precise iron play. At TPC Sawgrass, approach jumps to 42% because the island-green 17th and narrow corridors punish anything less than precision irons. Harbour Town is the most complete shotmaking test on tour, which is why ARG (26%) and putting (22%) are both elevated.</p>
+  </div>
+
+  <!-- SECTION 4: DIVOT LAB SCORE -->
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2>The Divot Lab Score <em>(0–100)</em></h2>
+    <p>Course fit alone isn't enough. A player can be a perfect fit for a course but still be a bad bet if the market has already priced them in. The <strong>Divot Lab Score</strong> is our composite number that combines three independent signals into a single rating.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">DLS Formula</div>
+      <div class="formula-eq">
+        DLS = (<strong>Course Fit</strong> × 0.50) + (<strong>Market Edge</strong> × 0.30) + (<strong>Confidence Signal</strong> × 0.20)
+      </div>
+      <div class="formula-components">
+        <div class="formula-comp">
+          <div class="formula-comp-label" style="color:var(--green-light)">Course Fit</div>
+          <div class="formula-comp-bar-wrap"><div class="formula-comp-bar fit" style="width:50%"></div></div>
+          <div class="formula-comp-pct fit">50%</div>
+        </div>
+        <div class="formula-comp">
+          <div class="formula-comp-label" style="color:var(--gold)">Market Edge</div>
+          <div class="formula-comp-bar-wrap"><div class="formula-comp-bar edge" style="width:30%"></div></div>
+          <div class="formula-comp-pct edge">30%</div>
+        </div>
+        <div class="formula-comp">
+          <div class="formula-comp-label" style="color:var(--blue-mid)">Confidence Signal</div>
+          <div class="formula-comp-bar-wrap"><div class="formula-comp-bar signal" style="width:20%"></div></div>
+          <div class="formula-comp-pct signal">20%</div>
+        </div>
+      </div>
+    </div>
+
+    <p><strong>Course Fit (50%):</strong> The player's 0–100 course-fit score, contributed at half weight.</p>
+    <p><strong>Market Edge (30%):</strong> The model's estimated edge vs. the market, normalized to 0–100 (capped at 25% edge = perfect score). Negative edge means the market is overpricing this player — it contributes zero to the DLS.</p>
+    <p><strong>Confidence Signal (20%):</strong> A bonus for alignment — when a player has both high fit (≥70) and strong edge (≥8%), both signals agree and the play earns the full 20-point confidence bonus. When only one signal is met, a partial bonus applies.</p>
+
+    <div class="dls-ranges">
+      <div class="dls-range">
+        <div class="dls-range-num elite">75–100</div>
+        <div class="dls-range-label">Elite signal</div>
+      </div>
+      <div class="dls-range">
+        <div class="dls-range-num strong">60–74</div>
+        <div class="dls-range-label">Strong signal</div>
+      </div>
+      <div class="dls-range">
+        <div class="dls-range-num watch">45–59</div>
+        <div class="dls-range-label">Watch list</div>
+      </div>
+      <div class="dls-range">
+        <div class="dls-range-num dim">&lt; 45</div>
+        <div class="dls-range-label">No clear signal</div>
+      </div>
+    </div>
+
+    <p>The DLS appears in the Course Fit table on the Pro dashboard. It updates automatically once odds data loads for the week.</p>
+  </div>
+
+  <!-- SECTION 5: MARKET EDGE -->
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2>Market edge: <em>finding value</em></h2>
+    <p>Finding a player with a great course fit is only half the job. The bet also needs to be underpriced by the market. We measure this with a simple expected-value calculation:</p>
+    <p style="font-family:var(--mono);font-size:13px;background:var(--black-card);border:1px solid var(--border);border-radius:8px;padding:16px 18px;color:rgba(250,250,250,0.7);margin:16px 0;">Edge % = (Model probability × Best decimal odds) − 1</p>
+    <p>We pull DataGolf's pre-tournament finish probabilities (win, top 5, top 10, top 20) and compare them to the best available odds across <strong>DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars</strong>. A positive edge means the model thinks the market is underestimating this player for this bet type.</p>
+    <p>Example: if DataGolf gives a player a 12% chance to finish top 10, and the best available top-10 odds are +900 (decimal 10.0), the edge is (0.12 × 10.0) − 1 = +20%. That's a bet with positive expected value according to the model.</p>
+    <div class="callout">
+      <strong>Pinnacle as the sharp benchmark.</strong> Pinnacle is a market-maker book with the lowest margins in the industry — their lines are the most efficient. When our model shows edge vs. Pinnacle, that's a much stronger signal than edge vs. a recreational book.
+    </div>
+  </div>
+
+  <!-- SECTION 6: DATA SOURCES -->
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2>Data <em>sources</em></h2>
+    <p>We believe in transparency about where our data comes from.</p>
+    <div class="source-row">
+      <div class="source-icon">DG</div>
+      <div class="source-body">
+        <div class="source-name">DataGolf API</div>
+        <div class="source-desc">Our primary data provider. We use DataGolf for strokes gained profiles (L12 and L24 rolling averages), pre-tournament finish probabilities, live leaderboard and in-play win probabilities, historical round results used to derive course weights, and historical betting odds for backtesting.</div>
+      </div>
+    </div>
+    <div class="source-row">
+      <div class="source-icon">OD</div>
+      <div class="source-body">
+        <div class="source-name">Sportsbook Odds (6 books)</div>
+        <div class="source-desc">Live odds from DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars — pulled at page load for edge calculation. Always verify odds at the book before placing a bet; lines move.</div>
+      </div>
+    </div>
+    <div class="source-row">
+      <div class="source-icon">TR</div>
+      <div class="source-body">
+        <div class="source-name">Our own picks record</div>
+        <div class="source-desc">Every pick is posted publicly before tee time and tracked in our <a href="/picks" style="color:var(--gold);text-decoration:underline;">public record</a>. Win/loss, odds, bet type, and result detail are all logged. We don't remove or hide losing picks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <div class="cta-label">See it in action</div>
+    <div class="cta-title">This week's picks, ranked by DLS.</div>
+    <div class="cta-sub">The free pick is posted every Wednesday. The full card — all five picks with course-fit breakdowns and DLS ratings — is in Lab Notes Pro.</div>
+    <div class="cta-btns">
+      <a href="/picks" class="cta-btn-primary">See the free pick →</a>
+      <a href="/pro" class="cta-btn-secondary">Try Pro free</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var nav = document.getElementById('nav');
+  var hamburger = document.getElementById('navHamburger');
+  var drawer = document.getElementById('navDrawer');
+  if(hamburger){
+    hamburger.addEventListener('click', function(){
+      nav.classList.toggle('open');
+      drawer.classList.toggle('open');
+    });
+  }
+  // Theme toggle
+  var theme = localStorage.getItem('divotlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+</body>
+</html>

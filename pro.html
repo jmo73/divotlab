@@ -167,6 +167,19 @@ html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3
 .vbadge-moderate{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
 .vbadge-none{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.25);border:1px solid rgba(255,255,255,0.07);}
 
+/* ── DIVOT LAB SCORE ── */
+.cf-dls{font-family:var(--mono);font-size:18px;font-weight:500;text-align:center;line-height:1;}
+.cf-dls.dls-elite{color:var(--gold);}
+.cf-dls.dls-strong{color:var(--green-light);}
+.cf-dls.dls-watch{color:var(--blue-mid);}
+.cf-dls.dls-dim{color:rgba(250,250,250,0.18);}
+.cf-dls-sub{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(250,250,250,0.22);margin-top:3px;text-align:center;}
+html[data-theme="light"] .cf-dls.dls-elite{color:#B8960C;}
+html[data-theme="light"] .cf-dls.dls-strong{color:#1B4D3E;}
+html[data-theme="light"] .cf-dls.dls-watch{color:#2C5F7C;}
+html[data-theme="light"] .cf-dls.dls-dim{color:rgba(28,27,24,0.18);}
+html[data-theme="light"] .cf-dls-sub{color:rgba(28,27,24,0.28);}
+
 /* ── APPROACH DISTANCE PANEL ── */
 .cf-approach-btn{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,250,250,0.28);background:none;border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:2px 7px;cursor:pointer;margin-top:5px;display:inline-block;transition:all .15s;}
 .cf-approach-btn:hover{color:rgba(250,250,250,0.7);border-color:rgba(255,255,255,0.2);}
@@ -831,18 +844,18 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
     <span class="nav-wordmark">DIVOT <span>LAB</span></span>
   </a>
   <div class="nav-links">
-    <a href="/picks">Picks</a>
+    <a href="/picks">Lab Picks</a>
     <a href="/the-lab">Live Stats</a>
-    <a href="/articles">Articles</a>
+    <a href="/model">The Model</a>
     <a href="/lab-notes">Newsletter</a>
     <a href="/pro" class="nav-pro-btn active">Pro</a>
   </div>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
 </nav>
 <div class="drawer" id="drawer">
-  <a href="/picks">Picks</a>
+  <a href="/picks">Lab Picks</a>
   <a href="/the-lab">Live Stats</a>
-  <a href="/articles">Articles</a>
+  <a href="/model">The Model</a>
   <a href="/lab-notes">Newsletter</a>
   <a href="/pro" class="nav-pro-btn">Pro</a>
 </div>
@@ -1301,19 +1314,17 @@ function renderBestBets(){
 
   scored.forEach(function(item){
     var b = item.b;
-    var isStrong = b.edgePct>=10 && item.fitScore>=65;
-    var badgeCls = isStrong ? 'pick-result-win' : 'pick-result-pending';
-    var signalLbl = isStrong ? 'Strong' : 'Watch';
+    var dls = calcDivotLabScore(item.fitScore, b.edgePct>0?b.edgePct:null);
+    var dlsStr = dls!=null ? '<span style="font-family:var(--mono);font-size:11px;font-weight:700;color:'+(dls>=75?'var(--gold)':dls>=60?'var(--green-light)':'var(--blue-mid)')+'">DLS '+dls+'</span> &nbsp;·&nbsp; ' : '';
     var bookShort = b.bestBook.replace('draftkings','DK').replace('fanduel','FD').replace('betmgm','MGM').replace('bet365','B365').replace('caesars','CZR').replace('pinnacle','PIN').toUpperCase();
     html += '<div class="pick-card">'
-      +'<span class="pick-result-badge '+badgeCls+'" style="'+(isStrong?'':'color:var(--gold);background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.25);')+'">'+signalLbl+'</span>'
       +'<div class="pick-player">'+b.player+'</div>'
       +'<div class="pick-meta">'
         +'<span class="pick-bet-badge">'+marketLabel[b.market]+'</span>'
         +'<span class="pick-odds">'+fmtAm(b.amOdds)+'</span>'
         +'<span class="pick-book">'+bookShort+'</span>'
       +'</div>'
-      +'<div class="pick-reasoning">Edge: +'+(b.edgePct).toFixed(1)+'% &nbsp;·&nbsp; Fit: '+(item.fitScore||'—')+'&nbsp;·&nbsp; Model: '+(b.dgProbPct||'—')+'%</div>'
+      +'<div class="pick-reasoning">'+dlsStr+'Edge: +'+(b.edgePct).toFixed(1)+'% &nbsp;·&nbsp; Fit: '+(item.fitScore||'—')+'&nbsp;·&nbsp; Model: '+(b.dgProbPct||'—')+'%</div>'
       +'</div>';
   });
 
@@ -1625,6 +1636,18 @@ async function pollOddsRefresh(){
   setTimeout(pollOddsRefresh, 15*60*1000);
 }
 
+function calcDivotLabScore(fitScore, edgePct){
+  if(fitScore==null) return null;
+  var edgeNorm = edgePct!=null ? Math.min(Math.max(edgePct,0),25)*4 : 0;
+  var highFit = fitScore>=70, highEdge = edgePct!=null && edgePct>=8;
+  var valueNorm = (highFit&&highEdge)?100:(highFit||highEdge)?50:0;
+  return Math.round(fitScore*0.5 + edgeNorm*0.3 + valueNorm*0.2);
+}
+
+function dlsCls(dls){
+  return dls>=75?'dls-elite':dls>=60?'dls-strong':dls>=45?'dls-watch':'dls-dim';
+}
+
 function renderCourseFit(d){
   var field = d.field||[];
   var html = '<div class="cf-table-wrap">'
@@ -1634,18 +1657,13 @@ function renderCourseFit(d){
     +'<span class="cf-th">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+'</span>'
     +'<span class="cf-th">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Positive = above tour average.')+'</span>'
     +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. Loaded at page open — check books for current lines.',true)+'</span>'
-    +'<span class="cf-th">'+tip('Signal','<strong>Course-Fit Signal</strong><strong>Strong Fit</strong> = top 15% of field<strong>Good Fit</strong> = top 35% of field<strong>Neutral</strong> = below that threshold<br>Based on fit score percentile rank within this week\'s field.',true)+'</span>'
+    +'<span class="cf-th">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Our composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week. <a href="/model" style="color:var(--gold)">How it\'s calculated →</a>',true)+'</span>'
     +'</div>';
 
   field.forEach(function(p,i){
     var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
     var score = p.fitScore!=null?p.fitScore:'—';
     var scoreCls = p.fitScore!=null?'':'dim';
-    var topPct = p.percentile!=null?p.percentile:0;
-    var signalBadge, signalCls;
-    if(topPct>=85){ signalBadge='Strong Fit'; signalCls='vbadge-strong'; }
-    else if(topPct>=65){ signalBadge='Good Fit'; signalCls='vbadge-moderate'; }
-    else { signalBadge='Neutral'; signalCls='vbadge-none'; }
     var o = top10OddsMap[p.player_name];
     var oddsHTML = o
       ? '<div class="odds-num">'+fmtAm(o.am)+'</div><div class="odds-book">'+o.book.toUpperCase()+'</div>'
@@ -1660,7 +1678,7 @@ function renderCourseFit(d){
       '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
       '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
       '<div class="cf-odds-col">'+oddsHTML+'</div>'+
-      '<div><span class="value-badge '+signalCls+'">'+signalBadge+'</span></div>'+
+      '<div><div class="cf-dls dls-dim">—</div><div class="cf-dls-sub">DL Score</div></div>'+
     '</div>';
     if(p.dg_id) html += '<div class="cf-approach-panel" id="cfap-'+p.dg_id+'" style="display:none;"></div>';
     if(p.dg_id) html += '<div class="cf-history-panel" id="cfhp-'+p.dg_id+'" style="display:none;"></div>';
@@ -1679,10 +1697,22 @@ function updateCourseFitOdds(){
     var name = row.getAttribute('data-player');
     var o = top10OddsMap[name];
     var oddsCol = row.querySelector('.cf-odds-col');
-    if(!oddsCol) return;
-    if(o){
+    if(oddsCol && o){
       oddsCol.innerHTML = '<div class="odds-num">'+fmtAm(o.am)+'</div><div class="odds-book">'+o.book.toUpperCase()+'</div>';
     }
+
+    // DLS — best edge across all markets for this player
+    var cfPlayer = courseFitData&&courseFitData.field ? courseFitData.field.find(function(p){ return p.player_name===name; }) : null;
+    var fitScore = cfPlayer ? cfPlayer.fitScore : null;
+    var edgePct = null;
+    if(valueBetsData&&valueBetsData.length){
+      var best = -Infinity;
+      valueBetsData.forEach(function(b){ if(b.player===name && b.edgePct!=null && b.edgePct>best) best=b.edgePct; });
+      if(best>-Infinity) edgePct = best;
+    }
+    var dls = calcDivotLabScore(fitScore, edgePct);
+    var dlsEl = row.querySelector('.cf-dls');
+    if(dlsEl && dls!=null){ dlsEl.textContent=dls; dlsEl.className='cf-dls '+dlsCls(dls); }
   });
 }
 
