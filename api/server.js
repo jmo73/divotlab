@@ -2252,7 +2252,7 @@ async function kvSet(key, value, ttlSeconds) {
 
 app.post('/api/start-trial', async (req, res) => {
   try {
-    const { email } = req.body || {};
+    const { email, source } = req.body || {};
     if (!email || !email.includes('@')) {
       return res.status(400).json({ success: false, error: 'Valid email required' });
     }
@@ -2273,9 +2273,36 @@ app.post('/api/start-trial', async (req, res) => {
 
     // Create new trial
     const expires = Date.now() + 14 * 24 * 60 * 60 * 1000;
-    const trial = { email: normalEmail, started: Date.now(), expires, converted: false };
-    await kvSet(key, trial, 14 * 24 * 60 * 60); // 14 days TTL
-    console.log(`✓ Trial started: ${normalEmail}`);
+    const utmSource = source || 'pro-trial';
+    const trial = { email: normalEmail, started: Date.now(), expires, converted: false, source: utmSource };
+
+    // Store active trial (14-day TTL for auth checks)
+    await kvSet(key, trial, 14 * 24 * 60 * 60);
+
+    // Store permanent log entry so the email is never lost after trial expires
+    await kvSet(`trial-log:${normalEmail}`, { ...trial, logged_at: Date.now() }, 0);
+
+    // Add to free Beehiiv newsletter so we can email them during the trial
+    const apiKey = process.env.BEEHIIV_API_KEY;
+    const pubId = process.env.BEEHIIV_PUB_ID;
+    if (apiKey && pubId) {
+      try {
+        await fetch(`https://api.beehiiv.com/v2/publications/${pubId}/subscriptions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            email: normalEmail,
+            utm_source: utmSource,
+            utm_medium: 'trial',
+            referring_site: 'divotlab.com/pro'
+          })
+        });
+      } catch (e) {
+        console.warn('Beehiiv subscribe on trial failed (non-fatal):', e.message);
+      }
+    }
+
+    console.log(`✓ Trial started: ${normalEmail} (source: ${utmSource})`);
     res.json({ success: true, trial: true, days_left: 14, expires });
   } catch (error) {
     console.error('Start trial error:', error);

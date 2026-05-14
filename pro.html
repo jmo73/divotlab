@@ -130,6 +130,22 @@ html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3
 .spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(201,168,76,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* ── COURSE FIT SEARCH ── */
+.cf-search-wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.cf-search-inner{position:relative;flex:1;max-width:320px;}
+.cf-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:rgba(250,250,250,0.3);pointer-events:none;}
+.cf-search-input{width:100%;background:var(--black-card);border:1px solid var(--border);border-radius:8px;padding:9px 32px 9px 32px;font-family:var(--body);font-size:13px;color:var(--white);outline:none;transition:border-color .2s;}
+.cf-search-input:focus{border-color:rgba(201,168,76,0.4);}
+.cf-search-input::placeholder{color:rgba(250,250,250,0.22);}
+.cf-search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(250,250,250,0.3);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;transition:color .15s;}
+.cf-search-clear:hover{color:rgba(250,250,250,0.7);}
+.cf-search-count{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.25);white-space:nowrap;}
+html[data-theme="light"] .cf-search-input{background:#fff;border-color:rgba(28,27,24,0.12);color:#1C1B18;}
+html[data-theme="light"] .cf-search-input::placeholder{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cf-search-icon{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cf-search-clear{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cf-search-count{color:rgba(28,27,24,0.3);}
+
 /* ── COURSE FIT TABLE ── */
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 #cfTable,#vfTable,#liveTable,#muTable,#dfsTable,#accContent{overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -954,6 +970,14 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
 
   <!-- Tab 1: Course Fit -->
   <div class="tab-content active" id="tab-coursefit">
+    <div class="cf-search-wrap" id="cfSearchWrap" style="display:none;margin-bottom:14px;">
+      <div class="cf-search-inner">
+        <svg class="cf-search-icon" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input type="text" id="cfSearch" class="cf-search-input" placeholder="Search players…" oninput="filterCF(this.value)" autocomplete="off" spellcheck="false">
+        <button class="cf-search-clear" id="cfSearchClear" onclick="clearCFSearch()" style="display:none;">×</button>
+      </div>
+      <span class="cf-search-count" id="cfSearchCount"></span>
+    </div>
     <div id="cfLoading" class="loading-msg"><div class="spin"></div><br>Loading course-fit rankings…</div>
     <div id="cfTable" style="display:none;"></div>
   </div>
@@ -1192,7 +1216,7 @@ async function startTrial(){
   try {
     var res = await fetch(API+'/api/start-trial',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email})
+      body: JSON.stringify({email, source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct'})
     });
     var data = await res.json();
     if(data.success){
@@ -1718,6 +1742,10 @@ function renderCourseFit(d){
   var cfEl = document.getElementById('cfTable');
   cfEl.innerHTML = html;
   cfEl.style.display='block';
+  document.getElementById('cfSearchWrap').style.display='flex';
+  // Re-apply any active search after re-render (e.g. after sort)
+  var q = document.getElementById('cfSearch').value;
+  if(q) filterCF(q); else updateCFCount();
 }
 
 // Patch odds cells after value data loads (avoids re-rendering entire table)
@@ -1816,6 +1844,49 @@ function sortCF(col){
   if(!courseFitData) return;
   renderCourseFit(courseFitData);
   updateCourseFitOdds();
+}
+
+function filterCF(q){
+  var query = (q||'').toLowerCase().trim();
+  var clear = document.getElementById('cfSearchClear');
+  if(clear) clear.style.display = query ? 'block' : 'none';
+  var total = 0, visible = 0;
+  document.querySelectorAll('.cf-row[data-player]').forEach(function(row){
+    total++;
+    var name = (row.getAttribute('data-player')||'').toLowerCase();
+    var show = !query || name.includes(query);
+    row.style.display = show ? '' : 'none';
+    // Keep approach/history panels in sync
+    var dgId = row.querySelector('.cf-approach-btn');
+    if(dgId){
+      var idAttr = dgId.getAttribute('onclick')||'';
+      var m = idAttr.match(/toggleApproach\((\d+)/);
+      if(m){
+        var apPanel = document.getElementById('cfap-'+m[1]);
+        var hpPanel = document.getElementById('cfhp-'+m[1]);
+        if(apPanel) apPanel.style.display = show ? apPanel._prevDisplay||'none' : 'none';
+        if(hpPanel) hpPanel.style.display = show ? hpPanel._prevDisplay||'none' : 'none';
+      }
+    }
+    if(show) visible++;
+  });
+  updateCFCount(visible, total, query);
+}
+
+function updateCFCount(visible, total, query){
+  var countEl = document.getElementById('cfSearchCount');
+  if(!countEl) return;
+  if(!query){
+    countEl.textContent = '';
+    return;
+  }
+  countEl.textContent = visible + ' of ' + total + ' players';
+}
+
+function clearCFSearch(){
+  var input = document.getElementById('cfSearch');
+  if(input){ input.value = ''; input.focus(); }
+  filterCF('');
 }
 
 function sortVF(col){
