@@ -456,35 +456,6 @@ html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 
-/* ── BEST BETS CARD ── */
-.bb-wrap{background:var(--black-mid);border-bottom:1px solid var(--border);padding:20px 40px;}
-.bb-wrap.collapsed .bb-header{margin-bottom:0;}
-.bb-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.bb-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.1);border:1px solid rgba(91,191,133,0.2);padding:4px 12px;border-radius:20px;}
-.bb-sub{font-size:12px;color:rgba(250,250,250,0.25);}
-.bb-grid{display:flex;gap:12px;flex-wrap:nowrap;}
-.bb-card{background:var(--black-card);border:1px solid rgba(91,191,133,0.15);border-radius:10px;padding:16px;flex:1 1 0;min-width:0;position:relative;}
-.bb-card.watch{border-color:rgba(201,168,76,0.2);}
-.bb-signal{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:3px;}
-.bb-signal.strong{background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);}
-.bb-signal.watch{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
-.bb-player{font-size:15px;font-weight:600;margin-bottom:5px;padding-right:60px;}
-.bb-meta{display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
-.bb-market{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(90,143,168,0.15);border:1px solid rgba(90,143,168,0.25);color:var(--blue-mid);padding:3px 7px;border-radius:4px;}
-.bb-odds{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--gold);}
-.bb-book{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.3);}
-.bb-stats{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);}
-.bb-stat{display:flex;flex-direction:column;gap:2px;}
-.bb-stat-val{font-family:var(--mono);font-size:13px;font-weight:500;}
-.bb-stat-val.green{color:var(--green-light);}
-.bb-stat-val.gold{color:var(--gold);}
-.bb-stat-lbl{font-family:var(--mono);font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,250,250,0.22);}
-html[data-theme="light"] .bb-wrap{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
-html[data-theme="light"] .bb-card{background:#FFFFFF;border-color:rgba(27,77,62,0.2);}
-html[data-theme="light"] .bb-card.watch{border-color:rgba(184,150,12,0.25);}
-html[data-theme="light"] .bb-player{color:#1C1B18;}
-html[data-theme="light"] .bb-book{color:rgba(28,27,24,0.35);}
-html[data-theme="light"] .bb-stat-lbl{color:rgba(28,27,24,0.3);}
 
 /* ── COLLAPSIBLE CARD SHARED ── */
 .card-header-toggle{cursor:pointer;user-select:none;}
@@ -817,10 +788,6 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   .dfs-builder-actions{justify-content:stretch;}
   .dfs-act-btn{flex:1;}
 
-  /* Best Bets */
-  .bb-wrap{padding:16px;}
-  .bb-grid{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;}
-  .bb-grid::-webkit-scrollbar{display:none;}
 
   /* Keep badge + tourney on one line */
   .picks-card-header,.bb-header{flex-wrap:nowrap;}
@@ -954,8 +921,6 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
     </div>
   </div>
 
-  <!-- Best Bets Card -->
-  <div id="bestBetsCard" style="display:none;"></div>
 
   <!-- Tabs -->
   <div class="pro-tabs">
@@ -1310,68 +1275,12 @@ function switchTab(id, btn){
 }
 
 // ── BEST BETS ─────────────────────────────────────────────────────────────────
-function renderBestBets(){
-  var card = document.getElementById('bestBetsCard');
-  if(!card||!valueBetsData.length||!courseFitData||!courseFitData.field) return;
-
-  var cfMap = {};
-  courseFitData.field.forEach(function(p){ cfMap[p.player_name] = p; });
-
-  var marketLabel = {top_5:'Top 5',top_10:'Top 10',top_20:'Top 20',win:'Outright'};
-  var marketBadgeCls = {top_5:'bet-top5',top_10:'bet-top10',top_20:'bet-top20',win:'bet-win'};
-
-  // Score each bet: edge weighted up by course fit
-  var scored = valueBetsData
-    .filter(function(b){ return b.edgePct>=5 && b.bestOdds<=15 && b.dgProbPct>=20; })
-    .map(function(b){
-      var cf = cfMap[b.player];
-      var fitScore = cf ? (cf.fitScore||0) : 0;
-      var fitMult = fitScore>=80?1.5:fitScore>=65?1.25:fitScore>=50?1.0:0.75;
-      return { b:b, fitScore:fitScore, composite: b.edgePct * fitMult };
-    })
-    .sort(function(a,b){ return b.composite-a.composite; })
-    .slice(0,4);
-
-  if(!scored.length){ card.style.display='none'; return; }
-
-  var html = '<div class="bb-wrap" id="bbWrap"><div class="bb-header card-header-toggle" onclick="toggleBestBets()">'
-    +'<span class="bb-badge">Best Bets</span>'
-    +'<span class="bb-sub">Model edge × course fit &nbsp;·&nbsp; '+courseFitData.tournament.event_name+'</span>'
-    +'<span class="card-chevron" id="bbChevron"></span>'
-    +'</div><div class="card-body" id="bbBody"><div class="bb-grid">';
-
-  scored.forEach(function(item){
-    var b = item.b;
-    var dls = calcDivotLabScore(item.fitScore, b.edgePct>0?b.edgePct:null);
-    var dlsStr = dls!=null ? '<span style="font-family:var(--mono);font-size:11px;font-weight:700;color:'+(dls>=75?'var(--gold)':dls>=60?'var(--green-light)':'var(--blue-mid)')+'">DLS '+dls+'</span> &nbsp;·&nbsp; ' : '';
-    var bookShort = b.bestBook.replace('draftkings','DK').replace('fanduel','FD').replace('betmgm','MGM').replace('bet365','B365').replace('caesars','CZR').replace('pinnacle','PIN').toUpperCase();
-    html += '<div class="pick-card">'
-      +'<div class="pick-player">'+b.player+'</div>'
-      +'<div class="pick-meta">'
-        +'<span class="pick-bet-badge">'+marketLabel[b.market]+'</span>'
-        +'<span class="pick-odds">'+fmtAm(b.amOdds)+'</span>'
-        +'<span class="pick-book">'+bookShort+'</span>'
-      +'</div>'
-      +'<div class="pick-reasoning">'+dlsStr+'Edge: +'+(b.edgePct).toFixed(1)+'% &nbsp;·&nbsp; Fit: '+(item.fitScore||'—')+'&nbsp;·&nbsp; Model: '+(b.dgProbPct||'—')+'%</div>'
-      +'</div>';
-  });
-
-  html += '</div></div></div>';
-  card.innerHTML = html;
-  card.style.display = 'block';
-  // Default collapsed
-  var body = document.getElementById('bbBody');
-  var wrap = document.getElementById('bbWrap');
-  var chev = document.getElementById('bbChevron');
-  if(body&&wrap&&chev){ body.classList.add('hidden'); wrap.classList.add('collapsed'); chev.classList.add('up'); }
-}
 
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
 async function loadAllData(){
   await loadCourseFit();       // renders table with — odds initially
   await loadValueData();       // builds top10OddsMap as side effect
   updateCourseFitOdds();       // patches odds cells without re-rendering
-  renderBestBets();            // synthesizes edge × fit after both datasets ready
   captureOddsSnapshot();       // snapshot current odds for line movement tracking
   setTimeout(pollOddsRefresh, 5*60*1000); // begin polling for line movement
   loadCourseHistory();         // pre-fetch course history in background
@@ -1706,7 +1615,7 @@ function renderCourseFit(d){
       +'<span class="cf-th-sort'+cfSortCls('sg_arg')+'" onclick="sortCF(\'sg_arg\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">ARG'+cfSortArrow('sg_arg')+'</span>'
       +'<span class="cf-th-sort'+cfSortCls('sg_putt')+'" onclick="sortCF(\'sg_putt\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">Putt'+cfSortArrow('sg_putt')+'</span>'
     +'</span>'
-    +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars.<br><br>These reflect pre-round lines. Books typically suspend outright markets during live play — use these for reference, always verify at the book before betting.',true)+'</span>'
+    +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars.<br><br>Reflects pre-round lines — always verify at the book before betting.',true)+'</span>'
     +'<span class="cf-th cf-th-sort'+cfSortCls('dls')+'" onclick="sortCF(\'dls\')" style="cursor:pointer;">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week.',true)+' <span class="sort-arrow">'+cfSortArrow('dls')+'</span></span>'
     +'</div>';
 
@@ -1954,7 +1863,7 @@ function renderValueFinder(bets, market){
   var html = '<div class="vf-table">'
     +'<div class="vf-head">'
     +'<span class="vf-th">Player</span>'
-    +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.<br><br>Reflects pre-round lines — books often suspend outright markets during live play.',false,arrow('odds'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.<br><br>Reflects pre-round lines — always verify at the book before betting.',false,arrow('odds'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced. A 15% edge means 15% more expected value than fair odds.',false,arrow('edge'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')" style="white-space:nowrap;">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability this specific outcome occurs (e.g., top-10 finish). NOT an outright win probability — a top-20 bet showing 60% means 60% chance of finishing top 20.',false,arrow('prob'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')" style="white-space:nowrap;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what wins at this venue. High fit + high edge = strongest signal.',false,arrow('fit'))+'</span>'
@@ -2973,15 +2882,6 @@ function togglePicksCard(){
   chev.classList.toggle('up', collapsed);
 }
 
-function toggleBestBets(){
-  var wrap = document.getElementById('bbWrap');
-  var body = document.getElementById('bbBody');
-  var chev = document.getElementById('bbChevron');
-  if(!wrap||!body||!chev) return;
-  var collapsed = body.classList.toggle('hidden');
-  wrap.classList.toggle('collapsed', collapsed);
-  chev.classList.toggle('up', collapsed);
-}
 
 
 function sortLive(col){
