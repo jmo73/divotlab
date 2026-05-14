@@ -1144,30 +1144,42 @@ html[data-theme="light"] .lab-cf-desc-sub{color:rgba(28,27,24,0.35);}
 .lab-cf-pw-link{color:rgba(201,168,76,0.5);text-decoration:none;}
 
 /* ── Course Fit section ── */
-.lab-cf-row{display:grid;grid-template-columns:40px 1fr 58px 200px;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .15s;}
+.lab-cf-row{display:grid;grid-template-columns:40px 1fr 68px 220px 90px;align-items:center;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .15s;}
 .lab-cf-row:last-child{border-bottom:none;}
 .lab-cf-row:hover{background:rgba(255,255,255,0.02);}
 .lab-cf-row.top3{background:rgba(201,168,76,0.03);}
-.lab-cf-rank{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:rgba(250,250,250,0.28);text-align:center;}
+.lab-cf-rank{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:rgba(250,250,250,0.28);}
 .lab-cf-rank.r1{color:#C9A84C;}
 .lab-cf-rank.r2{color:rgba(201,168,76,0.6);}
 .lab-cf-rank.r3{color:rgba(201,168,76,0.4);}
-.lab-cf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.88);}
-.lab-cf-country{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(250,250,250,0.2);margin-top:2px;}
-.lab-cf-score{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:var(--green-light);text-align:center;line-height:1;}
+.lab-cf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.9);}
+.lab-cf-country{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(250,250,250,0.2);margin-top:2px;letter-spacing:0.05em;}
+.lab-cf-score{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;color:#5BBF85;text-align:center;line-height:1;}
 .lab-cf-score.dim{color:rgba(250,250,250,0.2);}
 .lab-cf-bars{display:flex;flex-direction:column;gap:4px;}
 .lab-cf-br{display:flex;align-items:center;gap:6px;}
-.lab-cf-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(250,250,250,0.25);width:26px;flex-shrink:0;}
-.lab-cf-track{flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.lab-cf-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(250,250,250,0.25);width:28px;flex-shrink:0;}
+.lab-cf-track{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
 .lab-cf-fill{height:100%;border-radius:2px;}
-.lab-cf-val{font-family:'JetBrains Mono',monospace;font-size:9px;width:30px;text-align:right;flex-shrink:0;}
-.lab-cf-pos{color:var(--green-light);}
+.lab-cf-val{font-family:'JetBrains Mono',monospace;font-size:9px;width:32px;text-align:right;flex-shrink:0;}
+.lab-cf-pos{color:#5BBF85;}
 .lab-cf-neg{color:#D94848;}
 .lab-cf-zero{color:rgba(250,250,250,0.2);}
-.lab-cf-table{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;}
-.lab-cf-head{display:grid;grid-template-columns:40px 1fr 58px 200px;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);}
-.lab-cf-th{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.25);}
+.lab-cf-signal{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;}
+.lab-cf-signal.strong{background:rgba(91,191,133,0.12);color:#5BBF85;border:1px solid rgba(91,191,133,0.25);}
+.lab-cf-signal.good{background:rgba(201,168,76,0.1);color:#C9A84C;border:1px solid rgba(201,168,76,0.2);}
+.lab-cf-signal.neutral{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.25);border:1px solid rgba(255,255,255,0.07);}
+.lab-cf-table{background:#161614;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.lab-cf-head{display:grid;grid-template-columns:40px 1fr 68px 220px 90px;padding:11px 20px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);}
+.lab-cf-th{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
+@media(max-width:768px){
+  .lab-cf-row,.lab-cf-head{grid-template-columns:32px 1fr 56px 76px!important;padding-left:12px;padding-right:12px;}
+  .lab-cf-row>*:nth-child(4),.lab-cf-head>*:nth-child(4){display:none!important;}
+  .lab-cf-score{font-size:16px;}
+  .lab-cf-player{font-size:13px;}
+  .lab-cf-signal{font-size:8px;padding:2px 6px;}
+  .lab-cf-table{min-width:0;}
+}
 
 /* Charts — liquid glass */
 html[data-theme="light"] .chart-card {
@@ -1204,14 +1216,26 @@ html[data-theme="light"] .fit-stat .stat-value { color: #1C1B18; }
 /* ── Course Fit section — light mode ── */
 html[data-theme="light"] .lab-cf-table { background: #FFFFFF; border-color: rgba(28,27,24,0.1); }
 html[data-theme="light"] .lab-cf-head { background: rgba(28,27,24,0.03); border-bottom-color: rgba(28,27,24,0.08); }
-html[data-theme="light"] .lab-cf-th { color: rgba(28,27,24,0.4); }
-html[data-theme="light"] .lab-cf-row { border-bottom-color: rgba(28,27,24,0.06); }
+html[data-theme="light"] .lab-cf-th { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .lab-cf-row { border-bottom-color: rgba(28,27,24,0.05); }
 html[data-theme="light"] .lab-cf-row:hover { background: rgba(28,27,24,0.02); }
 html[data-theme="light"] .lab-cf-row.top3 { background: rgba(201,168,76,0.04); }
 html[data-theme="light"] .lab-cf-rank { color: rgba(28,27,24,0.35); }
 html[data-theme="light"] .lab-cf-rank.r1 { color: #B8960C; }
 html[data-theme="light"] .lab-cf-rank.r2 { color: rgba(184,150,12,0.65); }
 html[data-theme="light"] .lab-cf-rank.r3 { color: rgba(184,150,12,0.45); }
+html[data-theme="light"] .lab-cf-player { color: #1C1B18; }
+html[data-theme="light"] .lab-cf-country { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .lab-cf-score { color: #1B4D3E; }
+html[data-theme="light"] .lab-cf-score.dim { color: rgba(28,27,24,0.2); }
+html[data-theme="light"] .lab-cf-lbl { color: rgba(28,27,24,0.35); }
+html[data-theme="light"] .lab-cf-track { background: rgba(28,27,24,0.07); }
+html[data-theme="light"] .lab-cf-pos { color: #1B4D3E; }
+html[data-theme="light"] .lab-cf-neg { color: #C0392B; }
+html[data-theme="light"] .lab-cf-zero { color: rgba(28,27,24,0.25); }
+html[data-theme="light"] .lab-cf-signal.neutral { background: rgba(28,27,24,0.05); color: rgba(28,27,24,0.35); border-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .lab-cf-signal.strong { color: #1B4D3E; background: rgba(27,77,62,0.08); border-color: rgba(27,77,62,0.2); }
+html[data-theme="light"] .lab-cf-signal.good { color: #B8960C; background: rgba(184,150,12,0.08); border-color: rgba(184,150,12,0.2); }
 html[data-theme="light"] .lab-cf-player { color: #1C1B18; }
 html[data-theme="light"] .lab-cf-country { color: rgba(28,27,24,0.35); }
 html[data-theme="light"] .lab-cf-score { color: #1B4D3E; }
@@ -1895,6 +1919,11 @@ html[data-theme="light"] .footer-bottom {
     var rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
     var score = p.fitScore!=null?p.fitScore:'—';
     var scoreCls = p.fitScore!=null?'':'dim';
+    var topPct = p.percentile!=null?p.percentile:0;
+    var sigCls, sigLabel;
+    if(topPct>=85){ sigCls='strong'; sigLabel='Strong Fit'; }
+    else if(topPct>=65){ sigCls='good'; sigLabel='Good Fit'; }
+    else { sigCls='neutral'; sigLabel='Neutral'; }
     return '<div class="lab-cf-row'+(i<3?' top3':'')+'">'
       +'<div class="lab-cf-rank '+rc+'">'+(i+1)+'</div>'
       +'<div><div class="lab-cf-player">'+p.player_name+'</div>'+(p.country?'<div class="lab-cf-country">'+p.country+'</div>':'')+'</div>'
@@ -1902,6 +1931,7 @@ html[data-theme="light"] .footer-bottom {
       +'<div class="lab-cf-bars">'
         +sgBar('App',p.sg_app)+sgBar('OTT',p.sg_ott)+sgBar('ARG',p.sg_arg)+sgBar('Putt',p.sg_putt)
       +'</div>'
+      +'<div><span class="lab-cf-signal '+sigCls+'">'+sigLabel+'</span></div>'
       +'</div>';
   }
 
@@ -1918,6 +1948,7 @@ html[data-theme="light"] .footer-bottom {
           +'<span class="lab-cf-th">Player</span>'
           +'<span class="lab-cf-th">Fit</span>'
           +'<span class="lab-cf-th">SG Breakdown</span>'
+          +'<span class="lab-cf-th">Signal</span>'
         +'</div>';
 
       // Top FREE_LIMIT rows — fully visible
