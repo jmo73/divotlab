@@ -1,18 +1,18 @@
 {
-  "tournament": "PGA Championship",
+  "tournament": "CJ Cup Byron Nelson",
   "tour": "PGA Tour",
-  "week_of": "May 14–17, 2026",
-  "published": "2026-05-14",
+  "week_of": "May 21–25, 2026",
+  "published": "2026-05-21",
   "pick": {
-    "player": "J.J. Spaun",
-    "bet_type": "Top 20",
+    "player": "Chandler Blanchet",
+    "bet_type": "Top 10",
     "bet_detail": null,
-    "odds": "+310",
-    "book": "DraftKings",
-    "reasoning": "The model gives Spaun a 27% probability of finishing top 20 — DraftKings offers +310, which is 11% better than model fair value. He's coming off a T5 at the Truist Championship last week with 71% driving accuracy, the exact profile that holds up at a major.",
+    "odds": "+1500",
+    "book": "Caesars",
+    "reasoning": "The DataGolf model gives Blanchet an 8.2% top-10 probability — Caesars implies only 6.3% at +1500, a 21.5% edge. TPC Craig Ranch rewards consistent iron play, and Blanchet is one of the clearest positive-EV plays on the board this week.",
     "confidence": "High",
     "result": null,
     "result_detail": null
   },
-  "teaser": "3 more picks including top-10s and another top-20 are in this week's Lab Notes Pro email."
+  "teaser": "3 more picks including top-5 plays and a sleeper are in this week's Lab Notes Pro email."
 }

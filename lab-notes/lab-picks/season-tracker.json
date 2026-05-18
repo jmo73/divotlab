@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-05-11",
+  "last_updated": "2026-05-18",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 33,
-    "total_hits": 17,
-    "hit_rate_pct": 51.5,
-    "events_tracked": 8,
+    "total_picks": 37,
+    "total_hits": 19,
+    "hit_rate_pct": 51.4,
+    "events_tracked": 9,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
       "top_5":   { "picks": 3,  "hits": 2 },
-      "top_10":  { "picks": 13, "hits": 7 },
-      "top_20":  { "picks": 6,  "hits": 4 },
+      "top_10":  { "picks": 15, "hits": 9 },
+      "top_20":  { "picks": 8,  "hits": 4 },
       "matchup": { "picks": 10, "hits": 4 }
     },
     "units": {
-      "wagered":      33.0,
-      "returned":     40.50,
-      "profit_loss":  7.50,
-      "roi_pct":      22.7
+      "wagered":      37.0,
+      "returned":     57.10,
+      "profit_loss":  20.10,
+      "roi_pct":      54.3
     }
   },
 
@@ -68,6 +68,20 @@
       ],
       "sleepers": [
         { "player": "Gotterup, Chris", "bet": "Top 5", "odds": 900, "book": "FanDuel", "result": "loss", "note": "Finished T14. Not counted in totals." }
+      ]
+    },
+    {
+      "event": "PGA Championship",
+      "date": "2026-05-14",
+      "picks_count": 4,
+      "hits_count": 2,
+      "net_units": 12.60,
+      "notes": "Best single-week result of the season. Two top-10 hits at +660 and +800.",
+      "picks": [
+        { "player": "Spaun, J.J.",      "bet": "Top 20", "book": "DraftKings", "odds": 310, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut — posted +6 through two rounds" },
+        { "player": "Scott, Adam",      "bet": "Top 20", "book": "Bet365",     "odds": 275, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut — putting numbers well below season avg" },
+        { "player": "Gotterup, Chris",  "bet": "Top 10", "book": "DraftKings", "odds": 660, "type": "top_10", "units": 1.0, "result": "win",  "profit":  6.60, "note": "Finished T10 at -3" },
+        { "player": "Kitayama, Kurt",   "bet": "Top 10", "book": "Bet365",     "odds": 800, "type": "top_10", "units": 1.0, "result": "win",  "profit":  8.00, "note": "Finished T10 at -3, model's largest edge in top-10 market" }
       ]
     }
   ]

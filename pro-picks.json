@@ -1,49 +1,49 @@
 {
-  "tournament": "PGA Championship",
-  "week_of": "May 14–17, 2026",
-  "published": "2026-05-14",
+  "tournament": "CJ Cup Byron Nelson",
+  "week_of": "May 21–25, 2026",
+  "published": "2026-05-21",
   "picks": [
     {
-      "player": "J.J. Spaun",
-      "bet_type": "Top 20",
-      "bet_detail": null,
-      "odds": "+310",
-      "book": "DraftKings",
-      "confidence": "High",
-      "reasoning": "Model gives Spaun a 27.1% probability of finishing top 20 — DraftKings at +310 implies 24.4%, an 11% edge. Coming off a T5 at the Truist with 71% driving accuracy across the week.",
-      "result": null,
-      "result_detail": null
-    },
-    {
-      "player": "Adam Scott",
-      "bet_type": "Top 20",
-      "bet_detail": null,
-      "odds": "+275",
-      "book": "Bet365",
-      "confidence": "High",
-      "reasoning": "Highest model probability in the card at 28.7% for a top 20. Bet365 at +275 implies 26.7% — a 7.7% edge. Consistent ball-striker with the major experience to manage a course without giving shots back.",
-      "result": null,
-      "result_detail": null
-    },
-    {
-      "player": "Chris Gotterup",
+      "player": "Chandler Blanchet",
       "bet_type": "Top 10",
       "bet_detail": null,
-      "odds": "+660",
-      "book": "DraftKings",
-      "confidence": "Medium",
-      "reasoning": "Model probability 14.6% for a top 10 — DraftKings implies 13.2%, a 10.9% edge. One of the better ball-strikers on tour without the public attention that inflates prices.",
+      "odds": "+1500",
+      "book": "Caesars",
+      "reasoning": "Model probability 8.2% for a top-10 — Caesars at +1500 implies 6.3%, producing a 21.5% edge. Best EV play in this field by a significant margin.",
+      "confidence": "High",
       "result": null,
       "result_detail": null
     },
     {
-      "player": "Kurt Kitayama",
+      "player": "Ryo Hisatsune",
+      "bet_type": "Top 5",
+      "bet_detail": null,
+      "odds": "+810",
+      "book": "DraftKings",
+      "reasoning": "Model probability 10.6% for a top-5 finish — DK at +810 implies 11.0%, essentially fair value. Hisatsune is one of the model's top course-fit candidates this week and the cleanest mid-priced play on the board.",
+      "confidence": "High",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Zach Bauchou",
+      "bet_type": "Top 5",
+      "bet_detail": null,
+      "odds": "+3300",
+      "book": "DraftKings",
+      "reasoning": "Model probability 3.2% for top 5 — DK at +3300 implies 2.9%, a 9.4% edge. Consistent iron player on a course that rewards steady approach play over raw distance.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Paul Peterson",
       "bet_type": "Top 10",
       "bet_detail": null,
-      "odds": "+800",
-      "book": "Bet365",
+      "odds": "+3000",
+      "book": "Caesars",
+      "reasoning": "Model probability 3.5% for top 10 — Caesars at +3000 implies 3.2%, a 9.8% edge. Below the radar, underpriced relative to model data in a market where public attention concentrates on Scheffler and Spieth.",
       "confidence": "Medium",
-      "reasoning": "Model probability 12.8% for a top 10 — Bet365 at +800 implies 11.1%, the largest edge in the top-10 market at 15.1%. The market consistently underprices him at majors.",
       "result": null,
       "result_detail": null
     }
