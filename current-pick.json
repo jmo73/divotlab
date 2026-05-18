@@ -4,15 +4,15 @@
   "week_of": "May 21–25, 2026",
   "published": "2026-05-21",
   "pick": {
-    "player": "Chandler Blanchet",
+    "player": "Si Woo Kim",
     "bet_type": "Top 10",
     "bet_detail": null,
-    "odds": "+1500",
-    "book": "Caesars",
-    "reasoning": "The DataGolf model gives Blanchet an 8.2% top-10 probability — Caesars implies only 6.3% at +1500, a 21.5% edge. TPC Craig Ranch rewards consistent iron play, and Blanchet is one of the clearest positive-EV plays on the board this week.",
+    "odds": "+145",
+    "book": "Bet365",
+    "reasoning": "The DataGolf model rates Kim as the #2 player in the Byron Nelson field behind Scheffler. At +145 on bet365, that's near even money on a player with a 37% top-10 probability — the highest in the field below Scheffler. Made the PGA Championship cut last week and fits TPC Craig Ranch's iron-and-putting profile.",
     "confidence": "High",
     "result": null,
     "result_detail": null
   },
-  "teaser": "3 more picks including top-5 plays and a sleeper are in this week's Lab Notes Pro email."
+  "teaser": "3 more picks — two additional top-20 plays and a near-even-money top-20 — are in this week's Lab Notes Pro email."
 }
