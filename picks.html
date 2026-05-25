@@ -459,21 +459,25 @@ footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.06);paddi
   fetch('/lab-notes/lab-picks/season-tracker.json')
     .then(function(r){ return r.json(); })
     .then(function(d){
-      var weeks = (d.weekly_picks || []).slice().reverse().slice(0, 4);
+      var weeks = (d.weekly_picks || []).slice().reverse();
       var list = document.getElementById('resultsList');
       if(!weeks.length){ list.innerHTML = '<div class="results-loading">No results yet this season.</div>'; return; }
 
       list.innerHTML = weeks.map(function(week){
-        var picks = (week.picks || []).slice(0, 3);
-        return picks.map(function(pick){
+        var picks = (week.picks || []).filter(function(p){ return p.result !== 'void'; });
+        if(!picks.length) return '';
+        var eventHeader = '<div style="padding:6px 0 4px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.2);">' + week.event + '</div>';
+        return eventHeader + picks.map(function(pick){
           var pillClass = pick.result === 'win' ? 'pill-win' : pick.result === 'loss' ? 'pill-loss' : 'pill-pending';
           var pillText = pick.result === 'win' ? '✓ Hit' : pick.result === 'loss' ? '✗ Miss' : '⏳ Pending';
-          var oddsStr = pick.odds > 0 ? '+' + pick.odds : '' + pick.odds;
+          var oddsVal = pick.odds;
+          var oddsStr = typeof oddsVal === 'number' ? (oddsVal > 0 ? '+' + oddsVal : '' + oddsVal) : (oddsVal || '');
           var betLabel = pick.bet || pick.type || '';
+          var resultNote = pick.note ? ' · ' + pick.note : '';
           return '<div class="result-row">' +
             '<div>' +
-              '<div class="result-event">' + week.event + '</div>' +
               '<div class="result-pick">' + pick.player + ' <span>· ' + betLabel + '</span></div>' +
+              (pick.note ? '<div style="font-size:11px;color:rgba(250,250,250,0.25);margin-top:3px;">' + pick.note + '</div>' : '') +
             '</div>' +
             '<div class="result-odds">' + oddsStr + '<br><span style="font-size:10px;color:rgba(250,250,250,0.2);">' + (pick.book || '') + '</span></div>' +
             '<div class="result-pill ' + pillClass + '">' + pillText + '</div>' +
