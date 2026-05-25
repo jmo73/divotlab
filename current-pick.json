@@ -1,18 +1,18 @@
 {
-  "tournament": "CJ Cup Byron Nelson",
+  "tournament": "Charles Schwab Challenge",
   "tour": "PGA Tour",
-  "week_of": "May 21–25, 2026",
-  "published": "2026-05-21",
+  "week_of": "May 28–Jun 1, 2026",
+  "published": "2026-05-28",
   "pick": {
-    "player": "Si Woo Kim",
+    "player": "Andrew Putnam",
     "bet_type": "Top 10",
     "bet_detail": null,
-    "odds": "+145",
-    "book": "Bet365",
-    "reasoning": "The DataGolf model rates Kim as the #2 player in the Byron Nelson field behind Scheffler. At +145 on bet365, that's near even money on a player with a 37% top-10 probability — the highest in the field below Scheffler. Made the PGA Championship cut last week and fits TPC Craig Ranch's iron-and-putting profile.",
+    "odds": "+850",
+    "book": "FanDuel",
+    "reasoning": "The largest model-to-market gap in the top-10 field this week. Putnam is a Colonial regular whose controlled iron game and fairway accuracy match the course's demand profile — 35% approach weight — better than his odds reflect. FanDuel's +850 implies about 10.5% probability; the model puts it closer to 15.6%, a +36.8% edge.",
     "confidence": "High",
     "result": null,
     "result_detail": null
   },
-  "teaser": "3 more picks — two additional top-20 plays and a near-even-money top-20 — are in this week's Lab Notes Pro email."
+  "teaser": "3 more picks — including the model's #1 course-fit play and two additional high-EV top-10s — are in this week's Lab Notes Pro email."
 }
