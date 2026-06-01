@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-05-26",
+  "last_updated": "2026-06-01",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 41,
-    "total_hits": 20,
-    "hit_rate_pct": 48.8,
-    "events_tracked": 10,
+    "total_picks": 45,
+    "total_hits": 21,
+    "hit_rate_pct": 46.7,
+    "events_tracked": 11,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
       "top_5":   { "picks": 3,  "hits": 2 },
-      "top_10":  { "picks": 17, "hits": 10 },
-      "top_20":  { "picks": 10, "hits": 4 },
+      "top_10":  { "picks": 20, "hits": 11 },
+      "top_20":  { "picks": 11, "hits": 4 },
       "matchup": { "picks": 10, "hits": 4 }
     },
     "units": {
-      "wagered":      41.0,
-      "returned":     59.55,
-      "profit_loss":  18.55,
-      "roi_pct":      45.2
+      "wagered":      45.0,
+      "returned":     70.55,
+      "profit_loss":  25.55,
+      "roi_pct":      56.8
     }
   },
 
@@ -82,6 +82,20 @@
         { "player": "Scott, Adam",      "bet": "Top 20", "book": "Bet365",     "odds": 275, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut — putting numbers well below season avg" },
         { "player": "Gotterup, Chris",  "bet": "Top 10", "book": "DraftKings", "odds": 660, "type": "top_10", "units": 1.0, "result": "win",  "profit":  6.60, "note": "Finished T10 at -3" },
         { "player": "Kitayama, Kurt",   "bet": "Top 10", "book": "Bet365",     "odds": 800, "type": "top_10", "units": 1.0, "result": "win",  "profit":  8.00, "note": "Finished T10 at -3, model's largest edge in top-10 market" }
+      ]
+    },
+    {
+      "event": "Charles Schwab Challenge",
+      "date": "2026-05-28",
+      "picks_count": 4,
+      "hits_count": 1,
+      "net_units": 7.00,
+      "notes": "Cole's T2 playoff finish (lost to Henley birdie hole 1) hit the top-10 at +1000. Åberg and Putnam both T17. Svensson missed cut.",
+      "picks": [
+        { "player": "Aberg, Ludvig",   "bet": "Top 10", "book": "Bet365",  "odds": 500,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, averaged +0.63 SG: Approach" },
+        { "player": "Putnam, Andrew",   "bet": "Top 10", "book": "FanDuel", "odds": 850,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, near-zero approach avg across event" },
+        { "player": "Cole, Eric",       "bet": "Top 10", "book": "FanDuel", "odds": 1000, "type": "top_10", "units": 1.0, "result": "win",  "profit": 10.00, "note": "Finished T2 at -12 in playoff vs Henley" },
+        { "player": "Svensson, Adam",   "bet": "Top 20", "book": "FanDuel", "odds": 1000, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut at even par" }
       ]
     },
     {

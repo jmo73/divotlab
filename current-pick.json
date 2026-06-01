@@ -11,8 +11,8 @@
     "book": "FanDuel",
     "reasoning": "The largest model-to-market gap in the top-10 field this week. Putnam is a Colonial regular whose controlled iron game and fairway accuracy match the course's demand profile — 35% approach weight — better than his odds reflect. FanDuel's +850 implies about 10.5% probability; the model puts it closer to 15.6%, a +36.8% edge.",
     "confidence": "High",
-    "result": null,
-    "result_detail": null
+    "result": "loss",
+    "result_detail": "Finished T17 at -6 — approach average near-zero across the week"
   },
   "teaser": "3 more picks — including the model's #1 course-fit play and two additional high-EV top-10s — are in this week's Lab Notes Pro email."
 }

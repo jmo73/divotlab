@@ -11,8 +11,8 @@
       "book": "Bet365",
       "reasoning": "Model's #1 course-fit player at Colonial. Precision ball-striker who doesn't rely on distance off the tee — the Colonial archetype. Bet365 +500 is near-fair value against the model's implied probability, which is the play: #1 fit at no meaningful pricing disadvantage.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T17 at -6 — averaged +0.63 SG: Approach, not elite enough at Colonial"
     },
     {
       "player": "Andrew Putnam",
@@ -22,8 +22,8 @@
       "book": "FanDuel",
       "reasoning": "Largest model-to-market gap in the top-10 field (+36.8% EV). Colonial regular with a controlled iron game and fairway accuracy that fits the course's 35% approach weight. Market has him as an afterthought; model doesn't.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T17 at -6 — approach average near-zero across four rounds"
     },
     {
       "player": "Eric Cole",
@@ -33,8 +33,8 @@
       "book": "FanDuel",
       "reasoning": "Second-largest top-10 EV gap in the field (+24.2%). Approach-heavy game suits Colonial well. FanDuel at +1000 is significantly better than DraftKings — take FanDuel. Key stat to monitor: shorter-range iron accuracy through rounds 1 and 2.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "Finished T2 at -12 — reached playoff vs Henley, lost on birdie hole 1. Top 10 hit at +1000."
     },
     {
       "player": "Adam Svensson",
@@ -44,8 +44,8 @@
       "book": "FanDuel",
       "reasoning": "Largest positive EV in the top-20 market (+40.3% at FanDuel). Steady, accurate game fits Colonial's approach profile. FanDuel at +1000 vs Bet365 +750 — take FanDuel. Medium confidence due to cut variance in the top-20 market.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Missed cut at even par"
     }
   ]
 }
