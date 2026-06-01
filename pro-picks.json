@@ -1,51 +1,51 @@
 {
-  "tournament": "Charles Schwab Challenge",
-  "week_of": "May 28–Jun 1, 2026",
-  "published": "2026-05-28",
+  "tournament": "Memorial Tournament",
+  "week_of": "Jun 4–7, 2026",
+  "published": "2026-06-03",
   "picks": [
     {
-      "player": "Ludvig Åberg",
-      "bet_type": "Top 10",
-      "bet_detail": null,
-      "odds": "+500",
+      "player": "Hideki Matsuyama",
+      "bet_type": "H2H Matchup",
+      "bet_detail": "over Sam Burns",
+      "odds": "+105",
       "book": "Bet365",
-      "reasoning": "Model's #1 course-fit player at Colonial. Precision ball-striker who doesn't rely on distance off the tee — the Colonial archetype. Bet365 +500 is near-fair value against the model's implied probability, which is the play: #1 fit at no meaningful pricing disadvantage.",
+      "reasoning": "DG model has Matsuyama at -109 implied; Bet365 prices him as a +105 underdog. Matsuyama's approach game and Muirfield course history directly support the model's assessment. Burns' game relies on distance, which Muirfield's rough neutralizes.",
       "confidence": "High",
-      "result": "loss",
-      "result_detail": "Finished T17 at -6 — averaged +0.63 SG: Approach, not elite enough at Colonial"
+      "result": null,
+      "result_detail": null
     },
     {
-      "player": "Andrew Putnam",
-      "bet_type": "Top 10",
-      "bet_detail": null,
-      "odds": "+850",
-      "book": "FanDuel",
-      "reasoning": "Largest model-to-market gap in the top-10 field (+36.8% EV). Colonial regular with a controlled iron game and fairway accuracy that fits the course's 35% approach weight. Market has him as an afterthought; model doesn't.",
+      "player": "Russell Henley",
+      "bet_type": "H2H Matchup",
+      "bet_detail": "over Min Woo Lee",
+      "odds": "-143",
+      "book": "Bet365",
+      "reasoning": "Model fair odds: -155. Bet365 offers -143, better than fair by 12 points. Henley's precision game fits Muirfield's OTT/approach profile; Lee's power-dependent style is penalized by the heavy rough. Henley coming off a win at Colonial.",
       "confidence": "High",
-      "result": "loss",
-      "result_detail": "Finished T17 at -6 — approach average near-zero across four rounds"
+      "result": null,
+      "result_detail": null
     },
     {
-      "player": "Eric Cole",
-      "bet_type": "Top 10",
+      "player": "Russell Henley",
+      "bet_type": "Top 5",
       "bet_detail": null,
-      "odds": "+1000",
+      "odds": "+430",
       "book": "FanDuel",
-      "reasoning": "Second-largest top-10 EV gap in the field (+24.2%). Approach-heavy game suits Colonial well. FanDuel at +1000 is significantly better than DraftKings — take FanDuel. Key stat to monitor: shorter-range iron accuracy through rounds 1 and 2.",
+      "reasoning": "DG model fair: +413. FanDuel +430 is +3.4% positive EV. Coming off a win at Colonial with +1.98 SG: Approach per round. Muirfield's 30% approach weight aligns with the current form. Correlated with the H2H pick intentionally — both positions on the same player.",
       "confidence": "High",
-      "result": "win",
-      "result_detail": "Finished T2 at -12 — reached playoff vs Henley, lost on birdie hole 1. Top 10 hit at +1000."
+      "result": null,
+      "result_detail": null
     },
     {
-      "player": "Adam Svensson",
-      "bet_type": "Top 20",
+      "player": "J.J. Spaun",
+      "bet_type": "Top 5",
       "bet_detail": null,
-      "odds": "+1000",
-      "book": "FanDuel",
-      "reasoning": "Largest positive EV in the top-20 market (+40.3% at FanDuel). Steady, accurate game fits Colonial's approach profile. FanDuel at +1000 vs Bet365 +750 — take FanDuel. Medium confidence due to cut variance in the top-20 market.",
+      "odds": "+800",
+      "book": "Bet365",
+      "reasoning": "DG model fair: +760. Bet365 +800 is +4.7% positive EV. Accuracy-first game (fairway hitting, controlled iron play) fits Muirfield's OTT/approach balance. Finished T6 at Colonial confirming current form. Medium confidence due to Spaun's cut variance.",
       "confidence": "Medium",
-      "result": "loss",
-      "result_detail": "Missed cut at even par"
+      "result": null,
+      "result_detail": null
     }
   ]
 }

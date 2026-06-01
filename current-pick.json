@@ -1,18 +1,18 @@
 {
-  "tournament": "Charles Schwab Challenge",
+  "tournament": "Memorial Tournament",
   "tour": "PGA Tour",
-  "week_of": "May 28–Jun 1, 2026",
-  "published": "2026-05-28",
+  "week_of": "Jun 4–7, 2026",
+  "published": "2026-06-03",
   "pick": {
-    "player": "Andrew Putnam",
-    "bet_type": "Top 10",
+    "player": "Russell Henley",
+    "bet_type": "Top 5",
     "bet_detail": null,
-    "odds": "+850",
+    "odds": "+430",
     "book": "FanDuel",
-    "reasoning": "The largest model-to-market gap in the top-10 field this week. Putnam is a Colonial regular whose controlled iron game and fairway accuracy match the course's demand profile — 35% approach weight — better than his odds reflect. FanDuel's +850 implies about 10.5% probability; the model puts it closer to 15.6%, a +36.8% edge.",
+    "reasoning": "Henley just won the Charles Schwab Challenge averaging +1.98 SG: Approach per round — the same precision game Muirfield Village rewards. The DG model has his fair top-5 odds at +413; FanDuel offers +430, making this a positive expected value play on a player in confirmed form at a course that suits him directly.",
     "confidence": "High",
-    "result": "loss",
-    "result_detail": "Finished T17 at -6 — approach average near-zero across the week"
+    "result": null,
+    "result_detail": null
   },
-  "teaser": "3 more picks — including the model's #1 course-fit play and two additional high-EV top-10s — are in this week's Lab Notes Pro email."
+  "teaser": "3 more picks — including a H2H with major model edge and a second top-5 value play — are in this week's Lab Notes Pro email."
 }

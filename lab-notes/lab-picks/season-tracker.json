@@ -85,20 +85,6 @@
       ]
     },
     {
-      "event": "Charles Schwab Challenge",
-      "date": "2026-05-28",
-      "picks_count": 4,
-      "hits_count": 1,
-      "net_units": 7.00,
-      "notes": "Cole's T2 playoff finish (lost to Henley birdie hole 1) hit the top-10 at +1000. Åberg and Putnam both T17. Svensson missed cut.",
-      "picks": [
-        { "player": "Aberg, Ludvig",   "bet": "Top 10", "book": "Bet365",  "odds": 500,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, averaged +0.63 SG: Approach" },
-        { "player": "Putnam, Andrew",   "bet": "Top 10", "book": "FanDuel", "odds": 850,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, near-zero approach avg across event" },
-        { "player": "Cole, Eric",       "bet": "Top 10", "book": "FanDuel", "odds": 1000, "type": "top_10", "units": 1.0, "result": "win",  "profit": 10.00, "note": "Finished T2 at -12 in playoff vs Henley" },
-        { "player": "Svensson, Adam",   "bet": "Top 20", "book": "FanDuel", "odds": 1000, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut at even par" }
-      ]
-    },
-    {
       "event": "CJ Cup Byron Nelson",
       "date": "2026-05-21",
       "picks_count": 4,
@@ -110,6 +96,20 @@
         { "player": "Hisatsune, Ryo",     "bet": "Top 10", "book": "Bet365",     "odds": 375, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T19 at -15 — made cut but not top 10" },
         { "player": "McGreevy, Max",      "bet": "Top 20", "book": "Bet365",     "odds": 320, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut at -4" },
         { "player": "Blanchet, Chandler", "bet": "Top 20", "book": "Bet365",     "odds": 850, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut at E" }
+      ]
+    },
+    {
+      "event": "Charles Schwab Challenge",
+      "date": "2026-05-28",
+      "picks_count": 4,
+      "hits_count": 1,
+      "net_units": 7.00,
+      "notes": "Cole's T2 playoff finish (lost to Henley birdie hole 1) hit the top-10 at +1000. Åberg and Putnam both T17. Svensson missed cut.",
+      "picks": [
+        { "player": "Aberg, Ludvig",   "bet": "Top 10", "book": "Bet365",  "odds": 500,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, averaged +0.63 SG: Approach" },
+        { "player": "Putnam, Andrew",   "bet": "Top 10", "book": "FanDuel", "odds": 850,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T17, near-zero approach avg across event" },
+        { "player": "Cole, Eric",       "bet": "Top 10", "book": "FanDuel", "odds": 1000, "type": "top_10", "units": 1.0, "result": "win",  "profit": 10.00, "note": "Finished T2 at -12 in playoff vs Henley" },
+        { "player": "Svensson, Adam",   "bet": "Top 20", "book": "FanDuel", "odds": 1000, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut at even par" }
       ]
     }
   ]
