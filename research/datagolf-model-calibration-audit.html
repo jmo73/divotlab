@@ -9,7 +9,7 @@
   gtag('config', 'G-PEX1MKH2LP');
 </script>
 <meta charset="UTF-8">
-<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
+<script>!function(){var t=localStorage.getItem('divotlab-research-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conservative by Design: A Six-Year Calibration Audit — Divot Lab Research</title>
 <meta name="description" content="DataGolf's prediction model is well-calibrated overall — but it systematically underestimates elite players. A six-year analysis of 292 PGA Tour events and 36,656 player-event records.">
@@ -542,7 +542,7 @@ html[data-theme="light"] .footer-copy { color: rgba(28,27,24,0.35); }
     <a href="/picks">Picks</a>
     <a href="/the-lab">Live Stats</a>
     <a href="/articles">Articles</a>
-    <a href="/lab-notes">Lab Notes</a>
+    <a href="/lab-notes">Newsletter</a>
     <a href="/research/datagolf-model-calibration-audit" class="active">Research</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
     <a href="/pro" class="nav-cta">Pro →</a>
@@ -556,7 +556,7 @@ html[data-theme="light"] .footer-copy { color: rgba(28,27,24,0.35); }
   <a href="/picks">Picks</a>
   <a href="/the-lab">Live Stats</a>
   <a href="/articles">Articles</a>
-  <a href="/lab-notes">Lab Notes</a>
+  <a href="/lab-notes">Newsletter</a>
   <a href="/research/datagolf-model-calibration-audit">Research</a>
   <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Toggle theme"></button>
   <a href="/pro" class="nav-cta">Pro →</a>
@@ -842,10 +842,10 @@ html[data-theme="light"] .footer-copy { color: rgba(28,27,24,0.35); }
 <script>
 // Theme toggle
 const themeToggles = document.querySelectorAll('.theme-toggle');
-function getTheme() { return localStorage.getItem('divotlab-theme') || 'light'; }
+function getTheme() { return localStorage.getItem('divotlab-research-theme') || 'light'; }
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('divotlab-theme', t);
+  localStorage.setItem('divotlab-research-theme', t);
   themeToggles.forEach(btn => btn.innerHTML = t === 'dark'
     ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
     : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
