@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conservative by Design: A Six-Year Calibration Audit — Divot Lab Research</title>
+<meta name="description" content="DataGolf's prediction model is well-calibrated overall — but it systematically underestimates elite players. A six-year analysis of 292 PGA Tour events and 36,656 player-event records.">
+<meta property="og:title" content="Conservative by Design: A Six-Year Calibration Audit of DataGolf's Prediction Model">
+<meta property="og:description" content="DataGolf's model is well-calibrated but systematically conservative. Players assigned 30%+ top-10 probability actually finish top-10 at a 46.8% rate — 5.3 points above prediction.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.divotlab.com/research/datagolf-model-calibration-audit">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.divotlab.com/research/datagolf-model-calibration-audit">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:       #0A0A0A;
+  --black-mid:   #111110;
+  --black-card:  #161614;
+  --black-card2: #1C1C19;
+  --white:       #FAFAFA;
+  --graphite:    #4A4A4A;
+  --steel:       #C4C4C4;
+  --steel-dim:   #6A6A64;
+  --green:       #1B4D3E;
+  --green-light: #5BBF85;
+  --blue:        #2C5F7C;
+  --blue-mid:    #5A8FA8;
+  --gold:        #C9A84C;
+  --border:      rgba(255,255,255,0.07);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 68px; padding: 0 56px;
+  display: flex; align-items: center;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 11px; }
+.nav-logo svg { width: 26px; height: 26px; color: var(--white); }
+.nav-wordmark { font-size: 14px; font-weight: 600; letter-spacing: .1em; color: var(--white); }
+.nav-wordmark span { font-weight: 300; opacity: .55; }
+.nav-links { display: flex; align-items: center; gap: 32px; margin-left: auto; }
+.nav-links a { font-size: 13px; font-weight: 500; letter-spacing: .05em; color: rgba(250,250,250,.65); transition: color .2s; }
+.nav-links a:hover { color: var(--white); }
+.nav-links a.active { color: var(--green-light); }
+.nav-cta { background: var(--green); color: var(--white) !important; padding: 9px 22px; border-radius: 5px; font-weight: 500; transition: background .2s; }
+.nav-cta:hover { background: #236b4f; }
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(250,250,250,0.6); cursor: pointer;
+  transition: background .2s, color .2s, transform .15s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.15); color: var(--white); transform: scale(1.1); }
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  width: 40px; height: 40px; gap: 5px; background: none; border: none; cursor: pointer; margin-left: auto;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform .3s, opacity .2s; }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity: 0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-drawer {
+  position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+  background: rgba(10,10,10,0.97); backdrop-filter: blur(22px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0 20px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  max-height: 0; overflow: hidden; opacity: 0; pointer-events: none;
+  transition: max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease;
+}
+.nav-drawer.open { max-height: calc(100vh - 68px); opacity: 1; pointer-events: auto; overflow-y: auto; }
+.nav-drawer a { font-size: 15px; font-weight: 500; color: rgba(250,250,250,.75); padding: 10px 0; width: 100%; text-align: center; transition: color .2s; }
+.nav-drawer a:hover { color: var(--white); }
+.nav-drawer .nav-cta { margin-top: 8px; width: auto; padding: 10px 32px; }
+
+/* HERO */
+.research-hero {
+  padding: 140px 48px 72px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+.research-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--green-light);
+  margin-bottom: 24px;
+}
+.research-eyebrow .sep { opacity: 0.3; }
+.research-title {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1.1;
+  margin-bottom: 28px;
+}
+.research-title em { font-style: italic; color: var(--green-light); }
+.research-meta {
+  display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.meta-item {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  color: rgba(250,250,250,0.35);
+}
+.meta-item strong { color: rgba(250,250,250,0.6); font-weight: 500; }
+
+/* EXECUTIVE SUMMARY */
+.exec-summary {
+  background: rgba(91,191,133,0.04);
+  border: 1px solid rgba(91,191,133,0.12);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin-bottom: 48px;
+}
+.exec-summary-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--green-light);
+  margin-bottom: 16px;
+}
+.exec-summary ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.exec-summary li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px; color: var(--steel); line-height: 1.7;
+}
+.exec-summary li::before {
+  content: '—'; color: var(--green-light);
+  font-weight: 700;
+  position: absolute; left: 0; top: 0;
+}
+
+/* ARTICLE BODY */
+.research-body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 48px 96px;
+}
+
+.research-section { margin-bottom: 56px; }
+
+.section-heading {
+  font-family: var(--display);
+  font-size: 1.5rem; font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1.2;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.section-heading .finding-num {
+  font-family: var(--mono); font-size: 11px; font-weight: 400;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--green-light); display: block; margin-bottom: 6px;
+}
+
+p { font-size: 15px; color: var(--steel); line-height: 1.8; margin-bottom: 16px; }
+p:last-child { margin-bottom: 0; }
+p strong { color: var(--white); font-weight: 600; }
+p em { font-style: italic; color: rgba(250,250,250,0.75); }
+
+/* DATA CALLOUT */
+.data-callout {
+  background: var(--black-card);
+  border-left: 3px solid var(--green-light);
+  padding: 16px 20px;
+  border-radius: 0 6px 6px 0;
+  margin: 24px 0;
+  font-size: 14px; color: var(--steel);
+  line-height: 1.65;
+}
+.data-callout .label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--green-light);
+  margin-bottom: 6px;
+}
+
+/* STAT HIGHLIGHT */
+.stat-highlight {
+  display: inline-flex; flex-direction: column; align-items: center;
+  background: var(--black-card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 24px; margin: 8px;
+  text-align: center;
+}
+.stat-highlight .val {
+  font-family: var(--mono); font-size: 2rem; font-weight: 500;
+  color: var(--green-light); line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-highlight .lbl {
+  font-size: 11px; color: rgba(250,250,250,0.35);
+  letter-spacing: 0.05em; line-height: 1.3;
+  text-align: center;
+}
+.stat-row { display: flex; flex-wrap: wrap; gap: 0; margin: 24px 0; }
+
+/* RESEARCH TABLE */
+.research-table-wrap { overflow-x: auto; margin: 28px 0; }
+.research-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.research-table th {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(250,250,250,0.35);
+  text-align: left; padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.research-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--steel); vertical-align: middle;
+}
+.research-table tr:last-child td { border-bottom: none; }
+.research-table .num { font-family: var(--mono); font-size: 12px; color: var(--white); }
+.research-table .pos { color: var(--green-light); font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.research-table .sig { color: var(--green-light); font-family: var(--mono); font-size: 11px; }
+.research-table .nosig { color: rgba(250,250,250,0.25); font-family: var(--mono); font-size: 11px; }
+.research-table .highlight td { background: rgba(91,191,133,0.06); }
+.research-table .highlight .num { color: var(--green-light); }
+
+/* FIGURE */
+.research-figure {
+  margin: 32px 0;
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.research-figure img { width: 100%; display: block; }
+.research-figure figcaption {
+  padding: 12px 16px;
+  font-size: 12px; color: rgba(250,250,250,0.3);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* CODE */
+code {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--green-light);
+  background: rgba(91,191,133,0.08);
+  padding: 1px 5px; border-radius: 3px;
+}
+code.muted { color: rgba(250,250,250,0.5); background: rgba(255,255,255,0.06); }
+
+/* ORDERED LIST in methodology */
+.method-list {
+  padding-left: 20px; margin-bottom: 16px;
+  color: var(--steel); font-size: 15px; line-height: 1.8;
+}
+
+/* TABLE NOTE */
+.table-note {
+  font-size: 12px; color: rgba(250,250,250,0.3);
+  margin-top: -8px; font-style: italic;
+}
+
+/* HR */
+.section-divider {
+  border: none; height: 1px;
+  background: var(--border);
+  margin: 48px 0;
+}
+
+/* EMAIL GATE */
+.gate-wrapper { position: relative; }
+.gate-blur {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.35;
+  max-height: 320px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 85%);
+}
+.gate-panel {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(165deg, #0d0d0d 0%, #0f1612 100%);
+  border: 1px solid rgba(91,191,133,0.2);
+  border-radius: 12px;
+  padding: 40px 36px;
+  max-width: 440px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  z-index: 10;
+}
+.gate-panel h3 {
+  font-family: var(--display);
+  font-size: 1.6rem; font-weight: 600;
+  letter-spacing: -0.02em; margin-bottom: 10px;
+  color: var(--white);
+}
+.gate-panel p {
+  font-size: 14px; color: var(--steel-dim);
+  line-height: 1.6; margin-bottom: 24px;
+}
+.gate-form { display: flex; gap: 8px; }
+.gate-form input {
+  flex: 1; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 6px; padding: 12px 16px;
+  font-family: var(--body); font-size: 13px;
+  color: var(--white); outline: none;
+  transition: border-color .2s;
+}
+.gate-form input::placeholder { color: rgba(250,250,250,0.3); }
+.gate-form input:focus { border-color: var(--green-light); }
+.gate-form button {
+  background: var(--green); color: var(--white);
+  border: none; border-radius: 6px;
+  padding: 12px 20px; font-family: var(--body);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background .2s;
+}
+.gate-form button:hover { background: #236b4f; }
+.gate-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+.gate-note {
+  margin-top: 12px; font-size: 11px;
+  color: rgba(250,250,250,0.2); line-height: 1.5;
+}
+.gate-success { display: none; }
+.gate-success.show { display: block; }
+.gate-success p { color: var(--green-light); font-size: 14px; margin: 0; }
+
+/* GATED content — hidden until unlocked */
+.gated-content { display: none; }
+.gated-content.unlocked { display: block; }
+
+/* FOOTNOTE */
+.research-footnote {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: rgba(250,250,250,0.25);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* NEXT STUDIES */
+.next-studies {
+  background: var(--black-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 32px;
+  margin-top: 48px;
+}
+.next-studies-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--blue-mid);
+  margin-bottom: 16px;
+}
+.next-studies h4 {
+  font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--white);
+}
+.next-studies ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.next-studies li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13px; color: var(--steel-dim); line-height: 1.55;
+}
+.next-studies li::before { content: '→'; color: var(--blue-mid); flex-shrink: 0; }
+
+/* LIGHT MODE */
+html[data-theme="light"] body { background: #F5F4EF; color: #1C1B18; }
+html[data-theme="light"] nav { background: rgba(245,244,239,0.94) !important; border-bottom-color: rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-logo svg { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color: rgba(28,27,24,0.55) !important; }
+html[data-theme="light"] .nav-links a:hover { color: #1C1B18 !important; }
+html[data-theme="light"] .nav-links a.active { color: #2E7D54 !important; }
+html[data-theme="light"] .nav-links a.nav-cta { color: #FFFFFF !important; }
+html[data-theme="light"] .nav-hamburger span { background: #1C1B18 !important; }
+html[data-theme="light"] .nav-drawer { background: rgba(245,244,239,0.97) !important; border-bottom-color: rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-drawer a { color: rgba(28,27,24,0.65) !important; }
+/* text */
+html[data-theme="light"] p { color: rgba(28,27,24,0.72); }
+html[data-theme="light"] p strong { color: #1C1B18; }
+html[data-theme="light"] p em { color: rgba(28,27,24,0.8); }
+html[data-theme="light"] .section-heading { color: #1C1B18; }
+html[data-theme="light"] .research-title em { color: #2E7D54; }
+html[data-theme="light"] .research-meta { border-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .meta-item { color: rgba(28,27,24,0.38); }
+html[data-theme="light"] .meta-item strong { color: rgba(28,27,24,0.65); }
+/* exec summary */
+html[data-theme="light"] .exec-summary { background: rgba(46,125,84,0.05); border-color: rgba(46,125,84,0.18); }
+html[data-theme="light"] .exec-summary li { color: rgba(28,27,24,0.72); }
+html[data-theme="light"] .exec-summary li strong { color: #1C1B18; }
+html[data-theme="light"] .exec-summary li::before { color: #2E7D54; }
+/* data callout */
+html[data-theme="light"] .data-callout { background: #FFFFFF; border-left-color: #2E7D54; color: rgba(28,27,24,0.72); }
+html[data-theme="light"] .data-callout .label { color: #2E7D54; }
+/* code */
+html[data-theme="light"] code { color: #2E7D54; background: rgba(46,125,84,0.08); }
+html[data-theme="light"] code.muted { color: rgba(28,27,24,0.48); background: rgba(28,27,24,0.05); }
+/* method list */
+html[data-theme="light"] .method-list { color: rgba(28,27,24,0.72); }
+/* stat highlights */
+html[data-theme="light"] .stat-highlight { background: #FFFFFF; border-color: rgba(28,27,24,0.1); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+html[data-theme="light"] .stat-highlight .val { color: #2E7D54; }
+html[data-theme="light"] .stat-highlight .lbl { color: rgba(28,27,24,0.42); }
+/* table */
+html[data-theme="light"] .research-table-wrap { background: #FFFFFF; border-radius: 8px; border: 1px solid rgba(28,27,24,0.09); overflow: hidden; }
+html[data-theme="light"] .research-table th { color: rgba(28,27,24,0.42); border-bottom-color: rgba(28,27,24,0.1); background: rgba(28,27,24,0.02); }
+html[data-theme="light"] .research-table td { color: rgba(28,27,24,0.72); border-bottom-color: rgba(28,27,24,0.05); }
+html[data-theme="light"] .research-table .num { color: #1C1B18; }
+html[data-theme="light"] .research-table .pos { color: #2E7D54; }
+html[data-theme="light"] .research-table .sig { color: #2E7D54; }
+html[data-theme="light"] .research-table .nosig { color: rgba(28,27,24,0.28); }
+html[data-theme="light"] .research-table .highlight td { background: rgba(27,77,62,0.05); }
+/* figure */
+html[data-theme="light"] .research-figure { background: #FFFFFF; border-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .research-figure figcaption { border-top-color: rgba(28,27,24,0.08); color: rgba(28,27,24,0.42); }
+/* dividers */
+html[data-theme="light"] .section-divider { background: rgba(28,27,24,0.1); }
+/* gate */
+html[data-theme="light"] .gate-blur { opacity: 0.25; }
+html[data-theme="light"] .gate-panel { background: #FFFFFF; border-color: rgba(27,77,62,0.22); box-shadow: 0 8px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.06); }
+html[data-theme="light"] .gate-panel h3 { color: #1C1B18; }
+html[data-theme="light"] .gate-panel p { color: rgba(28,27,24,0.58); }
+html[data-theme="light"] .gate-form input { background: #F5F4EF; border-color: rgba(28,27,24,0.18); color: #1C1B18; }
+html[data-theme="light"] .gate-form input:focus { border-color: #1B4D3E; }
+html[data-theme="light"] .gate-form input::placeholder { color: rgba(28,27,24,0.32); }
+html[data-theme="light"] .gate-note { color: rgba(28,27,24,0.32); }
+/* next studies */
+html[data-theme="light"] .next-studies { background: #FFFFFF; border-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .next-studies h4 { color: #1C1B18; }
+html[data-theme="light"] .next-studies li { color: rgba(28,27,24,0.62); }
+html[data-theme="light"] .next-studies li strong { color: #1C1B18; }
+/* footnote */
+html[data-theme="light"] .research-footnote { color: rgba(28,27,24,0.32); border-top-color: rgba(28,27,24,0.1); }
+/* table note */
+html[data-theme="light"] .table-note { color: rgba(28,27,24,0.38); }
+/* theme toggle */
+html[data-theme="light"] .theme-toggle { background: rgba(28,27,24,0.06); border-color: rgba(28,27,24,0.13); color: rgba(28,27,24,0.52); }
+
+/* FOOTER */
+.site-footer {
+  background: var(--black-mid);
+  border-top: 1px solid var(--border);
+  padding: 40px 56px 28px;
+}
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--white); text-decoration: none;
+}
+.footer-wordmark {
+  font-size: 13px; font-weight: 600; letter-spacing: .1em; color: var(--white);
+}
+.footer-wordmark span { font-weight: 300; opacity: .5; }
+.footer-copy { font-size: 12px; color: rgba(250,250,250,.22); }
+html[data-theme="light"] .site-footer { background: #EEEDE8; border-top-color: rgba(28,27,24,0.1); }
+html[data-theme="light"] .footer-logo { color: #1C1B18; }
+html[data-theme="light"] .footer-wordmark { color: #1C1B18; }
+html[data-theme="light"] .footer-copy { color: rgba(28,27,24,0.35); }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  nav { padding: 0 22px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .research-hero { padding: 120px 22px 48px; }
+  .research-body { padding: 0 22px 72px; }
+  .gate-form { flex-direction: column; }
+  .gate-form button { width: 100%; }
+  .stat-row { flex-direction: column; }
+  .stat-highlight { width: 100%; margin: 4px 0; }
+}
+@media (max-width: 600px) {
+  .research-meta { gap: 12px; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.research-hero > * {
+  opacity: 0;
+  animation: riseIn 0.6s cubic-bezier(.22,1,.36,1) forwards;
+}
+.research-hero .research-eyebrow { animation-delay: 0.1s; }
+.research-hero .research-title   { animation-delay: 0.2s; }
+.research-hero .research-meta    { animation-delay: 0.3s; }
+.research-hero .exec-summary     { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Picks</a>
+    <a href="/the-lab">Live Stats</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Lab Notes</a>
+    <a href="/research/datagolf-model-calibration-audit" class="active">Research</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <a href="/pro" class="nav-cta">Pro →</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <a href="/picks">Picks</a>
+  <a href="/the-lab">Live Stats</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Lab Notes</a>
+  <a href="/research/datagolf-model-calibration-audit">Research</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Toggle theme"></button>
+  <a href="/pro" class="nav-cta">Pro →</a>
+</div>
+
+<!-- HERO -->
+<header class="research-hero">
+  <div class="research-eyebrow">
+    <span>Divot Lab Research</span>
+    <span class="sep">·</span>
+    <span>Study 01</span>
+    <span class="sep">·</span>
+    <span>June 2026</span>
+  </div>
+
+  <h1 class="research-title">
+    Conservative by Design: A Six-Year <em>Calibration Audit</em> of DataGolf's Prediction Model
+  </h1>
+
+  <div class="research-meta">
+    <span class="meta-item"><strong>292</strong> PGA Tour events</span>
+    <span class="meta-item"><strong>36,656</strong> player-event records</span>
+    <span class="meta-item"><strong>2020–2026</strong> coverage</span>
+    <span class="meta-item"><strong>DataGolf Pro API</strong> · pre-tournament-archive</span>
+  </div>
+
+  <div class="exec-summary">
+    <div class="exec-summary-label">Executive Summary</div>
+    <ul>
+      <li>DataGolf's prediction model is well-calibrated overall — its Expected Calibration Error of 1.1% is a strong result — but the error has a consistent direction: the model systematically <strong>underestimates how often good players convert</strong>.</li>
+      <li>The miscalibration grows at higher probabilities. Players assigned a <strong>30%+ top-10 chance actually finish top-10 at a 46.8% rate</strong> — 5.3 percentage points above their predicted probability, a statistically significant gap.</li>
+      <li>The course-history adjustment that DataGolf applies to generate course-fit predictions <strong>makes no measurable difference to calibration accuracy</strong>. Both models perform identically.</li>
+    </ul>
+  </div>
+</header>
+
+<!-- BODY — free sections -->
+<main class="research-body">
+
+  <div class="research-section">
+    <h2 class="section-heading">Background</h2>
+    <p>A prediction model does two things: it ranks players, and it assigns probability estimates to outcomes. Most evaluation focuses on ranking — did the model's top pick do better than its 10th pick? That question matters, but it misses something important.</p>
+    <p>Probability estimates carry implicit claims. When DataGolf says a player has a 15% chance of finishing top-10, it is saying: <em>in situations like this, players like this finish top-10 about 15% of the time.</em> If that claim is right, the model is <strong>calibrated</strong>. If the model says 15% but the player actually hits the outcome 22% of the time, something is systematically off — and decisions made using those probabilities (lineup construction, pick-em contests, model stacking) inherit that error.</p>
+    <p><strong>Calibration and ranking are different properties.</strong> A model can rank players correctly while its probability estimates are badly miscalibrated. And a model can have well-calibrated probabilities while occasionally ranking players wrong. This study addresses only calibration. Ranking accuracy is a separate question.</p>
+    <p>The obvious hypothesis going in: the model is overconfident about favorites. High-ranked players tend to be in strong form, which probably inflates their predictions beyond what their actual conversion rate supports. Most sports prediction models err in this direction.</p>
+    <p>The data told a different story.</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <div class="research-section">
+    <h2 class="section-heading">Data and Methodology</h2>
+    <div class="data-callout">
+      <div class="label">Data Source</div>
+      DataGolf Pro API · <code>/preds/pre-tournament-archive</code> · 292 PGA Tour events, 2020–2026 · 36,656 player-event records (baseline model)
+    </div>
+    <p>The archive endpoint returns, for each player in each event field, the model's pre-tournament probability estimates across several outcome markets: win, top-3, top-5, top-10, top-20, top-30, make cut, first-round leader. We focus primarily on <strong>top-10</strong> as the best-powered outcome — frequent enough to build large sample sizes in each probability band, rare enough to be meaningful.</p>
+    <p>Two model variants are compared: <strong>baseline</strong> (rolling strokes-gained skill ratings) and <strong>baseline_history_fit</strong> (adds course-specific historical performance). Finding 5 reports the comparison.</p>
+    <p><strong>Method: Calibration curve analysis.</strong></p>
+    <ol class="method-list">
+      <li>Bin all player-event observations by predicted top-10 probability into seven bands: 0–5%, 5–10%, 10–15%, 15–20%, 20–25%, 25–30%, 30%+.</li>
+      <li>Within each band, measure the fraction of players who actually finished top-10.</li>
+      <li>Compare predicted (x-axis) to actual (y-axis). The diagonal represents perfect calibration.</li>
+    </ol>
+    <p>Statistical significance is assessed using 95% confidence intervals under the normal approximation to the binomial: <code class="muted">rate ± 1.96 × √(rate × (1 − rate) / n)</code>. All gaps reported as significant exceed their confidence interval.</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- GATE -->
+  <div class="gate-wrapper" id="gateWrapper">
+    <!-- Blurred preview of what's below -->
+    <div class="gate-blur" id="gateBlur">
+      <div class="research-section">
+        <h2 class="section-heading">
+          <span class="finding-num">Finding 1</span>
+          The Model Is Well-Calibrated Overall
+        </h2>
+        <p>The Expected Calibration Error (ECE) for the baseline model is <strong>1.1%</strong>. For the history-fit model, it is <strong>1.2%</strong>. ECE measures the weighted average absolute gap between predicted probability and actual rate, across all bins.</p>
+        <p>An ECE of 1.1% means that on average, across the probability spectrum, predictions are off by about one percentage point. In the context of sports prediction — where outcomes are noisy, fields change week-to-week, and players have both hot streaks and injuries — this is a strong result.</p>
+      </div>
+    </div>
+
+    <!-- Gate panel -->
+    <div class="gate-panel" id="gatePanel">
+      <h3>Read the Full Study</h3>
+      <p>Five findings, the calibration table, year-over-year Brier trends, and the course history result. Free — just your email.</p>
+      <form class="gate-form" id="gateForm">
+        <input type="email" id="gateEmail" placeholder="your@email.com" required autocomplete="email">
+        <button type="submit" id="gateBtn">Read Now</button>
+      </form>
+      <p class="gate-note">Joins the free Divot Lab newsletter. Unsubscribe anytime.</p>
+      <div class="gate-success" id="gateSuccess">
+        <p>You're in — scrolling down now.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GATED CONTENT -->
+  <div class="gated-content" id="gatedContent">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 1</span>
+        The Model Is Well-Calibrated Overall
+      </h2>
+
+      <div class="stat-row">
+        <div class="stat-highlight">
+          <span class="val">1.1%</span>
+          <span class="lbl">Expected Calibration Error<br>Baseline model</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">1.2%</span>
+          <span class="lbl">Expected Calibration Error<br>History-fit model</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">0.8%</span>
+          <span class="lbl">Predicted win rate<br>= Actual win rate</span>
+        </div>
+      </div>
+
+      <p>ECE measures the weighted average absolute gap between predicted probability and actual rate, across all bins. An ECE of 1.1% means that on average, across the probability spectrum, predictions are off by about one percentage point. In the context of sports prediction — where outcomes are noisy, fields change week-to-week, and players have both hot streaks and injuries — this is a strong result.</p>
+      <p>Win probability calibration is essentially perfect at the aggregate level: mean predicted win probability is 0.8% and actual win rate is 0.8%. These numbers establish a baseline: DataGolf is not producing poorly-constructed probability estimates. The model reflects real information.</p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/calibration_win.png" alt="Win probability calibration curve — predicted vs. actual">
+        <figcaption>Win probability calibration. Predicted vs. actual win rate across probability bands. The diagonal represents perfect calibration.</figcaption>
+      </figure>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 2</span>
+        The Model Is Systematically Underconfident
+      </h2>
+      <p>Here is where the hypothesis breaks down.</p>
+      <p>Every probability band shows the same pattern: <strong>actual top-10 rates exceed predicted rates</strong>. The model does not overestimate — it underestimates at every level of the probability scale.</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Predicted band</th>
+              <th>Mean predicted</th>
+              <th>Actual rate</th>
+              <th>Gap</th>
+              <th>Significant?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>0–5%</td><td class="num">2.3%</td><td class="num">2.7%</td><td class="pos">+0.5 ppts</td><td class="sig">Yes</td></tr>
+            <tr><td>5–10%</td><td class="num">7.2%</td><td class="num">8.3%</td><td class="pos">+1.1 ppts</td><td class="sig">Yes</td></tr>
+            <tr><td>10–15%</td><td class="num">12.2%</td><td class="num">13.8%</td><td class="pos">+1.6 ppts</td><td class="sig">Yes</td></tr>
+            <tr><td>15–20%</td><td class="num">17.2%</td><td class="num">20.0%</td><td class="pos">+2.8 ppts</td><td class="sig">Yes</td></tr>
+            <tr><td>20–25%</td><td class="num">22.2%</td><td class="num">25.0%</td><td class="pos">+2.9 ppts</td><td class="sig">Yes</td></tr>
+            <tr><td>25–30%</td><td class="num">27.2%</td><td class="num">27.8%</td><td class="pos">+0.7 ppts</td><td class="nosig">No</td></tr>
+            <tr class="highlight"><td><strong>30%+</strong></td><td class="num">41.5%</td><td class="num">46.8%</td><td class="pos"><strong>+5.3 ppts</strong></td><td class="sig">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Six of seven bins are statistically significant. The 25–30% bin falls within its confidence interval and cannot be distinguished from perfect calibration, but it still points in the same direction.</p>
+      <p>The gap is not random noise. It is a consistent directional bias. <strong>The model is conservative.</strong></p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/calibration_top10.png" alt="Top-10 probability calibration curve — predicted vs. actual">
+        <figcaption>Top-10 finish probability calibration across 36,656 player-event records (2020–2026). Points above the diagonal indicate the model underestimates the outcome rate. All bins above the diagonal; six of seven are statistically significant.</figcaption>
+      </figure>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 3</span>
+        The Gap Grows for Elite Players
+      </h2>
+      <p>The underconfidence is not uniform. The gap starts small at the low end (0.5 percentage points for the 0–5% bin, n=16,744) and widens at higher probabilities, reaching its peak in the 30%+ band.</p>
+      <p>Players assigned a <strong>30%+ top-10 probability</strong> — roughly the top 1–3 players in any given field — finished top-10 at a <strong>46.8% rate</strong> against a mean predicted probability of <strong>41.5%</strong>. The gap is 5.3 percentage points, with a 95% confidence interval of ±3.2 percentage points. It is statistically significant with 931 observations.</p>
+      <p>What this means practically: DataGolf's model is most wrong about its most confident predictions. When it says a player is a near-lock to contend, the player performs <em>even better</em> than that.</p>
+      <p>One plausible explanation: the players who attract 30%+ top-10 predictions tend to be at the peak of both their career skill and their current form. The rolling strokes-gained model captures career skill well. Current form may be underweighted, and form is correlated with elite-tier predictions — a player in the form of his life is both more likely to receive a high prediction <em>and</em> more likely to outperform his baseline skill.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 4</span>
+        The Model Improved Through 2023, Then Reversed
+      </h2>
+      <p>Brier score measures mean squared prediction error — lower is better. Tracking it by year shows whether the model is improving over time.</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr><th>Year</th><th>Events</th><th>Brier Score (top-10)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2020</td><td class="num">37</td><td class="num">0.0755</td></tr>
+            <tr><td>2021</td><td class="num">47</td><td class="num">0.0743</td></tr>
+            <tr><td>2022</td><td class="num">46</td><td class="num">0.0722</td></tr>
+            <tr class="highlight"><td><strong>2023</strong></td><td class="num">45</td><td class="num"><strong>0.0706</strong></td></tr>
+            <tr><td>2024</td><td class="num">49</td><td class="num">0.0758</td></tr>
+            <tr><td>2025</td><td class="num">47</td><td class="num">0.0745</td></tr>
+            <tr><td>2026*</td><td class="num">21</td><td class="num">0.0818</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">*Incomplete season — noisier estimate.</p>
+
+      <p>From 2020 to 2023, Brier score improved steadily and meaningfully: −0.0049 over four years. This is a real improvement, not sampling noise. Then 2024 jumps sharply back to near the 2020 level (+0.0052 from 2023 to 2024) and remains elevated through 2025.</p>
+      <p>The most likely explanation is structural disruption to the PGA Tour, not model degradation. Between 2022 and 2024, LIV Golf attracted a significant number of the tour's most predictable top-tier players — those with long track records of consistent strokes-gained performance that the model could reliably extrapolate. With those players gone, the remaining field is more volatile, and the model's implicit assumptions about player consistency became less reliable.</p>
+      <p>The elevated events schedule introduced in 2024 may also be a factor. Signature events draw smaller, star-heavy fields; other events draw weaker, thinner fields. Predicting a 78-player Signature Event is a structurally different problem than predicting a 132-player standard event.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 5</span>
+        Course History Adds No Calibration Value
+      </h2>
+      <p>DataGolf offers two model variants: <strong>baseline</strong> (pure rolling strokes-gained) and <strong>baseline_history_fit</strong> (adds each player's historical performance at the specific course).</p>
+      <p>The calibration results are essentially identical: ECE of 1.1% vs. 1.2%. The direction of miscalibration is the same. The bin-level gaps are the same.</p>
+      <p>This does not mean course history is useless. Course history may help rank players correctly — putting the right players at the top of a leaderboard — even if it does not change how well-calibrated the probability estimates are. Ranking accuracy and calibration accuracy are different measures. But if you are building a model or making decisions that depend on the <em>probability estimates</em>, adding course history provides no improvement.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">Caveats</h2>
+      <p><strong>Field size variation.</strong> The actual top-10 rate in this dataset is 9.1%, higher than the ~7.7% you would expect from a 130-player field (10 top-10 spots ÷ 130 players). This is because the dataset includes events with smaller fields — invitational events, Match Play, WGC events — where the per-player top-10 probability is structurally higher. These events also receive higher predicted probabilities per player, but not quite as high as reality warrants, which contributes to the observed underconfidence.</p>
+      <p><strong>Selection bias in predictions.</strong> Players who receive high top-10 predictions may be selected into that pool partly because they are in unusually strong current form. If the model systematically underweights recent form, the high-prediction group would be in better shape than its baseline skill suggests — producing the observed outperformance. This is a hypothesis, not a confirmed mechanism.</p>
+      <p><strong>This is aggregate calibration.</strong> The 1.1% ECE is an average. The model may be better calibrated in some conditions and worse in others — by course type, by field size, by player age or career stage, by season timing. Identifying those subgroup patterns is the natural next step.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">Implications</h2>
+      <p><strong>The model is trustworthy as a starting point.</strong> An ECE of 1.1% is good enough to use DataGolf predictions as a foundation for analysis. The probabilities reflect real information about player skill.</p>
+      <p><strong>Favor the favorites more than the model says.</strong> The systematic underconfidence means that if you take DataGolf probabilities at face value, you will underweight top-tier players. Applying a small upward adjustment — particularly for players in the 20%+ top-10 range — is supported by six years of data.</p>
+      <p><strong>Don't use course history to improve probability estimates.</strong> The history-fit model produces identical calibration to the baseline. For purposes where probability accuracy matters, the simpler model is sufficient.</p>
+      <p><strong>Track the post-2023 reversal.</strong> The Brier improvement through 2023 represented real progress; the 2024–2025 regression is large enough to investigate. If the cause is tour structure rather than model degradation, DataGolf may not be able to fix it without redesigning how it handles small-field and elevated events.</p>
+    </div>
+
+    <div class="next-studies">
+      <div class="next-studies-label">What's Next</div>
+      <h4>Follow-on research questions</h4>
+      <ul>
+        <li><strong>Subgroup calibration:</strong> Is the model better calibrated at certain course types (approach-heavy vs. driving courses)? For certain player profiles? Identifying where calibration breaks down by subgroup is where the actionable signal lives.</li>
+        <li><strong>Market efficiency:</strong> Where does the betting market diverge most from DataGolf's predictions? If the model underestimates elite players, does the market price them correctly — or does it also underestimate them?</li>
+        <li><strong>Ranking vs. calibration:</strong> This study focused on probability accuracy. A separate study would ask: when DataGolf ranks Player A above Player B, how often does A actually outperform B in that event?</li>
+      </ul>
+    </div>
+
+    <p class="research-footnote">
+      Data sourced from DataGolf Pro API. All analysis conducted in Python using pandas and scipy; code and methodology available in the Divot Lab research repository. Findings based on 292 PGA Tour events, 2020–2026. This study examines prediction model calibration and does not constitute gambling advice.
+    </p>
+
+  </div><!-- /gated-content -->
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div style="max-width:1120px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <a href="/" class="footer-logo">
+      <svg width="20" height="20" viewBox="0 0 72 72" fill="none">
+        <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+        <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+        <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+      </svg>
+      <span class="footer-wordmark">DIVOT <span>LAB</span></span>
+    </a>
+    <span class="footer-copy">© 2026 Divot Lab · Data: DataGolf Pro API</span>
+  </div>
+</footer>
+
+<script>
+// Theme toggle
+const themeToggles = document.querySelectorAll('.theme-toggle');
+function getTheme() { return localStorage.getItem('divotlab-theme') || 'light'; }
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('divotlab-theme', t);
+  themeToggles.forEach(btn => btn.innerHTML = t === 'dark'
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+  );
+}
+setTheme(getTheme());
+themeToggles.forEach(btn => btn.addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark')));
+
+// Mobile nav
+const nav = document.getElementById('nav');
+const drawer = document.getElementById('navDrawer');
+document.getElementById('navHamburger').addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  nav.classList.toggle('menu-open', open);
+});
+
+// Gate logic
+const GATE_KEY = 'divotlab-research-unlocked';
+
+function unlockContent() {
+  document.getElementById('gateWrapper').style.display = 'none';
+  document.getElementById('gatedContent').classList.add('unlocked');
+}
+
+// Auto-unlock if already subscribed
+if (localStorage.getItem(GATE_KEY) === '1') {
+  unlockContent();
+}
+
+document.getElementById('gateForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('gateEmail').value.trim();
+  const btn = document.getElementById('gateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Unlocking...';
+
+  try {
+    const resp = await fetch('https://divotlab-api.vercel.app/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    localStorage.setItem(GATE_KEY, '1');
+    document.getElementById('gateSuccess').classList.add('show');
+    document.getElementById('gateForm').style.display = 'none';
+
+    setTimeout(() => {
+      unlockContent();
+      document.getElementById('gatedContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 900);
+  } catch (err) {
+    // Unlock anyway on network error — don't block readers
+    localStorage.setItem(GATE_KEY, '1');
+    unlockContent();
+  }
+});
+</script>
+
+</body>
+</html>

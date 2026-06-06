@@ -7,7 +7,10 @@
       "Bash(grep -i \"henley\" \"C:/Users/jmory/.claude/projects/c--Users-jmory-Downloads-divotlab/3b1da3c0-6095-4e76-bc43-d4e4de627cbf.jsonl\" | head -5)",
       "Read(//c/Users/jmory/.claude/projects/c--Users-jmory-Downloads-divotlab/**)",
       "Bash(grep -o 'Putnam[^\\\\\\\\]*850\\\\|Putnam[^\\\\\\\\]*fanduel\\\\|Putnam[^\\\\\\\\]*FD' \"C:/Users/jmory/.claude/projects/c--Users-jmory-Downloads-divotlab/3b1da3c0-6095-4e76-bc43-d4e4de627cbf.jsonl\")",
-      "Bash(grep -o 'Aberg[^\\\\\\\\]*top.10\\\\|Aberg[^\\\\\\\\]*+[0-9][0-9][0-9]\\\\|Aberg[^\\\\\\\\]*FD\\\\|Aberg[^\\\\\\\\]*Bet365\\\\|Aberg[^\\\\\\\\]*DraftKings' \"C:/Users/jmory/.claude/projects/c--Users-jmory-Downloads-divotlab/3b1da3c0-6095-4e76-bc43-d4e4de627cbf.jsonl\")"
+      "Bash(grep -o 'Aberg[^\\\\\\\\]*top.10\\\\|Aberg[^\\\\\\\\]*+[0-9][0-9][0-9]\\\\|Aberg[^\\\\\\\\]*FD\\\\|Aberg[^\\\\\\\\]*Bet365\\\\|Aberg[^\\\\\\\\]*DraftKings' \"C:/Users/jmory/.claude/projects/c--Users-jmory-Downloads-divotlab/3b1da3c0-6095-4e76-bc43-d4e4de627cbf.jsonl\")",
+      "Bash(pip --version)",
+      "Bash(python -m venv venv)",
+      "Bash(venv/Scripts/python -c \"import pandas; import requests; from dotenv import load_dotenv; print\\('All imports OK'\\)\")"
     ]
   }
 }
