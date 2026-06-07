@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-theme')||'dark';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — Divot Lab</title>
+<meta name="description" content="Original analytics studies on golf prediction models and betting markets. Calibration audits, market efficiency tests, and the data behind the picks.">
+<meta property="og:title" content="Divot Lab Research">
+<meta property="og:description" content="Original analytics studies on golf prediction models and betting markets — the data and methodology behind Divot Lab's picks.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.divotlab.com/research">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.divotlab.com/research">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:       #0A0A0A;
+  --black-mid:   #111110;
+  --black-card:  #161614;
+  --black-card2: #1C1C19;
+  --white:       #FAFAFA;
+  --graphite:    #4A4A4A;
+  --steel:       #C4C4C4;
+  --steel-dim:   #6A6A64;
+  --green:       #1B4D3E;
+  --green-light: #5BBF85;
+  --blue:        #2C5F7C;
+  --blue-mid:    #5A8FA8;
+  --gold:        #C9A84C;
+  --border:      rgba(255,255,255,0.07);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--body); background:var(--black); color:var(--white); -webkit-font-smoothing:antialiased; line-height:1.7; overflow-x:hidden; }
+a { color:inherit; text-decoration:none; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; height:68px; padding:0 56px; display:flex; align-items:center; background:rgba(10,10,10,0.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid var(--border); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; color:var(--white); }
+.nav-wordmark { font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--white); }
+.nav-wordmark span { font-weight:300; opacity:.55; }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a { font-size:13px; font-weight:500; letter-spacing:.05em; color:rgba(250,250,250,.65); transition:color .2s; }
+.nav-links a:hover { color:var(--white); }
+.nav-links a.active { color:var(--green-light); }
+.nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s; }
+.nav-cta:hover { background:#236b4f; }
+.theme-toggle { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:rgba(250,250,250,0.6); cursor:pointer; transition:background .2s, color .2s, transform .15s; }
+.theme-toggle:hover { background:rgba(255,255,255,0.15); color:var(--white); transform:scale(1.1); }
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; align-items:center; width:40px; height:40px; gap:5px; background:none; border:none; cursor:pointer; margin-left:auto; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s, opacity .2s; }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-drawer { position:fixed; top:68px; left:0; right:0; z-index:99; background:rgba(10,10,10,0.97); backdrop-filter:blur(22px); border-bottom:1px solid var(--border); padding:12px 0 20px; display:flex; flex-direction:column; align-items:center; gap:4px; max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease; }
+.nav-drawer.open { max-height:calc(100vh - 68px); opacity:1; pointer-events:auto; overflow-y:auto; }
+.nav-drawer a { font-size:15px; font-weight:500; color:rgba(250,250,250,.75); padding:10px 0; width:100%; text-align:center; transition:color .2s; }
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer .nav-cta { margin-top:8px; width:auto; padding:10px 32px; }
+
+/* HERO */
+.index-hero { padding:150px 48px 56px; max-width:980px; margin:0 auto; text-align:center; }
+.index-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green-light); margin-bottom:20px; }
+.index-title { font-family:var(--display); font-size:clamp(2.4rem,6vw,4rem); font-weight:600; letter-spacing:-0.02em; line-height:1.08; margin-bottom:22px; }
+.index-title em { font-style:italic; color:var(--green-light); }
+.index-sub { font-size:16px; color:var(--steel-dim); max-width:560px; margin:0 auto; line-height:1.7; }
+
+/* GRID */
+.studies-wrap { max-width:980px; margin:0 auto; padding:24px 48px 120px; }
+.studies-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+.study-card { display:flex; flex-direction:column; background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:transform .25s cubic-bezier(.22,1,.36,1), border-color .25s, box-shadow .25s; }
+.study-card.live:hover { transform:translateY(-4px); border-color:rgba(91,191,133,0.25); box-shadow:0 16px 48px rgba(0,0,0,0.35); }
+.study-card-img { aspect-ratio:16/9; background:linear-gradient(135deg, var(--black-card2) 0%, var(--black-mid) 100%); position:relative; overflow:hidden; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
+.study-card-img img { width:100%; height:100%; object-fit:cover; opacity:0.9; transition:transform .4s cubic-bezier(.22,1,.36,1), opacity .3s; }
+.study-card.live:hover .study-card-img img { transform:scale(1.04); opacity:1; }
+.study-card-num { font-family:var(--mono); font-size:11px; letter-spacing:0.2em; color:rgba(250,250,250,0.18); }
+.study-card-body { padding:26px 28px 28px; display:flex; flex-direction:column; flex:1; }
+.study-tag-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.study-tag { font-family:var(--mono); font-size:9px; letter-spacing:0.18em; text-transform:uppercase; padding:4px 10px; border-radius:20px; }
+.study-tag.live { color:var(--green-light); background:rgba(91,191,133,0.1); border:1px solid rgba(91,191,133,0.2); }
+.study-tag.soon { color:var(--steel-dim); background:rgba(255,255,255,0.04); border:1px solid var(--border); }
+.study-date { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:rgba(250,250,250,0.28); }
+.study-title { font-family:var(--display); font-size:1.55rem; font-weight:600; letter-spacing:-0.02em; line-height:1.18; margin-bottom:12px; color:var(--white); }
+.study-hook { font-size:13.5px; color:var(--steel-dim); line-height:1.65; margin-bottom:20px; flex:1; }
+.study-cta { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--green-light); transition:gap .2s; }
+.study-card.live:hover .study-cta { gap:11px; }
+.study-cta .arrow { transition:transform .2s; }
+.study-card.live:hover .study-cta .arrow { transform:translateX(2px); }
+.study-card.soon { opacity:0.55; }
+.study-card.soon .study-cta { color:rgba(250,250,250,0.25); }
+.study-card.soon .study-card-img { display:flex; align-items:center; justify-content:center; }
+
+@media (max-width:760px) {
+  nav { padding:0 22px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .index-hero { padding:128px 22px 40px; }
+  .studies-wrap { padding:16px 22px 80px; }
+  .studies-grid { grid-template-columns:1fr; }
+}
+
+@keyframes riseIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+.index-hero > * { opacity:0; animation:riseIn 0.6s cubic-bezier(.22,1,.36,1) forwards; }
+.index-hero .index-eyebrow { animation-delay:0.08s; }
+.index-hero .index-title   { animation-delay:0.16s; }
+.index-hero .index-sub     { animation-delay:0.26s; }
+.study-card { opacity:0; animation:riseIn 0.55s cubic-bezier(.22,1,.36,1) forwards; }
+.study-card:nth-child(1) { animation-delay:0.32s; }
+.study-card:nth-child(2) { animation-delay:0.4s; }
+.study-card:nth-child(3) { animation-delay:0.48s; }
+
+/* FOOTER */
+.site-footer { background:var(--black-mid); border-top:1px solid var(--border); padding:40px 56px 28px; }
+.footer-logo { display:flex; align-items:center; gap:10px; color:var(--white); text-decoration:none; }
+.footer-wordmark { font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--white); }
+.footer-wordmark span { font-weight:300; opacity:.5; }
+.footer-copy { font-size:12px; color:rgba(250,250,250,.22); }
+
+/* LIGHT MODE (rest-of-site theme) */
+html[data-theme="light"] body { background:#F5F4EF; color:#1C1B18; }
+html[data-theme="light"] nav { background:rgba(245,244,239,0.94) !important; border-bottom-color:rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-logo svg { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color:rgba(28,27,24,0.55) !important; }
+html[data-theme="light"] .nav-links a:hover { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-links a.active { color:#2E7D54 !important; }
+html[data-theme="light"] .nav-links a.nav-cta { color:#FFFFFF !important; }
+html[data-theme="light"] .nav-hamburger span { background:#1C1B18 !important; }
+html[data-theme="light"] .nav-drawer { background:rgba(245,244,239,0.97) !important; border-bottom-color:rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-drawer a { color:rgba(28,27,24,0.65) !important; }
+html[data-theme="light"] .index-sub { color:rgba(28,27,24,0.55); }
+html[data-theme="light"] .index-title em { color:#2E7D54; }
+html[data-theme="light"] .study-card { background:#FFFFFF; border-color:rgba(28,27,24,0.1); box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+html[data-theme="light"] .study-card-img { background:linear-gradient(135deg,#EFEEE8 0%,#F7F6F1 100%); border-bottom-color:rgba(28,27,24,0.08); }
+html[data-theme="light"] .study-card-num { color:rgba(28,27,24,0.12); }
+html[data-theme="light"] .study-tag.live { color:#2E7D54; background:rgba(46,125,84,0.08); border-color:rgba(46,125,84,0.2); }
+html[data-theme="light"] .study-tag.soon { color:rgba(28,27,24,0.4); background:rgba(28,27,24,0.04); border-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .study-date { color:rgba(28,27,24,0.32); }
+html[data-theme="light"] .study-title { color:#1C1B18; }
+html[data-theme="light"] .study-hook { color:rgba(28,27,24,0.58); }
+html[data-theme="light"] .study-cta { color:#2E7D54; }
+html[data-theme="light"] .study-card.soon .study-cta { color:rgba(28,27,24,0.28); }
+html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-color:rgba(28,27,24,0.13); color:rgba(28,27,24,0.52); }
+html[data-theme="light"] .site-footer { background:#EEEDE8; border-top-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .footer-logo { color:#1C1B18; }
+html[data-theme="light"] .footer-wordmark { color:#1C1B18; }
+html[data-theme="light"] .footer-copy { color:rgba(28,27,24,0.35); }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Picks</a>
+    <a href="/the-lab">Live Stats</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Newsletter</a>
+    <a href="/research" class="active">Research</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <a href="/pro" class="nav-cta">Pro →</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/picks">Picks</a>
+  <a href="/the-lab">Live Stats</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Newsletter</a>
+  <a href="/research">Research</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Toggle theme"></button>
+  <a href="/pro" class="nav-cta">Pro →</a>
+</div>
+
+<header class="index-hero">
+  <div class="index-eyebrow">Divot Lab Research</div>
+  <h1 class="index-title">Original studies on golf <em>prediction models</em> and betting markets</h1>
+  <p class="index-sub">The data and methodology behind the picks — calibration audits, market efficiency tests, and everything we learn trying to find an edge in professional golf.</p>
+</header>
+
+<div class="studies-wrap">
+  <div class="studies-grid">
+
+    <a href="/research/datagolf-model-calibration-audit" class="study-card live">
+      <div class="study-card-img">
+        <img src="/assets/research/calibration_top10.png" alt="DataGolf calibration chart — predicted vs actual top-10 finish rate">
+      </div>
+      <div class="study-card-body">
+        <div class="study-tag-row">
+          <span class="study-tag live">Study 01</span>
+          <span class="study-date">June 2026</span>
+        </div>
+        <h2 class="study-title">Conservative by Design</h2>
+        <p class="study-hook">A six-year calibration audit of DataGolf's prediction model — 292 events, 36,656 player-event records. The model is well-calibrated overall, but it systematically underestimates elite players by 5+ points.</p>
+        <span class="study-cta">Read the study <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <a href="/research/does-datagolf-beat-the-market" class="study-card live">
+      <div class="study-card-img">
+        <img src="/assets/research/dg_vs_pinnacle_scatter.png" alt="DataGolf vs Pinnacle win probability scatter chart">
+      </div>
+      <div class="study-card-body">
+        <div class="study-tag-row">
+          <span class="study-tag live">Study 02</span>
+          <span class="study-date">June 2026</span>
+        </div>
+        <h2 class="study-title">The Market Already Knows</h2>
+        <p class="study-hook">Measuring DataGolf's edge against Pinnacle's closing line across 284 events. The win market is fully efficient — but the less-liquid top-10 market hasn't caught up to the model.</p>
+        <span class="study-cta">Read the study <span class="arrow">→</span></span>
+      </div>
+    </a>
+
+    <div class="study-card soon">
+      <div class="study-card-img">
+        <span class="study-card-num">STUDY 03</span>
+      </div>
+      <div class="study-card-body">
+        <div class="study-tag-row">
+          <span class="study-tag soon">Coming Soon</span>
+        </div>
+        <h2 class="study-title">DataGolf vs. the Recreational Books</h2>
+        <p class="study-hook">Pinnacle has already priced DataGolf's signal — but DraftKings, FanDuel, and Caesars shade their lines to balance recreational action. Is that where the real edge lives?</p>
+        <span class="study-cta">In progress</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div style="max-width:1120px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <a href="/" class="footer-logo">
+      <svg width="20" height="20" viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+      <span class="footer-wordmark">DIVOT <span>LAB</span></span>
+    </a>
+    <span class="footer-copy">© 2026 Divot Lab · Original research on golf analytics and betting markets</span>
+  </div>
+</footer>
+
+<script>
+const themeToggles = document.querySelectorAll('.theme-toggle');
+function getTheme() { return localStorage.getItem('divotlab-theme') || 'dark'; }
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('divotlab-theme', t);
+  themeToggles.forEach(btn => btn.innerHTML = t === 'dark'
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>');
+}
+setTheme(getTheme());
+themeToggles.forEach(btn => btn.addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark')));
+
+const nav = document.getElementById('nav');
+const drawer = document.getElementById('navDrawer');
+document.getElementById('navHamburger').addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  nav.classList.toggle('menu-open', open);
+});
+</script>
+</body>
+</html>

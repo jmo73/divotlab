@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEX1MKH2LP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PEX1MKH2LP');
+</script>
+<meta charset="UTF-8">
+<script>!function(){var t=localStorage.getItem('divotlab-research-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does DataGolf Beat the Market? — Divot Lab Research</title>
+<meta name="description" content="The win market has fully priced DataGolf's signal. The top-10 market hasn't. A study of 284 events and 29,000+ predictions against Pinnacle's closing line.">
+<meta property="og:title" content="The Market Already Knows: Measuring DataGolf's Edge Against Pinnacle's Closing Line">
+<meta property="og:description" content="DataGolf and Pinnacle agree on 95% of win market predictions. But the less-liquid top-10 market tells a different story.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.divotlab.com/research/does-datagolf-beat-the-market">
+<meta property="og:site_name" content="Divot Lab">
+<meta property="og:image" content="https://www.divotlab.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.divotlab.com/research/does-datagolf-beat-the-market">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:       #0A0A0A;
+  --black-mid:   #111110;
+  --black-card:  #161614;
+  --black-card2: #1C1C19;
+  --white:       #FAFAFA;
+  --graphite:    #4A4A4A;
+  --steel:       #C4C4C4;
+  --steel-dim:   #6A6A64;
+  --green:       #1B4D3E;
+  --green-light: #5BBF85;
+  --blue:        #2C5F7C;
+  --blue-mid:    #5A8FA8;
+  --gold:        #C9A84C;
+  --border:      rgba(255,255,255,0.07);
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family:var(--body); background:var(--black); color:var(--white); -webkit-font-smoothing:antialiased; line-height:1.7; overflow-x:hidden; }
+a { color:inherit; text-decoration:none; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; height:68px; padding:0 56px; display:flex; align-items:center; background:rgba(10,10,10,0.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid var(--border); }
+.nav-logo { display:flex; align-items:center; gap:11px; }
+.nav-logo svg { width:26px; height:26px; color:var(--white); }
+.nav-wordmark { font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--white); }
+.nav-wordmark span { font-weight:300; opacity:.55; }
+.nav-links { display:flex; align-items:center; gap:32px; margin-left:auto; }
+.nav-links a { font-size:13px; font-weight:500; letter-spacing:.05em; color:rgba(250,250,250,.65); transition:color .2s; }
+.nav-links a:hover { color:var(--white); }
+.nav-links a.active { color:var(--green-light); }
+.nav-cta { background:var(--green); color:var(--white) !important; padding:9px 22px; border-radius:5px; font-weight:500; transition:background .2s; }
+.nav-cta:hover { background:#236b4f; }
+.theme-toggle { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:rgba(250,250,250,0.6); cursor:pointer; transition:background .2s, color .2s, transform .15s; }
+.theme-toggle:hover { background:rgba(255,255,255,0.15); color:var(--white); transform:scale(1.1); }
+.nav-hamburger { display:none; flex-direction:column; justify-content:center; align-items:center; width:40px; height:40px; gap:5px; background:none; border:none; cursor:pointer; margin-left:auto; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--white); border-radius:2px; transition:transform .3s, opacity .2s; }
+nav.menu-open .nav-hamburger span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+nav.menu-open .nav-hamburger span:nth-child(2) { opacity:0; }
+nav.menu-open .nav-hamburger span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-drawer { position:fixed; top:68px; left:0; right:0; z-index:99; background:rgba(10,10,10,0.97); backdrop-filter:blur(22px); border-bottom:1px solid var(--border); padding:12px 0 20px; display:flex; flex-direction:column; align-items:center; gap:4px; max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height .38s cubic-bezier(.22,1,.36,1), opacity .28s ease; }
+.nav-drawer.open { max-height:calc(100vh - 68px); opacity:1; pointer-events:auto; overflow-y:auto; }
+.nav-drawer a { font-size:15px; font-weight:500; color:rgba(250,250,250,.75); padding:10px 0; width:100%; text-align:center; transition:color .2s; }
+.nav-drawer a:hover { color:var(--white); }
+.nav-drawer .nav-cta { margin-top:8px; width:auto; padding:10px 32px; }
+
+/* HERO */
+.research-hero { padding:140px 48px 72px; max-width:820px; margin:0 auto; }
+.research-eyebrow { display:flex; align-items:center; gap:12px; font-family:var(--mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green-light); margin-bottom:24px; }
+.research-eyebrow .sep { opacity:0.3; }
+.research-title { font-family:var(--display); font-size:clamp(2rem,4.5vw,3.2rem); font-weight:600; letter-spacing:-0.02em; line-height:1.1; margin-bottom:28px; }
+.research-title em { font-style:italic; color:var(--green-light); }
+.research-meta { display:flex; flex-wrap:wrap; gap:20px; align-items:center; padding:18px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); margin-bottom:48px; }
+.meta-item { font-family:var(--mono); font-size:13px; letter-spacing:0.04em; color:rgba(250,250,250,0.35); }
+.meta-item strong { color:rgba(250,250,250,0.6); font-weight:500; }
+
+/* EXEC SUMMARY */
+.exec-summary { background:rgba(91,191,133,0.04); border:1px solid rgba(91,191,133,0.12); border-radius:10px; padding:28px 32px; margin-bottom:48px; }
+.exec-summary-label { font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green-light); margin-bottom:16px; }
+.exec-summary ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.exec-summary li { position:relative; padding-left:20px; font-size:14px; color:var(--steel); line-height:1.7; }
+.exec-summary li::before { content:'—'; color:var(--green-light); font-weight:700; position:absolute; left:0; top:0; }
+
+/* BODY */
+.research-body { max-width:820px; margin:0 auto; padding:0 48px 96px; }
+.research-section { margin-bottom:56px; }
+.section-heading { font-family:var(--display); font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; line-height:1.2; margin-bottom:20px; color:var(--white); }
+.section-heading .finding-num { font-family:var(--mono); font-size:11px; font-weight:400; letter-spacing:0.15em; text-transform:uppercase; color:var(--green-light); display:block; margin-bottom:6px; }
+p { font-size:15px; color:var(--steel); line-height:1.8; margin-bottom:16px; }
+p:last-child { margin-bottom:0; }
+p strong { color:var(--white); font-weight:600; }
+p em { font-style:italic; color:rgba(250,250,250,0.75); }
+
+/* CODE */
+code { font-family:var(--mono); font-size:12px; color:var(--green-light); background:rgba(91,191,133,0.08); padding:1px 5px; border-radius:3px; }
+code.muted { color:rgba(250,250,250,0.5); background:rgba(255,255,255,0.06); }
+
+/* DATA CALLOUT */
+.data-callout { background:var(--black-card); border-left:3px solid var(--green-light); padding:16px 20px; border-radius:0 6px 6px 0; margin:24px 0; font-size:14px; color:var(--steel); line-height:1.65; }
+.data-callout .label { font-family:var(--mono); font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--green-light); margin-bottom:6px; }
+
+/* STAT HIGHLIGHT */
+.stat-row { display:flex; flex-wrap:wrap; gap:12px; margin:24px 0; }
+.stat-highlight { flex:1; min-width:140px; display:flex; flex-direction:column; align-items:center; background:var(--black-card2); border:1px solid var(--border); border-radius:8px; padding:16px 24px; text-align:center; }
+.stat-highlight .val { font-family:var(--mono); font-size:2rem; font-weight:500; color:var(--green-light); line-height:1; margin-bottom:6px; }
+.stat-highlight .lbl { font-size:11px; color:rgba(250,250,250,0.35); letter-spacing:0.05em; line-height:1.3; text-align:center; }
+
+/* RESEARCH TABLE */
+.research-table-wrap { overflow-x:auto; margin:28px 0; }
+.research-table { width:100%; border-collapse:collapse; font-size:13px; }
+.research-table th { font-family:var(--mono); font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(250,250,250,0.35); text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap; }
+.research-table td { padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--steel); vertical-align:middle; }
+.research-table tr:last-child td { border-bottom:none; }
+.research-table .num { font-family:var(--mono); font-size:12px; color:var(--white); }
+.research-table .pos { color:var(--green-light); font-family:var(--mono); font-size:12px; font-weight:500; }
+.research-table .neg { color:rgba(220,100,100,0.8); font-family:var(--mono); font-size:12px; }
+.research-table .sig { color:var(--green-light); font-family:var(--mono); font-size:11px; }
+.research-table .nosig { color:rgba(250,250,250,0.25); font-family:var(--mono); font-size:11px; }
+.research-table .muted { color:rgba(250,250,250,0.35); font-family:var(--mono); font-size:12px; }
+.research-table .highlight td { background:rgba(91,191,133,0.06); }
+.research-table .highlight .num { color:var(--green-light); }
+.research-table .warn td { background:rgba(220,100,100,0.05); }
+
+/* FIGURE */
+.research-figure { margin:32px 0; background:var(--black-card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.research-figure img { width:100%; display:block; }
+.research-figure figcaption { padding:12px 16px; font-size:12px; color:rgba(250,250,250,0.3); border-top:1px solid var(--border); line-height:1.5; font-style:italic; }
+
+/* METHOD LIST */
+.method-list { padding-left:20px; margin-bottom:16px; color:var(--steel); font-size:15px; line-height:1.8; }
+
+/* TABLE NOTE */
+.table-note { font-size:12px; color:rgba(250,250,250,0.3); margin-top:-8px; font-style:italic; }
+
+/* SECTION DIVIDER */
+.section-divider { border:none; height:1px; background:var(--border); margin:48px 0; }
+
+/* EMAIL GATE */
+.gate-wrapper { position:relative; }
+.gate-blur { filter:blur(4px); pointer-events:none; user-select:none; opacity:0.35; max-height:320px; overflow:hidden; mask-image:linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 85%); -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 85%); }
+.gate-panel { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(165deg,#0d0d0d 0%,#0f1612 100%); border:1px solid rgba(91,191,133,0.2); border-radius:12px; padding:40px 36px; max-width:440px; width:90%; text-align:center; box-shadow:0 24px 64px rgba(0,0,0,0.6); z-index:10; }
+.gate-panel h3 { font-family:var(--display); font-size:1.6rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:10px; color:var(--white); }
+.gate-panel p { font-size:14px; color:var(--steel-dim); line-height:1.6; margin-bottom:24px; }
+.gate-form { display:flex; gap:8px; }
+.gate-form input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13); border-radius:6px; padding:12px 16px; font-family:var(--body); font-size:13px; color:var(--white); outline:none; transition:border-color .2s; }
+.gate-form input::placeholder { color:rgba(250,250,250,0.3); }
+.gate-form input:focus { border-color:var(--green-light); }
+.gate-form button { background:var(--green); color:var(--white); border:none; border-radius:6px; padding:12px 20px; font-family:var(--body); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .2s; }
+.gate-form button:hover { background:#236b4f; }
+.gate-form button:disabled { opacity:0.6; cursor:not-allowed; }
+.gate-note { margin-top:12px; font-size:11px; color:rgba(250,250,250,0.2); line-height:1.5; }
+.gate-success { display:none; }
+.gate-success.show { display:block; }
+.gate-success p { color:var(--green-light); font-size:14px; margin:0; }
+.gated-content { display:none; }
+.gated-content.unlocked { display:block; }
+
+/* NEXT STUDIES */
+.next-studies { background:var(--black-card); border:1px solid var(--border); border-radius:10px; padding:32px; margin-top:48px; }
+.next-studies-label { font-family:var(--mono); font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue-mid); margin-bottom:16px; }
+.next-studies h4 { font-size:16px; font-weight:600; margin-bottom:16px; color:var(--white); }
+.next-studies ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.next-studies li { display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--steel-dim); line-height:1.55; }
+.next-studies li::before { content:'→'; color:var(--blue-mid); flex-shrink:0; }
+
+/* FOOTNOTE */
+.research-footnote { margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:12px; color:rgba(250,250,250,0.25); line-height:1.7; font-style:italic; }
+
+/* SERIES NAV */
+.series-nav { background:var(--black-card2); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin-bottom:40px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.series-nav-label { font-family:var(--mono); font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(250,250,250,0.3); margin-bottom:4px; }
+.series-nav-link { font-size:13px; color:rgba(250,250,250,0.65); display:flex; align-items:center; gap:6px; transition:color .2s; }
+.series-nav-link:hover { color:var(--white); }
+.series-nav-link.prev::before { content:'←'; color:var(--green-light); }
+.series-nav-link.next::after { content:'→'; color:var(--green-light); }
+.series-nav-center { font-family:var(--mono); font-size:11px; color:rgba(250,250,250,0.25); }
+
+/* FOOTER */
+.site-footer { background:var(--black-mid); border-top:1px solid var(--border); padding:40px 56px 28px; }
+.footer-logo { display:flex; align-items:center; gap:10px; color:var(--white); text-decoration:none; }
+.footer-wordmark { font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--white); }
+.footer-wordmark span { font-weight:300; opacity:.5; }
+.footer-copy { font-size:12px; color:rgba(250,250,250,.22); }
+
+/* LIGHT MODE */
+html[data-theme="light"] body { background:#F5F4EF; color:#1C1B18; }
+html[data-theme="light"] nav { background:rgba(245,244,239,0.94) !important; border-bottom-color:rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-logo svg { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-wordmark { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-links a { color:rgba(28,27,24,0.55) !important; }
+html[data-theme="light"] .nav-links a:hover { color:#1C1B18 !important; }
+html[data-theme="light"] .nav-links a.active { color:#2E7D54 !important; }
+html[data-theme="light"] .nav-links a.nav-cta { color:#FFFFFF !important; }
+html[data-theme="light"] .nav-hamburger span { background:#1C1B18 !important; }
+html[data-theme="light"] .nav-drawer { background:rgba(245,244,239,0.97) !important; border-bottom-color:rgba(28,27,24,0.09) !important; }
+html[data-theme="light"] .nav-drawer a { color:rgba(28,27,24,0.65) !important; }
+html[data-theme="light"] p { color:rgba(28,27,24,0.72); }
+html[data-theme="light"] p strong { color:#1C1B18; }
+html[data-theme="light"] p em { color:rgba(28,27,24,0.8); }
+html[data-theme="light"] .section-heading { color:#1C1B18; }
+html[data-theme="light"] .research-title em { color:#2E7D54; }
+html[data-theme="light"] .research-meta { border-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .meta-item { color:rgba(28,27,24,0.38); }
+html[data-theme="light"] .meta-item strong { color:rgba(28,27,24,0.65); }
+html[data-theme="light"] .exec-summary { background:rgba(46,125,84,0.05); border-color:rgba(46,125,84,0.18); }
+html[data-theme="light"] .exec-summary li { color:rgba(28,27,24,0.72); }
+html[data-theme="light"] .exec-summary li strong { color:#1C1B18; }
+html[data-theme="light"] .exec-summary li::before { color:#2E7D54; }
+html[data-theme="light"] .data-callout { background:#FFFFFF; border-left-color:#2E7D54; color:rgba(28,27,24,0.72); }
+html[data-theme="light"] .data-callout .label { color:#2E7D54; }
+html[data-theme="light"] code { color:#2E7D54; background:rgba(46,125,84,0.08); }
+html[data-theme="light"] code.muted { color:rgba(28,27,24,0.48); background:rgba(28,27,24,0.05); }
+html[data-theme="light"] .method-list { color:rgba(28,27,24,0.72); }
+html[data-theme="light"] .stat-highlight { background:#FFFFFF; border-color:rgba(28,27,24,0.1); box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+html[data-theme="light"] .stat-highlight .val { color:#2E7D54; }
+html[data-theme="light"] .stat-highlight .lbl { color:rgba(28,27,24,0.42); }
+html[data-theme="light"] .research-table-wrap { background:#FFFFFF; border-radius:8px; border:1px solid rgba(28,27,24,0.09); overflow:hidden; }
+html[data-theme="light"] .research-table th { color:rgba(28,27,24,0.42); border-bottom-color:rgba(28,27,24,0.1); background:rgba(28,27,24,0.02); }
+html[data-theme="light"] .research-table td { color:rgba(28,27,24,0.72); border-bottom-color:rgba(28,27,24,0.05); }
+html[data-theme="light"] .research-table .num { color:#1C1B18; }
+html[data-theme="light"] .research-table .pos { color:#2E7D54; }
+html[data-theme="light"] .research-table .sig { color:#2E7D54; }
+html[data-theme="light"] .research-table .nosig { color:rgba(28,27,24,0.28); }
+html[data-theme="light"] .research-table .highlight td { background:rgba(46,125,84,0.05); }
+html[data-theme="light"] .research-table .warn td { background:rgba(180,60,60,0.04); }
+html[data-theme="light"] .research-figure { background:#FFFFFF; border-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .research-figure figcaption { border-top-color:rgba(28,27,24,0.08); color:rgba(28,27,24,0.42); }
+html[data-theme="light"] .section-divider { background:rgba(28,27,24,0.1); }
+html[data-theme="light"] .gate-blur { opacity:0.25; }
+html[data-theme="light"] .gate-panel { background:#FFFFFF; border-color:rgba(27,77,62,0.22); box-shadow:0 8px 40px rgba(0,0,0,0.1); }
+html[data-theme="light"] .gate-panel h3 { color:#1C1B18; }
+html[data-theme="light"] .gate-panel p { color:rgba(28,27,24,0.58); }
+html[data-theme="light"] .gate-form input { background:#F5F4EF; border-color:rgba(28,27,24,0.18); color:#1C1B18; }
+html[data-theme="light"] .gate-form input:focus { border-color:#1B4D3E; }
+html[data-theme="light"] .gate-form input::placeholder { color:rgba(28,27,24,0.32); }
+html[data-theme="light"] .gate-note { color:rgba(28,27,24,0.32); }
+html[data-theme="light"] .next-studies { background:#FFFFFF; border-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .next-studies h4 { color:#1C1B18; }
+html[data-theme="light"] .next-studies li { color:rgba(28,27,24,0.62); }
+html[data-theme="light"] .next-studies li strong { color:#1C1B18; }
+html[data-theme="light"] .research-footnote { color:rgba(28,27,24,0.32); border-top-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .table-note { color:rgba(28,27,24,0.38); }
+html[data-theme="light"] .series-nav { background:#FFFFFF; border-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .series-nav-label { color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .series-nav-link { color:rgba(28,27,24,0.65); }
+html[data-theme="light"] .series-nav-link:hover { color:#1C1B18; }
+html[data-theme="light"] .series-nav-center { color:rgba(28,27,24,0.25); }
+html[data-theme="light"] .site-footer { background:#EEEDE8; border-top-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .footer-logo { color:#1C1B18; }
+html[data-theme="light"] .footer-wordmark { color:#1C1B18; }
+html[data-theme="light"] .footer-copy { color:rgba(28,27,24,0.35); }
+html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-color:rgba(28,27,24,0.13); color:rgba(28,27,24,0.52); }
+
+@media (max-width:700px) {
+  nav { padding:0 22px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .research-hero { padding:120px 22px 48px; }
+  .research-body { padding:0 22px 72px; }
+  .gate-form { flex-direction:column; }
+  .gate-form button { width:100%; }
+  .stat-row { flex-direction:column; }
+  .stat-highlight { width:100%; }
+  .series-nav { flex-direction:column; gap:8px; }
+  .site-footer { padding:32px 22px 24px; }
+}
+
+@keyframes riseIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+.research-hero > * { opacity:0; animation:riseIn 0.6s cubic-bezier(.22,1,.36,1) forwards; }
+.research-hero .research-eyebrow { animation-delay:0.1s; }
+.research-hero .research-title   { animation-delay:0.2s; }
+.research-hero .research-meta    { animation-delay:0.3s; }
+.research-hero .exec-summary     { animation-delay:0.4s; }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".15"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+    <span class="nav-wordmark">DIVOT <span>LAB</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/picks">Picks</a>
+    <a href="/the-lab">Live Stats</a>
+    <a href="/articles">Articles</a>
+    <a href="/lab-notes">Newsletter</a>
+    <a href="/research" class="active">Research</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <a href="/pro" class="nav-cta">Pro →</a>
+  </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/picks">Picks</a>
+  <a href="/the-lab">Live Stats</a>
+  <a href="/articles">Articles</a>
+  <a href="/lab-notes">Newsletter</a>
+  <a href="/research">Research</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Toggle theme"></button>
+  <a href="/pro" class="nav-cta">Pro →</a>
+</div>
+
+<header class="research-hero">
+  <div class="research-eyebrow">
+    <span>Divot Lab Research</span>
+    <span class="sep">·</span>
+    <span>Study 02</span>
+    <span class="sep">·</span>
+    <span>June 2026</span>
+  </div>
+  <h1 class="research-title">The Market Already Knows: Measuring DataGolf's <em>Edge</em> Against Pinnacle's Closing Line</h1>
+  <div class="research-meta">
+    <span class="meta-item"><strong>284</strong> PGA Tour events (win)</span>
+    <span class="meta-item"><strong>75</strong> events (top-10)</span>
+    <span class="meta-item"><strong>2019–2026</strong> coverage</span>
+    <span class="meta-item"><strong>DataGolf Pro API</strong> · Pinnacle historical odds</span>
+  </div>
+  <div class="exec-summary">
+    <div class="exec-summary-label">Executive Summary</div>
+    <ul>
+      <li>DataGolf and Pinnacle's win market have effectively converged: <strong>95% of pre-tournament win estimates agree within 1 percentage point.</strong> There is no exploitable edge in the win market.</li>
+      <li>The less-liquid top-10 market is different. When they disagree, DataGolf's estimates are consistently closer to actual outcomes — in both directions. The market misprices top-10 probability by 5–10 percentage points in disagreement cases; DataGolf does not.</li>
+      <li>Translating that calibration advantage into profit is blocked by the vig. <strong>Being right by 2–3 percentage points is not enough when the bookmaker's margin is 5–10 points.</strong> The edge exists in the model; it does not survive to the bettor.</li>
+    </ul>
+  </div>
+</header>
+
+<main class="research-body">
+
+  <div class="series-nav">
+    <div>
+      <div class="series-nav-label">Previous</div>
+      <a href="/research/datagolf-model-calibration-audit" class="series-nav-link prev">Study 01 — Calibration Audit</a>
+    </div>
+    <div class="series-nav-center">Study 02 of 3</div>
+    <div style="text-align:right">
+      <div class="series-nav-label">Next</div>
+      <span class="series-nav-link" style="opacity:0.35; cursor:default">Study 03 — Recreational Books</span>
+    </div>
+  </div>
+
+  <div class="research-section">
+    <h2 class="section-heading">Background</h2>
+    <p>Study 01 established that DataGolf's model is well-calibrated overall — an Expected Calibration Error of 1.1% is a strong result. But calibration measures a model against reality. A different question is how the model compares against the best available alternative: the betting market.</p>
+    <p>Sportsbooks aggregate the information of every sharp bettor in the world, corrected in real time. If DataGolf's model is better than the market, bettors using it would have a systematic advantage. If it is not, the market has already priced whatever DataGolf knows.</p>
+    <p>This study tests that directly. We join DataGolf's pre-tournament probability estimates against Pinnacle's opening and closing lines across 284 events from 2019–2026, covering both the win and top-10 markets.</p>
+    <p><strong>Why Pinnacle?</strong> Pinnacle is the industry benchmark for market efficiency research. It carries the lowest vig of any major book (approximately 4–5% margin), accepts large wagers from sharp bettors, and closes at the most efficient price available. Comparing DataGolf against Pinnacle's closing line sets the hardest possible bar.</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <div class="research-section">
+    <h2 class="section-heading">Data and Methodology</h2>
+    <div class="data-callout">
+      <div class="label">Data Sources</div>
+      DataGolf Pro API · <code>/preds/pre-tournament-archive</code> · <code>/historical-odds/outrights</code> · Pinnacle sportsbook · 288 events with Pinnacle odds (8 API errors), 2019–2026
+    </div>
+    <p><strong>Win market:</strong> 284 event-years · 24,100 player-event records · ~85 players priced per event<br>
+    <strong>Top-10 market:</strong> 75 event-years · 5,242 records · ~70 players priced per event</p>
+    <p><strong>Vig adjustment:</strong> Raw implied probability from decimal odds is <code class="muted">1 / odds</code>. To remove the bookmaker's margin, we normalize: <code class="muted">fair_prob = raw_prob / overround</code>, where overround sums to the number of winners (1 for win, 10 for top-10). This converts market prices to probability estimates comparable to DataGolf's output.</p>
+    <p><strong>Edge:</strong> <code class="muted">DataGolf probability − market fair probability</code>. Positive edge means DataGolf is more bullish than the market on that player.</p>
+    <p><strong>Simulated ROI:</strong> Treats each player with positive DataGolf edge as a flat-stake bet at closing odds. P&amp;L = <code class="muted">(closing_odds − 1)</code> if the outcome is achieved, <code class="muted">−1</code> otherwise. Bootstrap 95% confidence intervals from 1,000 resamples.</p>
+    <p><em>One methodological note:</em> The top-10 vig normalization introduces a confound for small-field events (Sentry, WGC Match Play, some invitationals). When only 70 players are priced in a 30-player field, normalizing to 10 winners inflates individual adjusted probabilities. For the top-10 market, raw implied probability is the more honest comparison in disagreement cases. Both figures are reported below.</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- GATE -->
+  <div class="gate-wrapper" id="gateWrapper">
+    <div class="gate-blur" id="gateBlur">
+      <div class="research-section">
+        <h2 class="section-heading">
+          <span class="finding-num">Finding 1</span>
+          The Win Market Has Already Absorbed DataGolf's Signal
+        </h2>
+        <p>The distribution of DataGolf edge against Pinnacle's win closing line has mean <strong>−0.06 percentage points</strong> and standard deviation <strong>0.48 ppts</strong>. Ninety-five percent of all observations fall within 1 percentage point of each other.</p>
+        <p>These are not two independent models arriving at similar answers. They are converging on the same answer.</p>
+      </div>
+    </div>
+    <div class="gate-panel" id="gatePanel">
+      <h3>Read the Full Study</h3>
+      <p>Four findings, three charts, and the ROI math that explains why being right isn't enough. Free with your email.</p>
+      <form class="gate-form" id="gateForm">
+        <input type="email" id="gateEmail" placeholder="your@email.com" required autocomplete="email">
+        <button type="submit" id="gateBtn">Read Now</button>
+      </form>
+      <p class="gate-note">Joins the free Divot Lab newsletter. Unsubscribe anytime.</p>
+      <div class="gate-success" id="gateSuccess"><p>You're in — scrolling down now.</p></div>
+    </div>
+  </div>
+
+  <!-- GATED CONTENT -->
+  <div class="gated-content" id="gatedContent">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 1</span>
+        The Win Market Has Already Absorbed DataGolf's Signal
+      </h2>
+
+      <div class="stat-row">
+        <div class="stat-highlight">
+          <span class="val">−0.06</span>
+          <span class="lbl">Mean edge vs. Pinnacle<br>win closing line (ppts)</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">95%</span>
+          <span class="lbl">of observations within<br>±1 ppt of each other</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">−40.4%</span>
+          <span class="lbl">Simulated ROI<br>win market bets</span>
+        </div>
+      </div>
+
+      <p>The distribution of DataGolf edge against Pinnacle's win closing line has a mean of <strong>−0.06 percentage points</strong> and a standard deviation of 0.48 ppts. Ninety-five percent of all observations fall within 1 percentage point of each other.</p>
+      <p>These are not two independent models arriving at similar answers. They are converging on the same answer. The win market is so efficiently priced with respect to DataGolf's underlying information that the two sources are functionally interchangeable.</p>
+      <p>When they do disagree at the +2 to +5% level (n=103): DataGolf predicts 11.2%, the market implies 8.4%, and the actual win rate is 10.7%. DataGolf is marginally more accurate. But with 103 observations, this falls within normal sampling variation and cannot support a statistical conclusion.</p>
+      <p>The <strong>−40.4% simulated ROI</strong> for bets placed on any positive DataGolf edge over the win market (95% CI: −55.7% to −23.2%) is a direct consequence of this near-zero mean edge. DataGolf's slightly-higher-than-market win estimates are noise around zero, not signal. Betting on small noise gets crushed by vig. This is not evidence that DataGolf is wrong — it is evidence that the win market is efficient with respect to DataGolf's model.</p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/dg_vs_pinnacle_scatter.png" alt="DataGolf vs Pinnacle win probability scatter">
+        <figcaption>DataGolf pre-tournament win probability vs. Pinnacle vig-adjusted closing probability. 24,100 player-event records, 2019–2026. The near-perfect diagonal alignment shows the two sources converging on the same answer across the full probability range.</figcaption>
+      </figure>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 2</span>
+        The Top-10 Market Is Different — DataGolf Wins the Disagreements
+      </h2>
+      <p>The top-10 market is less liquid. Only 75 of 284 event-years have Pinnacle top-10 odds. Fewer sharp bettors are trading it. The result: a market that does not fully incorporate DataGolf's signal.</p>
+      <p>When DataGolf and Pinnacle disagree on top-10 probability, <strong>DataGolf is consistently closer to actual outcomes — in both directions:</strong></p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Situation</th>
+              <th>DataGolf</th>
+              <th>Market (raw implied)</th>
+              <th>Actual</th>
+              <th>Closer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>DG bullish (n=415, +2%+)</td>
+              <td class="num">23.8%</td>
+              <td class="num">25.6%</td>
+              <td class="num">22.4%</td>
+              <td class="sig">DataGolf</td>
+            </tr>
+            <tr>
+              <td>Agreement (n=3,105, ±2%)</td>
+              <td class="num">8.9%</td>
+              <td class="num">~9.3%</td>
+              <td class="num">6.7%</td>
+              <td class="muted">Tied</td>
+            </tr>
+            <tr class="highlight">
+              <td>DG bearish (n=502, &lt;−5%)</td>
+              <td class="num">18.8%</td>
+              <td class="num">27.4%</td>
+              <td class="num">17.3%</td>
+              <td class="sig">DataGolf</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The "DG bearish" group deserves particular attention. The market assigns a 27.4% raw implied top-10 probability to these players; they actually finish top-10 at 17.3%. DataGolf says 18.8% — essentially correct. The market is overestimating by 10 percentage points. These observations are concentrated in small-field events (Sentry, WGC, Match Play) where per-player top-10 probability is structurally higher, and the market appears to overcorrect for field size relative to what the data supports.</p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/market_edge_analysis.png" alt="DataGolf vs Pinnacle top-10 market disagreement analysis">
+        <figcaption>Top-10 market disagreement analysis. When DataGolf and Pinnacle diverge by more than 2 percentage points, DataGolf's estimates are systematically closer to actual outcomes. The market's largest errors occur in small-field events where top-10 probability normalization inflates implied odds.</figcaption>
+      </figure>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 3</span>
+        Being Right Is Not Enough — The Vig Absorbs the Edge
+      </h2>
+      <p>Simulated ROI for top-10 bets where DataGolf has any positive edge: <strong>−35.2%</strong> (significantly negative). DataGolf is more accurate in disagreement bins. How can ROI still be deeply negative?</p>
+      <p>The answer is vig.</p>
+      <p>ROI is calculated against closing odds, not fair probabilities. If Pinnacle offers a top-10 market at 4.0x (raw implied 25%) and the fair probability is 22%, the expected return is: <code class="muted">22% × 3 + 78% × (−1) = −12%</code>. Being right by 3 percentage points does not help when the book's margin requires you to beat the closing line by more than 5–10 points to profit.</p>
+      <p>DataGolf's top-10 calibration advantage is real — but not large enough to overcome the vig at flat stakes. It means the model is <em>better</em>. It does not mean the model is better <em>enough</em> to extract profit at Pinnacle's sharpest prices.</p>
+      <p>The top-10 edge &gt;5% bucket (n=73) tells a more ambiguous story: ROI of <strong>−2.7%</strong> with a 95% confidence interval of <strong>[−41.5%, +46.8%]</strong>. With 73 observations, this is indistinguishable from zero. A sample of 500–700 events with top-10 odds could resolve whether DataGolf's largest disagreements produce genuine positive expected value. The current data cannot answer that question.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 4</span>
+        The Market Partially Corrects Toward DataGolf During the Week
+      </h2>
+      <p>Correlation between DataGolf edge vs. opening odds and market movement from open to close: <strong>r = +0.075</strong>. The direction is consistent and interpretable:</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>DataGolf position vs. opening line</th>
+              <th>Avg. market movement, open → close</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>DG much more bullish (&gt;+5%)</td>
+              <td class="pos">+1.33 ppts toward DataGolf</td>
+            </tr>
+            <tr>
+              <td>DG slightly more bullish (+2–5%)</td>
+              <td class="pos">+0.52 ppts toward DataGolf</td>
+            </tr>
+            <tr>
+              <td>Agreement (±2%)</td>
+              <td class="muted">−0.03 ppts (flat)</td>
+            </tr>
+            <tr>
+              <td>DG more bearish (&lt;−2%)</td>
+              <td class="muted">−0.13 ppts (slight reverse)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>When DataGolf is substantially more bullish than the opening line, the market drifts approximately <strong>1.3 percentage points</strong> in DataGolf's direction by Thursday. This is a weak but directionally consistent signal: some of DataGolf's information — or the same information DataGolf uses — flows into closing prices during the week.</p>
+      <p>The practical implication: the opening line is less efficient than the closing line. If DataGolf has any exploitable signal against the market, it would appear at the opening line, not the close. By Thursday, much of it has been corrected.</p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/market_movement.png" alt="Market movement toward DataGolf from opening to closing line">
+        <figcaption>Average market movement (open → close) by DataGolf edge bucket. When DataGolf is substantially more bullish than the opening line, Pinnacle's closing price drifts 1.3 ppts in DataGolf's direction — consistent with shared information flowing into the market during the week.</figcaption>
+      </figure>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">Caveats</h2>
+      <p><strong>Win market sample concentration.</strong> Ninety-five percent of win market observations fall within the ±1% agreement band. The edge buckets (n=4 to n=111 per bin) have too few observations to support statistical conclusions about divergence cases.</p>
+      <p><strong>Top-10 vig normalization for small-field events.</strong> Normalizing the top-10 market to sum to exactly 10 winners across the priced subset inflates adjusted probabilities when a 30-player field has 70 players priced. The raw implied probability column is the more reliable comparison in the DG-bearish bucket, where this artifact is largest.</p>
+      <p><strong>Coverage asymmetry.</strong> Pinnacle prices win odds for virtually every PGA Tour event; it prices top-10 odds for approximately 26% of events. The top-10 findings rest on a smaller, potentially non-representative sample that skews toward higher-profile events.</p>
+      <p><strong>Correlation is not causation.</strong> The market movement finding (r=+0.075) shows alignment, not that DataGolf causes the movement. Both may reflect the same underlying information becoming publicly available during the week.</p>
+      <p><strong>This is Pinnacle only.</strong> Pinnacle represents the sharpest available market. Recreational sportsbooks — DraftKings, FanDuel, Caesars — operate with higher margins and different pricing incentives. They are not tested here.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">Implications</h2>
+      <p><strong>The win market has priced DataGolf.</strong> If you are using DataGolf win probabilities to find betting value against any major sportsbook, the information is already in the price at the sharpest books. The signal is real; the edge has been arbitraged away.</p>
+      <p><strong>The top-10 market is where the question is still open.</strong> DataGolf's estimates are more accurate than Pinnacle's implied odds in disagreement cases. Whether that translates to positive expected value at closing odds requires more data than 75 events can provide. The direction is promising; the confidence is not there.</p>
+      <p><strong>Bet opening lines, not closing.</strong> If any edge exists, it is largest at the opening line and shrinks through the week as the market corrects. The correlation between DataGolf edge and market movement confirms this directionally.</p>
+      <p><strong>The interesting comparison is against recreational books.</strong> Pinnacle is the hardest benchmark. DraftKings, FanDuel, and Caesars shade their lines to balance recreational action rather than to set efficient prices. If DataGolf's edge is zero against Pinnacle's closing line, it may still be meaningful against a book that systematically overprices popular players. That is Study 3.</p>
+    </div>
+
+    <div class="next-studies">
+      <div class="next-studies-label">What's Next</div>
+      <h4>Study 3 — DataGolf vs. the Recreational Books</h4>
+      <ul>
+        <li><strong>The hypothesis:</strong> DraftKings, FanDuel, and Caesars shade their top-10 lines toward popular players to balance recreational action. DataGolf's conservative estimates for those players might represent real edge against books that aren't pricing efficiently.</li>
+        <li><strong>The test:</strong> The same analysis — join DataGolf probabilities against opening and closing odds, measure disagreement accuracy and simulated ROI — runs identically on any book in the API's odds dataset.</li>
+        <li><strong>The question it answers:</strong> Where exactly in the market does inefficiency live in golf betting, and why?</li>
+      </ul>
+    </div>
+
+    <p class="research-footnote">
+      Data sourced from DataGolf Pro API and Pinnacle sportsbook historical odds. All analysis conducted in Python using pandas and scipy; code and methodology available in the Divot Lab research repository. Findings based on 284 PGA Tour events (win market) and 75 events (top-10 market), 2019–2026. This study examines model and market accuracy and does not constitute gambling advice.
+    </p>
+
+  </div><!-- /gated-content -->
+
+</main>
+
+<footer class="site-footer">
+  <div style="max-width:1120px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <a href="/" class="footer-logo">
+      <svg width="20" height="20" viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
+      <span class="footer-wordmark">DIVOT <span>LAB</span></span>
+    </a>
+    <span class="footer-copy">© 2026 Divot Lab · Data: DataGolf Pro API + Pinnacle</span>
+  </div>
+</footer>
+
+<script>
+const themeToggles = document.querySelectorAll('.theme-toggle');
+function getTheme() { return localStorage.getItem('divotlab-research-theme') || 'light'; }
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('divotlab-research-theme', t);
+  themeToggles.forEach(btn => btn.innerHTML = t === 'dark'
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>');
+}
+setTheme(getTheme());
+themeToggles.forEach(btn => btn.addEventListener('click', () => setTheme(getTheme() === 'dark' ? 'light' : 'dark')));
+
+const nav = document.getElementById('nav');
+const drawer = document.getElementById('navDrawer');
+document.getElementById('navHamburger').addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  nav.classList.toggle('menu-open', open);
+});
+
+const GATE_KEY = 'divotlab-research-02-unlocked';
+if (localStorage.getItem(GATE_KEY) === '1') unlockContent();
+
+function unlockContent() {
+  document.getElementById('gateWrapper').style.display = 'none';
+  document.getElementById('gatedContent').classList.add('unlocked');
+}
+
+document.getElementById('gateForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('gateEmail').value.trim();
+  const btn = document.getElementById('gateBtn');
+  btn.disabled = true; btn.textContent = 'Unlocking...';
+  try {
+    await fetch('https://divotlab-api.vercel.app/api/subscribe', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email })
+    });
+  } catch(e) {}
+  localStorage.setItem(GATE_KEY, '1');
+  document.getElementById('gateSuccess').classList.add('show');
+  document.getElementById('gateForm').style.display = 'none';
+  setTimeout(() => {
+    unlockContent();
+    document.getElementById('gatedContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 900);
+});
+</script>
+</body>
+</html>
