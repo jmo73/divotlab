@@ -11,16 +11,16 @@
 <meta charset="UTF-8">
 <script>!function(){var t=localStorage.getItem('divotlab-research-theme')||'light';document.documentElement.setAttribute('data-theme',t)}()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Does DataGolf Beat the Market? — Divot Lab Research</title>
-<meta name="description" content="The win market has fully priced DataGolf's signal. The top-10 market hasn't. A study of 284 events and 29,000+ predictions against Pinnacle's closing line.">
-<meta property="og:title" content="The Market Already Knows: Measuring DataGolf's Edge Against Pinnacle's Closing Line">
-<meta property="og:description" content="DataGolf and Pinnacle agree on 95% of win market predictions. But the less-liquid top-10 market tells a different story.">
+<title>Same Number, Higher Price — Divot Lab Research</title>
+<meta name="description" content="Eight sportsbooks, one signal. Recreational books price as accurately as Pinnacle — they just charge roughly double for it. And the popularity premium runs backwards.">
+<meta property="og:title" content="Same Number, Higher Price: What Eight Sportsbooks Reveal About Where Market Edge Actually Lives">
+<meta property="og:description" content="Recreational sportsbooks aren't running cruder models — they're charging 1.7-2.3x Pinnacle's margin for the exact same number. And star players carry the smallest markup of anyone.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://www.divotlab.com/research/does-datagolf-beat-the-market">
+<meta property="og:url" content="https://www.divotlab.com/research/same-number-higher-price">
 <meta property="og:site_name" content="Divot Lab">
 <meta property="og:image" content="https://www.divotlab.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://www.divotlab.com/research/does-datagolf-beat-the-market">
+<link rel="canonical" href="https://www.divotlab.com/research/same-number-higher-price">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,6 +131,7 @@ code.muted { color:rgba(250,250,250,0.5); background:rgba(255,255,255,0.06); }
 .research-table .highlight td { background:rgba(91,191,133,0.06); }
 .research-table .highlight .num { color:var(--green-light); }
 .research-table .warn td { background:rgba(220,100,100,0.05); }
+.research-table .bold-row td { font-weight:600; }
 
 /* FIGURE */
 .research-figure { margin:32px 0; background:var(--black-card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
@@ -318,23 +319,23 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
   <div class="research-eyebrow">
     <span>Divot Lab Research</span>
     <span class="sep">·</span>
-    <span>Study 02</span>
+    <span>Study 03</span>
     <span class="sep">·</span>
     <span>June 2026</span>
   </div>
-  <h1 class="research-title">The Market Already Knows: Measuring DataGolf's <em>Edge</em> Against Pinnacle's Closing Line</h1>
+  <h1 class="research-title">Same Number, Higher Price: What Eight Sportsbooks Reveal About Where Market <em>Edge</em> Actually Lives</h1>
   <div class="research-meta">
-    <span class="meta-item"><strong>284</strong> PGA Tour events (win)</span>
-    <span class="meta-item"><strong>75</strong> events (top-10)</span>
-    <span class="meta-item"><strong>2019–2026</strong> coverage</span>
-    <span class="meta-item"><strong>DataGolf Pro API</strong> · Pinnacle historical odds</span>
+    <span class="meta-item"><strong>8</strong> sportsbooks tested</span>
+    <span class="meta-item"><strong>56–65</strong> events per book</span>
+    <span class="meta-item"><strong>2020–2026</strong> coverage</span>
+    <span class="meta-item"><strong>DataGolf Pro API</strong> · 8 books' historical odds</span>
   </div>
   <div class="exec-summary">
     <div class="exec-summary-label">Executive Summary</div>
     <ul>
-      <li>DataGolf and Pinnacle's win market have effectively converged: <strong>95% of pre-tournament win estimates agree within 1 percentage point.</strong> There is no exploitable edge in the win market.</li>
-      <li>The less-liquid top-10 market is different. When they disagree, DataGolf's estimates are consistently closer to actual outcomes — in both directions. The market misprices top-10 probability by 5–10 percentage points in disagreement cases; DataGolf does not.</li>
-      <li>Translating that calibration advantage into profit is blocked by the vig. <strong>Being right by 2–3 percentage points is not enough when the bookmaker's margin is 5–10 points.</strong> The edge exists in the model; it does not survive to the bettor.</li>
+      <li>Recreational sportsbooks do not run less accurate pricing models than Pinnacle. After removing the vig, all eight books tested — DraftKings, FanDuel, BetMGM, Caesars, PointsBet, Bet365, Unibet, William Hill — produce win-market probabilities that track DataGolf <strong>at least as closely as Pinnacle's do</strong> (96.8–97.5% agreement within 1 percentage point, vs. Pinnacle's 95%).</li>
+      <li>The entire difference between Pinnacle and recreational books is the size of the house margin. <strong>Pinnacle's win-market vig averages 23%; recreational books average 40–53%</strong> — roughly double — on the exact same fair-value number.</li>
+      <li>The hypothesis that popular players (Scheffler, McIlroy, Rahm) are systematically overpriced to attract recreational money isn't just unsupported — it's backwards. At every book tested, star players carry the <em>smallest</em> markup of any tier, 8–15 percentage points below the field average.</li>
     </ul>
   </div>
 </header>
@@ -344,21 +345,21 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
   <div class="series-nav">
     <div>
       <div class="series-nav-label">Previous</div>
-      <a href="/research/datagolf-model-calibration-audit" class="series-nav-link prev">Study 01 — Calibration Audit</a>
+      <a href="/research/does-datagolf-beat-the-market" class="series-nav-link prev">Study 02 — The Market Already Knows</a>
     </div>
-    <div class="series-nav-center">Study 02 of 3</div>
+    <div class="series-nav-center">Study 03 of 3 — Series Finale</div>
     <div style="text-align:right">
-      <div class="series-nav-label">Next</div>
-      <a href="/research/same-number-higher-price" class="series-nav-link next">Study 03 — Same Number, Higher Price</a>
+      <div class="series-nav-label">Series Index</div>
+      <a href="/research" class="series-nav-link next">All Studies</a>
     </div>
   </div>
 
   <div class="research-section">
     <h2 class="section-heading">Background</h2>
-    <p>Study 01 established that DataGolf's model is well-calibrated overall — an Expected Calibration Error of 1.1% is a strong result. But calibration measures a model against reality. A different question is how the model compares against the best available alternative: the betting market.</p>
-    <p>Sportsbooks aggregate the information of every sharp bettor in the world, corrected in real time. If DataGolf's model is better than the market, bettors using it would have a systematic advantage. If it is not, the market has already priced whatever DataGolf knows.</p>
-    <p>This study tests that directly. We join DataGolf's pre-tournament probability estimates against Pinnacle's opening and closing lines across 284 events from 2019–2026, covering both the win and top-10 markets.</p>
-    <p><strong>Why Pinnacle?</strong> Pinnacle is the industry benchmark for market efficiency research. It carries the lowest vig of any major book (approximately 4–5% margin), accepts large wagers from sharp bettors, and closes at the most efficient price available. Comparing DataGolf against Pinnacle's closing line sets the hardest possible bar.</p>
+    <p>Study 2 established that Pinnacle — the sharpest sportsbook in the world — has already absorbed whatever signal DataGolf's model carries. Their win-market estimates agree within 1 percentage point 95% of the time. If you're looking for an edge against Pinnacle's closing line, there isn't one in the win market.</p>
+    <p>But Pinnacle is not where most bettors place money. DraftKings, FanDuel, BetMGM, and similar consumer-facing books dominate the US market. These books are widely believed to operate differently: they cater to recreational bettors who wager on favorites and storylines rather than models, they shade their lines to balance the action they receive, and they apply significantly higher margins.</p>
+    <p>The natural question: if DataGolf has no edge against the sharpest book, does it have an edge against the softest ones? And if recreational books really do shade toward popular players — pricing Scheffler or McIlroy below their true probability to attract public money on the favorite — would DataGolf's signal, which has no exposure to betting flows, be the tool to find it?</p>
+    <p>This study tests both questions directly across eight major sportsbooks.</p>
   </div>
 
   <hr class="section-divider">
@@ -367,14 +368,17 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
     <h2 class="section-heading">Data and Methodology</h2>
     <div class="data-callout">
       <div class="label">Data Sources</div>
-      DataGolf Pro API · <code>/preds/pre-tournament-archive</code> · <code>/historical-odds/outrights</code> · Pinnacle sportsbook · 288 events with Pinnacle odds (8 API errors), 2019–2026
+      DataGolf Pro API · <code>/preds/pre-tournament-archive</code> · <code>/historical-odds/outrights</code> · Eight sportsbooks: DraftKings, FanDuel, BetMGM, Caesars, PointsBet, Bet365, Unibet, William Hill (of 11 candidates queried — BetRivers, Barstool, and a duplicate DraftKings identifier returned API errors)
     </div>
-    <p><strong>Win market:</strong> 284 event-years · 24,100 player-event records · ~85 players priced per event<br>
-    <strong>Top-10 market:</strong> 75 event-years · 5,242 records · ~70 players priced per event</p>
-    <p><strong>Vig adjustment:</strong> Raw implied probability from decimal odds is <code class="muted">1 / odds</code>. To remove the bookmaker's margin, we normalize: <code class="muted">fair_prob = raw_prob / overround</code>, where overround sums to the number of winners (1 for win, 10 for top-10). This converts market prices to probability estimates comparable to DataGolf's output.</p>
-    <p><strong>Edge:</strong> <code class="muted">DataGolf probability − market fair probability</code>. Positive edge means DataGolf is more bullish than the market on that player.</p>
-    <p><strong>Simulated ROI:</strong> Treats each player with positive DataGolf edge as a flat-stake bet at closing odds. P&amp;L = <code class="muted">(closing_odds − 1)</code> if the outcome is achieved, <code class="muted">−1</code> otherwise. Bootstrap 95% confidence intervals from 1,000 resamples.</p>
-    <p><em>One methodological note:</em> The top-10 vig normalization introduces a confound for small-field events (Sentry, WGC Match Play, some invitationals). When only 70 players are priced in a 30-player field, normalizing to 10 winners inflates individual adjusted probabilities. For the top-10 market, raw implied probability is the more honest comparison in disagreement cases. Both figures are reported below.</p>
+    <p><strong>Coverage:</strong> 56–65 of 66 unique tournaments per book · 24,000–35,500 joined player-event records per book per market · win and top-10 markets, opening and closing lines</p>
+    <p><strong>Method — identical to Study 2</strong>, for direct comparability:</p>
+    <ol class="method-list">
+      <li>Vig removal: <code class="muted">fair_prob = raw_prob / overround</code>, where overround sums to the number of winners</li>
+      <li>Edge: <code class="muted">DataGolf probability − market fair probability</code></li>
+      <li>Disagreement-zone calibration: bin by edge, compare actual outcome rate to DataGolf's estimate and the market's</li>
+      <li>Simulated ROI: flat-stake bets at closing odds where DataGolf is more bullish than the book, with bootstrap 95% confidence intervals (1,000 resamples)</li>
+    </ol>
+    <p><strong>New for this study — the popularity premium test:</strong> Identify the 15 players DataGolf rates most consistently as elite (most frequent appearances with a 20%+ top-10 probability — Scheffler, Schauffele, Morikawa, McIlroy, Thomas, Cantlay, and others). For each book, compute the ratio of raw implied probability to DataGolf's probability for these players, and compare it to the same ratio for the full priced field. A higher ratio for popular players would indicate systematic overpricing — the signature of line-shading toward public favorites.</p>
   </div>
 
   <hr class="section-divider">
@@ -385,15 +389,14 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
       <div class="research-section">
         <h2 class="section-heading">
           <span class="finding-num">Finding 1</span>
-          The Win Market Has Already Absorbed DataGolf's Signal
+          Every Book Converges on the Same Number — Once You Remove the Vig
         </h2>
-        <p>The distribution of DataGolf edge against Pinnacle's win closing line has mean <strong>−0.06 percentage points</strong> and standard deviation <strong>0.48 ppts</strong>. Ninety-five percent of all observations fall within 1 percentage point of each other.</p>
-        <p>These are not two independent models arriving at similar answers. They are converging on the same answer.</p>
+        <p>The central surprise of this study: there is no meaningful difference in pricing accuracy between Pinnacle and any of the eight recreational books tested. Several actually agree with DataGolf more tightly than Pinnacle does.</p>
       </div>
     </div>
     <div class="gate-panel" id="gatePanel">
       <h3>Read the Full Study</h3>
-      <p>Four findings, three charts, and the ROI math that explains why being right isn't enough. Free with your email.</p>
+      <p>Five findings, three charts, and the closing argument to a three-part series on where market edge in golf betting actually lives. Free with your email.</p>
       <form class="gate-form" id="gateForm">
         <input type="email" id="gateEmail" placeholder="your@email.com" required autocomplete="email">
         <button type="submit" id="gateBtn">Read Now</button>
@@ -409,33 +412,72 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
     <div class="research-section">
       <h2 class="section-heading">
         <span class="finding-num">Finding 1</span>
-        The Win Market Has Already Absorbed DataGolf's Signal
+        Every Book Converges on the Same Number — Once You Remove the Vig
       </h2>
 
-      <div class="stat-row">
-        <div class="stat-highlight">
-          <span class="val">−0.06</span>
-          <span class="lbl">Mean edge vs. Pinnacle<br>win closing line (ppts)</span>
-        </div>
-        <div class="stat-highlight">
-          <span class="val">95%</span>
-          <span class="lbl">of observations within<br>±1 ppt of each other</span>
-        </div>
-        <div class="stat-highlight">
-          <span class="val">−40.4%</span>
-          <span class="lbl">Simulated ROI<br>win market bets</span>
-        </div>
+      <p>The central surprise of this study: there is no meaningful difference in <em>pricing accuracy</em> between Pinnacle and any of the eight recreational books tested.</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Std. dev. of edge vs. DataGolf</th>
+              <th>% agreement within ±1 ppt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="muted">
+              <td>Pinnacle (Study 2 reference)</td>
+              <td class="num">0.48 ppts</td>
+              <td class="num">95.0%</td>
+            </tr>
+            <tr class="highlight">
+              <td>PointsBet</td>
+              <td class="num">0.40 ppts</td>
+              <td class="num">97.5%</td>
+            </tr>
+            <tr class="highlight">
+              <td>Unibet</td>
+              <td class="num">0.42 ppts</td>
+              <td class="num">97.5%</td>
+            </tr>
+            <tr class="highlight">
+              <td>DraftKings</td>
+              <td class="num">0.42 ppts</td>
+              <td class="num">97.1%</td>
+            </tr>
+            <tr class="highlight">
+              <td>Bet365</td>
+              <td class="num">0.43 ppts</td>
+              <td class="num">97.1%</td>
+            </tr>
+            <tr class="highlight">
+              <td>Caesars</td>
+              <td class="num">0.43 ppts</td>
+              <td class="num">97.1%</td>
+            </tr>
+            <tr class="highlight">
+              <td>BetMGM</td>
+              <td class="num">0.43 ppts</td>
+              <td class="num">97.3%</td>
+            </tr>
+            <tr class="highlight">
+              <td>FanDuel</td>
+              <td class="num">0.43 ppts</td>
+              <td class="num">97.0%</td>
+            </tr>
+            <tr>
+              <td>William Hill</td>
+              <td class="num">0.51 ppts</td>
+              <td class="num">96.8%</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <p class="table-note">Highlighted rows agree with DataGolf more tightly than Pinnacle's reference figure from Study 2.</p>
 
-      <p>The distribution of DataGolf edge against Pinnacle's win closing line has a mean of <strong>−0.06 percentage points</strong> and a standard deviation of 0.48 ppts. Ninety-five percent of all observations fall within 1 percentage point of each other.</p>
-      <p>These are not two independent models arriving at similar answers. They are converging on the same answer. The win market is so efficiently priced with respect to DataGolf's underlying information that the two sources are functionally interchangeable.</p>
-      <p>When they do disagree at the +2 to +5% level (n=103): DataGolf predicts 11.2%, the market implies 8.4%, and the actual win rate is 10.7%. DataGolf is marginally more accurate. But with 103 observations, this falls within normal sampling variation and cannot support a statistical conclusion.</p>
-      <p>The <strong>−40.4% simulated ROI</strong> for bets placed on any positive DataGolf edge over the win market (95% CI: −55.7% to −23.2%) is a direct consequence of this near-zero mean edge. DataGolf's slightly-higher-than-market win estimates are noise around zero, not signal. Betting on small noise gets crushed by vig. This is not evidence that DataGolf is wrong — it is evidence that the win market is efficient with respect to DataGolf's model.</p>
-
-      <figure class="research-figure">
-        <img src="/assets/research/dg_vs_pinnacle_scatter.png" alt="DataGolf vs Pinnacle win probability scatter">
-        <figcaption>DataGolf pre-tournament win probability vs. Pinnacle vig-adjusted closing probability. 24,100 player-event records, 2019–2026. The near-perfect diagonal alignment shows the two sources converging on the same answer across the full probability range.</figcaption>
-      </figure>
+      <p>This rules out the most common assumption about recreational books: that they're running cruder, less informed pricing. They are not. Their fair-value lines are statistically indistinguishable from the sharpest book in the industry — and from a model built independently from skill data, not betting flows. The most likely explanation is that all of these books — sharp and recreational alike — are deriving their starting lines from a small number of shared wholesale or consensus sources, the same underlying signal DataGolf's strokes-gained model approximates from a completely different angle.</p>
     </div>
 
     <hr class="section-divider">
@@ -443,53 +485,80 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
     <div class="research-section">
       <h2 class="section-heading">
         <span class="finding-num">Finding 2</span>
-        The Top-10 Market Is Different — DataGolf Wins the Disagreements
+        The Real Difference Is the Size of the Margin — Roughly Double
       </h2>
-      <p>The top-10 market is less liquid. Only 75 of 284 event-years have Pinnacle top-10 odds. Fewer sharp bettors are trading it. The result: a market that does not fully incorporate DataGolf's signal.</p>
-      <p>When DataGolf and Pinnacle disagree on top-10 probability, <strong>DataGolf is consistently closer to actual outcomes — in both directions:</strong></p>
+      <p>If the probabilities are the same, what makes a book "soft"? The answer is the price you pay to access that probability. We measured the actual win-market vig (the bookmaker's overround, expressed as a percentage above fair value) for each book on comparably sized fields (~85–89 priced players):</p>
 
       <div class="research-table-wrap">
         <table class="research-table">
           <thead>
             <tr>
-              <th>Situation</th>
-              <th>DataGolf</th>
-              <th>Market (raw implied)</th>
-              <th>Actual</th>
-              <th>Closer</th>
+              <th>Book</th>
+              <th>Win-market vig</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="highlight">
-              <td>DG bullish (n=415, +2%+)</td>
-              <td class="num">23.8%</td>
-              <td class="num">25.6%</td>
-              <td class="num">22.4%</td>
-              <td class="sig">DataGolf</td>
+            <tr class="highlight bold-row">
+              <td>Pinnacle</td>
+              <td class="num">23.4% (mean) / 21.2% (median)</td>
             </tr>
             <tr>
-              <td>Agreement (n=3,105, ±2%)</td>
-              <td class="num">8.9%</td>
-              <td class="num">~9.3%</td>
-              <td class="num">6.7%</td>
-              <td class="muted">Tied</td>
+              <td>PointsBet</td>
+              <td class="num">40.5%</td>
             </tr>
-            <tr class="highlight">
-              <td>DG bearish (n=502, &lt;−5%)</td>
-              <td class="num">18.8%</td>
-              <td class="num">27.4%</td>
-              <td class="num">17.3%</td>
-              <td class="sig">DataGolf</td>
+            <tr>
+              <td>Bet365</td>
+              <td class="num">41.9%</td>
+            </tr>
+            <tr>
+              <td>FanDuel</td>
+              <td class="num">42.0%</td>
+            </tr>
+            <tr>
+              <td>DraftKings</td>
+              <td class="num">43.0%</td>
+            </tr>
+            <tr>
+              <td>BetMGM</td>
+              <td class="num">46.2%</td>
+            </tr>
+            <tr>
+              <td>Caesars</td>
+              <td class="num">49.3%</td>
+            </tr>
+            <tr>
+              <td>Unibet</td>
+              <td class="num">52.4%</td>
+            </tr>
+            <tr class="warn">
+              <td>William Hill</td>
+              <td class="num">53.1%</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p>The "DG bearish" group deserves particular attention. The market assigns a 27.4% raw implied top-10 probability to these players; they actually finish top-10 at 17.3%. DataGolf says 18.8% — essentially correct. The market is overestimating by 10 percentage points. These observations are concentrated in small-field events (Sentry, WGC, Match Play) where per-player top-10 probability is structurally higher, and the market appears to overcorrect for field size relative to what the data supports.</p>
+      <div class="stat-row">
+        <div class="stat-highlight">
+          <span class="val">1.7–2.3×</span>
+          <span class="lbl">Recreational book vig<br>vs. Pinnacle's margin</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">23.4%</span>
+          <span class="lbl">Pinnacle mean<br>win-market vig</span>
+        </div>
+        <div class="stat-highlight">
+          <span class="val">40–53%</span>
+          <span class="lbl">Recreational book<br>vig range</span>
+        </div>
+      </div>
+
+      <p>Recreational books charge <strong>1.7× to 2.3× Pinnacle's margin</strong> for access to a number that, after adjustment, is the same number. This is the cleanest possible separation of two things that get conflated in casual conversation about "soft books": pricing accuracy and house edge. These books are not wrong. They are expensive.</p>
+      <p><em>A note on scale:</em> 20–50% overround looks enormous next to the 2–5% margins quoted for two-way markets like point spreads, but multi-way outright markets with 80+ entrants are structurally different — minimum-price floors on dozens of longshots compound into large aggregate overrounds. Pinnacle's lower number reflects sharper competitive pressure on its pricing, not a fundamentally different approach to the market.</p>
 
       <figure class="research-figure">
-        <img src="/assets/research/market_edge_analysis.png" alt="DataGolf vs Pinnacle top-10 market disagreement analysis">
-        <figcaption>Top-10 market disagreement analysis. When DataGolf and Pinnacle diverge by more than 2 percentage points, DataGolf's estimates are systematically closer to actual outcomes. The market's largest errors occur in small-field events where top-10 probability normalization inflates implied odds.</figcaption>
+        <img src="/assets/research/edge_distribution_by_book.png" alt="Distribution of DataGolf edge vs. each sportsbook, and win-market vig comparison across eight books">
+        <figcaption>Edge distributions and vig comparison across all nine books (Pinnacle + 8 recreational). The pricing accuracy (left) is nearly identical across books — the margin (right) is where they diverge, by roughly a factor of two.</figcaption>
       </figure>
     </div>
 
@@ -498,13 +567,50 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
     <div class="research-section">
       <h2 class="section-heading">
         <span class="finding-num">Finding 3</span>
-        Being Right Is Not Enough — The Vig Absorbs the Edge
+        DataGolf Beats the Raw Line Everywhere — Because It's the Same Line
       </h2>
-      <p>Simulated ROI for top-10 bets where DataGolf has any positive edge: <strong>−35.2%</strong> (significantly negative). DataGolf is more accurate in disagreement bins. How can ROI still be deeply negative?</p>
-      <p>The answer is vig.</p>
-      <p>ROI is calculated against closing odds, not fair probabilities. If Pinnacle offers a top-10 market at 4.0x (raw implied 25%) and the fair probability is 22%, the expected return is: <code class="muted">22% × 3 + 78% × (−1) = −12%</code>. Being right by 3 percentage points does not help when the book's margin requires you to beat the closing line by more than 5–10 points to profit.</p>
-      <p>DataGolf's top-10 calibration advantage is real — but not large enough to overcome the vig at flat stakes. It means the model is <em>better</em>. It does not mean the model is better <em>enough</em> to extract profit at Pinnacle's sharpest prices.</p>
-      <p>The top-10 edge &gt;5% bucket (n=73) tells a more ambiguous story: ROI of <strong>−2.7%</strong> with a 95% confidence interval of <strong>[−41.5%, +46.8%]</strong>. With 73 observations, this is indistinguishable from zero. A sample of 500–700 events with top-10 odds could resolve whether DataGolf's largest disagreements produce genuine positive expected value. The current data cannot answer that question.</p>
+      <p>In the top-10 market, the calibration pattern Study 2 found against Pinnacle reproduces almost exactly at all eight recreational books:</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Disagreement zone</th>
+              <th>Actual rate</th>
+              <th>DataGolf</th>
+              <th>Raw book implied</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>DataGolf much more bearish (edge &lt; −5%)</td>
+              <td class="num">~14–17%</td>
+              <td class="num">~12–14%</td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">~26%</td>
+            </tr>
+            <tr>
+              <td>Agreement (±2%)</td>
+              <td class="num">~5.0–5.6%</td>
+              <td class="num">~6.1–6.6%</td>
+              <td class="num">~8.3–9.1%</td>
+            </tr>
+            <tr>
+              <td>DataGolf much more bullish (edge &gt; +5%)</td>
+              <td class="num">~26–34%</td>
+              <td class="num">~30–35%</td>
+              <td class="num">~30–38%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>At every single book, in every disagreement zone, DataGolf's probability sits closer to the actual outcome than the book's raw implied probability — with the largest gap (10+ percentage points) occurring exactly where Study 2 found it largest against Pinnacle: when DataGolf is substantially more bearish than the market. The raw market — at any of these eight books — systematically overprices top-10 finishes. DataGolf does not.</p>
+      <p>This is not eight new findings. It is one finding, replicated eight times, because the underlying number being compared against is the same number every time. DataGolf's calibration advantage over "the market" is a property of the relationship between DataGolf and the shared consensus signal — not a property of any individual bookmaker's idiosyncrasies.</p>
+
+      <figure class="research-figure">
+        <img src="/assets/research/disagreement_accuracy_by_book.png" alt="DataGolf vs. raw book implied probability accuracy, compared across eight sportsbooks in top-10 disagreement zones">
+        <figcaption>Top-10 disagreement-zone accuracy across all eight books. DataGolf's probability sits closer to actual outcomes than each book's raw implied line — the same pattern, replicated eight times, because it's the same underlying signal being compared against.</figcaption>
+      </figure>
     </div>
 
     <hr class="section-divider">
@@ -512,45 +618,127 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
     <div class="research-section">
       <h2 class="section-heading">
         <span class="finding-num">Finding 4</span>
-        The Market Partially Corrects Toward DataGolf During the Week
+        A Bigger Gap Against a Worse Price Still Loses — Because You Pay the Price, Not the Gap
       </h2>
-      <p>Correlation between DataGolf edge vs. opening odds and market movement from open to close: <strong>r = +0.075</strong>. The direction is consistent and interpretable:</p>
+      <p>Simulated ROI remains significantly negative across every book and every threshold tested:</p>
 
       <div class="research-table-wrap">
         <table class="research-table">
           <thead>
             <tr>
-              <th>DataGolf position vs. opening line</th>
-              <th>Avg. market movement, open → close</th>
+              <th>Market</th>
+              <th>Edge threshold</th>
+              <th>Pinnacle (Study 2)</th>
+              <th>Recreational books (range)</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="highlight">
-              <td>DG much more bullish (&gt;+5%)</td>
-              <td class="pos">+1.33 ppts toward DataGolf</td>
+            <tr>
+              <td>Win</td>
+              <td class="muted">edge &gt; 0%</td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">−40.4%</td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">−28.6% to −44.3%</td>
             </tr>
             <tr>
-              <td>DG slightly more bullish (+2–5%)</td>
-              <td class="pos">+0.52 ppts toward DataGolf</td>
+              <td>Top-10</td>
+              <td class="muted">edge &gt; 0%</td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">−35.2%</td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">−33.9% to −41.5%</td>
             </tr>
-            <tr>
-              <td>Agreement (±2%)</td>
-              <td class="muted">−0.03 ppts (flat)</td>
-            </tr>
-            <tr>
-              <td>DG more bearish (&lt;−2%)</td>
-              <td class="muted">−0.13 ppts (slight reverse)</td>
+            <tr class="warn bold-row">
+              <td>Top-10</td>
+              <td class="muted">edge &gt; 5%</td>
+              <td class="num">−2.7% <span class="nosig">(not significant)</span></td>
+              <td class="num" style="color:rgba(220,100,100,0.8)">−11.8% to −22.7% <span class="sig">(sig. at 6 of 8)</span></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p>When DataGolf is substantially more bullish than the opening line, the market drifts approximately <strong>1.3 percentage points</strong> in DataGolf's direction by Thursday. This is a weak but directionally consistent signal: some of DataGolf's information — or the same information DataGolf uses — flows into closing prices during the week.</p>
-      <p>The practical implication: the opening line is less efficient than the closing line. If DataGolf has any exploitable signal against the market, it would appear at the opening line, not the close. By Thursday, much of it has been corrected.</p>
+      <p>The last row is the most revealing comparison in the study. Against Pinnacle, DataGolf's largest top-10 disagreements (edge &gt; 5%, n=73) produced a simulated ROI statistically indistinguishable from zero — the small sample couldn't rule out a real edge. Against every recreational book, that same test — now with samples 5–11× larger — comes back significantly negative.</p>
+      <p>The arithmetic is simple but easy to miss: DataGolf's gap against the <em>raw</em> recreational-book line is larger than its gap against Pinnacle's raw line (because recreational books' raw lines are further from fair value, being padded with more vig). But a bettor pays the bookmaker's actual closing price, not the fair price. <strong>A bigger calibration gap against a more padded line does not produce a better bet — it produces the same bet at a worse price.</strong> The vig is not a constant that subtracts evenly from every edge; it is the very thing that determines whether a real calibration advantage survives contact with a real wager.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="research-section">
+      <h2 class="section-heading">
+        <span class="finding-num">Finding 5</span>
+        The Popularity Premium Doesn't Exist — If Anything, It Runs Backwards
+      </h2>
+      <p>This is the most counterintuitive result in the study, and the one that most directly overturns the working hypothesis.</p>
+      <p>We compared the ratio of each book's raw implied top-10 probability to DataGolf's probability — first across the full priced field, then restricted to the 15 players DataGolf rates most consistently as elite (Scheffler, Schauffele, Morikawa, McIlroy, Thomas, Cantlay, Im, Matsuyama, Hovland, Rahm, and others — 48 to 130 event-appearances each at a 20%+ top-10 rating):</p>
+
+      <div class="research-table-wrap">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Full-field ratio</th>
+              <th>Popular-player ratio</th>
+              <th>Gap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>BetMGM</td>
+              <td class="num">1.46</td>
+              <td class="num">1.32</td>
+              <td class="num" style="color:var(--green-light)">−14.7 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>William Hill</td>
+              <td class="num">1.35</td>
+              <td class="num">1.21</td>
+              <td class="num" style="color:var(--green-light)">−13.5 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>Bet365</td>
+              <td class="num">1.31</td>
+              <td class="num">1.18</td>
+              <td class="num" style="color:var(--green-light)">−12.7 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>DraftKings</td>
+              <td class="num">1.32</td>
+              <td class="num">1.19</td>
+              <td class="num" style="color:var(--green-light)">−12.2 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>FanDuel</td>
+              <td class="num">1.31</td>
+              <td class="num">1.20</td>
+              <td class="num" style="color:var(--green-light)">−11.2 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>PointsBet</td>
+              <td class="num">1.33</td>
+              <td class="num">1.22</td>
+              <td class="num" style="color:var(--green-light)">−11.1 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>Unibet</td>
+              <td class="num">1.34</td>
+              <td class="num">1.24</td>
+              <td class="num" style="color:var(--green-light)">−10.4 ppts</td>
+            </tr>
+            <tr class="highlight">
+              <td>Caesars</td>
+              <td class="num">1.35</td>
+              <td class="num">1.26</td>
+              <td class="num" style="color:var(--green-light)">−8.2 ppts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">Ratio = book's raw implied probability ÷ DataGolf's probability. A ratio above 1.0 means the book prices the player higher (more vig-padded) than DataGolf does.</p>
+
+      <p>If recreational books shaded their lines toward popular favorites — pricing Scheffler shorter than his true probability to attract public money — the popular-player ratio would sit <em>above</em> the field ratio. It sits <em>below</em> it, at every book, by 8 to 15 percentage points.</p>
+      <p>The likely mechanism is the inverse of the original hypothesis. Star players are exactly where sharp bettors and line-shoppers concentrate their attention and their dollars — these are the lines that get compared across books, picked apart by models, and bet hardest by the most price-sensitive customers. Bookmakers compress margins where competitive pressure is highest. The mid-tier and longshot portions of the field — where the action is thinner, the bettors are softer, and the lines are rarely shopped — are where the larger markups actually live. <strong>The "soft spot" exists. It's just not where casual intuition places it.</strong></p>
 
       <figure class="research-figure">
-        <img src="/assets/research/market_movement.png" alt="Market movement toward DataGolf from opening to closing line">
-        <figcaption>Average market movement (open → close) by DataGolf edge bucket. When DataGolf is substantially more bullish than the opening line, Pinnacle's closing price drifts 1.3 ppts in DataGolf's direction — consistent with shared information flowing into the market during the week.</figcaption>
+        <img src="/assets/research/popularity_premium.png" alt="Popularity premium analysis — ratio of book implied probability to DataGolf probability for elite players vs. the full field, across eight sportsbooks">
+        <figcaption>Popularity premium by book: full-field markup ratio vs. elite-player markup ratio. At every book, star players carry a smaller markup than the field average — the opposite of the "shaded toward favorites" hypothesis.</figcaption>
       </figure>
     </div>
 
@@ -558,35 +746,35 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
 
     <div class="research-section">
       <h2 class="section-heading">Caveats</h2>
-      <p><strong>Win market sample concentration.</strong> Ninety-five percent of win market observations fall within the ±1% agreement band. The edge buckets (n=4 to n=111 per bin) have too few observations to support statistical conclusions about divergence cases.</p>
-      <p><strong>Top-10 vig normalization for small-field events.</strong> Normalizing the top-10 market to sum to exactly 10 winners across the priced subset inflates adjusted probabilities when a 30-player field has 70 players priced. The raw implied probability column is the more reliable comparison in the DG-bearish bucket, where this artifact is largest.</p>
-      <p><strong>Coverage asymmetry.</strong> Pinnacle prices win odds for virtually every PGA Tour event; it prices top-10 odds for approximately 26% of events. The top-10 findings rest on a smaller, potentially non-representative sample that skews toward higher-profile events.</p>
-      <p><strong>Correlation is not causation.</strong> The market movement finding (r=+0.075) shows alignment, not that DataGolf causes the movement. Both may reflect the same underlying information becoming publicly available during the week.</p>
-      <p><strong>This is Pinnacle only.</strong> Pinnacle represents the sharpest available market. Recreational sportsbooks — DraftKings, FanDuel, Caesars — operate with higher margins and different pricing incentives. They are not tested here.</p>
+      <p><strong>Eleven candidate books, eight usable.</strong> BetRivers, Barstool, and a "draftkings_sportsbook" identifier returned 400 errors from the API and were excluded. This is not believed to materially bias the results — the eight books that returned data span a wide range of US and international operators.</p>
+      <p><strong>The "popular player" definition is a DataGolf-internal proxy</strong>, not a direct measure of betting handle, search interest, or media attention. It identifies players the model rates as elite and consistent — a reasonable but imperfect stand-in for "the players the public bets on." A book's own handle-by-player data, which is not exposed by this API, would be a sharper instrument for this specific test.</p>
+      <p><strong>Coverage varies by book.</strong> Caesars (56–57 events) and Unibet (58 events) have noticeably thinner coverage than the four books with 65-event coverage (DraftKings, FanDuel, Bet365, William Hill). Caesars' popularity-premium sample (n=791) is roughly half the size of the largest books' — its result should be weighted accordingly.</p>
+      <p><strong>The top-10 vig-normalization issue from Study 2 persists here</strong>, and we handle it the same way: Finding 3 uses raw implied probability rather than vig-adjusted probability for the cross-book disagreement comparison, since normalizing a partially priced field to exactly 10 winners inflates adjusted probabilities for small-field events.</p>
+      <p><strong>Win-market overround scale.</strong> A reader unfamiliar with multi-way outright markets may see "40–53% vig" and assume something predatory. It isn't unusual for an 85-player field — the comparison that matters is the <em>relative</em> one (roughly double Pinnacle's), not the absolute number.</p>
     </div>
 
     <hr class="section-divider">
 
     <div class="research-section">
       <h2 class="section-heading">Implications</h2>
-      <p><strong>The win market has priced DataGolf.</strong> If you are using DataGolf win probabilities to find betting value against any major sportsbook, the information is already in the price at the sharpest books. The signal is real; the edge has been arbitraged away.</p>
-      <p><strong>The top-10 market is where the question is still open.</strong> DataGolf's estimates are more accurate than Pinnacle's implied odds in disagreement cases. Whether that translates to positive expected value at closing odds requires more data than 75 events can provide. The direction is promising; the confidence is not there.</p>
-      <p><strong>Bet opening lines, not closing.</strong> If any edge exists, it is largest at the opening line and shrinks through the week as the market corrects. The correlation between DataGolf edge and market movement confirms this directionally.</p>
-      <p><strong>The interesting comparison is against recreational books.</strong> Pinnacle is the hardest benchmark. DraftKings, FanDuel, and Caesars shade their lines to balance recreational action rather than to set efficient prices. If DataGolf's edge is zero against Pinnacle's closing line, it may still be meaningful against a book that systematically overprices popular players. That is Study 3.</p>
+      <p><strong>"Shop for a soft book" is not a useful strategy if your goal is better information — it's a useful strategy if your goal is a worse price on the same information.</strong> Every book in this study is pricing off essentially the same signal DataGolf approximates. None of them is giving away free information. The only thing that varies across books is how much they charge to access the consensus number.</p>
+      <p><strong>If a calibration edge exists, it lives at the sharpest book, not the softest.</strong> This sounds backwards until you trace the logic: the gap between DataGolf and a book's raw line is wider at recreational books (because their lines carry more vig-driven distortion), but the price you actually pay is also further from fair value by the same amount. Pinnacle's tighter margin means a real edge has the best — and really the only plausible — chance of surviving the vig. Study 2 found that chance statistically inconclusive at n=73. This study suggests it does not improve by looking elsewhere.</p>
+      <p><strong>The popularity-premium intuition — a staple of casual betting commentary — does not survive contact with the data</strong>, at least not in the direction commonly assumed. If there is a "public money" effect on golf board pricing, this analysis suggests it suppresses margins on stars rather than inflating their prices, the opposite of the intuitive story. This is worth treating as a standalone finding in its own right, independent of anything to do with DataGolf.</p>
     </div>
 
     <div class="next-studies">
       <div class="next-studies-label">What's Next</div>
-      <h4>Study 3 — DataGolf vs. the Recreational Books</h4>
+      <h4>The Series Closes — and Opens a New Question</h4>
       <ul>
-        <li><strong>The hypothesis:</strong> DraftKings, FanDuel, and Caesars shade their top-10 lines toward popular players to balance recreational action. DataGolf's conservative estimates for those players might represent real edge against books that aren't pricing efficiently.</li>
-        <li><strong>The test:</strong> The same analysis — join DataGolf probabilities against opening and closing odds, measure disagreement accuracy and simulated ROI — runs identically on any book in the API's odds dataset.</li>
-        <li><strong>The question it answers:</strong> Where exactly in the market does inefficiency live in golf betting, and why?</li>
+        <li><strong>Study 1</strong> found the model well-calibrated, with a small, consistent, and directionally informative bias (it underestimates elite players).</li>
+        <li><strong>Study 2</strong> found that the sharpest market in the world has already absorbed that signal — DataGolf and Pinnacle are, for practical purposes, the same number.</li>
+        <li><strong>Study 3</strong> found that the "softer" markets are running that same number too — they just attach a larger price tag to it, applied least heavily to the players everyone assumed would be marked up the most.</li>
+        <li>The natural next question is no longer "does DataGolf beat the market" — that question has a clear and now well-supported answer. It's a structural one: <strong>why do all these books converge on the same fair-value number despite operating with different customer bases, different risk appetites, and wildly different margins?</strong> That's a market-structure question more than a model-evaluation question — and one with a much wider audience than golf analytics alone.</li>
       </ul>
     </div>
 
     <p class="research-footnote">
-      Data sourced from DataGolf Pro API and Pinnacle sportsbook historical odds. All analysis conducted in Python using pandas and scipy; code and methodology available in the Divot Lab research repository. Findings based on 284 PGA Tour events (win market) and 75 events (top-10 market), 2019–2026. This study examines model and market accuracy and does not constitute gambling advice.
+      Data sourced from the DataGolf Pro API and eight sportsbooks' historical odds (DraftKings, FanDuel, BetMGM, Caesars, PointsBet, Bet365, Unibet, William Hill). All analysis conducted in Python using pandas and scipy; methodology available in the Divot Lab research repository. Findings based on 56–65 PGA Tour events per book, 2020–2026. This study examines model and market pricing and does not constitute gambling advice.
     </p>
 
   </div><!-- /gated-content -->
@@ -599,7 +787,7 @@ html[data-theme="light"] .theme-toggle { background:rgba(28,27,24,0.06); border-
       <svg width="20" height="20" viewBox="0 0 72 72" fill="none"><line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/><path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="36" cy="20.5" r="9" fill="currentColor"/></svg>
       <span class="footer-wordmark">DIVOT <span>LAB</span></span>
     </a>
-    <span class="footer-copy">© 2026 Divot Lab · Data: DataGolf Pro API + Pinnacle</span>
+    <span class="footer-copy">© 2026 Divot Lab · Data: DataGolf Pro API + 8 sportsbooks</span>
   </div>
 </footer>
 
@@ -623,7 +811,7 @@ document.getElementById('navHamburger').addEventListener('click', () => {
   nav.classList.toggle('menu-open', open);
 });
 
-const GATE_KEY = 'divotlab-research-02-unlocked';
+const GATE_KEY = 'divotlab-research-03-unlocked';
 if (localStorage.getItem(GATE_KEY) === '1') unlockContent();
 
 function unlockContent() {
