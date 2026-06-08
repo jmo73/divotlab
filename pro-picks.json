@@ -11,8 +11,8 @@
       "book": "Bet365",
       "reasoning": "DG model has Matsuyama at -109 implied; Bet365 prices him as a +105 underdog. Matsuyama's approach game and Muirfield course history directly support the model's assessment. Burns' game relies on distance, which Muirfield's rough neutralizes.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Matsuyama T43 (+7), Burns T4 (-10)"
     },
     {
       "player": "Russell Henley",
@@ -22,8 +22,8 @@
       "book": "Bet365",
       "reasoning": "Model fair odds: -155. Bet365 offers -143, better than fair by 12 points. Henley's precision game fits Muirfield's OTT/approach profile; Lee's power-dependent style is penalized by the heavy rough. Henley coming off a win at Colonial.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "Henley T22 made the cut, Lee missed the cut"
     },
     {
       "player": "Russell Henley",
@@ -33,8 +33,8 @@
       "book": "FanDuel",
       "reasoning": "DG model fair: +413. FanDuel +430 is +3.4% positive EV. Coming off a win at Colonial with +1.98 SG: Approach per round. Muirfield's 30% approach weight aligns with the current form. Correlated with the H2H pick intentionally — both positions on the same player.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T22"
     },
     {
       "player": "J.J. Spaun",
@@ -44,8 +44,8 @@
       "book": "Bet365",
       "reasoning": "DG model fair: +760. Bet365 +800 is +4.7% positive EV. Accuracy-first game (fairway hitting, controlled iron play) fits Muirfield's OTT/approach balance. Finished T6 at Colonial confirming current form. Medium confidence due to Spaun's cut variance.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T12"
     }
   ]
 }

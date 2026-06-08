@@ -11,8 +11,8 @@
     "book": "FanDuel",
     "reasoning": "Henley just won the Charles Schwab Challenge averaging +1.98 SG: Approach per round — the same precision game Muirfield Village rewards. The DG model has his fair top-5 odds at +413; FanDuel offers +430, making this a positive expected value play on a player in confirmed form at a course that suits him directly.",
     "confidence": "High",
-    "result": null,
-    "result_detail": null
+    "result": "loss",
+    "result_detail": "Finished T22"
   },
   "teaser": "3 more picks — including a H2H with major model edge and a second top-5 value play — are in this week's Lab Notes Pro email."
 }

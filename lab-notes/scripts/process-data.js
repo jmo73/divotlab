@@ -30,6 +30,7 @@ const COURSE_WEIGHTS = {
   'rocket mortgage classic':                         { ott: 0.25, app: 0.25, arg: 0.20, putt: 0.30 },
   'the sentry':                                      { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25 },
   'farmers insurance open':                          { ott: 0.30, app: 0.25, arg: 0.20, putt: 0.25 },
+  'rbc canadian open':                               { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24 },
   '_default':                                        { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25 },
 };
 
