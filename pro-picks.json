@@ -1,51 +1,62 @@
 {
-  "tournament": "Memorial Tournament",
-  "week_of": "Jun 4–7, 2026",
-  "published": "2026-06-03",
+  "tournament": "RBC Canadian Open",
+  "week_of": "Jun 11–14, 2026",
+  "published": "2026-06-10",
   "picks": [
     {
-      "player": "Hideki Matsuyama",
-      "bet_type": "H2H Matchup",
-      "bet_detail": "over Sam Burns",
-      "odds": "+105",
-      "book": "Bet365",
-      "reasoning": "DG model has Matsuyama at -109 implied; Bet365 prices him as a +105 underdog. Matsuyama's approach game and Muirfield course history directly support the model's assessment. Burns' game relies on distance, which Muirfield's rough neutralizes.",
-      "confidence": "High",
-      "result": "loss",
-      "result_detail": "Matsuyama T43 (+7), Burns T4 (-10)"
-    },
-    {
-      "player": "Russell Henley",
-      "bet_type": "H2H Matchup",
-      "bet_detail": "over Min Woo Lee",
-      "odds": "-143",
-      "book": "Bet365",
-      "reasoning": "Model fair odds: -155. Bet365 offers -143, better than fair by 12 points. Henley's precision game fits Muirfield's OTT/approach profile; Lee's power-dependent style is penalized by the heavy rough. Henley coming off a win at Colonial.",
-      "confidence": "High",
-      "result": "win",
-      "result_detail": "Henley T22 made the cut, Lee missed the cut"
-    },
-    {
-      "player": "Russell Henley",
-      "bet_type": "Top 5",
+      "player": "Aaron Rai",
+      "bet_type": "Top 10",
       "bet_detail": null,
       "odds": "+430",
-      "book": "FanDuel",
-      "reasoning": "DG model fair: +413. FanDuel +430 is +3.4% positive EV. Coming off a win at Colonial with +1.98 SG: Approach per round. Muirfield's 30% approach weight aligns with the current form. Correlated with the H2H pick intentionally — both positions on the same player.",
+      "book": "DraftKings",
+      "reasoning": "DG model fair: +385. DraftKings +430 is +9.3% positive EV. Rai shows positive EV in three separate markets (top-5, top-10, top-20) — the only player in the field with that level of cross-market alignment. His ball-striking-driven game lines up directly with TPC Toronto's heaviest model weights (OTT and App at 28% each, 56% combined).",
       "confidence": "High",
-      "result": "loss",
-      "result_detail": "Finished T22"
+      "result": null,
+      "result_detail": null
     },
     {
-      "player": "J.J. Spaun",
+      "player": "Matt Fitzpatrick",
+      "bet_type": "H2H Matchup",
+      "bet_detail": "over Sam Burns",
+      "odds": "-111",
+      "book": "FanDuel",
+      "reasoning": "DG model implied: -120. FanDuel -111 is better than fair by 9 points, a +3.7% EV edge. TPC Toronto's profile (OTT/App 28% each, ARG just 20%) rewards a complete tee-to-green game over a power-and-recover style, favoring Fitzpatrick's controlled approach over Burns.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Tommy Fleetwood",
       "bet_type": "Top 5",
       "bet_detail": null,
-      "odds": "+800",
-      "book": "Bet365",
-      "reasoning": "DG model fair: +760. Bet365 +800 is +4.7% positive EV. Accuracy-first game (fairway hitting, controlled iron play) fits Muirfield's OTT/approach balance. Finished T6 at Colonial confirming current form. Medium confidence due to Spaun's cut variance.",
+      "odds": "+340",
+      "book": "FanDuel",
+      "reasoning": "FanDuel +340 is +6.1% positive EV versus the model's fair price — the largest edge among the shorter-priced plays this week. Fleetwood's all-around ball-striking profile fits a course-fit model that rewards OTT and Approach equally above every other category.",
+      "confidence": "High",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Zach Bauchou",
+      "bet_type": "Top 20",
+      "bet_detail": null,
+      "odds": "+490",
+      "book": "DraftKings",
+      "reasoning": "DraftKings +490 is +5.3% positive EV, one of the cleaner mid-tier gaps on the board. A top-20 line gives a wider band of qualifying finishes for a player without the market profile of this week's bigger names.",
       "confidence": "Medium",
-      "result": "loss",
-      "result_detail": "Finished T12"
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Bud Cauley",
+      "bet_type": "Top 5",
+      "bet_detail": null,
+      "odds": "+1000",
+      "book": "DraftKings",
+      "reasoning": "DG model fair: +931. DraftKings/Bet365 +1000 is +6.7% positive EV — the second-largest gap on the board behind Rai's top-5 number. The longest price on this week's card by design, reflecting the size of the edge.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
     }
   ]
 }
