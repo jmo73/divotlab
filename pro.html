@@ -59,6 +59,7 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .gate-card{background:var(--black-card);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:48px 44px;max-width:480px;width:100%;text-align:center;position:relative;overflow:hidden;}
 .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--green-light) 60%,transparent);}
 .gate-badge{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);padding:5px 14px;border-radius:20px;margin-bottom:24px;}
+.gate-badge-trial{color:var(--green-light);background:rgba(91,191,133,0.1);border-color:rgba(91,191,133,0.25);}
 .gate-title{font-family:var(--display);font-size:clamp(2rem,5vw,3rem);font-weight:500;font-style:italic;line-height:1.1;margin-bottom:12px;}
 .gate-sub{font-size:14px;color:rgba(250,250,250,0.42);margin-bottom:28px;line-height:1.7;}
 .gate-perks{list-style:none;text-align:left;margin-bottom:32px;display:flex;flex-direction:column;gap:10px;}
@@ -75,23 +76,11 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .gate-error.show{display:block;}
 .gate-note{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.6;}
 .gate-note a{color:rgba(201,168,76,0.5);text-decoration:underline;}
-.gate-divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px;color:rgba(250,250,250,0.18);font-size:12px;}
-.gate-divider::before,.gate-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
-.trial-btn{width:100%;background:none;border:1.5px solid var(--green-light);color:var(--green-light);border-radius:8px;padding:13px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:0.02em;margin-bottom:8px;}
-.trial-btn:hover{background:rgba(91,191,133,0.08);transform:translateY(-1px);}
-.trial-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.trial-note{font-size:11px;color:rgba(250,250,250,0.22);text-align:center;margin:0;}
-.trial-offer{display:none;}
-.trial-offer.show{display:block;}
 .trial-chip{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);padding:2px 8px;border-radius:3px;margin-left:6px;}
 .trial-expired-msg{font-size:13px;color:var(--gold);margin-top:8px;display:none;}
 .trial-expired-msg.show{display:block;}
-html[data-theme="light"] .gate-divider{color:rgba(28,27,24,0.28);}
-html[data-theme="light"] .gate-divider::before,.gate-divider::after{background:rgba(28,27,24,0.08);}
-html[data-theme="light"] .trial-btn{border-color:#1B4D3E;color:#1B4D3E;}
-html[data-theme="light"] .trial-btn:hover{background:rgba(27,77,62,0.06);}
-html[data-theme="light"] .trial-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3E;border-color:rgba(27,77,62,0.2);}
+html[data-theme="light"] .gate-badge-trial{background:rgba(27,77,62,0.08);border-color:rgba(27,77,62,0.2);color:#1B4D3E;}
 
 /* ── PRO APP ── */
 #proApp{display:none;padding-top:64px;min-height:100vh;}
@@ -963,26 +952,22 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 <!-- EMAIL GATE -->
 <div id="gate">
   <div class="gate-card">
-    <div class="gate-badge">Divot Lab Pro</div>
-    <h1 class="gate-title">Your analytics hub.</h1>
-    <p class="gate-sub">Enter your email to access your Pro dashboard.</p>
+    <div class="gate-badge gate-badge-trial">Free 14-Day Trial · No Card Required</div>
+    <h1 class="gate-title">Try Pro, free for 14 days.</h1>
+    <p class="gate-sub">Enter your email to unlock the full dashboard — no credit card, no commitment.</p>
     <ul class="gate-perks">
       <li>Full course-fit rankings for every player in the field — with value flags</li>
       <li>Value finder: model edge crossed with course-fit for every bet type</li>
       <li>H2H comparison tool — see who the course favors in any matchup</li>
+      <li>Live tournament tracking — real-time SG and Win/Top-10/20 probabilities</li>
     </ul>
     <div class="gate-form">
       <input type="email" id="gateEmail" class="gate-input" placeholder="your@email.com" autocomplete="email">
-      <button class="gate-btn" id="gateBtn" onclick="verifyEmail()">Access Pro →</button>
+      <button class="gate-btn" id="gateBtn" onclick="startAccess()">Start free trial →</button>
     </div>
-    <div class="gate-error" id="gateErr">Email not found in our subscriber list. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe →</a></div>
+    <div class="gate-error" id="gateErr">Connection error. Try again.</div>
     <div class="trial-expired-msg" id="gateTrialExpired">Your free trial has ended. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to keep access →</a></div>
-    <div class="trial-offer" id="gateTrialOffer">
-      <div class="gate-divider">or try it free</div>
-      <button class="trial-btn" id="trialBtn" onclick="startTrial()">Start 14-day free trial →</button>
-      <p class="trial-note">No credit card needed. Full Pro access for 14 days.</p>
-    </div>
-    <p class="gate-note" id="gateNote">Already a subscriber? Enter your email above. Verified for 7 days per device.</p>
+    <p class="gate-note" id="gateNote">Already a Pro subscriber or mid-trial? Enter your email — we'll recognize you instantly.</p>
   </div>
 </div>
 
@@ -1257,16 +1242,14 @@ function checkAuth_OLD(){
   }
 }
 
-async function verifyEmail(){
+async function startAccess(){
   var email = document.getElementById('gateEmail').value.trim().toLowerCase();
   if(!email || !email.includes('@')) return;
   var btn = document.getElementById('gateBtn');
   var err = document.getElementById('gateErr');
-  var trialOffer = document.getElementById('gateTrialOffer');
   var trialExpired = document.getElementById('gateTrialExpired');
-  btn.disabled = true; btn.textContent = 'Verifying…';
+  btn.disabled = true; btn.textContent = 'Checking…';
   err.classList.remove('show');
-  trialOffer.classList.remove('show');
   trialExpired.classList.remove('show');
 
   try {
@@ -1281,60 +1264,47 @@ async function verifyEmail(){
         email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000
       }));
       showApp(email);
-    } else if(data.trial){
-      // Active trial
+      return;
+    }
+    if(data.trial){
+      // Active trial — resume
       localStorage.setItem('divotlab-pro-auth', JSON.stringify({
         email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
         trial: true, trialExpires: data.expires, trialDaysLeft: data.days_left
       }));
       showApp(email, data.days_left);
+      return;
+    }
+
+    // No active subscription or trial — start a new free trial automatically
+    btn.textContent = 'Starting free trial…';
+    var trialRes = await fetch(API+'/api/start-trial',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct'})
+    });
+    var trialData = await trialRes.json();
+    if(trialData.success){
+      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
+        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
+        trial: true, trialExpires: trialData.expires, trialDaysLeft: trialData.days_left
+      }));
+      showApp(email, trialData.days_left);
+    } else if(trialData.expired){
+      trialExpired.classList.add('show');
+      btn.disabled = false; btn.textContent = 'Start free trial →';
     } else {
-      // Not a subscriber and no active trial — show options
+      err.textContent = trialData.error || 'Could not start your trial. Try again.';
       err.classList.add('show');
-      trialOffer.classList.add('show');
-      document.getElementById('gateNote').textContent = 'Have a trial? Enter the same email you used to start it.';
-      btn.disabled = false; btn.textContent = 'Access Pro →';
+      btn.disabled = false; btn.textContent = 'Start free trial →';
     }
   } catch(e){
     err.textContent = 'Connection error. Try again.';
     err.classList.add('show');
-    btn.disabled = false; btn.textContent = 'Access Pro →';
+    btn.disabled = false; btn.textContent = 'Start free trial →';
   }
 }
 
-async function startTrial(){
-  var email = document.getElementById('gateEmail').value.trim().toLowerCase();
-  if(!email || !email.includes('@')){ alert('Enter your email above first.'); return; }
-  var btn = document.getElementById('trialBtn');
-  btn.disabled = true; btn.textContent = 'Starting trial…';
-
-  try {
-    var res = await fetch(API+'/api/start-trial',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email, source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct'})
-    });
-    var data = await res.json();
-    if(data.success){
-      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
-        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
-        trial: true, trialExpires: data.expires, trialDaysLeft: data.days_left
-      }));
-      showApp(email, data.days_left);
-    } else if(data.expired){
-      document.getElementById('gateTrialOffer').classList.remove('show');
-      document.getElementById('gateTrialExpired').classList.add('show');
-      btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
-    } else {
-      btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
-      alert(data.error || 'Could not start trial. Try again.');
-    }
-  } catch(e){
-    btn.disabled = false; btn.textContent = 'Start 14-day free trial →';
-    alert('Connection error. Try again.');
-  }
-}
-
-document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') verifyEmail(); });
+document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') startAccess(); });
 
 function showGate(){
   document.getElementById('gate').classList.remove('hidden');
