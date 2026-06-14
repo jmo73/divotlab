@@ -49,6 +49,10 @@ nav.open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);
 .drawer a:hover{color:var(--white);}
 .drawer .nav-pro-btn{margin-top:8px;width:auto;padding:10px 32px;}
 
+/* ── THEME TOGGLE ── */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(250,250,250,0.6);cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .15s;flex-shrink:0;vertical-align:middle;}
+.theme-toggle:hover{background:rgba(255,255,255,0.15);color:rgba(250,250,250,0.9);transform:scale(1.1);}
+
 /* ── GATE ── */
 #gate{position:fixed;inset:0;z-index:100;background:var(--black);display:flex;align-items:center;justify-content:center;padding:20px;background-image:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(201,168,76,0.1) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(44,95,124,0.1) 0%,transparent 60%);}
 #gate.hidden{display:none;}
@@ -231,12 +235,15 @@ html[data-theme="light"] .cf-dls-sub{color:rgba(28,27,24,0.28);}
 .cfhp-none{font-size:12px;color:rgba(250,250,250,0.22);padding:2px 0;}
 html[data-theme="light"] .cf-history-btn{color:rgba(28,27,24,0.3);border-color:rgba(28,27,24,0.1);}
 html[data-theme="light"] .cf-history-btn.open{color:#B8960C;border-color:rgba(184,150,12,0.3);}
-html[data-theme="light"] .cf-history-panel{background:rgba(201,168,76,0.02);}
+html[data-theme="light"] .cf-history-panel{background:rgba(201,168,76,0.02);border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .cfhp-header{color:rgba(28,27,24,0.25);}
 html[data-theme="light"] .cfhp-year{background:rgba(28,27,24,0.02);border-color:rgba(28,27,24,0.08);}
 html[data-theme="light"] .cfhp-yr{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .cfhp-fin.top5{color:#1B4D3E;}
 html[data-theme="light"] .cfhp-fin.top20{color:#B8960C;}
 html[data-theme="light"] .cfhp-fin.mc{color:rgba(28,27,24,0.22);}
+html[data-theme="light"] .cfhp-none{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .cfap-low{color:#B8960C;}
 
 /* ── LINE MOVEMENT ── */
 .move-badge{font-family:var(--mono);font-size:9px;font-weight:700;margin-left:4px;vertical-align:middle;}
@@ -344,6 +351,10 @@ html[data-theme="light"] .cfhp-fin.mc{color:rgba(28,27,24,0.22);}
 .pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
 
 html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
+/* Re-tone bright accent vars for light backgrounds — anything using var(--green-light/gold/red/blue-mid) directly inherits these darker, readable equivalents */
+html[data-theme="light"]{--green-light:#1E8A4A;--gold:#B8960C;--red:#C0392B;--blue-mid:#2C5F7C;}
+/* #playerCard stays dark in both themes — restore bright values inside it */
+html[data-theme="light"] #playerCard{--green-light:#5BBF85;--gold:#C9A84C;--red:#D94848;--blue-mid:#5A8FA8;}
 html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
 html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
 html[data-theme="light"] .nav-wordmark{color:#1C1B18!important;}
@@ -368,6 +379,8 @@ html[data-theme="light"] .gate-note{color:rgba(28,27,24,0.35);}
 html[data-theme="light"] .tourney-head{background:#ECEBE6;border-bottom-color:rgba(28,27,24,0.08);}
 html[data-theme="light"] .tourney-name{color:#1C1B18;}
 html[data-theme="light"] .chip-dim{color:rgba(28,27,24,0.45);background:rgba(28,27,24,0.06);border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .pro-disclaimer{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .pro-disclaimer strong{color:rgba(28,27,24,0.45)!important;}
 html[data-theme="light"] .user-chip{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .signout-btn{border-color:rgba(28,27,24,0.15);color:rgba(28,27,24,0.35);}
 html[data-theme="light"] .signout-btn:hover{border-color:rgba(28,27,24,0.3);color:rgba(28,27,24,0.7);}
@@ -456,6 +469,63 @@ html[data-theme="light"] .h2h-cat-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-weight-note{color:rgba(28,27,24,0.3);}
 html[data-theme="light"] .h2h-track{background:rgba(28,27,24,0.08);}
 
+/* Picks Card */
+html[data-theme="light"] .picks-card-wrap{background:#FFFFFF;border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .picks-card-tourney{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .pick-card{background:#F5F4F0;border-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .pick-card.win{border-color:rgba(30,138,74,0.3);}
+html[data-theme="light"] .pick-card.loss{border-color:rgba(192,57,43,0.2);}
+html[data-theme="light"] .pick-bet-badge{background:rgba(44,95,124,0.08);border-color:rgba(44,95,124,0.2);color:#2C5F7C;}
+html[data-theme="light"] .pick-book{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .pick-confidence.low{color:rgba(28,27,24,0.35);background:rgba(28,27,24,0.05);}
+html[data-theme="light"] .pick-reasoning{color:rgba(28,27,24,0.55);border-top-color:rgba(28,27,24,0.07);}
+html[data-theme="light"] .pick-result-pending{background:rgba(28,27,24,0.04);color:rgba(28,27,24,0.25);border-color:rgba(28,27,24,0.08);}
+
+/* Live Tab */
+html[data-theme="light"] .live-updated{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .live-refresh-btn{color:rgba(28,27,24,0.5);background:rgba(28,27,24,0.05);border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .live-refresh-btn:hover{color:#1C1B18;background:rgba(28,27,24,0.09);}
+html[data-theme="light"] .live-note{color:rgba(28,27,24,0.25);}
+html[data-theme="light"] .live-table-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .live-table-head{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .live-th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .live-th.sorted{color:#B8960C!important;}
+html[data-theme="light"] .live-th[onclick]:hover{color:rgba(28,27,24,0.7);}
+html[data-theme="light"] .live-row{border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .live-row:hover{background:rgba(28,27,24,0.02);}
+html[data-theme="light"] .live-row.is-pick{background:rgba(184,150,12,0.05);border-left-color:rgba(184,150,12,0.5);}
+html[data-theme="light"] .live-pos{color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .live-zero{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .live-empty-title{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .live-empty-sub{color:rgba(28,27,24,0.25);}
+
+/* Matchup Market */
+html[data-theme="light"] .mu-market-btn{border-color:rgba(28,27,24,0.15);color:rgba(28,27,24,0.45);}
+html[data-theme="light"] .mu-market-btn:hover{color:#1C1B18;border-color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .mu-market-btn.active{background:rgba(184,150,12,0.1);border-color:rgba(184,150,12,0.3);color:#B8960C;}
+html[data-theme="light"] .mu-note{color:rgba(28,27,24,0.25);}
+html[data-theme="light"] .mu-legend{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .mu-table-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .mu-table-head,html[data-theme="light"] .mu3-table-head{background:rgba(28,27,24,0.03);border-bottom-color:rgba(28,27,24,0.08);}
+html[data-theme="light"] .mu-th{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .mu-th.sorted{color:#B8960C!important;}
+html[data-theme="light"] .mu-th[onclick]:hover{color:rgba(28,27,24,0.7);}
+html[data-theme="light"] .mu-row,html[data-theme="light"] .mu3-row{border-bottom-color:rgba(28,27,24,0.05);}
+html[data-theme="light"] .mu-row:hover,html[data-theme="light"] .mu3-row:hover{background:rgba(28,27,24,0.02);}
+html[data-theme="light"] .mu-row.has-value,html[data-theme="light"] .mu3-row.has-value{background:rgba(30,138,74,0.04);}
+html[data-theme="light"] .mu-player{color:#1C1B18;}
+html[data-theme="light"] .mu-vs{color:rgba(28,27,24,0.25);}
+html[data-theme="light"] .mu-book-val{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .mu-edge{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .mu-empty-title{color:rgba(28,27,24,0.4);}
+html[data-theme="light"] .mu-empty-sub{color:rgba(28,27,24,0.25);}
+
+/* Track Record gaps */
+html[data-theme="light"] .acc-rate.bad{color:rgba(28,27,24,0.3);}
+html[data-theme="light"] .acc-calib-lbl{color:rgba(28,27,24,0.35);}
+html[data-theme="light"] .acc-calib-num{color:rgba(28,27,24,0.5);}
+html[data-theme="light"] .acc-date{color:rgba(28,27,24,0.3);}
+
 
 /* ── COLLAPSIBLE CARD SHARED ── */
 .card-header-toggle{cursor:pointer;user-select:none;}
@@ -500,10 +570,10 @@ html[data-theme="light"] .card-header-toggle:hover .card-chevron{border-color:rg
 .live-refresh-btn{font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.4);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .2s;}
 .live-refresh-btn:hover{color:var(--white);background:rgba(255,255,255,0.09);}
 .live-note{font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.18);margin-left:auto;}
-.live-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:700px;}
-.live-table-head{display:grid;grid-template-columns:48px 1fr 68px 68px 66px 66px 66px 66px 58px 58px 58px 58px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.live-table-wrap{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:740px;}
+.live-table-head{display:grid;grid-template-columns:48px 1fr 68px 68px 52px 66px 66px 66px 66px 58px 58px 58px 58px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
 .live-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
-.live-row{display:grid;grid-template-columns:48px 1fr 68px 68px 66px 66px 66px 66px 58px 58px 58px 58px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
+.live-row{display:grid;grid-template-columns:48px 1fr 68px 68px 52px 66px 66px 66px 66px 58px 58px 58px 58px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .live-row:hover{background:rgba(255,255,255,0.025);}
 .live-row.is-pick{background:rgba(201,168,76,0.05);border-left:2px solid rgba(201,168,76,0.5);}
 .live-row.is-pick .live-player-name{color:var(--gold);}
@@ -705,6 +775,7 @@ html[data-theme="light"] .dfs-slot.filled{background:rgba(27,77,62,0.04);border-
 html[data-theme="light"] .dfs-slot-name{color:#1C1B18;}
 html[data-theme="light"] .dfs-budget-bar{background:rgba(28,27,24,0.06);}
 html[data-theme="light"] .dfs-stack-card{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .dfs-stack-player{border-bottom-color:rgba(28,27,24,0.05);}
 html[data-theme="light"] .dfs-stack-name{color:#1C1B18;}
 html[data-theme="light"] .dfs-row.in-lineup{background:rgba(27,77,62,0.04);}
 html[data-theme="light"] .dfs-sel-circle{border-color:rgba(28,27,24,0.2);}
@@ -801,22 +872,24 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   .picks-grid::-webkit-scrollbar{display:none;}
   .pick-card{flex:0 0 82%;min-width:0;scroll-snap-align:start;}
 
-  /* Live Tab — 5 cols: Pos, Player, Total, Win%, Top10% */
+  /* Live Tab — 5 cols: Pos, Player, Total, Win%, Top10% (Thru is desktop-only) */
   .live-table-head,.live-row{grid-template-columns:34px 1fr 52px 54px 54px !important;padding-left:10px;padding-right:10px;}
   .live-table-head .live-th:nth-child(4),
   .live-table-head .live-th:nth-child(5),
   .live-table-head .live-th:nth-child(6),
   .live-table-head .live-th:nth-child(7),
   .live-table-head .live-th:nth-child(8),
-  .live-table-head .live-th:nth-child(10),
-  .live-table-head .live-th:nth-child(12),
+  .live-table-head .live-th:nth-child(9),
+  .live-table-head .live-th:nth-child(11),
+  .live-table-head .live-th:nth-child(13),
   .live-row>div:nth-child(4),
   .live-row>div:nth-child(5),
   .live-row>div:nth-child(6),
   .live-row>div:nth-child(7),
   .live-row>div:nth-child(8),
-  .live-row>div:nth-child(10),
-  .live-row>div:nth-child(12){display:none !important;}
+  .live-row>div:nth-child(9),
+  .live-row>div:nth-child(11),
+  .live-row>div:nth-child(13){display:none !important;}
   .live-note{display:none;}
 }
 </style>
@@ -835,6 +908,7 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
     <a href="/model">The Model</a>
     <a href="/lab-notes">Newsletter</a>
     <a href="/research">Research</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to light mode"></button>
     <a href="/pro" class="nav-pro-btn active">Pro</a>
   </div>
   <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -845,6 +919,7 @@ html[data-theme="light"] .dsig-none{background:rgba(28,27,24,0.03);color:rgba(28
   <a href="/model">The Model</a>
   <a href="/lab-notes">Newsletter</a>
   <a href="/research">Research</a>
+  <button class="theme-toggle" style="margin:8px auto 4px;" aria-label="Switch to light mode"></button>
   <a href="/pro" class="nav-pro-btn">Pro</a>
 </div>
 
@@ -1107,7 +1182,37 @@ var oddsSnapshot = {};          // {player_market: amOdds} captured on first loa
 var oddsMovement = {};          // {player_market: delta} updated on repoll
 var liveSort = {col:'total', dir:1};   // dir: 1=asc (lower=better for score), -1=desc
 var liveStatsCache = null;
+
+function isLightTheme(){ return document.documentElement.getAttribute('data-theme')==='light'; }
+// Theme-aware replacement for inline rgba(250,250,250,X) text colors
+function tc(opacity){ return isLightTheme()?'rgba(28,27,24,'+opacity+')':'rgba(250,250,250,'+opacity+')'; }
+// Theme-aware green/red tint for SG-style gradient values
+function tcSG(v, opacity){
+  if(isLightTheme()) return v>0?'rgba(30,138,74,'+opacity+')':'rgba(192,57,43,'+opacity+')';
+  return v>0?'rgba(91,191,133,'+opacity+')':'rgba(217,72,72,'+opacity+')';
+}
 var livePredCache = null;
+var currentTabId = 'coursefit';
+var accuracyDataCache = null;
+
+// Re-render the active tab's data-driven content so inline theme-aware colors
+// (baked in via tc()/tcSG() at render time) update immediately on theme toggle.
+function refreshThemeColors(){
+  switch(currentTabId){
+    case 'coursefit': if(courseFitData) renderCourseFit(courseFitData); break;
+    case 'value': if(valueBetsData) renderValueFinder(valueBetsData, currentVfFilter); break;
+    case 'h2h':
+      var h2hResult = document.getElementById('h2hResult');
+      if(h2hResult && h2hResult.classList.contains('show')) runH2H();
+      break;
+    case 'live': if(liveStatsCache) renderLiveTable(liveStatsCache, livePredCache); break;
+    case 'matchup': if(muCache[muMarket]) renderMatchups(muCache[muMarket], muMarket); break;
+    case 'accuracy': if(accuracyDataCache) renderAccuracy(accuracyDataCache); break;
+    case 'dfs': if(dfsData[dfsSite]) renderDfs(); break;
+  }
+  if(proPicksData) renderPicksCard(proPicksData);
+}
+window.refreshThemeColors = refreshThemeColors;
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
 var hbg = document.getElementById('hamburger');
@@ -1257,6 +1362,7 @@ function switchTab(id, btn){
   document.querySelectorAll('.pro-tab').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  currentTabId = id;
   isLiveTabActive = (id==='live');
   if(id==='live'){
     loadLiveData(true);
@@ -1298,7 +1404,7 @@ async function loadCourseFit(){
     renderCourseFit(d);
     populateH2HSelects(d.field||[]);
   } catch(e){
-    document.getElementById('cfLoading').innerHTML = '<div style="color:rgba(250,250,250,0.3);font-size:13px;">Could not load course-fit data. '+e.message+'</div>';
+    document.getElementById('cfLoading').innerHTML = '<div style="color:'+tc(0.3)+';font-size:13px;">Could not load course-fit data. '+e.message+'</div>';
   }
 }
 
@@ -1339,7 +1445,7 @@ async function loadValueData(){
     valueBetsData = bets;
     renderValueFinder(bets, currentVfFilter);
   } catch(e){
-    document.getElementById('vfLoading').innerHTML='<div style="color:rgba(250,250,250,0.3);font-size:13px;">Could not load value data.</div>';
+    document.getElementById('vfLoading').innerHTML='<div style="color:'+tc(0.3)+';font-size:13px;">Could not load value data.</div>';
   }
 }
 
@@ -1455,7 +1561,7 @@ function renderTourneyHeader(d){
     '<span class="t-chip chip-b">'+(d.meta&&d.meta.form_blended?'65% Skill + 35% Form':'Skill only')+'</span>';
 
   var wr = document.getElementById('weightsRow');
-  var cats=[{k:'app',n:'Approach',c:'#5BBF85'},{k:'ott',n:'OTT',c:'#5A8FA8'},{k:'arg',n:'ARG',c:'#C9A84C'},{k:'putt',n:'Putting',c:'rgba(250,250,250,0.4)'}];
+  var cats=[{k:'app',n:'Approach',c:'#5BBF85'},{k:'ott',n:'OTT',c:'#5A8FA8'},{k:'arg',n:'ARG',c:'#C9A84C'},{k:'putt',n:'Putting',c:tc(0.4)}];
   var html='<span class="w-label">Course weights:</span>';
   cats.forEach(function(cat){
     var pct=Math.round((d.course_weights[cat.k]||0)*100);
@@ -1612,10 +1718,10 @@ function renderCourseFit(d){
     +'<span class="cf-th">Player</span>'
     +'<span class="cf-th cf-th-sort'+cfSortCls('fit')+'" onclick="sortCF(\'fit\')" style="cursor:pointer;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+' <span class="sort-arrow">'+cfSortArrow('fit')+'</span></span>'
     +'<span class="cf-th" style="cursor:default;">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Click App / OTT / ARG / Putt labels below to sort by that category.')+'&nbsp;'
-      +'<span class="cf-th-sort'+cfSortCls('sg_app')+'" onclick="sortCF(\'sg_app\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">App'+cfSortArrow('sg_app')+'</span>'
-      +'<span class="cf-th-sort'+cfSortCls('sg_ott')+'" onclick="sortCF(\'sg_ott\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">OTT'+cfSortArrow('sg_ott')+'</span>'
-      +'<span class="cf-th-sort'+cfSortCls('sg_arg')+'" onclick="sortCF(\'sg_arg\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">ARG'+cfSortArrow('sg_arg')+'</span>'
-      +'<span class="cf-th-sort'+cfSortCls('sg_putt')+'" onclick="sortCF(\'sg_putt\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid rgba(255,255,255,0.1);border-radius:3px;margin:0 1px;">Putt'+cfSortArrow('sg_putt')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_app')+'" onclick="sortCF(\'sg_app\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid '+tc(0.1)+';border-radius:3px;margin:0 1px;">App'+cfSortArrow('sg_app')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_ott')+'" onclick="sortCF(\'sg_ott\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid '+tc(0.1)+';border-radius:3px;margin:0 1px;">OTT'+cfSortArrow('sg_ott')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_arg')+'" onclick="sortCF(\'sg_arg\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid '+tc(0.1)+';border-radius:3px;margin:0 1px;">ARG'+cfSortArrow('sg_arg')+'</span>'
+      +'<span class="cf-th-sort'+cfSortCls('sg_putt')+'" onclick="sortCF(\'sg_putt\')" style="cursor:pointer;font-size:8px;letter-spacing:0.08em;padding:1px 4px;border:1px solid '+tc(0.1)+';border-radius:3px;margin:0 1px;">Putt'+cfSortArrow('sg_putt')+'</span>'
     +'</span>'
     +'<span class="cf-th">'+tip('Top 10 Odds','<strong>Best Available Top-10 Odds</strong>Best odds for a top-10 finish across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars.<br><br>Reflects pre-round lines — always verify at the book before betting.',true)+'</span>'
     +'<span class="cf-th cf-th-sort'+cfSortCls('dls')+'" onclick="sortCF(\'dls\')" style="cursor:pointer;">'+tip('DL Score','<strong>Divot Lab Score (0–100)</strong>Composite rating: Course Fit (50%) + Market Edge (30%) + Confidence Signal (20%). Populates once odds data loads. Higher = stronger play this week.',true)+' <span class="sort-arrow">'+cfSortArrow('dls')+'</span></span>'
@@ -1628,7 +1734,7 @@ function renderCourseFit(d){
     var o = top10OddsMap[p.player_name];
     var oddsHTML = o
       ? '<div class="odds-num">'+fmtAm(o.am)+'</div><div class="odds-book">'+o.book.toUpperCase()+'</div>'
-      : '<div class="odds-num" style="color:rgba(250,250,250,0.2);">—</div><div class="odds-book"></div>';
+      : '<div class="odds-num" style="color:'+tc(0.2)+';">—</div><div class="odds-book"></div>';
 
     var expandBtn = p.dg_id ? '<button class="cf-approach-btn" onclick="toggleApproach('+p.dg_id+',this)">Approach ▾</button>' : '';
     var histBtn = p.dg_id ? '<button class="cf-history-btn" onclick="toggleCourseHistory('+p.dg_id+',\''+p.player_name.replace(/'/g,"\\'")
@@ -1645,8 +1751,8 @@ function renderCourseFit(d){
     if(p.dg_id) html += '<div class="cf-history-panel" id="cfhp-'+p.dg_id+'" style="display:none;"></div>';
   });
   html += '</div>'
-    +'<div style="padding:10px 20px;border-top:1px solid rgba(255,255,255,0.04);text-align:right;">'
-    +'<a href="/model" style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(201,168,76,0.5);text-decoration:none;transition:color .2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(201,168,76,0.5)\'">How DL Score is calculated →</a>'
+    +'<div style="padding:10px 20px;border-top:1px solid '+tc(0.04)+';text-align:right;">'
+    +'<a href="/model" style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:'+tc(0.45)+';text-decoration:none;transition:color .2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\''+tc(0.45)+'\'">How DL Score is calculated →</a>'
     +'</div>';
 
   document.getElementById('cfLoading').style.display='none';
@@ -1952,23 +2058,25 @@ function runH2H(){
   var oddsA = top10OddsMap[nameA];
   var oddsB = top10OddsMap[nameB];
 
+  var favorBg = isLightTheme()?'rgba(28,27,24,0.02)':'rgba(255,255,255,0.02)';
+
   html += '<div class="h2h-score-display">'
     +'<div class="h2h-score-side'+(aWins?' winner':'')+'" style="flex:1;padding:20px 24px;text-align:center;">'
-      +'<div class="h2h-score-num'+(aWins?' a-wins':'')+'" style="color:'+(aWins?'var(--green-light)':'rgba(250,250,250,0.35)')+'">'+(pA.fitScore!=null?pA.fitScore:'—')+'</div>'
+      +'<div class="h2h-score-num'+(aWins?' a-wins':'')+'" style="color:'+(aWins?'var(--green-light)':tc(0.35))+'">'+(pA.fitScore!=null?pA.fitScore:'—')+'</div>'
       +'<div class="h2h-score-label">Course-Fit Score</div>'
-      +(oddsA?'<div style="font-family:var(--mono);font-size:13px;color:var(--green-light);margin-top:10px;">'+fmtAm(oddsA.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);margin-top:2px;">Top 10 · '+oddsA.book.toUpperCase()+'</div>':'')
+      +(oddsA?'<div style="font-family:var(--mono);font-size:13px;color:var(--green-light);margin-top:10px;">'+fmtAm(oddsA.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:'+tc(0.25)+';margin-top:2px;">Top 10 · '+oddsA.book.toUpperCase()+'</div>':'')
       +(aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--green-light);margin-top:10px;letter-spacing:0.08em;">▲ Course-fit edge</div>':'')
     +'</div>'
     +'<div class="h2h-score-sep"></div>'
     +'<div class="h2h-score-side'+(!aWins?' winner':'')+'" style="flex:1;padding:20px 24px;text-align:center;">'
-      +'<div class="h2h-score-num'+(!aWins?' b-wins':'')+'" style="color:'+(!aWins?'var(--gold)':'rgba(250,250,250,0.35)')+'">'+(pB.fitScore!=null?pB.fitScore:'—')+'</div>'
+      +'<div class="h2h-score-num'+(!aWins?' b-wins':'')+'" style="color:'+(!aWins?'var(--gold)':tc(0.35))+'">'+(pB.fitScore!=null?pB.fitScore:'—')+'</div>'
       +'<div class="h2h-score-label">Course-Fit Score</div>'
-      +(oddsB?'<div style="font-family:var(--mono);font-size:13px;color:var(--gold);margin-top:10px;">'+fmtAm(oddsB.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.25);margin-top:2px;">Top 10 · '+oddsB.book.toUpperCase()+'</div>':'')
+      +(oddsB?'<div style="font-family:var(--mono);font-size:13px;color:var(--gold);margin-top:10px;">'+fmtAm(oddsB.am)+'</div><div style="font-family:var(--mono);font-size:9px;color:'+tc(0.25)+';margin-top:2px;">Top 10 · '+oddsB.book.toUpperCase()+'</div>':'')
       +(!aWins?'<div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-top:10px;letter-spacing:0.08em;">▲ Course-fit edge</div>':'')
     +'</div>'
     +'</div>'
-    +'<div style="padding:14px 24px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);font-size:13px;color:rgba(250,250,250,0.45);text-align:center;">'
-      +'Model favors <strong style="color:'+(aWins?'var(--green-light)':'var(--gold)');+'">'+(aWins?nameA:nameB)+'</strong>'
+    +'<div style="padding:14px 24px;background:'+favorBg+';border-bottom:1px solid '+tc(0.07)+';font-size:13px;color:'+tc(0.45)+';text-align:center;">'
+      +'Model favors <strong style="color:'+(aWins?'var(--green-light)':'var(--gold)')+';">'+(aWins?nameA:nameB)+'</strong>'
       +' by <strong>+'+margin+' weighted SG</strong> for this week\'s course demands.'
     +'</div>';
 
@@ -2010,11 +2118,14 @@ function runH2H(){
   var gapDisplay = gap.toFixed(2);
   // Thresholds in weighted SG units (not 0-100 scale)
   var conf = gap>=0.28?'Strong':gap>=0.12?'Moderate':'Marginal';
-  var confCol = gap>=0.28?'var(--green-light)':gap>=0.12?'var(--gold)':'rgba(250,250,250,0.4)';
+  var confCol = gap>=0.28?'var(--green-light)':gap>=0.12?'var(--gold)':tc(0.4);
+  var insightLabelCol = isLightTheme()?'rgba(30,138,74,0.7)':'rgba(91,191,133,0.5)';
+  var confBoxBg = isLightTheme()?'rgba(28,27,24,0.03)':'rgba(255,255,255,0.04)';
+  var confBoxBorder = isLightTheme()?'rgba(28,27,24,0.08)':'rgba(255,255,255,0.08)';
 
   var insightLine = keywinner
-    ? '<strong style="color:rgba(250,250,250,0.88);">'+overallWinner+'</strong>'
-      +' holds the edge on <strong style="color:rgba(250,250,250,0.88);">'+keycat.label+'</strong>'
+    ? '<strong style="color:'+tc(0.88)+';">'+overallWinner+'</strong>'
+      +' holds the edge on <strong style="color:'+tc(0.88)+';">'+keycat.label+'</strong>'
       +' (+'+Math.abs(keycat.diff).toFixed(2)+' SG, weighted '+Math.round(keycat.weight*100)+'%)'
       +' — the biggest differentiator for this week\'s course profile.'
     : 'The players are closely matched across all categories for this venue.';
@@ -2027,14 +2138,14 @@ function runH2H(){
 
   html += '<div style="padding:18px 24px;background:rgba(27,77,62,0.05);border-top:1px solid rgba(91,191,133,0.1);display:flex;align-items:flex-start;gap:20px;">'
     +'<div style="flex:1;">'
-      +'<div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(91,191,133,0.5);font-family:var(--mono);margin-bottom:8px;">Model Insight</div>'
-      +'<div style="font-size:13px;color:rgba(250,250,250,0.62);line-height:1.6;margin-bottom:8px;">'+insightLine+'</div>'
-      +'<div style="font-size:12px;color:rgba(250,250,250,0.42);line-height:1.55;font-style:italic;">'+rec+'</div>'
+      +'<div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:'+insightLabelCol+';font-family:var(--mono);margin-bottom:8px;">Model Insight</div>'
+      +'<div style="font-size:13px;color:'+tc(0.62)+';line-height:1.6;margin-bottom:8px;">'+insightLine+'</div>'
+      +'<div style="font-size:12px;color:'+tc(0.42)+';line-height:1.55;font-style:italic;">'+rec+'</div>'
     +'</div>'
-    +'<div style="flex-shrink:0;text-align:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px 16px;min-width:90px;">'
-      +'<div style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.28);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;">Confidence</div>'
+    +'<div style="flex-shrink:0;text-align:center;background:'+confBoxBg+';border:1px solid '+confBoxBorder+';border-radius:8px;padding:12px 16px;min-width:90px;">'
+      +'<div style="font-family:var(--mono);font-size:9px;color:'+tc(0.28)+';letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;">Confidence</div>'
       +'<div style="font-family:var(--mono);font-size:15px;font-weight:600;color:'+confCol+';margin-bottom:4px;">'+conf+'</div>'
-      +'<div style="font-family:var(--mono);font-size:10px;color:rgba(250,250,250,0.22);">Δ'+gapDisplay+' wSG</div>'
+      +'<div style="font-family:var(--mono);font-size:10px;color:'+tc(0.22)+';">Δ'+gapDisplay+' wSG</div>'
     +'</div>'
     +'</div>';
 
@@ -2044,15 +2155,15 @@ function runH2H(){
     var hB = courseHistoryData.players[nameB];
     var years = (courseHistoryData.years||[]).slice().sort(function(a,b){return b-a;});
     if(hA||hB) {
-      function histCell(entry){ if(!entry) return '<span style="color:rgba(250,250,250,0.18);">—</span>'; var fin=entry.finish; var c=fin<=5?'var(--green-light)':fin<=20?'var(--gold)':'rgba(250,250,250,0.3)'; return '<span style="font-family:var(--mono);font-weight:600;color:'+c+';">'+entry.fin_text+'</span>'; }
+      function histCell(entry){ if(!entry) return '<span style="color:'+tc(0.18)+';">—</span>'; var fin=entry.finish; var c=fin<=5?'var(--green-light)':fin<=20?'var(--gold)':tc(0.3); return '<span style="font-family:var(--mono);font-weight:600;color:'+c+';">'+entry.fin_text+'</span>'; }
       html += '<div style="border-top:1px solid var(--border);padding:16px 24px;">'
-        +'<div style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.22);margin-bottom:12px;">Course History</div>'
+        +'<div style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:'+tc(0.22)+';margin-bottom:12px;">Course History</div>'
         +'<table style="width:100%;border-collapse:collapse;font-size:12px;">'
-        +'<tr><td style="padding:4px 0;color:rgba(250,250,250,0.28);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.08em;width:120px;">Year</td>'
-        +years.map(function(yr){ return '<td style="padding:4px 8px;text-align:center;font-family:var(--mono);font-size:11px;color:rgba(250,250,250,0.25);">'+yr+'</td>'; }).join('')+'</tr>'
-        +'<tr><td style="padding:5px 0;font-size:12px;color:rgba(250,250,250,0.75);">'+nameA.split(',').reverse().join(' ').trim()+'</td>'
+        +'<tr><td style="padding:4px 0;color:'+tc(0.28)+';font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.08em;width:120px;">Year</td>'
+        +years.map(function(yr){ return '<td style="padding:4px 8px;text-align:center;font-family:var(--mono);font-size:11px;color:'+tc(0.25)+';">'+yr+'</td>'; }).join('')+'</tr>'
+        +'<tr><td style="padding:5px 0;font-size:12px;color:'+tc(0.75)+';">'+nameA.split(',').reverse().join(' ').trim()+'</td>'
         +years.map(function(yr){ return '<td style="padding:5px 8px;text-align:center;">'+histCell(hA&&hA[yr])+'</td>'; }).join('')+'</tr>'
-        +'<tr><td style="padding:5px 0;font-size:12px;color:rgba(250,250,250,0.75);">'+nameB.split(',').reverse().join(' ').trim()+'</td>'
+        +'<tr><td style="padding:5px 0;font-size:12px;color:'+tc(0.75)+';">'+nameB.split(',').reverse().join(' ').trim()+'</td>'
         +years.map(function(yr){ return '<td style="padding:5px 8px;text-align:center;">'+histCell(hB&&hB[yr])+'</td>'; }).join('')+'</tr>'
         +'</table></div>';
     }
@@ -2089,7 +2200,7 @@ async function loadMatchupData(market){
     muCache[market] = d.data;
     renderMatchups(d.data, market);
   } catch(e){
-    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">Could not load matchup data</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.<br><span style="color:rgba(250,250,250,0.2);">'+e.message+'</span></div></div>';
+    loadEl.innerHTML='<div class="mu-empty"><div class="mu-empty-title">Could not load matchup data</div><div class="mu-empty-sub">Matchup lines are typically posted Wednesday–Sunday of tournament week.<br><span style="color:'+tc(0.2)+';">'+e.message+'</span></div></div>';
     loadEl.style.display='block';
     tableEl.style.display='none';
   }
@@ -2174,7 +2285,7 @@ function renderMatchups(data, market){
       oddsHtml:'<div class="mu-odds-val">'+(bestAmo!=null?fmtAm(bestAmo):'—')+'</div>',
       bookHtml:'<div class="mu-book-val">'+(bestBook?bestBook.replace('draftkings','DraftKings').replace('fanduel','FanDuel').replace('betmgm','BetMGM').replace('bet365','Bet365').replace('caesars','Caesars').replace('pinnacle','Pinnacle').replace('bovada','Bovada').toUpperCase():'—')+'</div>',
       edgeHtml:'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>',
-      signalHtml:'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:rgba(250,250,250,0.2);font-size:12px;">—</span>')+'</div>'};
+      signalHtml:'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:'+tc(0.2)+';font-size:12px;">—</span>')+'</div>'};
   }
 
   function muThSort(label, col, tipText, right){
@@ -2292,7 +2403,7 @@ async function loadDfsData(site){
     dfsData[site] = d.data;
     if(dfsSite===site) renderDfs();
   } catch(e){
-    loadEl.innerHTML='<div style="color:rgba(250,250,250,0.3);font-size:13px;padding:40px 20px;">Could not load DFS data. '+e.message+'</div>';
+    loadEl.innerHTML='<div style="color:'+tc(0.3)+';font-size:13px;padding:40px 20px;">Could not load DFS data. '+e.message+'</div>';
   }
 }
 
@@ -2379,7 +2490,7 @@ function updateLineupPanel(){
 
   // Header meta
   var meta = document.getElementById('dfsBuilderMeta');
-  var metaState = state==='over'?'color:var(--red)':state==='tight'?'color:var(--gold)':'color:rgba(250,250,250,0.35)';
+  var metaState = state==='over'?'color:var(--red)':state==='tight'?'color:var(--gold)':'color:'+tc(0.35);
   if(meta) meta.innerHTML='<span>'+dfsLineup.length+' / 6</span> &nbsp;·&nbsp; <span style="'+metaState+'">$'+remaining.toLocaleString()+' remaining</span>';
 
   var slotsEl = document.getElementById('dfsSlots');
@@ -2687,9 +2798,10 @@ async function loadAccuracyData(){
     var d = await res.json();
     if(!d.success) throw new Error(d.error||'API error');
     accDataLoaded = true;
+    accuracyDataCache = d;
     renderAccuracy(d);
   } catch(e){
-    loadEl.innerHTML='<div style="color:rgba(250,250,250,0.3);font-size:13px;padding:40px 20px;">Could not load track record data. '+e.message+'</div>';
+    loadEl.innerHTML='<div style="color:'+tc(0.3)+';font-size:13px;padding:40px 20px;">Could not load track record data. '+e.message+'</div>';
   }
 }
 
@@ -2711,7 +2823,7 @@ function toggleAccDetail(eventId){
   var open = panel.style.display!=='none';
   panel.style.display = open?'none':'block';
   btn.textContent = open?'›':'↓';
-  btn.style.color = open?'rgba(250,250,250,0.2)':'rgba(250,250,250,0.5)';
+  btn.style.color = open?tc(0.2):tc(0.5);
 }
 
 function renderAccuracy(d){
@@ -2778,7 +2890,7 @@ function renderAccuracy(d){
 
       html += '<div class="acc-row" style="cursor:pointer;" onclick="toggleAccDetail(\''+eid+'\')">'
         +'<div><div class="acc-event">'+e.event_name
-          +' <span id="accdb-'+eid+'" style="font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);margin-left:4px;">›</span>'
+          +' <span id="accdb-'+eid+'" style="font-family:var(--mono);font-size:9px;color:'+tc(0.2)+';margin-left:4px;">›</span>'
           +'</div><div class="acc-date">'+date+'</div></div>'
         +'<div><div class="acc-player'+(e.model_top1_top5?' correct':'')+'">'+e.model_top1+'</div>'
           +'<div class="acc-date">'+(e.model_top1_finish||'—')+'</div></div>'
@@ -2790,9 +2902,9 @@ function renderAccuracy(d){
 
       // Expandable picks detail
       if(e.top10_detail && e.top10_detail.length){
-        var detailHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,0.06);">';
-        var labels = ['<div style="grid-column:1;padding:10px 20px 6px;"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.22);">Top 5 picks</span></div>',
-                      '<div style="grid-column:2;padding:10px 20px 6px;border-left:1px solid rgba(255,255,255,0.04);"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,250,250,0.22);">Picks 6–10</span></div>'];
+        var detailHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid '+tc(0.06)+';">';
+        var labels = ['<div style="grid-column:1;padding:10px 20px 6px;"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:'+tc(0.22)+';">Top 5 picks</span></div>',
+                      '<div style="grid-column:2;padding:10px 20px 6px;border-left:1px solid '+tc(0.04)+';"><span style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:'+tc(0.22)+';">Picks 6–10</span></div>'];
         detailHtml += labels.join('');
         for(var i=0;i<5;i++){
           var p5 = e.top10_detail[i];
@@ -2800,22 +2912,22 @@ function renderAccuracy(d){
           function pickRow(p, threshold){
             if(!p) return '<div style="padding:5px 20px;"></div>';
             var hit = p.finish<=threshold;
-            var finColor = hit?'var(--green-light)':'rgba(250,250,250,0.3)';
+            var finColor = hit?'var(--green-light)':tc(0.3);
             return '<div style="padding:5px 20px;display:flex;justify-content:space-between;align-items:center;">'
-              +'<span style="font-size:12px;color:rgba(250,250,250,'+(hit?'0.85':'0.4')+');">'+(p.player||'').split(',').reverse().join(' ').trim()+'</span>'
+              +'<span style="font-size:12px;color:'+tc(hit?0.85:0.4)+';">'+(p.player||'').split(',').reverse().join(' ').trim()+'</span>'
               +'<span style="font-family:var(--mono);font-size:11px;font-weight:600;color:'+finColor+';">'+p.finish_text+'</span>'
               +'</div>';
           }
           detailHtml += pickRow(p5,5);
-          detailHtml += '<div style="border-left:1px solid rgba(255,255,255,0.04);">'+pickRow(p10,10).replace('<div style="padding','<div style="padding')+'</div>';
+          detailHtml += '<div style="border-left:1px solid '+tc(0.04)+';">'+pickRow(p10,10).replace('<div style="padding','<div style="padding')+'</div>';
         }
         detailHtml += '</div>';
-        html += '<div id="accd-'+eid+'" style="display:none;background:rgba(255,255,255,0.015);padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.08);">'+detailHtml+'</div>';
+        html += '<div id="accd-'+eid+'" style="display:none;background:'+tc(0.015)+';padding-bottom:14px;border-bottom:1px solid '+tc(0.08)+';">'+detailHtml+'</div>';
       }
     });
     html += '</div>';
   } else {
-    html += '<div style="color:rgba(250,250,250,0.3);font-size:13px;padding:20px 0;">No completed events data available yet for this season.</div>';
+    html += '<div style="color:'+tc(0.3)+';font-size:13px;padding:20px 0;">No completed events data available yet for this season.</div>';
   }
 
   loadEl.style.display='none';
@@ -2856,7 +2968,7 @@ function renderPicksCard(d){
       +'<div class="pick-player">'+p.player+'</div>'
       +'<div class="pick-meta">'
         +'<span class="pick-bet-badge">'+p.bet_type+'</span>'
-        +(p.bet_detail?'<span style="font-size:11px;color:rgba(250,250,250,0.4);">'+p.bet_detail+'</span>':'')
+        +(p.bet_detail?'<span style="font-size:11px;color:'+tc(0.4)+';">'+p.bet_detail+'</span>':'')
         +'<span class="pick-odds">'+p.odds+'</span>'
         +'<span class="pick-book">'+p.book+'</span>'
       +'</div>'
@@ -2971,6 +3083,7 @@ function renderLiveTable(statsData, predData){
     player: function(r){ return (r.player_name||'').split(',')[0].trim().toLowerCase(); },
     total:  function(r){ return r.total!=null?r.total:999; },
     today:  function(r){ var w=winMap[r.player_name]; return r.today!=null?r.today:(w&&w.today!=null?w.today:999); },
+    thru:   function(r){ var w=winMap[r.player_name]; var t=thruVal(r,w); return t==null?-1:(t==='F'?18:parseInt(t)||-1); },
     sg_ott: function(r){ return r.sg_ott!=null?r.sg_ott:-99; },
     sg_app: function(r){ return r.sg_app!=null?r.sg_app:-99; },
     sg_arg: function(r){ return r.sg_arg!=null?r.sg_arg:-99; },
@@ -2998,22 +3111,35 @@ function renderLiveTable(statsData, predData){
     return v==null?'live-zero':v<0?'live-pos-score':v>0?'live-neg-score':'live-zero';
   }
   function sgGradColor(v){
-    if(v==null||Math.abs(v)<0.01) return 'rgba(250,250,250,0.25)';
+    if(v==null||Math.abs(v)<0.01) return tc(0.25);
     var t = Math.min(1, Math.abs(v) / 1.5); // 0 near zero → 1 at ±1.5+
-    var a = (0.28 + 0.72*t).toFixed(2);      // 28% opacity near 0 → 100% at max
-    return v>0?'rgba(91,191,133,'+a+')':'rgba(217,72,72,'+a+')';
+    var lo = isLightTheme()?0.55:0.28;       // higher opacity floor on light bg for contrast
+    var a = (lo + (1-lo)*t).toFixed(2);
+    return tcSG(v, a);
   }
   function sgCell(v){
-    if(v==null) return '<span class="live-sg" style="color:rgba(250,250,250,0.25);">—</span>';
+    if(v==null) return '<span class="live-sg" style="color:'+tc(0.25)+';">—</span>';
     var s=(v>=0?'+':'')+v.toFixed(2);
     return '<span class="live-sg" style="color:'+sgGradColor(v)+';">'+s+'</span>';
   }
 
   function probCell(v, highlight){
-    if(v==null) return '<span class="live-sg" style="color:rgba(250,250,250,0.25);">—</span>';
+    if(v==null) return '<span class="live-sg" style="color:'+tc(0.25)+';">—</span>';
     var pct = (v * 100).toFixed(1)+'%';
-    var c = highlight?'rgba(250,250,250,0.75)':'rgba(250,250,250,0.5)';
+    var c = highlight?tc(0.75):tc(0.5);
     return '<span class="live-sg" style="color:'+c+';">'+pct+'</span>';
+  }
+
+  function thruVal(p, pred){
+    var t = (p&&p.thru!=null)?p.thru:(pred&&pred.thru!=null?pred.thru:null);
+    if(t==null||t===''||t===0||t==='0') return null;
+    if(t===18||t==='18'||t==='F'||t==='f') return 'F';
+    return t;
+  }
+  function thruCell(t){
+    if(t==null) return '<span class="live-sg" style="color:'+tc(0.25)+';">—</span>';
+    var c = t==='F'?(isLightTheme()?'rgba(30,138,74,0.85)':'rgba(91,191,133,0.75)'):tc(0.5);
+    return '<span class="live-sg" style="color:'+c+';">'+t+'</span>';
   }
 
   function liveThSort(label, col, tipText){
@@ -3031,6 +3157,7 @@ function renderLiveTable(statsData, predData){
     +liveThSort('Player','player','Player name — alphabetical by last name. Click to sort.')
     +liveThSort('Total','total','Tournament score relative to par. Click to sort.')
     +liveThSort('Today','today','Current round score. Click to sort.')
+    +liveThSort('Thru','thru','Holes completed in the current round. F = finished. Click to sort.')
     +liveThSort('OTT','sg_ott','SG: Off the Tee — event average. Click to sort.')
     +liveThSort('App','sg_app','SG: Approach — event average. Click to sort.')
     +liveThSort('ARG','sg_arg','SG: Around the Green — event average. Click to sort.')
@@ -3053,6 +3180,7 @@ function renderLiveTable(statsData, predData){
       +'<div><span class="live-player-name">'+p.player_name+'</span>'+(isPick?'<span class="live-pick-badge">PICK</span>':'')+'</div>'
       +'<div class="live-score '+scoreCls(p.total!=null?p.total:(pred&&pred.total!=null?pred.total:null))+'">'+total+'</div>'
       +'<div class="live-score '+scoreCls(todayVal)+'">'+today+'</div>'
+      +'<div>'+thruCell(thruVal(p, pred))+'</div>'
       +'<div>'+sgCell(p.sg_ott)+'</div>'
       +'<div>'+sgCell(p.sg_app)+'</div>'
       +'<div>'+sgCell(p.sg_arg)+'</div>'
@@ -3073,5 +3201,6 @@ function renderLiveTable(statsData, predData){
 // ── INIT ──────────────────────────────────────────────────────────────────────
 checkAuth();
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>

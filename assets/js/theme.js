@@ -28,6 +28,7 @@
   function toggle() {
     var current = document.documentElement.getAttribute('data-theme') || 'light';
     applyTheme(current === 'light' ? 'dark' : 'light');
+    if (typeof window.refreshThemeColors === 'function') window.refreshThemeColors();
   }
 
   function init() {

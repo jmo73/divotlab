@@ -13,7 +13,10 @@
       "Bash(venv/Scripts/python -c \"import pandas; import requests; from dotenv import load_dotenv; print\\('All imports OK'\\)\")",
       "Bash(cp \"c:/Users/jmory/Downloads/divotlab-research/outputs/figures/dg_vs_pinnacle_scatter.png\" \"c:/Users/jmory/Downloads/divotlab/assets/research/dg_vs_pinnacle_scatter.png\")",
       "Bash(cp \"c:/Users/jmory/Downloads/divotlab-research/outputs/figures/market_edge_analysis.png\" \"c:/Users/jmory/Downloads/divotlab/assets/research/market_edge_analysis.png\")",
-      "Bash(cp \"c:/Users/jmory/Downloads/divotlab-research/outputs/figures/market_movement.png\" \"c:/Users/jmory/Downloads/divotlab/assets/research/market_movement.png\")"
+      "Bash(cp \"c:/Users/jmory/Downloads/divotlab-research/outputs/figures/market_movement.png\" \"c:/Users/jmory/Downloads/divotlab/assets/research/market_movement.png\")",
+      "Bash(cd \"/c/Users/jmory/Downloads/divotlab\" && awk 'NR>=1180 && /rgba\\\\\\(250,250,250,|rgba\\\\\\(255,255,255,0\\\\.[0-9]/' pro.html | grep -v 'tc\\(' | head -60)",
+      "Read(//c/c/Users/jmory/Downloads/divotlab/**)",
+      "Bash(node -e ' *)"
     ]
   }
 }
