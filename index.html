@@ -392,30 +392,19 @@ nav.light .nav-links a:hover { color:var(--black); }
 }
 .hero h1 {
   font-family: var(--display);
-  font-size: clamp(62px, 9vw, 96px);
-  font-weight: 600;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 500;
+  font-style: italic;
   color: var(--white);
-  letter-spacing: -.025em;
-  line-height: 1.08;
+  letter-spacing: -.01em;
+  line-height: 1.35;
+  max-width: 620px;
+  margin: 0 auto;
   opacity:0;
   animation: riseIn .65s cubic-bezier(.22,1,.36,1) .3s forwards;
 }
-.hero h1 em {
-  font-style:italic;
-  font-weight:500;
-  display:inline-block;
-  padding-right:4px;
-  padding-bottom: 0.15em;
-  background: linear-gradient(90deg, var(--green-light) 50%, rgba(91,191,133,0.15) 50%);
-  background-size: 200% 100%;
-  background-position: 100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textReveal 1.8s cubic-bezier(.22,1,.36,1) 0.9s forwards;
-}
-@keyframes textReveal {
-  to { background-position: 0% 0; }
+.hero h1 .hero-word-primary {
+  color: var(--green-light);
 }
 
 /* Hero email signup */
@@ -1466,14 +1455,6 @@ html[data-theme="light"] .hero::after {
 }
 html[data-theme="light"] .hero h1 { color: #1C1B18; }
 html[data-theme="light"] .hero h1 .hero-word-primary { color: var(--green); }
-/* Remove background-clip trick in light mode — solid color avoids descender clip */
-html[data-theme="light"] .hero h1 em {
-  background: none !important;
-  -webkit-background-clip: unset !important;
-  background-clip: unset !important;
-  -webkit-text-fill-color: var(--green-light) !important;
-  color: var(--green-light) !important;
-}
 html[data-theme="light"] .hero-eyebrow { color: var(--green) !important; }
 html[data-theme="light"] .hero-sub { color: rgba(28,27,24,0.65); }
 html[data-theme="light"] .hero-email-note { color: rgba(28,27,24,0.35); }
@@ -1675,8 +1656,8 @@ html[data-theme="light"] .footer-bottom {
   <div class="hero-layout">
     <div class="hero-inner">
       <div class="hero-eyebrow">Welcome to Divot Lab</div>
-      <h1><span class="hero-word-primary">Golf</span><br><em>Analyzed</em></h1>
-      <p class="hero-sub">The game of golf, decoded. Stats that actually tell the story. Insights built on data, not opinion.</p>
+      <h1><span class="hero-word-primary">Course-fit models</span> and betting analysis for the full PGA Tour field.</h1>
+      <p class="hero-sub">Built on DataGolf's full historical dataset — strokes gained, course fit, and market odds, recalculated every tournament week.</p>
       <div class="hero-btns">
         <a href="/the-lab" class="btn-fill">See Live Stats →</a>
         <a href="/articles" class="btn-text">Read the Latest</a>
