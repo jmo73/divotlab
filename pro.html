@@ -11,7 +11,7 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --black:#0A0A0A;--black-mid:#111110;--black-card:#161614;--black-card2:#1C1C19;
@@ -19,7 +19,7 @@
   --gold:#C9A84C;--red:#D94848;--border:rgba(255,255,255,0.07);
   --display:'Cormorant Garamond',Georgia,serif;
   --body:'DM Sans','Helvetica Neue',sans-serif;
-  --mono:'IBM Plex Mono','Courier New',monospace;
+  --mono:'Roboto Mono','Courier New',monospace;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -319,8 +319,8 @@ html[data-theme="light"] .cfap-low{color:#8A6F09;}
 .h2h-select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-family:var(--body);font-size:14px;color:var(--white);outline:none;cursor:pointer;transition:border-color .2s;}
 .h2h-select:focus{border-color:rgba(201,168,76,0.4);}
 .h2h-select option{background:var(--black-card);}
-.h2h-compare-btn{display:block;width:100%;max-width:280px;margin:0 auto 32px;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:0.02em;}
-.h2h-compare-btn:hover{background:#D4B45E;}
+.h2h-compare-btn{display:block;width:100%;max-width:280px;margin:0 auto 32px;background:#9A7D1F;color:var(--white);border:none;border-radius:8px;padding:13px;font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:0.02em;}
+.h2h-compare-btn:hover{background:#B08F2A;}
 .h2h-result{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none;}
 .h2h-result.show{display:block;}
 .h2h-header{display:grid;grid-template-columns:1fr 100px 1fr;padding:20px 24px;border-bottom:1px solid var(--border);align-items:center;text-align:center;}
@@ -458,6 +458,7 @@ html[data-theme="light"] .bet-win{background:rgba(138,111,9,0.1);color:#8A6F09;}
 html[data-theme="light"] .h2h-select-wrap{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
 html[data-theme="light"] .h2h-select-label{color:rgba(28,27,24,0.4);}
 html[data-theme="light"] .h2h-select{background:rgba(28,27,24,0.04);border-color:rgba(28,27,24,0.12);color:#1C1B18;}
+html[data-theme="light"] .h2h-select option{background:#FFFFFF;color:#1C1B18;}
 html[data-theme="light"] .h2h-result{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
 html[data-theme="light"] .h2h-header{border-bottom-color:rgba(28,27,24,0.08);}
 html[data-theme="light"] .h2h-vs{color:rgba(28,27,24,0.28);}
