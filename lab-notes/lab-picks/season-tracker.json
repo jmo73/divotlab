@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-06-07",
+  "last_updated": "2026-06-14",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 49,
-    "total_hits": 22,
-    "hit_rate_pct": 44.9,
-    "events_tracked": 12,
+    "total_picks": 54,
+    "total_hits": 24,
+    "hit_rate_pct": 44.4,
+    "events_tracked": 13,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
-      "top_5":   { "picks": 5,  "hits": 2 },
-      "top_10":  { "picks": 20, "hits": 11 },
-      "top_20":  { "picks": 11, "hits": 4 },
-      "matchup": { "picks": 12, "hits": 5 }
+      "top_5":   { "picks": 7,  "hits": 3 },
+      "top_10":  { "picks": 21, "hits": 11 },
+      "top_20":  { "picks": 12, "hits": 4 },
+      "matchup": { "picks": 13, "hits": 6 }
     },
     "units": {
-      "wagered":      49.0,
-      "returned":     72.25,
-      "profit_loss":  23.25,
-      "roi_pct":      47.4
+      "wagered":      54.0,
+      "returned":     85.15,
+      "profit_loss":  31.15,
+      "roi_pct":      57.7
     }
   },
 
@@ -124,6 +124,24 @@
         { "player": "Henley, Russell",   "bet": "H2H over Lee",   "book": "Bet365",  "odds": -143, "type": "matchup", "units": 1.0, "result": "win",  "profit": 0.70,  "note": "Henley T22 made the cut, Lee missed the cut" },
         { "player": "Henley, Russell",   "bet": "Top 5",          "book": "FanDuel", "odds": 430,  "type": "top_5",   "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T22" },
         { "player": "Spaun, J.J.",       "bet": "Top 5",          "book": "Bet365",  "odds": 800,  "type": "top_5",   "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T12" }
+      ]
+    },
+    {
+      "event": "RBC Canadian Open",
+      "date": "2026-06-14",
+      "picks_count": 5,
+      "hits_count": 2,
+      "net_units": 7.90,
+      "notes": "Best single week of the season. Cauley's Top 5 pick at +1000 turned into his first PGA Tour win — an outright victory at -17. Fitzpatrick's H2H over Burns also hit (2nd vs T20). Rai and Bauchou missed the cut, Fleetwood finished T11, just outside his Top 5 number.",
+      "picks": [
+        { "player": "Cauley, Bud",       "bet": "Top 5",          "book": "DraftKings/Bet365", "odds": 1000, "type": "top_5",   "units": 1.0, "result": "win",  "profit": 10.00, "note": "Won outright at -17 — his first PGA Tour title" },
+        { "player": "Fitzpatrick, Matt", "bet": "H2H over Burns", "book": "FanDuel",           "odds": -111, "type": "matchup", "units": 1.0, "result": "win",  "profit": 0.90,  "note": "Fitzpatrick finished 2nd (-15), Burns T20 (-9)" },
+        { "player": "Fleetwood, Tommy",  "bet": "Top 5",          "book": "FanDuel",           "odds": 340,  "type": "top_5",   "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T11 (-11)" },
+        { "player": "Rai, Aaron",        "bet": "Top 10",         "book": "DraftKings",        "odds": 430,  "type": "top_10",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed the cut" },
+        { "player": "Bauchou, Zach",     "bet": "Top 20",         "book": "DraftKings",        "odds": 490,  "type": "top_20",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed the cut" }
+      ],
+      "sleepers": [
+        { "player": "Moore, Taylor", "bet": "Top 20", "odds": 500, "book": "FanDuel", "result": "loss", "note": "Finished T40 (-6). Not counted in totals." }
       ]
     }
   ]

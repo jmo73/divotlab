@@ -11,8 +11,8 @@
       "book": "DraftKings",
       "reasoning": "DG model fair: +385. DraftKings +430 is +9.3% positive EV. Rai shows positive EV in three separate markets (top-5, top-10, top-20) — the only player in the field with that level of cross-market alignment. His ball-striking-driven game lines up directly with TPC Toronto's heaviest model weights (OTT and App at 28% each, 56% combined).",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Missed the cut"
     },
     {
       "player": "Matt Fitzpatrick",
@@ -22,8 +22,8 @@
       "book": "FanDuel",
       "reasoning": "DG model implied: -120. FanDuel -111 is better than fair by 9 points, a +3.7% EV edge. TPC Toronto's profile (OTT/App 28% each, ARG just 20%) rewards a complete tee-to-green game over a power-and-recover style, favoring Fitzpatrick's controlled approach over Burns.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "Fitzpatrick finished 2nd (-15), Burns T20 (-9)"
     },
     {
       "player": "Tommy Fleetwood",
@@ -33,8 +33,8 @@
       "book": "FanDuel",
       "reasoning": "FanDuel +340 is +6.1% positive EV versus the model's fair price — the largest edge among the shorter-priced plays this week. Fleetwood's all-around ball-striking profile fits a course-fit model that rewards OTT and Approach equally above every other category.",
       "confidence": "High",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Finished T11 (-11)"
     },
     {
       "player": "Zach Bauchou",
@@ -44,8 +44,8 @@
       "book": "DraftKings",
       "reasoning": "DraftKings +490 is +5.3% positive EV, one of the cleaner mid-tier gaps on the board. A top-20 line gives a wider band of qualifying finishes for a player without the market profile of this week's bigger names.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "Missed the cut"
     },
     {
       "player": "Bud Cauley",
@@ -55,8 +55,8 @@
       "book": "DraftKings",
       "reasoning": "DG model fair: +931. DraftKings/Bet365 +1000 is +6.7% positive EV — the second-largest gap on the board behind Rai's top-5 number. The longest price on this week's card by design, reflecting the size of the edge.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "Won outright at -17 — his first PGA Tour title"
     }
   ]
 }

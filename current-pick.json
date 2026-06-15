@@ -11,8 +11,8 @@
     "book": "DraftKings",
     "reasoning": "Rai shows positive expected value in three separate finish-position markets this week — top-5, top-10, and top-20 — the only player in the field with that level of cross-market alignment. The DG model has his fair top-10 odds at +385; DraftKings offers +430, a +9.3% positive EV play. His ball-striking-heavy game lines up directly with TPC Toronto's North Course, which debuts in our model this week with the highest combined Off-the-Tee + Approach weight (56%) of any venue we track.",
     "confidence": "High",
-    "result": null,
-    "result_detail": null
+    "result": "loss",
+    "result_detail": "Missed the cut"
   },
   "teaser": "4 more picks — including a value H2H matchup and our biggest single-market edge of the season — are in this week's Lab Notes Pro email."
 }
