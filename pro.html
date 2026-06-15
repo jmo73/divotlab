@@ -276,6 +276,11 @@ html[data-theme="light"] .cfap-low{color:#8A6F09;}
 .vf-toggle input:checked{background:var(--green-light);}
 .vf-toggle input::after{content:'';position:absolute;top:3px;left:3px;width:12px;height:12px;background:#fff;border-radius:50%;transition:left .2s;}
 .vf-toggle input:checked::after{left:17px;}
+.vf-freshness{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:0.04em;margin:-6px 0 14px;}
+.vf-freshness .live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green-light);margin-right:5px;vertical-align:middle;animation:liveDotPulse 2s ease-in-out infinite;}
+@keyframes liveDotPulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.vf-live-tag{display:inline-block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.12);border-radius:3px;padding:1px 4px;margin-left:4px;vertical-align:middle;}
+html[data-theme="light"] .vf-live-tag{background:rgba(27,77,62,0.08);color:#1B4D3E;}
 .vf-th{cursor:pointer;user-select:none;}
 .vf-th:hover{color:rgba(250,250,250,0.7);}
 .vf-th.sorted{color:var(--gold);}
@@ -1048,6 +1053,7 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
         Hide longshots (&gt;+1000)
       </label>
     </div>
+    <div class="vf-freshness" id="vfFreshness"></div>
     <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
     <div id="vfTable" style="display:none;"></div>
   </div>
@@ -1191,6 +1197,11 @@ var oddsSnapshot = {};          // {player_market: amOdds} captured on first loa
 var oddsMovement = {};          // {player_market: delta} updated on repoll
 var liveSort = {col:'total', dir:1};   // dir: 1=asc (lower=better for score), -1=desc
 var liveStatsCache = null;
+var liveProbMap = {};           // {player_name: {win, top_5, top_10, top_20}} from /preds/in-play, live rounds only
+var vfOddsUpdatedAt = null;     // Date.now() of last full odds refresh (Value Finder)
+var vfFastTimer = null;         // ~90s loop: re-merges live model probs only
+var vfSlowTimer = null;         // ~10min loop: full odds refetch
+var muRefreshTimer = null;      // ~10min loop: matchup odds refetch while tab active
 
 function isLightTheme(){ return document.documentElement.getAttribute('data-theme')==='light'; }
 // Theme-aware replacement for inline rgba(250,250,250,X) text colors
@@ -1209,7 +1220,7 @@ var accuracyDataCache = null;
 function refreshThemeColors(){
   switch(currentTabId){
     case 'coursefit': if(courseFitData) renderCourseFit(courseFitData); break;
-    case 'value': if(valueBetsData) renderValueFinder(valueBetsData, currentVfFilter); break;
+    case 'value': if(valueBetsData) renderValueFinder(valueBetsData, currentVfFilter); renderVfFreshness(); break;
     case 'h2h':
       var h2hResult = document.getElementById('h2hResult');
       if(h2hResult && h2hResult.classList.contains('show')) runH2H();
@@ -1281,7 +1292,11 @@ async function startAccess(){
     btn.textContent = 'Starting free trial…';
     var trialRes = await fetch(API+'/api/start-trial',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email, source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct'})
+      body: JSON.stringify({
+        email,
+        source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct',
+        referral_code: localStorage.getItem('divotlab-referral-code') || null
+      })
     });
     var trialData = await trialRes.json();
     if(trialData.success){
@@ -1365,8 +1380,11 @@ function switchTab(id, btn){
   } else {
     if(liveRefreshTimer){ clearInterval(liveRefreshTimer); liveRefreshTimer=null; }
   }
-  if(id==='matchup' && !muCache[muMarket]){
-    loadMatchupData(muMarket);
+  if(id==='matchup'){
+    if(!muCache[muMarket]) loadMatchupData(muMarket);
+    if(!muRefreshTimer) muRefreshTimer = setTimeout(pollMatchupRefresh, 10*60*1000);
+  } else {
+    if(muRefreshTimer){ clearTimeout(muRefreshTimer); muRefreshTimer=null; }
   }
   if(id==='accuracy' && !accDataLoaded){
     loadAccuracyData();
@@ -1380,11 +1398,12 @@ function switchTab(id, btn){
 
 // ── DATA LOADING ──────────────────────────────────────────────────────────────
 async function loadAllData(){
-  await loadCourseFit();       // renders table with — odds initially
+  await loadCourseFit();       // renders table with — odds initially, sets courseFitData (used by isLiveRound)
   await loadValueData();       // builds top10OddsMap as side effect
   updateCourseFitOdds();       // patches odds cells without re-rendering
   captureOddsSnapshot();       // snapshot current odds for line movement tracking
-  setTimeout(pollOddsRefresh, 5*60*1000); // begin polling for line movement
+  vfSlowTimer = setTimeout(pollOddsRefresh, 10*60*1000);     // full odds refetch
+  vfFastTimer = setTimeout(pollLiveProbsRefresh, 90*1000);   // live in-play prob refresh
   loadCourseHistory();         // pre-fetch course history in background
 }
 
@@ -1402,12 +1421,74 @@ async function loadCourseFit(){
   }
 }
 
+// True once a round is underway — pre-tournament baseline probs are stale at that point.
+function isLiveRound(){
+  return !!(courseFitData && courseFitData.tournament && courseFitData.tournament.current_round > 0);
+}
+
+// /preds/in-play (60s server cache) — live win/top5/10/20 probabilities per player,
+// keyed by market name to match the betting-odds market values directly.
+async function fetchLiveProbMap(){
+  try {
+    var res = await fetch(API+'/api/live-tournament?odds_format=percent');
+    var d = await res.json();
+    var rows = d.data && (d.data.live_details||d.data.data||(Array.isArray(d.data)?d.data:[])) || [];
+    var map = {};
+    rows.forEach(function(p){
+      if(!p.player_name) return;
+      map[p.player_name] = {win:p.win, top_5:p.top_5, top_10:p.top_10, top_20:p.top_20};
+    });
+    liveProbMap = map;
+  } catch(e){ /* keep previous map on failure */ }
+}
+
+// Sets dgProb/edge/edgePct/dgProbPct/liveModel on a bet — live in-play prob during
+// a round (if available for this player+market), else pre-tournament baseline.
+function computeEdgeFields(bet){
+  var liveP = liveProbMap[bet.player];
+  var dgProb, liveModel;
+  if(isLiveRound() && liveP && liveP[bet.market]!=null){
+    dgProb = liveP[bet.market]/100;
+    liveModel = true;
+  } else {
+    dgProb = 1/bet.dgOdds;
+    liveModel = false;
+  }
+  var edge = (dgProb*bet.bestOdds)-1;
+  bet.dgProb = dgProb;
+  bet.edge = edge;
+  bet.edgePct = parseFloat((edge*100).toFixed(1));
+  bet.dgProbPct = parseFloat((dgProb*100).toFixed(1));
+  bet.liveModel = liveModel;
+}
+
+function fmtAgo(ts){
+  if(!ts) return '—';
+  var s = Math.floor((Date.now()-ts)/1000);
+  if(s<60) return s+'s ago';
+  return Math.floor(s/60)+'m ago';
+}
+
+function renderVfFreshness(){
+  var el = document.getElementById('vfFreshness');
+  if(!el) return;
+  var c = tc(0.3);
+  var modelLabel = isLiveRound()
+    ? '<span class="live-dot"></span>Model: Live (in-play)'
+    : 'Model: Pre-tournament baseline';
+  el.innerHTML = '<span style="color:'+c+'">'+modelLabel+'</span>'
+    +'<span style="color:'+c+'">Odds updated '+fmtAgo(vfOddsUpdatedAt)+'</span>';
+}
+
 async function loadValueData(){
   try {
     var markets = ['top_5','top_10','top_20','win'];
-    var results = await Promise.all(markets.map(function(m){
+    var oddsPromise = Promise.all(markets.map(function(m){
       return fetch(API+'/api/betting-odds?tour=pga&market='+m+'&odds_format=decimal').then(function(r){return r.json();});
     }));
+    var livePromise = isLiveRound() ? fetchLiveProbMap() : Promise.resolve();
+    var results = await oddsPromise;
+    await livePromise;
     var bets = [];
     results.forEach(function(r,i){
       if(!r.success||!r.data||!r.data.odds) return;
@@ -1416,19 +1497,17 @@ async function loadValueData(){
       r.data.odds.forEach(function(p){
         var dgOdds = p.datagolf&&p.datagolf.baseline_history_fit;
         if(!dgOdds) return;
-        var dgProb = 1/dgOdds;
         var bestOdds=0, bestBook='';
         books.forEach(function(b){ if(p[b]&&p[b]>bestOdds){bestOdds=p[b];bestBook=b;} });
         if(!bestOdds) return;
-        var edge = (dgProb*bestOdds)-1;
         var impliedProb = 1/bestOdds;
         var amOdds = toAm(bestOdds);
-        bets.push({
+        var bet = {
           player:p.player_name, dg_id:p.dg_id, market, dgOdds, bestOdds,
-          bestBook, edge, edgePct:parseFloat((edge*100).toFixed(1)),
-          impliedProb, amOdds,
-          dgProbPct: parseFloat((dgProb*100).toFixed(1))
-        });
+          bestBook, impliedProb, amOdds
+        };
+        computeEdgeFields(bet);
+        bets.push(bet);
         // Build top10 odds map for Course Fit column
         if(market==='top_10' && (!top10OddsMap[p.player_name] || bestOdds < top10OddsMap[p.player_name].decimal)){
           top10OddsMap[p.player_name] = { am: amOdds, book: bestBook, decimal: bestOdds };
@@ -1437,7 +1516,9 @@ async function loadValueData(){
     });
     bets.sort(function(a,b){return b.edge-a.edge;});
     valueBetsData = bets;
+    vfOddsUpdatedAt = Date.now();
     renderValueFinder(bets, currentVfFilter);
+    renderVfFreshness();
   } catch(e){
     document.getElementById('vfLoading').innerHTML='<div style="color:'+tc(0.3)+';font-size:13px;">Could not load value data.</div>';
   }
@@ -1630,8 +1711,10 @@ async function toggleCourseHistory(dgId, playerName, btn){
 }
 
 // ── ODDS SNAPSHOT + LINE MOVEMENT ────────────────────────────────────────────
+// Called before each full odds refresh — re-snapshots the current odds so the
+// next refresh's movement deltas are relative to "last refresh", not page load.
 function captureOddsSnapshot(){
-  if(Object.keys(oddsSnapshot).length) return; // only capture once
+  oddsSnapshot = {};
   valueBetsData.forEach(function(b){ oddsSnapshot[b.player+'|'+b.market] = b.amOdds; });
 }
 
@@ -1646,33 +1729,37 @@ function computeOddsMovement(freshBets){
   });
 }
 
-async function pollOddsRefresh(){
+// Fast loop (~90s): during a live round, re-pull /preds/in-play and recompute
+// edge/dgProb for existing valueBetsData against the already-cached odds —
+// no betting-odds request, keeps the model side "live" cheaply.
+async function pollLiveProbsRefresh(){
+  if(vfFastTimer) clearTimeout(vfFastTimer);
   try {
-    var markets = ['top_5','top_10','top_20','win'];
-    var results = await Promise.all(markets.map(function(m){
-      return fetch(API+'/api/betting-odds?tour=pga&market='+m+'&odds_format=decimal').then(function(r){return r.json();});
-    }));
-    var freshBets = [];
-    var books = ['draftkings','fanduel','betmgm','pinnacle','bet365','caesars'];
-    results.forEach(function(r,i){
-      if(!r.success||!r.data||!r.data.odds) return;
-      r.data.odds.forEach(function(p){
-        var dgOdds = p.datagolf&&p.datagolf.baseline_history_fit;
-        if(!dgOdds) return;
-        var bestOdds=0, bestBook='';
-        books.forEach(function(b){ if(p[b]&&p[b]>bestOdds){bestOdds=p[b];bestBook=b;} });
-        if(!bestOdds) return;
-        var amOdds = toAm(bestOdds);
-        freshBets.push({player:p.player_name, market:markets[i], amOdds, bestOdds});
-      });
-    });
-    computeOddsMovement(freshBets);
-    // Re-render value finder with movement data if it's the active tab
+    if(isLiveRound() && valueBetsData.length){
+      await fetchLiveProbMap();
+      valueBetsData.forEach(computeEdgeFields);
+      valueBetsData.sort(function(a,b){return b.edge-a.edge;});
+      if(document.getElementById('tab-value').classList.contains('active')){
+        renderValueFinder(valueBetsData, currentVfFilter);
+      }
+      renderVfFreshness();
+    }
+  } catch(e){}
+  vfFastTimer = setTimeout(pollLiveProbsRefresh, 90*1000);
+}
+
+// Slow loop (~10min, matches the betting-odds cache TTL): full odds refetch.
+async function pollOddsRefresh(){
+  if(vfSlowTimer) clearTimeout(vfSlowTimer);
+  try {
+    captureOddsSnapshot();
+    await loadValueData(); // rebuilds valueBetsData + re-renders
+    computeOddsMovement(valueBetsData);
     if(document.getElementById('tab-value').classList.contains('active')){
       renderValueFinder(valueBetsData, currentVfFilter);
     }
   } catch(e){}
-  setTimeout(pollOddsRefresh, 5*60*1000);
+  vfSlowTimer = setTimeout(pollOddsRefresh, 10*60*1000);
 }
 
 function calcDivotLabScore(fitScore, edgePct){
@@ -1984,12 +2071,13 @@ function renderValueFinder(bets, market){
     else if(highFit||highEdge){ signal='Watch'; sigCls='conf-moderate'; }
     else { signal='—'; sigCls=''; }
     var probStr = b.dgProbPct ? b.dgProbPct.toFixed(1)+'%' : '—';
+    var liveTag = b.liveModel ? '<span class="vf-live-tag">live</span>' : '';
 
     html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'">'+
       '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
       '<div class="vf-cell gold">'+amStr+moveBadge(b.player,b.market)+'</div>'+
       '<div class="vf-cell '+(edgeCls?edgeCls:'')+'">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
-      '<div class="vf-cell">'+probStr+'</div>'+
+      '<div class="vf-cell">'+probStr+liveTag+'</div>'+
       '<div class="vf-cell">'+fitScore+'</div>'+
       '<div class="vf-cell">'+b.bestBook.toUpperCase()+'</div>'+
       '<div class="vf-cell '+sigCls+'">'+signal+'</div>'+
@@ -2198,6 +2286,23 @@ async function loadMatchupData(market){
     loadEl.style.display='block';
     tableEl.style.display='none';
   }
+}
+
+// Refetches the active matchup market every ~10min (matches matchup-odds cache TTL)
+// while the Matchups tab is open. Silent — no loading spinner on refresh.
+async function pollMatchupRefresh(){
+  if(muRefreshTimer) clearTimeout(muRefreshTimer);
+  try {
+    if(currentTabId==='matchup'){
+      var res = await fetch(API+'/api/matchup-odds?tour=pga&market='+muMarket+'&odds_format=american');
+      var d = await res.json();
+      if(d.success){
+        muCache[muMarket] = d.data;
+        renderMatchups(d.data, muMarket);
+      }
+    }
+  } catch(e){}
+  muRefreshTimer = setTimeout(pollMatchupRefresh, 10*60*1000);
 }
 
 // DataGolf wraps all odds under row.odds.{bookname}.{p1|p2}
@@ -3188,7 +3293,18 @@ function renderLiveTable(statsData, predData){
   tableEl.style.display='block';
 }
 
+// ── REFERRAL ATTRIBUTION ──────────────────────────────────────────────────────
+// First-touch: capture ?ref=CODE once, persist for the life of this browser.
+// Sent with /api/start-trial so referral signups can be credited.
+function captureReferralCode(){
+  var ref = new URLSearchParams(location.search).get('ref');
+  if(ref && !localStorage.getItem('divotlab-referral-code')){
+    localStorage.setItem('divotlab-referral-code', ref);
+  }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
+captureReferralCode();
 checkAuth();
 </script>
 <script src="/assets/js/theme.js"></script>

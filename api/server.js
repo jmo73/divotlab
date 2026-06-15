@@ -160,6 +160,72 @@ function normalizeToField(players) {
   }));
 }
 
+/**
+ * Parse a DataGolf finish string (e.g. "T5", "1", "CUT", "WD") into a numeric
+ * position for sorting/threshold checks. Non-finishes (CUT/MC/MDF/WD/DQ) → 999.
+ */
+function parseFinish(finText) {
+  if (!finText) return 999;
+  const s = String(finText).replace(/[TtCcWwDd]/g, '').replace('MC', '').replace('MDF', '').trim();
+  if (!s || finText.toString().toUpperCase().match(/^(MC|MDF|WD|DQ|CUT)$/)) return 999;
+  const n = parseInt(s);
+  return isNaN(n) ? 999 : n;
+}
+
+/**
+ * Format a numeric finish position back to display text (1st/2nd/3rd/T-prefixed/MC).
+ */
+function fmtFinish(pos) {
+  if (pos >= 999) return 'MC';
+  if (pos === 1) return '1st';
+  if (pos === 2) return '2nd';
+  if (pos === 3) return '3rd';
+  return 'T' + pos;
+}
+
+/**
+ * Fetch the most recent N completed PGA Tour events for the 2026 season, deduping
+ * co-sanctioned/split events the same way the schedule UI does. Shared by
+ * /api/model-accuracy and /api/player-recent-results.
+ */
+async function getRecentCompletedEvents(limit) {
+  const [schedule, fieldUpdates] = await Promise.all([
+    fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
+    fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`)
+  ]);
+
+  const fullSchedule = schedule.schedule || [];
+  const currentEventId = String(fieldUpdates.event_id || '');
+
+  const allCompleted = fullSchedule.filter(e =>
+    e.event_id && e.status === 'completed' && String(e.event_id) !== currentEventId
+  );
+  allCompleted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+  const completedEvents = [];
+  const used = new Set();
+  for (let i = 0; i < allCompleted.length; i++) {
+    if (used.has(allCompleted[i].event_id)) continue;
+    let mainEvent = allCompleted[i];
+    for (let j = i + 1; j < allCompleted.length; j++) {
+      if (used.has(allCompleted[j].event_id)) continue;
+      const daysDiff = Math.abs((new Date(allCompleted[j].start_date) - new Date(allCompleted[i].start_date)) / 86400000);
+      if (daysDiff <= 3) {
+        const iHasWeights = getCourseWeights(allCompleted[i].event_name).matched;
+        const jHasWeights = getCourseWeights(allCompleted[j].event_name).matched;
+        if (jHasWeights && !iHasWeights) mainEvent = allCompleted[j];
+        used.add(allCompleted[i].event_id);
+        used.add(allCompleted[j].event_id);
+        break;
+      }
+    }
+    used.add(mainEvent.event_id);
+    completedEvents.push(mainEvent);
+  }
+  completedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+  return completedEvents.slice(0, limit);
+}
+
 // Caching with intelligent TTL
 const cache = new NodeCache({
   stdTTL: 3600,
@@ -329,6 +395,10 @@ updatePGATourPlayerIds();
 // ============================================
 // HELPER: FETCH WITH CACHING
 // ============================================
+// DataGolf rate limit: 45 req/min total, 5min suspension if exceeded.
+// /api/betting-odds (4 markets) + /api/matchup-odds (up to 3 markets) at a 600s cache
+// is ~0.7 req/min combined — trivial against the budget. Check the total again before
+// reducing any cache duration further.
 
 async function fetchDataGolf(endpoint, cacheKey, cacheDuration) {
   const cached = cache.get(cacheKey);
@@ -771,7 +841,9 @@ app.get('/api/betting-odds', async (req, res) => {
     const result = await fetchDataGolf(
       `/betting-tools/outrights?tour=${tour}&market=${market}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      1800 // 30min cache — DataGolf sources these pre-round; books often suspend outrights during play
+      600 // 10min cache — books keep live odds during play, but DataGolf's own refresh cadence for this feed is unknown,
+          // so we keep this modest rather than aggressive. datagolf.baseline_history_fit (model prob) is a pre-tournament
+          // baseline; live in-round model probability comes from /preds/in-play instead (see pro.html loadValueData)
     );
 
     res.json({
@@ -799,7 +871,8 @@ app.get('/api/matchup-odds', async (req, res) => {
     const result = await fetchDataGolf(
       `/betting-tools/matchups?tour=${tour}&market=${market}&odds_format=${oddsFormat}&file_format=json&key=${DATAGOLF_API_KEY}`,
       cacheKey,
-      1800 // 30min cache — matchup lines may be suspended during live rounds
+      600 // 10min cache — books keep live odds during play; modest reduction from 30min since DataGolf's
+          // refresh cadence for this feed is unknown
     );
 
     res.json({
@@ -1250,57 +1323,24 @@ app.get('/api/course-history', async (req, res) => {
 
 app.get('/api/model-accuracy', async (req, res) => {
   const cacheKey = 'model-accuracy-2026';
-  if (req.query.bust === 'true') { cache.del(cacheKey); ['556','33','559','560','561','562','563','564'].forEach(id => cache.del(`results-event-${id}-2026`)); }
-  const cached = cache.get(cacheKey);
+  const bust = req.query.bust === 'true';
+  if (bust) cache.del(cacheKey);
+  const cached = !bust && cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
   try {
-    const [schedule, fieldUpdates] = await Promise.all([
-      fetchDataGolfDirect(`/get-schedule?tour=pga&season=2026&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`)
-    ]);
+    const recentEvents = await getRecentCompletedEvents(16);
 
-    const fullSchedule = schedule.schedule || [];
-    const currentEventId = String(fieldUpdates.event_id || '');
-
-    // Find completed events (same dedup logic as lab-data)
-    const allCompleted = fullSchedule.filter(e =>
-      e.event_id && e.status === 'completed' && String(e.event_id) !== currentEventId
-    );
-    allCompleted.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-
-    const completedEvents = [];
-    const used = new Set();
-    for (let i = 0; i < allCompleted.length; i++) {
-      if (used.has(allCompleted[i].event_id)) continue;
-      let mainEvent = allCompleted[i];
-      for (let j = i + 1; j < allCompleted.length; j++) {
-        if (used.has(allCompleted[j].event_id)) continue;
-        const daysDiff = Math.abs((new Date(allCompleted[j].start_date) - new Date(allCompleted[i].start_date)) / 86400000);
-        if (daysDiff <= 3) {
-          const iHasWeights = getCourseWeights(allCompleted[i].event_name).matched;
-          const jHasWeights = getCourseWeights(allCompleted[j].event_name).matched;
-          if (jHasWeights && !iHasWeights) mainEvent = allCompleted[j];
-          used.add(allCompleted[i].event_id);
-          used.add(allCompleted[j].event_id);
-          break;
-        }
+    if (bust) {
+      for (const evt of recentEvents) {
+        cache.del(`archive-event-${evt.event_id}-2026`);
+        cache.del(`results-event-${evt.event_id}-2026`);
+        await kvDel(`archive-event-${evt.event_id}-2026`);
+        await kvDel(`results-event-${evt.event_id}-2026`);
       }
-      used.add(mainEvent.event_id);
-      completedEvents.push(mainEvent);
     }
-    completedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
-    const recentEvents = completedEvents.slice(0, 8);
 
     console.log(`  Model accuracy: analyzing ${recentEvents.length} completed events`);
-
-    function parseFinish(finText) {
-      if (!finText) return 999;
-      const s = String(finText).replace(/[TtCcWwDd]/g, '').replace('MC','').replace('MDF','').trim();
-      if (!s || finText.toString().toUpperCase().match(/^(MC|MDF|WD|DQ|CUT)$/)) return 999;
-      const n = parseInt(s);
-      return isNaN(n) ? 999 : n;
-    }
 
     // Fetch archive + results for each event, batched
     const eventResults = [];
@@ -1309,24 +1349,18 @@ app.get('/api/model-accuracy', async (req, res) => {
       const batchData = await Promise.all(batch.map(async evt => {
         try {
           const archiveCacheKey = `archive-event-${evt.event_id}-2026`;
-          let archiveEntry = cache.get(archiveCacheKey);
-          if (!archiveEntry) {
+          const archiveEntry = await getCachedJSON(archiveCacheKey, 604800, async () => {
             const raw = await fetchDataGolfDirect(
               `/preds/pre-tournament-archive?event_id=${evt.event_id}&year=2026&odds_format=percent&file_format=json&key=${DATAGOLF_API_KEY}`
             );
             const preds = raw.baseline_history_fit || raw.baseline || [];
-            archiveEntry = { event_id: evt.event_id, event_name: raw.event_name || evt.event_name, predictions: Array.isArray(preds) ? preds : [] };
-            cache.set(archiveCacheKey, archiveEntry, 604800);
-          }
+            return { event_id: evt.event_id, event_name: raw.event_name || evt.event_name, predictions: Array.isArray(preds) ? preds : [] };
+          });
 
           const resultsCacheKey = `results-event-${evt.event_id}-2026`;
-          let resultsRaw = cache.get(resultsCacheKey);
-          if (!resultsRaw) {
-            resultsRaw = await fetchDataGolfDirect(
-              `/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`
-            );
-            cache.set(resultsCacheKey, resultsRaw, 604800);
-          }
+          const resultsRaw = await getCachedJSON(resultsCacheKey, 604800, () =>
+            fetchDataGolfDirect(`/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+          );
 
           const resultsArr = resultsRaw.event_stats || resultsRaw.results || resultsRaw.data || [];
           const resultMap = {};
@@ -1356,19 +1390,11 @@ app.get('/api/model-accuracy', async (req, res) => {
           const modelTop1Won = modelTop1Finish === 1;
           const modelTop1InTop5 = modelTop1Finish <= 5;
 
-          function fmtFin(pos) {
-            if (pos >= 999) return 'MC';
-            if (pos === 1) return '1st';
-            if (pos === 2) return '2nd';
-            if (pos === 3) return '3rd';
-            return 'T' + pos;
-          }
-
           // Per-pick detail for top 10
           const top10Detail = sorted10.slice(0, 10).map((p, i) => ({
             player: p.player_name,
             finish: resultMap[p.dg_id] || 999,
-            finish_text: fmtFin(resultMap[p.dg_id] || 999),
+            finish_text: fmtFinish(resultMap[p.dg_id] || 999),
             hit5:  (resultMap[p.dg_id] || 999) <= 5,
             hit10: (resultMap[p.dg_id] || 999) <= 10
           }));
@@ -1389,7 +1415,7 @@ app.get('/api/model-accuracy', async (req, res) => {
             start_date: evt.start_date,
             winner: winnerName,
             model_top1: modelTop1 ? modelTop1.player_name : '',
-            model_top1_finish: fmtFin(modelTop1Finish),
+            model_top1_finish: fmtFinish(modelTop1Finish),
             model_top1_won: modelTop1Won,
             model_top1_top5: modelTop1InTop5,
             top5_picks: 5,
@@ -1434,6 +1460,51 @@ app.get('/api/model-accuracy', async (req, res) => {
 
   } catch (err) {
     console.error('Model accuracy error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ============================================
+// PLAYER RECENT RESULTS — last N event finishes for a player,
+// used by the /pro player detail drawer. Reuses the same per-event
+// results cache (results-event-{id}-2026) populated by /api/model-accuracy.
+// ============================================
+app.get('/api/player-recent-results', async (req, res) => {
+  const dgId = req.query.dg_id;
+  if (!dgId) return res.status(400).json({ success: false, error: 'dg_id is required' });
+  const limit = Math.min(parseInt(req.query.limit) || 5, 8);
+
+  try {
+    const accCached = cache.get('model-accuracy-2026');
+    let recentEvents = (accCached && accCached.events && accCached.events.length)
+      ? accCached.events.map(e => ({ event_id: e.event_id, event_name: e.event_name, start_date: e.start_date }))
+      : await getRecentCompletedEvents(16);
+
+    recentEvents = recentEvents.slice(0, limit);
+
+    const results = [];
+    for (const evt of recentEvents) {
+      const resultsCacheKey = `results-event-${evt.event_id}-2026`;
+      const resultsRaw = await getCachedJSON(resultsCacheKey, 604800, () =>
+        fetchDataGolfDirect(`/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+      );
+      const resultsArr = resultsRaw.event_stats || resultsRaw.results || resultsRaw.data || [];
+      const row = resultsArr.find(r => String(r.dg_id) === String(dgId));
+      if (!row) continue;
+
+      const pos = parseFinish(row.fin_text || row.position || row.fin || row.place);
+      results.push({
+        event_id: evt.event_id,
+        event_name: evt.event_name,
+        start_date: evt.start_date,
+        finish_text: fmtFinish(pos),
+        finish: pos
+      });
+    }
+
+    res.json({ success: true, results });
+  } catch (err) {
+    console.error('Player recent results error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
@@ -2244,6 +2315,64 @@ async function kvSet(key, value, ttlSeconds) {
   } catch (e) { console.error('KV set error:', e.message); }
 }
 
+async function kvDel(key) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return;
+  try {
+    await fetch(`${url}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['DEL', key]])
+    });
+  } catch (e) { console.error('KV del error:', e.message); }
+}
+
+// Two-layer cache: in-memory (fast within a warm instance) backed by Upstash KV
+// (persists across the cold starts that reset NodeCache) — used for per-event
+// model-accuracy data so a redeploy/cold-start doesn't re-fetch the whole season.
+async function getCachedJSON(key, ttlSeconds, fetchFn) {
+  let val = cache.get(key);
+  if (val) return val;
+  val = await kvGet(key);
+  if (val) { cache.set(key, val, ttlSeconds); return val; }
+  val = await fetchFn();
+  cache.set(key, val, ttlSeconds);
+  await kvSet(key, val, ttlSeconds);
+  return val;
+}
+
+// Appends a JSON-serialized value to a Redis list — used for referral signup logs
+async function kvListAppend(key, value) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return;
+  try {
+    await fetch(`${url}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['RPUSH', key, JSON.stringify(value)]])
+    });
+  } catch (e) { console.error('KV list append error:', e.message); }
+}
+
+// Returns the full contents of a Redis list, JSON-parsed
+async function kvListRange(key) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return [];
+  try {
+    const res = await fetch(`${url}/lrange/${encodeURIComponent(key)}/0/-1`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!Array.isArray(data.result)) return [];
+    return data.result.map(item => {
+      try { return JSON.parse(item); } catch (e) { return item; }
+    });
+  } catch (e) { return []; }
+}
+
 // ============================================
 // FREE TRIAL ENDPOINTS
 // POST /api/start-trial  — creates a 14-day trial (1 per email, ever)
@@ -2252,12 +2381,13 @@ async function kvSet(key, value, ttlSeconds) {
 
 app.post('/api/start-trial', async (req, res) => {
   try {
-    const { email, source } = req.body || {};
+    const { email, source, referral_code } = req.body || {};
     if (!email || !email.includes('@')) {
       return res.status(400).json({ success: false, error: 'Valid email required' });
     }
 
     const normalEmail = email.trim().toLowerCase();
+    const referredBy = referral_code ? String(referral_code).trim() : null;
     const key = `trial:${normalEmail}`;
     const existing = await kvGet(key);
 
@@ -2274,13 +2404,18 @@ app.post('/api/start-trial', async (req, res) => {
     // Create new trial
     const expires = Date.now() + 14 * 24 * 60 * 60 * 1000;
     const utmSource = source || 'pro-trial';
-    const trial = { email: normalEmail, started: Date.now(), expires, converted: false, source: utmSource };
+    const trial = { email: normalEmail, started: Date.now(), expires, converted: false, source: utmSource, referredBy };
 
     // Store active trial (14-day TTL for auth checks)
     await kvSet(key, trial, 14 * 24 * 60 * 60);
 
     // Store permanent log entry so the email is never lost after trial expires
     await kvSet(`trial-log:${normalEmail}`, { ...trial, logged_at: Date.now() }, 0);
+
+    // Track referral signup for manual monthly payout review (admin.html "Referrals" section)
+    if (referredBy) {
+      await kvListAppend(`referrals:${referredBy}`, { email: normalEmail, started: trial.started });
+    }
 
     // Add to free Beehiiv newsletter so we can email them during the trial
     const apiKey = process.env.BEEHIIV_API_KEY;
@@ -2302,11 +2437,27 @@ app.post('/api/start-trial', async (req, res) => {
       }
     }
 
-    console.log(`✓ Trial started: ${normalEmail} (source: ${utmSource})`);
+    console.log(`✓ Trial started: ${normalEmail} (source: ${utmSource}${referredBy ? ', ref: ' + referredBy : ''})`);
     res.json({ success: true, trial: true, days_left: 14, expires });
   } catch (error) {
     console.error('Start trial error:', error);
     res.status(500).json({ success: false, error: 'Could not start trial' });
+  }
+});
+
+// ENDPOINT: Referral signup lookup (admin-only, for manual monthly payout review)
+// GET /api/referral-stats?code=X
+app.get('/api/referral-stats', requireAdmin, async (req, res) => {
+  try {
+    const code = (req.query.code || '').trim();
+    if (!code) {
+      return res.status(400).json({ success: false, error: 'code is required' });
+    }
+    const signups = await kvListRange(`referrals:${code}`);
+    res.json({ success: true, code, count: signups.length, signups });
+  } catch (error) {
+    console.error('Referral stats error:', error);
+    res.status(500).json({ success: false, error: 'Could not load referral stats' });
   }
 });
 
