@@ -685,7 +685,7 @@ html[data-theme="light"] .card-header-toggle:hover .card-chevron{border-color:rg
 .mu3-row{display:grid;grid-template-columns:1fr 1fr 1fr 88px 80px 68px 72px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;}
 .mu3-row:hover{background:rgba(255,255,255,0.025);}
 .mu3-row.has-value{background:rgba(91,191,133,0.03);}
-.mu-player{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mu-player{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
 .mu-player.favored{color:var(--green-light);}
 .mu-player.pick-flag{color:var(--gold);}
 .mu-vs{font-family:var(--mono);font-size:9px;color:rgba(250,250,250,0.2);text-align:center;}
@@ -992,10 +992,24 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
   .player-drawer{width:100vw;}
   .drawer-content{padding:56px 20px 40px;}
 
-  /* Value Finder — 3 columns: Player, Odds, Edge% */
-  .vf-head,.vf-row{grid-template-columns:1fr 84px 72px !important;padding-left:12px;padding-right:12px;}
-  .vf-head span:nth-child(n+4),.vf-row>*:nth-child(n+4){display:none !important;}
-  .vf-player{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;}
+  /* Value Finder, Matchups, DFS — shared stacked mobile cards */
+  .vf-head,.mu-table-head,.mu3-table-head,.dfs-table-head{display:none;}
+  .vf-row,.mu-row,.mu3-row,.dfs-row{row-gap:10px;padding:14px;background:var(--black-card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;}
+  html[data-theme="light"] .vf-row,html[data-theme="light"] .mu-row,html[data-theme="light"] .mu3-row,html[data-theme="light"] .dfs-row{background:#FFFFFF;}
+  .vf-row>div[data-label]::before,.mu-row>div[data-label]::before,.mu3-row>div[data-label]::before,.dfs-row>div[data-label]::before{content:attr(data-label);display:block;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,250,250,0.25);margin-bottom:3px;}
+  html[data-theme="light"] .vf-row>div[data-label]::before,html[data-theme="light"] .mu-row>div[data-label]::before,html[data-theme="light"] .mu3-row>div[data-label]::before,html[data-theme="light"] .dfs-row>div[data-label]::before{color:rgba(28,27,24,0.35);}
+
+  /* Value Finder — player row, then odds/edge/prob, then fit/book/signal */
+  .vf-row{grid-template-columns:repeat(3,1fr);grid-template-areas:"player player player" "odds edge prob" "fit book signal";}
+  .vf-row>*:nth-child(1){grid-area:player;}
+  .vf-row>*:nth-child(2){grid-area:odds;}
+  .vf-row>*:nth-child(3){grid-area:edge;}
+  .vf-row>*:nth-child(4){grid-area:prob;}
+  .vf-row>*:nth-child(5){grid-area:fit;}
+  .vf-row>*:nth-child(6){grid-area:book;}
+  .vf-row>*:nth-child(7){grid-area:signal;}
+  .vf-cell{text-align:left;}
+  .vf-player{font-size:13px;}
   .vf-toolbar{flex-direction:column;align-items:flex-start;gap:10px;}
 
   /* Player Compare (drawer) */
@@ -1004,13 +1018,24 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
   .h2h-cat-row{gap:8px;}
   .drawer-compare-row{flex-direction:column;}
 
-  /* Matchup Market — hide Book + Edge on mobile */
-  .mu-table-head,.mu-row{grid-template-columns:1fr 28px 1fr 72px 64px !important;padding-left:10px;padding-right:10px;}
-  .mu3-table-head,.mu3-row{grid-template-columns:1fr 1fr 1fr 72px 64px !important;padding-left:10px;padding-right:10px;}
-  .mu-table-head .mu-th:nth-child(5),.mu-table-head .mu-th:nth-child(6),
-  .mu-row>div:nth-child(5),.mu-row>div:nth-child(6),
-  .mu3-table-head .mu-th:nth-child(5),.mu3-table-head .mu-th:nth-child(6),
-  .mu3-row>div:nth-child(5),.mu3-row>div:nth-child(6){display:none !important;}
+  /* Matchups — player names on top, odds/book/edge below, signal full-width */
+  .mu-row{grid-template-columns:1fr auto 1fr;grid-template-areas:"pa vs pb" "odds book edge" "signal signal signal";}
+  .mu-row>*:nth-child(1){grid-area:pa;}
+  .mu-row>*:nth-child(2){grid-area:vs;}
+  .mu-row>*:nth-child(3){grid-area:pb;}
+  .mu-row>*:nth-child(4){grid-area:odds;}
+  .mu-row>*:nth-child(5){grid-area:book;}
+  .mu-row>*:nth-child(6){grid-area:edge;}
+  .mu-row>*:nth-child(7){grid-area:signal;text-align:right;}
+  .mu3-row{grid-template-columns:repeat(3,1fr);grid-template-areas:"pa pb pc" "odds book edge" "signal signal signal";}
+  .mu3-row>*:nth-child(1){grid-area:pa;}
+  .mu3-row>*:nth-child(2){grid-area:pb;}
+  .mu3-row>*:nth-child(3){grid-area:pc;}
+  .mu3-row>*:nth-child(4){grid-area:odds;}
+  .mu3-row>*:nth-child(5){grid-area:book;}
+  .mu3-row>*:nth-child(6){grid-area:edge;}
+  .mu3-row>*:nth-child(7){grid-area:signal;text-align:right;}
+  .mu-player{white-space:normal;}
   .mu-note{display:none;}
 
   /* Track Record — stat grids + event cards on mobile */
@@ -1024,8 +1049,16 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
   /* DFS mobile */
   .dfs-slots-grid{grid-template-columns:1fr 1fr;}
   .dfs-builder-bar-wrap{display:none;}
-  .dfs-table-head,.dfs-row{grid-template-columns:20px 1fr 88px 110px !important;column-gap:4px;}
-  .dfs-table-head .dfs-th:nth-child(n+5),.dfs-row>*:nth-child(n+5){display:none !important;}
+  .dfs-row{grid-template-columns:repeat(4,1fr);grid-template-areas:"player player player signal" "salary pts pts pts" "value own leverage fit";row-gap:8px;column-gap:8px;}
+  .dfs-row>*:nth-child(1){display:none;}
+  .dfs-row>*:nth-child(2){grid-area:player;}
+  .dfs-row>*:nth-child(3){grid-area:salary;}
+  .dfs-row>*:nth-child(4){grid-area:pts;}
+  .dfs-row>*:nth-child(5){grid-area:value;}
+  .dfs-row>*:nth-child(6){grid-area:own;}
+  .dfs-row>*:nth-child(7){grid-area:leverage;}
+  .dfs-row>*:nth-child(8){grid-area:fit;}
+  .dfs-row>*:nth-child(9){grid-area:signal;}
   .dfs-toolbar{gap:8px;}
   .dfs-legend{display:none;}
   .dfs-stacks-wrap{grid-template-columns:1fr;}
@@ -1817,6 +1850,8 @@ function initPlayerCard(){
 
   // Click any Course Fit or Value Finder row to open the player detail drawer
   document.getElementById('proApp').addEventListener('click', function(e){
+    var mp = e.target.closest('.mu-player[data-player]');
+    if(mp){ openPlayerDrawer(mp.getAttribute('data-player')); return; }
     var row = e.target.closest('.cf-row,.vf-row');
     if(!row) return;
     var name = row.getAttribute('data-player');
@@ -2426,12 +2461,12 @@ function renderValueFinder(bets, market){
 
     html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'" data-player="'+b.player+'">'+
       '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
-      '<div class="vf-cell gold">'+amStr+moveBadge(b.player,b.market)+'</div>'+
-      '<div class="vf-cell '+(edgeCls?edgeCls:'')+'">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
-      '<div class="vf-cell">'+probStr+liveTag+'</div>'+
-      '<div class="vf-cell">'+fitScore+'</div>'+
-      '<div class="vf-cell">'+b.bestBook.toUpperCase()+'</div>'+
-      '<div class="vf-cell '+sigCls+'">'+signal+'</div>'+
+      '<div class="vf-cell gold" data-label="Odds">'+amStr+moveBadge(b.player,b.market)+'</div>'+
+      '<div class="vf-cell '+(edgeCls?edgeCls:'')+'" data-label="Edge %">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
+      '<div class="vf-cell" data-label="Hit Prob">'+probStr+liveTag+'</div>'+
+      '<div class="vf-cell" data-label="Fit">'+fitScore+'</div>'+
+      '<div class="vf-cell" data-label="Best Book">'+b.bestBook.toUpperCase()+'</div>'+
+      '<div class="vf-cell '+sigCls+'" data-label="Signal">'+signal+'</div>'+
     '</div>';
   });
   html += '</div>';
@@ -2439,8 +2474,7 @@ function renderValueFinder(bets, market){
   // Update vf-head grid cols to match new column count (7)
   var style = document.getElementById('vfDynStyle');
   if(!style){ style=document.createElement('style'); style.id='vfDynStyle'; document.head.appendChild(style); }
-  style.textContent = '.vf-head,.vf-row{grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;}'
-    +'@media(max-width:900px){.vf-head,.vf-row{grid-template-columns:1fr 84px 72px !important;}}';
+  style.textContent = '@media(min-width:901px){.vf-head,.vf-row{grid-template-columns:1fr 88px 88px 82px 86px 90px 82px;}}';
 
   document.getElementById('vfTable').innerHTML=html;
   document.getElementById('vfTable').style.display='block';
@@ -2723,7 +2757,7 @@ function renderMatchups(data, market){
 
   function playerCell(name, favored){
     var isPick = pickNames.has(name);
-    return '<div class="mu-player'+(favored?' favored':'')+(isPick?' pick-flag':'')+'">'+
+    return '<div class="mu-player'+(favored?' favored':'')+(isPick?' pick-flag':'')+'" data-player="'+name+'">'+
       name+(isPick?'<span class="live-pick-badge" style="margin-left:5px;">PICK</span>':'')+'</div>';
   }
 
@@ -2735,10 +2769,10 @@ function renderMatchups(data, market){
     else if(edgePct!=null&&edgePct>=4){signal='Watch';sigCls='vbadge-moderate';}
     var hasVal = edgePct!=null&&edgePct>=4;
     return {edgePct:edgePct,signal:signal,sigCls:sigCls,hasVal:hasVal,
-      oddsHtml:'<div class="mu-odds-val">'+(bestAmo!=null?fmtAm(bestAmo):'—')+'</div>',
-      bookHtml:'<div class="mu-book-val">'+(bestBook?bestBook.replace('draftkings','DraftKings').replace('fanduel','FanDuel').replace('betmgm','BetMGM').replace('bet365','Bet365').replace('caesars','Caesars').replace('pinnacle','Pinnacle').replace('bovada','Bovada').toUpperCase():'—')+'</div>',
-      edgeHtml:'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>',
-      signalHtml:'<div>'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:'+tc(0.2)+';font-size:12px;">—</span>')+'</div>'};
+      oddsHtml:'<div class="mu-odds-val" data-label="Odds">'+(bestAmo!=null?fmtAm(bestAmo):'—')+'</div>',
+      bookHtml:'<div class="mu-book-val" data-label="Book">'+(bestBook?bestBook.replace('draftkings','DraftKings').replace('fanduel','FanDuel').replace('betmgm','BetMGM').replace('bet365','Bet365').replace('caesars','Caesars').replace('pinnacle','Pinnacle').replace('bovada','Bovada').toUpperCase():'—')+'</div>',
+      edgeHtml:'<div class="mu-edge'+(edgePct!=null&&edgePct>0?' pos':'')+'" data-label="Edge">'+( edgePct!=null?(edgePct>0?'+':'')+edgePct.toFixed(1)+'%':'—')+'</div>',
+      signalHtml:'<div data-label="Signal">'+(signal?'<span class="value-badge '+sigCls+'">'+signal+'</span>':'<span style="color:'+tc(0.2)+';font-size:12px;">—</span>')+'</div>'};
   }
 
   function muThSort(label, col, tipText, right){
@@ -3227,10 +3261,10 @@ function renderDfs(){
         +'<div><div class="dfs-player">'+name+'</div><div class="dfs-wave">'+wave+' &nbsp;·&nbsp; '+p.r1_teetime+'</div></div>'
         +'<div class="dfs-salary">'+salary+'</div>'
         +'<div><div class="dfs-pts">'+pts+'</div><div class="dfs-pts-sub">'+ptsSub+'</div><div class="dfs-bar"><div class="dfs-bar-fill" style="width:'+barPct+'%"></div></div></div>'
-        +'<div class="dfs-val '+valCls+'">'+valStr+'</div>'
-        +'<div class="dfs-val '+ownCls+'">'+ownStr+'</div>'
-        +'<div class="dfs-val '+levCls+'">'+levStr+'</div>'
-        +'<div class="dfs-val '+fitCls+'">'+fitStr+'</div>'
+        +'<div class="dfs-val '+valCls+'" data-label="Value">'+valStr+'</div>'
+        +'<div class="dfs-val '+ownCls+'" data-label="Own%">'+ownStr+'</div>'
+        +'<div class="dfs-val '+levCls+'" data-label="Lev">'+levStr+'</div>'
+        +'<div class="dfs-val '+fitCls+'" data-label="Fit">'+fitStr+'</div>'
         +'<div style="text-align:right;"><span class="dfs-signal-badge '+signalCls[p.signal]+'">'+signalLabels[p.signal]+'</span></div>'
         +'</div>';
     });
