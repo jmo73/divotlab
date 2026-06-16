@@ -4,15 +4,15 @@
   "week_of": "Jun 18–21, 2026",
   "published": "2026-06-18",
   "pick": {
-    "player": "Nicolai Hojgaard",
-    "bet_type": "Top 10",
+    "player": "Tommy Fleetwood",
+    "bet_type": "Top 5",
     "bet_detail": null,
-    "odds": "+1000",
+    "odds": "+500",
     "book": "DraftKings",
-    "reasoning": "DG model fair price: +949. DraftKings +1000 is +4.8% positive EV — the single largest model edge in the outright market at Shinnecock at cap-eligible prices. Hojgaard's market position undervalues him across both the top-10 and top-20 markets simultaneously, which the model reads as a cleaner signal than a single-market gap. Shinnecock's 2018 approach and ARG difficulty profile fits players with a complete short-game and iron-play combination.",
-    "confidence": "Medium",
+    "reasoning": "Course-fit model ranks Fleetwood #8 in the US Open field (score 76/100) — App 0.623 and ARG 0.288 match Shinnecock's two most heavily weighted categories directly. DG fair price: +491. DraftKings +500 is +1.5% positive EV. One of the cleanest course-fit cases in the field at an accessible price.",
+    "confidence": "High",
     "result": null,
     "result_detail": null
   },
-  "teaser": "4 more picks — including the highest EV play on the board this week — are in this week's Lab Notes Pro email."
+  "teaser": "4 more picks — all ranked in the top 25 of our Shinnecock course-fit model — are in this week's Lab Notes Pro email."
 }
