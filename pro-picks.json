@@ -1,62 +1,62 @@
 {
-  "tournament": "RBC Canadian Open",
-  "week_of": "Jun 11–14, 2026",
-  "published": "2026-06-10",
+  "tournament": "U.S. Open",
+  "week_of": "Jun 18–21, 2026",
+  "published": "2026-06-18",
   "picks": [
     {
-      "player": "Aaron Rai",
+      "player": "Nicolai Hojgaard",
       "bet_type": "Top 10",
       "bet_detail": null,
-      "odds": "+430",
+      "odds": "+1000",
       "book": "DraftKings",
-      "reasoning": "DG model fair: +385. DraftKings +430 is +9.3% positive EV. Rai shows positive EV in three separate markets (top-5, top-10, top-20) — the only player in the field with that level of cross-market alignment. His ball-striking-driven game lines up directly with TPC Toronto's heaviest model weights (OTT and App at 28% each, 56% combined).",
-      "confidence": "High",
-      "result": "loss",
-      "result_detail": "Missed the cut"
+      "reasoning": "DG model fair: +949. DraftKings +1000 is +4.8% positive EV — the largest model edge in the outright market at cap-eligible prices. Hojgaard ranks above his market position in both the top-10 and top-20 markets simultaneously, a cross-market signal the model treats as more reliable than a single gap. No course-fit weights exist for Shinnecock; this pick is built on model edge alone.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
     },
     {
-      "player": "Matt Fitzpatrick",
-      "bet_type": "H2H Matchup",
-      "bet_detail": "over Sam Burns",
-      "odds": "-111",
+      "player": "Harris English",
+      "bet_type": "Top 20",
+      "bet_detail": null,
+      "odds": "+340",
       "book": "FanDuel",
-      "reasoning": "DG model implied: -120. FanDuel -111 is better than fair by 9 points, a +3.7% EV edge. TPC Toronto's profile (OTT/App 28% each, ARG just 20%) rewards a complete tee-to-green game over a power-and-recover style, favoring Fitzpatrick's controlled approach over Burns.",
+      "reasoning": "DG model fair: +317. FanDuel +340 is +5.5% positive EV — the highest single-market edge on the board this week. A top-20 line accounts for the volatility inherent in a US Open field while retaining strong expected value. English's ball-striking has been consistent enough that the wider finish band makes this the most efficient play on the card.",
+      "confidence": "High",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Keith Mitchell",
+      "bet_type": "Top 20",
+      "bet_detail": null,
+      "odds": "+500",
+      "book": "Bet365",
+      "reasoning": "DG model fair: +479. Bet365 +500 is +3.7% positive EV. The model ranks Mitchell meaningfully higher than his market position in both the top-20 and top-10 markets. FanDuel also offers +500 on this line — either book works. Approach-heavy profile is a fit for what Shinnecock 2018 data identified as the course's primary skill premium.",
       "confidence": "Medium",
-      "result": "win",
-      "result_detail": "Fitzpatrick finished 2nd (-15), Burns T20 (-9)"
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "Lee Min Woo",
+      "bet_type": "Top 10",
+      "bet_detail": null,
+      "odds": "+630",
+      "book": "DraftKings",
+      "reasoning": "DG model fair: +614. DraftKings +630 is +2.3% positive EV. Lee's precision ball-striking profile fits what the 2018 Shinnecock data showed as the course's dominant skill category — approach play from inside 150 yards ranked among the hardest in the dataset. The market has him priced modestly above where the model sees him.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
     },
     {
       "player": "Tommy Fleetwood",
       "bet_type": "Top 5",
       "bet_detail": null,
-      "odds": "+340",
-      "book": "FanDuel",
-      "reasoning": "FanDuel +340 is +6.1% positive EV versus the model's fair price — the largest edge among the shorter-priced plays this week. Fleetwood's all-around ball-striking profile fits a course-fit model that rewards OTT and Approach equally above every other category.",
-      "confidence": "High",
-      "result": "loss",
-      "result_detail": "Finished T11 (-11)"
-    },
-    {
-      "player": "Zach Bauchou",
-      "bet_type": "Top 20",
-      "bet_detail": null,
-      "odds": "+490",
+      "odds": "+500",
       "book": "DraftKings",
-      "reasoning": "DraftKings +490 is +5.3% positive EV, one of the cleaner mid-tier gaps on the board. A top-20 line gives a wider band of qualifying finishes for a player without the market profile of this week's bigger names.",
+      "reasoning": "DG model fair: +491. DraftKings +500 is +1.5% positive EV — modest but the clearest edge in the top-5 market at cap-eligible prices. Fleetwood's complete ball-striking game across both approach and ARG categories matches the two skill areas where Shinnecock 2018 separated the field most sharply. More aggressive finish band given the model's high view of his ceiling.",
       "confidence": "Medium",
-      "result": "loss",
-      "result_detail": "Missed the cut"
-    },
-    {
-      "player": "Bud Cauley",
-      "bet_type": "Top 5",
-      "bet_detail": null,
-      "odds": "+1000",
-      "book": "DraftKings",
-      "reasoning": "DG model fair: +931. DraftKings/Bet365 +1000 is +6.7% positive EV — the second-largest gap on the board behind Rai's top-5 number. The longest price on this week's card by design, reflecting the size of the edge.",
-      "confidence": "Medium",
-      "result": "win",
-      "result_detail": "Won outright at -17 — his first PGA Tour title"
+      "result": null,
+      "result_detail": null
     }
   ]
 }

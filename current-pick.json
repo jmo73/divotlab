@@ -1,18 +1,18 @@
 {
-  "tournament": "RBC Canadian Open",
+  "tournament": "U.S. Open",
   "tour": "PGA Tour",
-  "week_of": "Jun 11–14, 2026",
-  "published": "2026-06-10",
+  "week_of": "Jun 18–21, 2026",
+  "published": "2026-06-18",
   "pick": {
-    "player": "Aaron Rai",
+    "player": "Nicolai Hojgaard",
     "bet_type": "Top 10",
     "bet_detail": null,
-    "odds": "+430",
+    "odds": "+1000",
     "book": "DraftKings",
-    "reasoning": "Rai shows positive expected value in three separate finish-position markets this week — top-5, top-10, and top-20 — the only player in the field with that level of cross-market alignment. The DG model has his fair top-10 odds at +385; DraftKings offers +430, a +9.3% positive EV play. His ball-striking-heavy game lines up directly with TPC Toronto's North Course, which debuts in our model this week with the highest combined Off-the-Tee + Approach weight (56%) of any venue we track.",
-    "confidence": "High",
-    "result": "loss",
-    "result_detail": "Missed the cut"
+    "reasoning": "DG model fair price: +949. DraftKings +1000 is +4.8% positive EV — the single largest model edge in the outright market at Shinnecock at cap-eligible prices. Hojgaard's market position undervalues him across both the top-10 and top-20 markets simultaneously, which the model reads as a cleaner signal than a single-market gap. Shinnecock's 2018 approach and ARG difficulty profile fits players with a complete short-game and iron-play combination.",
+    "confidence": "Medium",
+    "result": null,
+    "result_detail": null
   },
-  "teaser": "4 more picks — including a value H2H matchup and our biggest single-market edge of the season — are in this week's Lab Notes Pro email."
+  "teaser": "4 more picks — including the highest EV play on the board this week — are in this week's Lab Notes Pro email."
 }
