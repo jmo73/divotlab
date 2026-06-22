@@ -57,6 +57,40 @@
       "confidence": "Low",
       "result": null,
       "result_detail": null
+    },
+    {
+      "player": "Si Woo Kim",
+      "bet_type": "Top 10",
+      "bet_detail": null,
+      "odds": "+260",
+      "book": "Caesars",
+      "reasoning": "Best EV in the shorter-price tier at 6.7%. DG fair +237, Caesars +260. Approach #6 in this field — same case as the longer-priced plays above, just a wider net at proportionally shorter odds.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null,
+      "section": "Shorter-Price Plays"
+    },
+    {
+      "player": "Patrick Cantlay",
+      "bet_type": "Top 10",
+      "bet_detail": null,
+      "odds": "+300",
+      "book": "FanDuel",
+      "reasoning": "Approach #8 in this field. DG fair +295, FD +300 = 1.2% positive EV. Slim edge but real course fit — 28% approach weight suits his profile. Missed the cut at the U.S. Open but consistent elsewhere this season.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
+    },
+    {
+      "player": "J.J. Spaun",
+      "bet_type": "Top 20",
+      "bet_detail": null,
+      "odds": "+160",
+      "book": "FanDuel",
+      "reasoning": "Approach #2 in this field. DG fair +156, FD +160 = 1.4% positive EV. Wider net version of the Spaun case — he just needs a top-20 finish rather than a top-10. Lower variance entry on the same course-fit profile.",
+      "confidence": "Medium",
+      "result": null,
+      "result_detail": null
     }
   ]
 }
