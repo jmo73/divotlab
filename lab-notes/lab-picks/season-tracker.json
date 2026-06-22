@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-06-14",
+  "last_updated": "2026-06-22",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 54,
+    "total_picks": 59,
     "total_hits": 24,
-    "hit_rate_pct": 44.4,
-    "events_tracked": 13,
+    "hit_rate_pct": 40.7,
+    "events_tracked": 14,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
-      "top_5":   { "picks": 7,  "hits": 3 },
-      "top_10":  { "picks": 21, "hits": 11 },
+      "top_5":   { "picks": 9,  "hits": 3 },
+      "top_10":  { "picks": 24, "hits": 11 },
       "top_20":  { "picks": 12, "hits": 4 },
       "matchup": { "picks": 13, "hits": 6 }
     },
     "units": {
-      "wagered":      54.0,
+      "wagered":      59.0,
       "returned":     85.15,
-      "profit_loss":  31.15,
-      "roi_pct":      57.7
+      "profit_loss":  26.15,
+      "roi_pct":      44.3
     }
   },
 
@@ -142,6 +142,24 @@
       ],
       "sleepers": [
         { "player": "Moore, Taylor", "bet": "Top 20", "odds": 500, "book": "FanDuel", "result": "loss", "note": "Finished T40 (-6). Not counted in totals." }
+      ]
+    },
+    {
+      "event": "U.S. Open",
+      "date": "2026-06-22",
+      "picks_count": 5,
+      "hits_count": 0,
+      "net_units": -5.00,
+      "notes": "0 for 5. Four picks missed the cut. Fleetwood made the cut (T11) but missed Top 5. Model's Shinnecock weights (App 38%, Putt 18%) misread the venue — winner Clark's best category was putting (+1.53/rd), not approach (+0.78/rd). Course weights flagged for adjustment.",
+      "picks": [
+        { "player": "Fleetwood, Tommy",  "bet": "Top 5",  "book": "DraftKings", "odds": 500, "type": "top_5",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T11 (+2). Approach avg only +0.27/rd; putting -1.11/rd" },
+        { "player": "Kim, Si Woo",       "bet": "Top 5",  "book": "DraftKings", "odds": 740, "type": "top_5",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+6). Shot +7 in R1" },
+        { "player": "Hovland, Viktor",   "bet": "Top 10", "book": "DraftKings", "odds": 530, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+5). Shot +6 in R1" },
+        { "player": "Cantlay, Patrick",  "bet": "Top 10", "book": "FanDuel",    "odds": 470, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+6). Shot +4 in R1" },
+        { "player": "Lee, Min Woo",      "bet": "Top 10", "book": "DraftKings", "odds": 630, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+7). Shot +4 in R1" }
+      ],
+      "sleepers": [
+        { "player": "Cauley, Bud", "bet": "Top 5", "odds": 1800, "book": "DraftKings", "result": "loss", "note": "Finished T56 (+10). Not counted in totals." }
       ]
     }
   ]

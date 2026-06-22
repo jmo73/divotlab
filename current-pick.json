@@ -1,18 +1,18 @@
 {
-  "tournament": "U.S. Open",
+  "tournament": "Travelers Championship",
   "tour": "PGA Tour",
-  "week_of": "Jun 18–21, 2026",
-  "published": "2026-06-18",
+  "week_of": "Jun 25–28, 2026",
+  "published": "2026-06-25",
   "pick": {
-    "player": "Tommy Fleetwood",
+    "player": "Aaron Rai",
     "bet_type": "Top 5",
     "bet_detail": null,
-    "odds": "+500",
+    "odds": "+1000",
     "book": "DraftKings",
-    "reasoning": "Course-fit model ranks Fleetwood #8 in the US Open field (score 76/100) — App 0.623 and ARG 0.288 match Shinnecock's two most heavily weighted categories directly. DG fair price: +491. DraftKings +500 is +1.5% positive EV. One of the cleanest course-fit cases in the field at an accessible price.",
-    "confidence": "High",
+    "reasoning": "Best market edge on the board — DG model prices Rai's Top 5 at +870 fair while DraftKings is offering +1000, a 13.5% positive edge. He ranks #17 in SG: Approach among this field, fitting TPC River Highlands' 28% approach weight. The same DK mispricing shows up in his Top 10 (+425, +8.3% EV) and outright win (+5500, +6.5% EV).",
+    "confidence": "Medium",
     "result": null,
     "result_detail": null
   },
-  "teaser": "4 more picks — all ranked in the top 25 of our Shinnecock course-fit model — are in this week's Lab Notes Pro email."
+  "teaser": "4 more picks in Lab Notes Pro this week."
 }
