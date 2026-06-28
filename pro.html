@@ -82,10 +82,28 @@ html[data-theme="light"] #gate{color-scheme:light;}
 .gate-note{font-size:12px;color:rgba(250,250,250,0.2);line-height:1.6;}
 .gate-note a{color:rgba(201,168,76,0.5);text-decoration:underline;}
 .trial-chip{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.25);padding:2px 8px;border-radius:3px;margin-left:6px;}
-.trial-expired-msg{font-size:13px;color:var(--gold);margin-top:8px;display:none;}
+.trial-expired-msg{font-size:13px;color:var(--gold);margin-top:10px;display:none;}
 .trial-expired-msg.show{display:block;}
 html[data-theme="light"] .trial-chip{background:rgba(27,77,62,0.08);color:#1B4D3E;border-color:rgba(27,77,62,0.2);}
 html[data-theme="light"] .gate-badge-trial{background:rgba(27,77,62,0.08);border-color:rgba(27,77,62,0.2);color:#1B4D3E;}
+/* Multi-step gate */
+.gate-step{display:none;}
+.gate-step.active{display:block;}
+.gate-otp-input{font-family:var(--mono);font-size:22px;letter-spacing:0.4em;text-align:center;padding:16px 18px;}
+.gate-pw-wrap{position:relative;}
+.gate-pw-wrap .gate-input{padding-right:44px;text-align:left;}
+.gate-pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(250,250,250,0.3);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color .2s;}
+.gate-pw-toggle:hover{color:rgba(250,250,250,0.7);}
+.gate-back{background:none;border:none;color:rgba(250,250,250,0.3);font-family:var(--body);font-size:12px;cursor:pointer;padding:0;margin-top:14px;transition:color .2s;display:inline-block;}
+.gate-back:hover{color:rgba(250,250,250,0.7);}
+.gate-sent-msg{font-size:13px;color:rgba(250,250,250,0.45);margin-bottom:18px;line-height:1.6;}
+.gate-sent-msg strong{color:rgba(250,250,250,0.75);}
+.gate-gift-banner{display:none;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--green-light);background:rgba(91,191,133,0.08);border:1px solid rgba(91,191,133,0.2);padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+.gate-step-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+html[data-theme="light"] .gate-pw-toggle{color:rgba(0,0,0,0.3);}
+html[data-theme="light"] .gate-back{color:rgba(0,0,0,0.35);}
+html[data-theme="light"] .gate-sent-msg{color:rgba(0,0,0,0.45);}
+html[data-theme="light"] .gate-sent-msg strong{color:rgba(0,0,0,0.7);}
 
 /* ── PRO APP ── */
 #proApp{display:none;padding-top:64px;min-height:100vh;}
@@ -1154,25 +1172,88 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
   <div class="drawer-content" id="drawerContent"></div>
 </div>
 
-<!-- EMAIL GATE -->
+<!-- EMAIL GATE — multi-step auth -->
 <div id="gate">
   <div class="gate-card">
-    <div class="gate-badge gate-badge-trial">Free 14-Day Trial · No Card Required</div>
-    <h1 class="gate-title">Try Pro, free for 14 days.</h1>
-    <p class="gate-sub">Enter your email to unlock the full dashboard — no credit card, no commitment.</p>
-    <ul class="gate-perks">
-      <li>Full course-fit rankings for every player in the field — with value flags</li>
-      <li>Value finder: model edge crossed with course-fit for every bet type</li>
-      <li>Player detail drawer — SG breakdown, course history, and head-to-head comparison for any player</li>
-      <li>Live tournament tracking — real-time SG and Win/Top-10/20 probabilities</li>
-    </ul>
-    <div class="gate-form">
-      <input type="email" id="gateEmail" class="gate-input" placeholder="your@email.com" autocomplete="email">
-      <button class="gate-btn" id="gateBtn" onclick="startAccess()">Start free trial →</button>
+
+    <!-- Gift code banner (shown when ?gift=CODE in URL) -->
+    <div class="gate-gift-banner" id="giftBanner"></div>
+
+    <!-- Step header (title + sub change per step) -->
+    <div id="gateHeader">
+      <div class="gate-badge gate-badge-trial">Free 14-Day Trial · No Card Required</div>
+      <h1 class="gate-title" id="gateTitle">Try Pro, free for 14 days.</h1>
+      <p class="gate-sub" id="gateSub">Create an account to unlock the full dashboard — no credit card required.</p>
+      <ul class="gate-perks" id="gatePerks">
+        <li>Full course-fit rankings for every player in the field</li>
+        <li>Value finder: model edge crossed with course-fit for every bet type</li>
+        <li>Player drawer — SG breakdown, course history, and H2H comparison</li>
+        <li>Live tournament tracking — real-time SG and Win/Top-10/20 probabilities</li>
+      </ul>
     </div>
-    <div class="gate-error" id="gateErr">Connection error. Try again.</div>
-    <div class="trial-expired-msg" id="gateTrialExpired">Your free trial has ended. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to keep access →</a></div>
-    <p class="gate-note" id="gateNote">Already a Pro subscriber or mid-trial? Enter your email — we'll recognize you instantly.</p>
+
+    <!-- Step 1: Email -->
+    <div class="gate-step active" id="stepEmail">
+      <div class="gate-form">
+        <input type="email" id="gateEmail" class="gate-input" placeholder="your@email.com" autocomplete="email">
+        <button class="gate-btn" id="gateBtnEmail" onclick="handleEmailStep()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2a: New user — OTP + set password -->
+    <div class="gate-step" id="stepSignup">
+      <p class="gate-sent-msg" id="gateSignupMsg"></p>
+      <div class="gate-form">
+        <input type="text" id="gateOTP" class="gate-input gate-otp-input" placeholder="123456" maxlength="6" autocomplete="one-time-code" inputmode="numeric">
+        <div class="gate-pw-wrap">
+          <input type="password" id="gatePasswordSignup" class="gate-input" placeholder="Create a password (8+ chars)" autocomplete="new-password">
+          <button class="gate-pw-toggle" type="button" onclick="togglePw('gatePasswordSignup',this)" aria-label="Show password"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <button class="gate-btn" id="gateBtnSignup" onclick="handleSignup()">Create account →</button>
+      </div>
+      <button class="gate-back" onclick="goToStep('email')">← Use a different email</button>
+    </div>
+
+    <!-- Step 2b: Existing user — password login -->
+    <div class="gate-step" id="stepLogin">
+      <p class="gate-sent-msg" id="gateLoginMsg"></p>
+      <div class="gate-form">
+        <div class="gate-pw-wrap">
+          <input type="password" id="gatePasswordLogin" class="gate-input" placeholder="Your password" autocomplete="current-password">
+          <button class="gate-pw-toggle" type="button" onclick="togglePw('gatePasswordLogin',this)" aria-label="Show password"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <button class="gate-btn" id="gateBtnLogin" onclick="handleLogin()">Sign in →</button>
+      </div>
+      <div class="gate-step-actions">
+        <button class="gate-back" onclick="goToStep('email')">← Different email</button>
+        <button class="gate-back" onclick="goToStep('forgot')">Forgot password?</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Forgot password — request OTP -->
+    <div class="gate-step" id="stepForgot">
+      <p class="gate-sent-msg" id="gateForgotMsg"></p>
+      <div class="gate-form">
+        <button class="gate-btn" id="gateBtnForgot" onclick="handleForgotSend()">Send reset code →</button>
+      </div>
+      <button class="gate-back" onclick="goToStep('login')">← Back to sign in</button>
+    </div>
+
+    <!-- Step 4: Reset password — enter OTP + new password -->
+    <div class="gate-step" id="stepReset">
+      <p class="gate-sent-msg" id="gateResetMsg"></p>
+      <div class="gate-form">
+        <input type="text" id="gateResetOTP" class="gate-input gate-otp-input" placeholder="123456" maxlength="6" autocomplete="one-time-code" inputmode="numeric">
+        <div class="gate-pw-wrap">
+          <input type="password" id="gateNewPassword" class="gate-input" placeholder="New password (8+ chars)" autocomplete="new-password">
+          <button class="gate-pw-toggle" type="button" onclick="togglePw('gateNewPassword',this)" aria-label="Show password"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <button class="gate-btn" id="gateBtnReset" onclick="handleReset()">Set new password →</button>
+      </div>
+    </div>
+
+    <div class="gate-error" id="gateErr"></div>
+    <div class="trial-expired-msg" id="gateTrialExpired">Your access has ended. <a href="https://buy.stripe.com/aFa9ASdIK8M069BbEg1ZS05" style="color:var(--gold);">Subscribe to continue →</a></div>
   </div>
 </div>
 
@@ -1476,98 +1557,205 @@ hbg.addEventListener('click',function(){nav.classList.toggle('open');drw.classLi
 drw.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');drw.classList.remove('open');document.body.style.overflow='';});});
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-function getToken(){ try{ return JSON.parse(localStorage.getItem('divotlab-pro-auth')||'null'); }catch(e){ return null; } }
+var gateEmail = ''; // shared across steps
 
-function checkAuth_OLD(){
-  var t = getToken();
-  if(t && t.expires > Date.now()){
-    showApp(t.email);
-  } else {
-    if(t) localStorage.removeItem('divotlab-pro-auth');
-    showGate();
+function getStoredAuth(){ try{ return JSON.parse(localStorage.getItem('divotlab-pro-auth')||'null'); }catch(e){ return null; } }
+
+function saveAuth(data){
+  localStorage.setItem('divotlab-pro-auth', JSON.stringify({
+    token: data.token,
+    email: data.email,
+    expires: Date.now() + 30*24*60*60*1000,
+    access_type: data.access_type,
+    days_left: data.days_left || null
+  }));
+}
+
+function showErr(msg){
+  var el = document.getElementById('gateErr');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearErr(){ document.getElementById('gateErr').classList.remove('show'); }
+
+function setStepLoading(btnId, loading, defaultText){
+  var btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Please wait…' : defaultText;
+}
+
+function goToStep(step){
+  clearErr();
+  document.getElementById('gateTrialExpired').classList.remove('show');
+  // hide all steps
+  document.querySelectorAll('.gate-step').forEach(function(el){ el.classList.remove('active'); });
+  var perks = document.getElementById('gatePerks');
+  var title = document.getElementById('gateTitle');
+  var sub = document.getElementById('gateSub');
+
+  if(step === 'email'){
+    document.getElementById('stepEmail').classList.add('active');
+    title.textContent = 'Try Pro, free for 14 days.';
+    sub.textContent = 'Create an account to unlock the full dashboard — no credit card required.';
+    perks.style.display = '';
+    document.getElementById('gateHeader').querySelector('.gate-badge').style.display = '';
+  } else if(step === 'signup'){
+    document.getElementById('stepSignup').classList.add('active');
+    title.textContent = 'Create your account';
+    sub.textContent = '';
+    perks.style.display = 'none';
+    document.getElementById('gateHeader').querySelector('.gate-badge').style.display = 'none';
+  } else if(step === 'login'){
+    document.getElementById('stepLogin').classList.add('active');
+    title.textContent = 'Welcome back';
+    sub.textContent = '';
+    perks.style.display = 'none';
+    document.getElementById('gateHeader').querySelector('.gate-badge').style.display = 'none';
+  } else if(step === 'forgot'){
+    document.getElementById('stepForgot').classList.add('active');
+    title.textContent = 'Reset your password';
+    sub.textContent = '';
+    perks.style.display = 'none';
+    document.getElementById('gateHeader').querySelector('.gate-badge').style.display = 'none';
+    document.getElementById('gateForgotMsg').innerHTML = 'We\'ll send a verification code to <strong>'+gateEmail+'</strong>.';
+  } else if(step === 'reset'){
+    document.getElementById('stepReset').classList.add('active');
+    title.textContent = 'Set new password';
+    sub.textContent = '';
+    perks.style.display = 'none';
+    document.getElementById('gateHeader').querySelector('.gate-badge').style.display = 'none';
   }
 }
 
-async function startAccess(){
-  var email = document.getElementById('gateEmail').value.trim().toLowerCase();
-  if(!email || !email.includes('@')) return;
-  var btn = document.getElementById('gateBtn');
-  var err = document.getElementById('gateErr');
-  var trialExpired = document.getElementById('gateTrialExpired');
-  btn.disabled = true; btn.textContent = 'Checking…';
-  err.classList.remove('show');
-  trialExpired.classList.remove('show');
+function togglePw(inputId, btn){
+  var input = document.getElementById(inputId);
+  var isText = input.type === 'text';
+  input.type = isText ? 'password' : 'text';
+  btn.style.opacity = isText ? '' : '0.7';
+}
 
+// Step 1: email → check-email
+async function handleEmailStep(){
+  var emailInput = document.getElementById('gateEmail');
+  var email = emailInput.value.trim().toLowerCase();
+  if(!email || !email.includes('@')){ showErr('Please enter a valid email address.'); return; }
+  gateEmail = email;
+  clearErr();
+  setStepLoading('gateBtnEmail', true, 'Continue →');
   try {
-    var res = await fetch(API+'/api/verify-pro',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email})
-    });
+    var res = await fetch(API+'/api/auth/check-email',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email}) });
     var data = await res.json();
-    if(data.verified){
-      // Full subscriber
-      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
-        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000
-      }));
-      showApp(email);
-      return;
-    }
-    if(data.trial){
-      // Active trial — resume
-      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
-        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
-        trial: true, trialExpires: data.expires, trialDaysLeft: data.days_left
-      }));
-      showApp(email, data.days_left);
-      return;
-    }
-
-    // No active subscription or trial — start a new free trial automatically
-    btn.textContent = 'Starting free trial…';
-    var trialRes = await fetch(API+'/api/start-trial',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email,
-        source: document.referrer ? 'pro-trial-referral' : 'pro-trial-direct',
-        referral_code: localStorage.getItem('divotlab-referral-code') || null
-      })
-    });
-    var trialData = await trialRes.json();
-    if(trialData.success){
-      localStorage.setItem('divotlab-pro-auth', JSON.stringify({
-        email, verified: Date.now(), expires: Date.now() + 7*24*60*60*1000,
-        trial: true, trialExpires: trialData.expires, trialDaysLeft: trialData.days_left
-      }));
-      showApp(email, trialData.days_left);
-    } else if(trialData.expired){
-      trialExpired.classList.add('show');
-      btn.disabled = false; btn.textContent = 'Start free trial →';
+    if(!data.success){ showErr(data.error || 'Could not check email. Try again.'); setStepLoading('gateBtnEmail', false, 'Continue →'); return; }
+    if(data.exists){
+      document.getElementById('gateLoginMsg').innerHTML = 'Enter your password for <strong>'+email+'</strong>.';
+      goToStep('login');
+      setTimeout(function(){ document.getElementById('gatePasswordLogin').focus(); }, 50);
     } else {
-      err.textContent = trialData.error || 'Could not start your trial. Try again.';
-      err.classList.add('show');
-      btn.disabled = false; btn.textContent = 'Start free trial →';
+      // New user — send OTP
+      var otpRes = await fetch(API+'/api/auth/send-otp',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, purpose:'signup'}) });
+      var otpData = await otpRes.json();
+      if(!otpData.success){ showErr(otpData.error || 'Could not send verification code. Try again.'); setStepLoading('gateBtnEmail', false, 'Continue →'); return; }
+      document.getElementById('gateSignupMsg').innerHTML = 'We sent a 6-digit code to <strong>'+email+'</strong>. Enter it below to verify and set your password.';
+      goToStep('signup');
+      setTimeout(function(){ document.getElementById('gateOTP').focus(); }, 50);
     }
-  } catch(e){
-    err.textContent = 'Connection error. Try again.';
-    err.classList.add('show');
-    btn.disabled = false; btn.textContent = 'Start free trial →';
-  }
+  } catch(e){ showErr('Connection error. Try again.'); }
+  setStepLoading('gateBtnEmail', false, 'Continue →');
 }
 
-document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') startAccess(); });
+// Step 2a: new user signup
+async function handleSignup(){
+  var otp = document.getElementById('gateOTP').value.trim();
+  var password = document.getElementById('gatePasswordSignup').value;
+  if(!otp || otp.length !== 6){ showErr('Enter the 6-digit code we sent you.'); return; }
+  if(!password || password.length < 8){ showErr('Password must be at least 8 characters.'); return; }
+  clearErr();
+  setStepLoading('gateBtnSignup', true, 'Create account →');
+  try {
+    var giftCode = localStorage.getItem('divotlab-gift-code') || null;
+    var res = await fetch(API+'/api/auth/signup',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:gateEmail, otp, password, gift_code:giftCode}) });
+    var data = await res.json();
+    if(!data.success){ showErr(data.error || 'Could not create account. Try again.'); setStepLoading('gateBtnSignup', false, 'Create account →'); return; }
+    saveAuth(data);
+    if(giftCode) localStorage.removeItem('divotlab-gift-code');
+    showApp(data.email, data.access_type, data.days_left);
+  } catch(e){ showErr('Connection error. Try again.'); setStepLoading('gateBtnSignup', false, 'Create account →'); }
+}
+
+// Step 2b: password login
+async function handleLogin(){
+  var password = document.getElementById('gatePasswordLogin').value;
+  if(!password){ showErr('Please enter your password.'); return; }
+  clearErr();
+  setStepLoading('gateBtnLogin', true, 'Sign in →');
+  try {
+    var res = await fetch(API+'/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:gateEmail, password}) });
+    var data = await res.json();
+    if(!data.success){
+      if(data.expired){ document.getElementById('gateTrialExpired').classList.add('show'); setStepLoading('gateBtnLogin', false, 'Sign in →'); return; }
+      showErr(data.error || 'Incorrect password. Try again.'); setStepLoading('gateBtnLogin', false, 'Sign in →'); return;
+    }
+    saveAuth(data);
+    showApp(data.email, data.access_type, data.days_left);
+  } catch(e){ showErr('Connection error. Try again.'); setStepLoading('gateBtnLogin', false, 'Sign in →'); }
+}
+
+// Step 3: send password reset OTP
+async function handleForgotSend(){
+  clearErr();
+  setStepLoading('gateBtnForgot', true, 'Send reset code →');
+  try {
+    var res = await fetch(API+'/api/auth/send-otp',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:gateEmail, purpose:'reset'}) });
+    var data = await res.json();
+    if(!data.success){ showErr(data.error || 'Could not send code. Try again.'); setStepLoading('gateBtnForgot', false, 'Send reset code →'); return; }
+    document.getElementById('gateResetMsg').innerHTML = 'We sent a reset code to <strong>'+gateEmail+'</strong>. Enter it below with your new password.';
+    goToStep('reset');
+    setTimeout(function(){ document.getElementById('gateResetOTP').focus(); }, 50);
+  } catch(e){ showErr('Connection error. Try again.'); setStepLoading('gateBtnForgot', false, 'Send reset code →'); }
+}
+
+// Step 4: set new password
+async function handleReset(){
+  var otp = document.getElementById('gateResetOTP').value.trim();
+  var newPw = document.getElementById('gateNewPassword').value;
+  if(!otp || otp.length !== 6){ showErr('Enter the 6-digit reset code.'); return; }
+  if(!newPw || newPw.length < 8){ showErr('Password must be at least 8 characters.'); return; }
+  clearErr();
+  setStepLoading('gateBtnReset', true, 'Set new password →');
+  try {
+    var res = await fetch(API+'/api/auth/reset-password',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:gateEmail, otp, new_password:newPw}) });
+    var data = await res.json();
+    if(!data.success){ showErr(data.error || 'Could not reset password. Try again.'); setStepLoading('gateBtnReset', false, 'Set new password →'); return; }
+    saveAuth(data);
+    showApp(data.email, data.access_type, data.days_left);
+  } catch(e){ showErr('Connection error. Try again.'); setStepLoading('gateBtnReset', false, 'Set new password →'); }
+}
+
+// Enter key support
+document.getElementById('gateEmail').addEventListener('keydown',function(e){ if(e.key==='Enter') handleEmailStep(); });
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter') return;
+  if(document.getElementById('stepSignup').classList.contains('active')) handleSignup();
+  else if(document.getElementById('stepLogin').classList.contains('active')) handleLogin();
+  else if(document.getElementById('stepReset').classList.contains('active')) handleReset();
+});
 
 function showGate(){
   document.getElementById('gate').classList.remove('hidden');
   document.getElementById('proApp').classList.remove('show');
+  goToStep('email');
 }
 
-function showApp(email, trialDaysLeft){
+function showApp(email, accessType, daysLeft){
   document.getElementById('gate').classList.add('hidden');
   document.getElementById('proApp').classList.add('show');
   document.getElementById('appUserEmail').textContent = email;
   var chip = document.getElementById('trialChip');
-  if(trialDaysLeft != null){
-    chip.textContent = 'Trial · '+trialDaysLeft+'d left';
+  if(accessType === 'trial' && daysLeft != null){
+    chip.textContent = 'Trial · '+daysLeft+'d left';
+    chip.style.display = 'inline';
+  } else if(accessType === 'gifted' && daysLeft != null){
+    chip.textContent = 'Partner · '+daysLeft+'d left';
     chip.style.display = 'inline';
   } else {
     chip.style.display = 'none';
@@ -1579,21 +1767,51 @@ function showApp(email, trialDaysLeft){
   loadSeasonRecord();
 }
 
-function signOut(){ localStorage.removeItem('divotlab-pro-auth'); showGate(); }
+async function signOut(){
+  var auth = getStoredAuth();
+  if(auth && auth.token){
+    fetch(API+'/api/auth/signout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:auth.token}) }).catch(function(){});
+  }
+  localStorage.removeItem('divotlab-pro-auth');
+  showGate();
+}
 
 function checkAuth(){
-  var t = getToken();
+  var t = getStoredAuth();
   if(t && t.expires > Date.now()){
-    // For trial tokens, also verify the trial itself hasn't expired
+    // New format: has server session token → verify it
+    if(t.token){
+      fetch(API+'/api/auth/verify-session',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:t.token}) })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(data.valid){
+            // Refresh local copy of days_left
+            t.access_type = data.access_type;
+            t.days_left = data.days_left;
+            localStorage.setItem('divotlab-pro-auth', JSON.stringify(t));
+            showApp(data.email, data.access_type, data.days_left);
+          } else {
+            localStorage.removeItem('divotlab-pro-auth');
+            showGate();
+          }
+        })
+        .catch(function(){
+          // Network error — trust local token for now rather than locking user out
+          showApp(t.email, t.access_type, t.days_left);
+        });
+      return; // async path — return early
+    }
+
+    // Legacy format (no token field) — trust local token until it expires
     if(t.trial && t.trialExpires && t.trialExpires <= Date.now()){
       localStorage.removeItem('divotlab-pro-auth');
       showGate();
       return;
     }
-    var daysLeft = t.trial && t.trialExpires
+    var legacyDaysLeft = t.trial && t.trialExpires
       ? Math.ceil((t.trialExpires - Date.now()) / 86400000)
       : null;
-    showApp(t.email, daysLeft);
+    showApp(t.email, t.trial ? 'trial' : 'subscriber', legacyDaysLeft);
   } else {
     if(t) localStorage.removeItem('divotlab-pro-auth');
     showGate();
@@ -3773,18 +3991,25 @@ function renderLiveTable(statsData, predData){
   tableEl.style.display='block';
 }
 
-// ── REFERRAL ATTRIBUTION ──────────────────────────────────────────────────────
-// First-touch: capture ?ref=CODE once, persist for the life of this browser.
-// Sent with /api/start-trial so referral signups can be credited.
-function captureReferralCode(){
-  var ref = new URLSearchParams(location.search).get('ref');
+// ── URL PARAM CAPTURE ─────────────────────────────────────────────────────────
+function captureURLParams(){
+  var params = new URLSearchParams(location.search);
+  // Gift code — ?gift=CODE (partner/influencer access)
+  var gift = params.get('gift');
+  if(gift){
+    localStorage.setItem('divotlab-gift-code', gift.toUpperCase());
+    var banner = document.getElementById('giftBanner');
+    if(banner){ banner.textContent = 'Gift code applied: '+gift.toUpperCase(); banner.style.display = 'inline-block'; }
+  }
+  // Referral code — ?ref=CODE (subscriber referral tracking)
+  var ref = params.get('ref');
   if(ref && !localStorage.getItem('divotlab-referral-code')){
     localStorage.setItem('divotlab-referral-code', ref);
   }
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-captureReferralCode();
+captureURLParams();
 checkAuth();
 </script>
 <script src="assets/js/theme.js"></script>

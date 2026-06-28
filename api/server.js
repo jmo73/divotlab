@@ -2230,51 +2230,55 @@ app.get('/health', (req, res) => {
 // Env var required: BEEHIIV_PRO_PUB_ID
 // ============================================
 
+// Legacy endpoint — kept for backwards compat with old localStorage tokens (no `token` field).
+// New gate uses /api/auth/verify-session instead.
 app.post('/api/verify-pro', async (req, res) => {
   try {
     const { email } = req.body || {};
     if (!email || !email.includes('@')) {
       return res.status(400).json({ success: false, error: 'Valid email required' });
     }
+    const normalEmail = email.trim().toLowerCase();
 
+    // 1. Check new account system first
+    const account = await getAccount(normalEmail);
+    if (account) {
+      const access = getAccountAccess(account);
+      if (access.type !== 'none') {
+        const isSubscriber = access.type === 'subscriber';
+        console.log(`  verify-pro (legacy): ${normalEmail} → account (${access.type})`);
+        return res.json({ success: true, verified: isSubscriber, trial: !isSubscriber, days_left: access.daysLeft });
+      }
+      return res.json({ success: true, verified: false, expired: true });
+    }
+
+    // 2. Check Beehiiv Pro subscription
     const apiKey  = process.env.BEEHIIV_API_KEY;
     const proPubId = process.env.BEEHIIV_PRO_PUB_ID;
-
-    if (!apiKey || !proPubId) {
-      console.error('⚠️  BEEHIIV_PRO_PUB_ID not configured — pro verification unavailable');
-      return res.status(500).json({ success: false, error: 'Pro verification not configured' });
+    if (apiKey && proPubId) {
+      const response = await fetch(
+        `https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions?email=${encodeURIComponent(normalEmail)}`,
+        { headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' } }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if ((data.data || []).some(s => s.status === 'active')) {
+          console.log(`  verify-pro (legacy): ${normalEmail} → VERIFIED (Beehiiv)`);
+          return res.json({ success: true, verified: true });
+        }
+      }
     }
 
-    const response = await fetch(
-      `https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions?email=${encodeURIComponent(email.trim().toLowerCase())}`,
-      { headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' } }
-    );
-
-    if (!response.ok) {
-      console.error('Beehiiv verify-pro error:', response.status);
-      return res.status(500).json({ success: false, error: 'Verification service unavailable' });
-    }
-
-    const data = await response.json();
-    const subscribers = data.data || [];
-    const isVerified = subscribers.some(s => s.status === 'active');
-
-    if (isVerified) {
-      console.log(`  Pro verify: ${email} → VERIFIED (subscriber)`);
-      return res.json({ success: true, verified: true });
-    }
-
-    // Not a subscriber — check for active trial
-    const trial = await kvGet(`trial:${email.trim().toLowerCase()}`);
+    // 3. Check legacy KV trial
+    const trial = await kvGet(`trial:${normalEmail}`);
     if (trial && trial.expires > Date.now()) {
       const daysLeft = Math.ceil((trial.expires - Date.now()) / 86400000);
-      console.log(`  Pro verify: ${email} → TRIAL (${daysLeft} days left)`);
+      console.log(`  verify-pro (legacy): ${normalEmail} → legacy trial (${daysLeft}d)`);
       return res.json({ success: true, verified: false, trial: true, days_left: daysLeft, expires: trial.expires });
     }
 
-    console.log(`  Pro verify: ${email} → not found`);
+    console.log(`  verify-pro (legacy): ${normalEmail} → not found`);
     res.json({ success: true, verified: false });
-
   } catch (error) {
     console.error('Pro verification error:', error);
     res.status(500).json({ success: false, error: 'Verification failed' });
@@ -2307,10 +2311,13 @@ async function kvSet(key, value, ttlSeconds) {
   const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return;
   try {
+    const cmd = ttlSeconds > 0
+      ? ['SET', key, JSON.stringify(value), 'EX', ttlSeconds]
+      : ['SET', key, JSON.stringify(value)];
     await fetch(`${url}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([['SET', key, JSON.stringify(value), 'EX', ttlSeconds]])
+      body: JSON.stringify([cmd])
     });
   } catch (e) { console.error('KV set error:', e.message); }
 }
@@ -2340,6 +2347,120 @@ async function getCachedJSON(key, ttlSeconds, fetchFn) {
   cache.set(key, val, ttlSeconds);
   await kvSet(key, val, ttlSeconds);
   return val;
+}
+
+// ============================================
+// AUTH HELPERS — password hashing, OTP, sessions
+// ============================================
+
+function generateOTP() {
+  return String(crypto.randomInt(100000, 999999));
+}
+
+function generateSessionToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function generateSalt() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+function hashPassword(password, salt) {
+  return crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+}
+
+function verifyPassword(password, salt, storedHash) {
+  try {
+    const computed = hashPassword(password, salt);
+    return crypto.timingSafeEqual(Buffer.from(computed, 'hex'), Buffer.from(storedHash, 'hex'));
+  } catch (e) { return false; }
+}
+
+async function getAccount(email) {
+  return kvGet(`account:${email.trim().toLowerCase()}`);
+}
+
+async function setAccount(email, data) {
+  await kvSet(`account:${email.trim().toLowerCase()}`, data, 0);
+}
+
+async function getOTPRecord(email) {
+  return kvGet(`otp:${email.trim().toLowerCase()}`);
+}
+
+async function setOTPRecord(email, code, purpose) {
+  await kvSet(`otp:${email.trim().toLowerCase()}`, { code, purpose, expires: Date.now() + 15 * 60 * 1000 }, 900);
+}
+
+async function delOTPRecord(email) {
+  await kvDel(`otp:${email.trim().toLowerCase()}`);
+}
+
+async function getSession(token) {
+  return kvGet(`session:${token}`);
+}
+
+async function setSession(token, email, ttlSeconds) {
+  await kvSet(`session:${token}`, { email, created: Date.now(), expires: Date.now() + ttlSeconds * 1000 }, ttlSeconds);
+}
+
+async function delSession(token) {
+  await kvDel(`session:${token}`);
+}
+
+// Returns { type, daysLeft } for a given account record
+function getAccountAccess(account) {
+  const now = Date.now();
+  if (account.accessType === 'subscriber') return { type: 'subscriber', daysLeft: null };
+  if (account.accessType === 'gifted' && account.giftExpires > now) {
+    return { type: 'gifted', daysLeft: Math.ceil((account.giftExpires - now) / 86400000) };
+  }
+  if (account.trialExpires && account.trialExpires > now) {
+    return { type: 'trial', daysLeft: Math.ceil((account.trialExpires - now) / 86400000) };
+  }
+  return { type: 'none', daysLeft: null };
+}
+
+async function sendOTPEmail(email, code, purpose) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) throw new Error('RESEND_API_KEY not configured');
+
+  const isReset = purpose === 'reset';
+  const subject = isReset
+    ? `Reset your Divot Lab password — code: ${code}`
+    : `Divot Lab verification code: ${code}`;
+
+  const headingText = isReset ? 'Reset your password' : 'Verify your email';
+  const bodyText = isReset
+    ? 'Use this code to set a new password. It expires in 15 minutes.'
+    : 'Use this code to finish creating your Divot Lab Pro account. It expires in 15 minutes.';
+
+  const html = `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#0A0A0A;font-family:Arial,Helvetica,sans-serif;">
+<div style="max-width:480px;margin:0 auto;padding:40px 24px;">
+  <div style="margin-bottom:28px;">
+    <span style="font-size:16px;font-weight:700;color:#C9A84C;letter-spacing:0.08em;">DIVOT LAB</span>
+  </div>
+  <h2 style="font-size:22px;font-weight:600;color:#FAFAFA;margin:0 0 10px 0;">${headingText}</h2>
+  <p style="color:rgba(250,250,250,0.55);font-size:14px;line-height:1.6;margin:0 0 28px 0;">${bodyText}</p>
+  <div style="background:#161614;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:28px;text-align:center;margin-bottom:28px;">
+    <span style="font-family:monospace;font-size:40px;font-weight:700;letter-spacing:0.3em;color:#5BBF85;">${code}</span>
+  </div>
+  <p style="color:rgba(250,250,250,0.3);font-size:12px;margin:0;line-height:1.6;">
+    If you didn't request this, you can safely ignore this email.
+  </p>
+</div>
+</body></html>`;
+
+  const r = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: 'Divot Lab <noreply@divotlab.com>', to: [email], subject, html })
+  });
+
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(`Resend error: ${r.status} ${err.message || ''}`);
+  }
 }
 
 // Appends a JSON-serialized value to a Redis list — used for referral signup logs
@@ -2445,6 +2566,353 @@ app.post('/api/start-trial', async (req, res) => {
   }
 });
 
+// ============================================
+// ACCOUNT AUTH ENDPOINTS
+// ============================================
+
+// Step 1 of gate: check if an account exists for this email
+app.post('/api/auth/check-email', async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email || !email.includes('@')) return res.status(400).json({ success: false, error: 'Valid email required' });
+    const account = await getAccount(email);
+    res.json({ success: true, exists: !!account, verified: account ? !!account.emailVerified : false });
+  } catch (e) {
+    console.error('check-email error:', e);
+    res.status(500).json({ success: false, error: 'Could not check email' });
+  }
+});
+
+// Send a 6-digit OTP to the user's email (purpose: 'signup' | 'reset')
+app.post('/api/auth/send-otp', async (req, res) => {
+  try {
+    const { email, purpose } = req.body || {};
+    if (!email || !email.includes('@')) return res.status(400).json({ success: false, error: 'Valid email required' });
+    if (!['signup', 'reset'].includes(purpose)) return res.status(400).json({ success: false, error: 'Invalid purpose' });
+
+    const normalEmail = email.trim().toLowerCase();
+
+    if (purpose === 'reset') {
+      const account = await getAccount(normalEmail);
+      if (!account) return res.status(404).json({ success: false, error: 'No account found with that email.' });
+    }
+
+    const code = generateOTP();
+    await setOTPRecord(normalEmail, code, purpose);
+
+    try {
+      await sendOTPEmail(normalEmail, code, purpose);
+      console.log(`  OTP sent: ${normalEmail} (${purpose})`);
+      res.json({ success: true });
+    } catch (emailErr) {
+      console.error('OTP email failed:', emailErr.message);
+      res.status(503).json({ success: false, error: 'Could not send verification email. Please try again.' });
+    }
+  } catch (e) {
+    console.error('send-otp error:', e);
+    res.status(500).json({ success: false, error: 'Could not send verification code' });
+  }
+});
+
+// Create a new account after OTP verification
+app.post('/api/auth/signup', async (req, res) => {
+  try {
+    const { email, otp, password, gift_code } = req.body || {};
+    if (!email || !email.includes('@')) return res.status(400).json({ success: false, error: 'Valid email required' });
+    if (!otp || String(otp).trim().length !== 6) return res.status(400).json({ success: false, error: 'Invalid verification code' });
+    if (!password || password.length < 8) return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+
+    const normalEmail = email.trim().toLowerCase();
+
+    const storedOTP = await getOTPRecord(normalEmail);
+    if (!storedOTP || storedOTP.purpose !== 'signup' || storedOTP.code !== String(otp).trim() || storedOTP.expires < Date.now()) {
+      return res.status(400).json({ success: false, error: 'Incorrect or expired verification code' });
+    }
+
+    const existing = await getAccount(normalEmail);
+    if (existing && existing.emailVerified) {
+      return res.status(409).json({ success: false, error: 'An account with this email already exists. Please sign in.' });
+    }
+
+    // Check gift code
+    let giftData = null;
+    const giftKey = gift_code ? String(gift_code).toUpperCase() : null;
+    if (giftKey) giftData = await kvGet(`gift:${giftKey}`);
+
+    const salt = generateSalt();
+    const passwordHash = hashPassword(password, salt);
+    const now = Date.now();
+
+    const account = {
+      email: normalEmail,
+      passwordHash, passwordSalt: salt,
+      emailVerified: true,
+      createdAt: now,
+      accessType: giftData ? 'gifted' : 'trial',
+      trialExpires: giftData ? null : now + 14 * 24 * 60 * 60 * 1000,
+      giftExpires: giftData ? now + giftData.days * 24 * 60 * 60 * 1000 : null,
+      giftCode: giftData ? giftKey : null,
+      referredBy: null
+    };
+
+    await delOTPRecord(normalEmail);
+
+    // Record gift code use
+    if (giftData) {
+      giftData.uses = [...(giftData.uses || []), { email: normalEmail, activatedAt: now }];
+      await kvSet(`gift:${giftKey}`, giftData, 0);
+    }
+
+    // Check if they're already a paid Beehiiv Pro subscriber (paid before creating account)
+    const bApiKey = process.env.BEEHIIV_API_KEY;
+    const bProPubId = process.env.BEEHIIV_PRO_PUB_ID;
+    if (bApiKey && bProPubId) {
+      try {
+        const r = await fetch(`https://api.beehiiv.com/v2/publications/${bProPubId}/subscriptions?email=${encodeURIComponent(normalEmail)}`, {
+          headers: { Authorization: `Bearer ${bApiKey}`, Accept: 'application/json' }
+        });
+        const d = await r.json();
+        if ((d.data || []).some(s => s.status === 'active')) {
+          account.accessType = 'subscriber';
+          account.trialExpires = null;
+        }
+      } catch (e) { /* non-fatal */ }
+    }
+
+    await setAccount(normalEmail, account);
+
+    // Create 30-day session
+    const sessionToken = generateSessionToken();
+    await setSession(sessionToken, normalEmail, 30 * 24 * 60 * 60);
+
+    // Subscribe to free newsletter (non-fatal)
+    if (bApiKey && process.env.BEEHIIV_PUB_ID) {
+      fetch(`https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUB_ID}/subscriptions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${bApiKey}` },
+        body: JSON.stringify({ email: normalEmail, utm_source: giftData ? 'gift' : 'trial', utm_medium: 'pro-signup' })
+      }).catch(e => console.warn('Beehiiv subscribe (non-fatal):', e.message));
+    }
+
+    const access = getAccountAccess(account);
+    console.log(`✓ Account created: ${normalEmail} (${access.type})`);
+    res.json({ success: true, token: sessionToken, email: normalEmail, access_type: access.type, days_left: access.daysLeft });
+  } catch (e) {
+    console.error('signup error:', e);
+    res.status(500).json({ success: false, error: 'Could not create account' });
+  }
+});
+
+// Login with email + password
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !email.includes('@')) return res.status(400).json({ success: false, error: 'Valid email required' });
+    if (!password) return res.status(400).json({ success: false, error: 'Password required' });
+
+    const normalEmail = email.trim().toLowerCase();
+    const account = await getAccount(normalEmail);
+
+    if (!account || !account.passwordHash || !verifyPassword(password, account.passwordSalt, account.passwordHash)) {
+      return res.status(401).json({ success: false, error: 'Incorrect email or password' });
+    }
+
+    // Check if they've become a paid subscriber since account creation
+    if (account.accessType !== 'subscriber') {
+      const apiKey = process.env.BEEHIIV_API_KEY;
+      const proPubId = process.env.BEEHIIV_PRO_PUB_ID;
+      if (apiKey && proPubId) {
+        try {
+          const r = await fetch(`https://api.beehiiv.com/v2/publications/${proPubId}/subscriptions?email=${encodeURIComponent(normalEmail)}`, {
+            headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' }
+          });
+          const d = await r.json();
+          if ((d.data || []).some(s => s.status === 'active')) {
+            account.accessType = 'subscriber';
+            await setAccount(normalEmail, account);
+          }
+        } catch (e) { /* non-fatal */ }
+      }
+    }
+
+    const access = getAccountAccess(account);
+    if (access.type === 'none') {
+      return res.status(403).json({ success: false, error: 'Your access has expired.', expired: true });
+    }
+
+    const sessionToken = generateSessionToken();
+    await setSession(sessionToken, normalEmail, 30 * 24 * 60 * 60);
+    console.log(`✓ Login: ${normalEmail} (${access.type})`);
+
+    res.json({ success: true, token: sessionToken, email: normalEmail, access_type: access.type, days_left: access.daysLeft });
+  } catch (e) {
+    console.error('login error:', e);
+    res.status(500).json({ success: false, error: 'Login failed' });
+  }
+});
+
+// Validate a session token — called on every page load
+app.post('/api/auth/verify-session', async (req, res) => {
+  try {
+    const { token } = req.body || {};
+    if (!token) return res.json({ valid: false });
+
+    const session = await getSession(token);
+    if (!session || session.expires < Date.now()) return res.json({ valid: false });
+
+    const account = await getAccount(session.email);
+    if (!account) return res.json({ valid: false });
+
+    const access = getAccountAccess(account);
+    if (access.type === 'none') return res.json({ valid: false, expired: true });
+
+    res.json({ valid: true, email: session.email, access_type: access.type, days_left: access.daysLeft });
+  } catch (e) {
+    console.error('verify-session error:', e);
+    res.status(500).json({ valid: false });
+  }
+});
+
+// OTP-based password reset
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { email, otp, new_password } = req.body || {};
+    if (!email || !email.includes('@')) return res.status(400).json({ success: false, error: 'Valid email required' });
+    if (!otp || String(otp).trim().length !== 6) return res.status(400).json({ success: false, error: 'Invalid verification code' });
+    if (!new_password || new_password.length < 8) return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+
+    const normalEmail = email.trim().toLowerCase();
+    const storedOTP = await getOTPRecord(normalEmail);
+    if (!storedOTP || storedOTP.purpose !== 'reset' || storedOTP.code !== String(otp).trim() || storedOTP.expires < Date.now()) {
+      return res.status(400).json({ success: false, error: 'Incorrect or expired verification code' });
+    }
+
+    const account = await getAccount(normalEmail);
+    if (!account) return res.status(404).json({ success: false, error: 'Account not found' });
+
+    const salt = generateSalt();
+    account.passwordHash = hashPassword(new_password, salt);
+    account.passwordSalt = salt;
+    await setAccount(normalEmail, account);
+    await delOTPRecord(normalEmail);
+
+    const sessionToken = generateSessionToken();
+    await setSession(sessionToken, normalEmail, 30 * 24 * 60 * 60);
+
+    const access = getAccountAccess(account);
+    console.log(`✓ Password reset: ${normalEmail}`);
+    res.json({ success: true, token: sessionToken, email: normalEmail, access_type: access.type, days_left: access.daysLeft });
+  } catch (e) {
+    console.error('reset-password error:', e);
+    res.status(500).json({ success: false, error: 'Could not reset password' });
+  }
+});
+
+// Invalidate a session on sign-out
+app.post('/api/auth/signout', async (req, res) => {
+  try {
+    const { token } = req.body || {};
+    if (token) await delSession(token);
+    res.json({ success: true });
+  } catch (e) { res.json({ success: true }); }
+});
+
+// ============================================
+// GIFT CODE SYSTEM
+// Admin creates codes; partners redeem at signup
+// gift:{CODE} in KV — no TTL (admin manages lifecycle)
+// gift-codes-index in KV — array of all code strings
+// ============================================
+
+app.get('/api/admin/gift-codes', requireAdmin, async (req, res) => {
+  try {
+    const index = await kvGet('gift-codes-index') || [];
+    const codes = (await Promise.all(index.map(async c => {
+      const d = await kvGet(`gift:${c}`);
+      return d ? { code: c, ...d } : null;
+    }))).filter(Boolean);
+    res.json({ success: true, codes });
+  } catch (e) {
+    console.error('gift-codes list error:', e);
+    res.status(500).json({ success: false, error: 'Could not load gift codes' });
+  }
+});
+
+app.post('/api/admin/gift-codes', requireAdmin, async (req, res) => {
+  try {
+    const { description, days, maxUses, code: customCode } = req.body || {};
+    if (!description) return res.status(400).json({ success: false, error: 'Description required' });
+
+    const d = parseInt(days) || 90;
+    const max = parseInt(maxUses) || -1;
+    const code = customCode
+      ? String(customCode).toUpperCase().replace(/[^A-Z0-9-]/g, '')
+      : 'DL-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+
+    if (await kvGet(`gift:${code}`)) return res.status(409).json({ success: false, error: 'Code already exists' });
+
+    const giftData = { description, days: d, maxUses: max, uses: [], active: true, created: Date.now() };
+    await kvSet(`gift:${code}`, giftData, 0);
+
+    const index = await kvGet('gift-codes-index') || [];
+    if (!index.includes(code)) { index.push(code); await kvSet('gift-codes-index', index, 0); }
+
+    console.log(`✓ Gift code created: ${code} (${d} days)`);
+    res.json({ success: true, code, ...giftData });
+  } catch (e) {
+    console.error('gift-code create error:', e);
+    res.status(500).json({ success: false, error: 'Could not create gift code' });
+  }
+});
+
+app.delete('/api/admin/gift-codes/:code', requireAdmin, async (req, res) => {
+  try {
+    const code = req.params.code.toUpperCase();
+    const giftData = await kvGet(`gift:${code}`);
+    if (!giftData) return res.status(404).json({ success: false, error: 'Code not found' });
+    giftData.active = false;
+    await kvSet(`gift:${code}`, giftData, 0);
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ success: false, error: 'Could not deactivate code' }); }
+});
+
+// Apply a gift code to an already-authenticated account
+app.post('/api/auth/redeem-gift', async (req, res) => {
+  try {
+    const { token, gift_code } = req.body || {};
+    if (!token || !gift_code) return res.status(400).json({ success: false, error: 'Token and gift_code required' });
+
+    const session = await getSession(token);
+    if (!session || session.expires < Date.now()) return res.status(401).json({ success: false, error: 'Invalid session' });
+
+    const code = String(gift_code).toUpperCase();
+    const giftData = await kvGet(`gift:${code}`);
+    if (!giftData || !giftData.active) return res.status(404).json({ success: false, error: 'Invalid or expired gift code' });
+    if (giftData.maxUses > 0 && (giftData.uses || []).length >= giftData.maxUses) {
+      return res.status(410).json({ success: false, error: 'This gift code has reached its maximum uses' });
+    }
+
+    const account = await getAccount(session.email);
+    if (!account) return res.status(404).json({ success: false, error: 'Account not found' });
+
+    const now = Date.now();
+    account.accessType = 'gifted';
+    account.giftExpires = now + giftData.days * 24 * 60 * 60 * 1000;
+    account.giftCode = code;
+    await setAccount(session.email, account);
+
+    giftData.uses = [...(giftData.uses || []), { email: session.email, activatedAt: now }];
+    await kvSet(`gift:${code}`, giftData, 0);
+
+    console.log(`✓ Gift redeemed: ${session.email} → ${code} (${giftData.days} days)`);
+    res.json({ success: true, days: giftData.days, expires: account.giftExpires, description: giftData.description });
+  } catch (e) {
+    console.error('redeem-gift error:', e);
+    res.status(500).json({ success: false, error: 'Could not redeem gift code' });
+  }
+});
+
+// ============================================
 // ENDPOINT: Referral signup lookup (admin-only, for manual monthly payout review)
 // GET /api/referral-stats?code=X
 app.get('/api/referral-stats', requireAdmin, async (req, res) => {
@@ -2564,6 +3032,14 @@ async function handleStripeWebhook(req, res) {
       const email = session.customer_email || session.customer_details?.email;
       if (email) {
         await beehiivAddProSubscriber(email);
+        // Update KV account immediately so active sessions reflect subscriber status without re-login
+        const account = await getAccount(email);
+        if (account) {
+          account.accessType = 'subscriber';
+          account.stripeCustomerId = session.customer || account.stripeCustomerId;
+          await setAccount(email, account);
+          console.log(`  KV account upgraded to subscriber: ${email}`);
+        }
       } else {
         console.warn('  checkout.session.completed: no email found in session');
       }
@@ -2573,6 +3049,16 @@ async function handleStripeWebhook(req, res) {
       const email = await getStripeCustomerEmail(sub.customer);
       if (email) {
         await beehiivRemoveProSubscriber(email);
+        // Revert KV account — if trial is still active they keep trial access, otherwise none
+        const account = await getAccount(email);
+        if (account && account.accessType === 'subscriber') {
+          const now = Date.now();
+          const trialStillActive = account.trialExpires && account.trialExpires > now;
+          const giftStillActive = account.giftExpires && account.giftExpires > now;
+          account.accessType = giftStillActive ? 'gifted' : trialStillActive ? 'trial' : 'none';
+          await setAccount(email, account);
+          console.log(`  KV account reverted to ${account.accessType}: ${email}`);
+        }
       } else {
         console.warn('  customer.subscription.deleted: could not resolve customer email');
       }
@@ -2583,7 +3069,15 @@ async function handleStripeWebhook(req, res) {
       const prevStatus = event.data.previous_attributes?.status;
       if (sub.status === 'canceled' && prevStatus && prevStatus !== 'canceled') {
         const email = await getStripeCustomerEmail(sub.customer);
-        if (email) await beehiivRemoveProSubscriber(email);
+        if (email) {
+          await beehiivRemoveProSubscriber(email);
+          const account = await getAccount(email);
+          if (account && account.accessType === 'subscriber') {
+            const now = Date.now();
+            account.accessType = (account.trialExpires && account.trialExpires > now) ? 'trial' : 'none';
+            await setAccount(email, account);
+          }
+        }
       }
     }
   } catch (err) {
