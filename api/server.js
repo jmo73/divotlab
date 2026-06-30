@@ -674,7 +674,8 @@ app.get('/api/dg-rankings', async (req, res) => {
       player_name:  r.player_name,
       dg_id:        r.dg_id,
       dg_rank:      r.datagolf_rank || r.dg_rank || r.rank || null,
-      owgr:         r.owgr || r.owgr_rank || r.world_rank || null,
+      // owgr can be 0 for unranked players; treat 0 as null
+      owgr:         (r.owgr > 0 ? r.owgr : null) || (r.owgr_rank > 0 ? r.owgr_rank : null) || (r.world_rank > 0 ? r.world_rank : null) || null,
       primary_tour: r.primary_tour || '',
       country:      r.country || ''
     }));
@@ -1065,8 +1066,11 @@ app.get('/api/course-fit', async (req, res) => {
     const [fieldRaw, skillL24Raw, skillL12Raw] = await Promise.all([
       fetchDataGolfDirect(`/field-updates?tour=pga&file_format=json&key=${DATAGOLF_API_KEY}`),
       fetchDataGolfDirect(`/preds/skill-ratings?display=value&file_format=json&key=${DATAGOLF_API_KEY}`),
-      fetchDataGolfDirect(`/preds/skill-ratings?display=value&period=l12&file_format=json&key=${DATAGOLF_API_KEY}`)
-        .catch(() => null) // non-fatal if L12 unavailable
+      // DataGolf skill-ratings: try last_n_rounds=12 (correct param) and period=l12 (alias)
+      fetchDataGolfDirect(`/preds/skill-ratings?display=value&last_n_rounds=12&file_format=json&key=${DATAGOLF_API_KEY}`)
+        .catch(() => fetchDataGolfDirect(`/preds/skill-ratings?display=value&period=l12&file_format=json&key=${DATAGOLF_API_KEY}`)
+          .catch(() => null)
+        ) // non-fatal if L12 unavailable
     ]);
 
     const eventName  = fieldRaw.event_name || '';
@@ -1076,13 +1080,23 @@ app.get('/api/course-fit', async (req, res) => {
     // Build skill lookups by dg_id
     const l24Map = new Map();
     const l12Map = new Map();
-    (skillL24Raw.skill_ratings || skillL24Raw.players || []).forEach(p => {
-      if (p.dg_id) l24Map.set(p.dg_id, p);
-    });
+    const l24Players = skillL24Raw.skill_ratings || skillL24Raw.players || [];
+    l24Players.forEach(p => { if (p.dg_id) l24Map.set(p.dg_id, p); });
     if (skillL12Raw) {
-      (skillL12Raw.skill_ratings || skillL12Raw.players || []).forEach(p => {
-        if (p.dg_id) l12Map.set(p.dg_id, p);
+      const l12Players = skillL12Raw.skill_ratings || skillL12Raw.players || [];
+      // Sanity check: if DataGolf ignored the period parameter and returned L24 data again,
+      // sg_total values will be identical. Sample first 5 players to detect this.
+      const sample = l12Players.slice(0, 5);
+      const isDuplicate = sample.length > 0 && sample.every(p12 => {
+        const p24 = l24Map.get(p12.dg_id);
+        return p24 && p24.sg_total != null && p12.sg_total != null
+          && Math.abs(p24.sg_total - p12.sg_total) < 0.001;
       });
+      if (isDuplicate) {
+        console.log('L12 skill-ratings identical to L24 — DataGolf ignored period parameter. Form trends will be unavailable.');
+      } else {
+        l12Players.forEach(p => { if (p.dg_id) l12Map.set(p.dg_id, p); });
+      }
     }
 
     // Compute raw course-fit score for each field player
