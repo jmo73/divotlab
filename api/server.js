@@ -1294,6 +1294,82 @@ app.get('/api/historical-event-results', async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
+// FORM TRENDS: compute L3 vs prior-3 SG averages from historical event data
+// Reuses the same cached event results as /api/model-accuracy (no extra DG requests if accuracy already ran)
+app.get('/api/form-trends', async (req, res) => {
+  const cacheKey = 'form-trends-2026';
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ success: true, fromCache: true, ...cached });
+
+  try {
+    const recentEvents = await getRecentCompletedEvents(10);
+    if (!recentEvents.length) return res.json({ success: true, fromCache: false, trends: [], events_analyzed: 0 });
+
+    const eventData = [];
+    for (let i = 0; i < recentEvents.length; i += 3) {
+      const batch = recentEvents.slice(i, i + 3);
+      const batchData = await Promise.all(batch.map(async evt => {
+        try {
+          const resultsCacheKey = `results-event-${evt.event_id}-2026`;
+          const raw = await getCachedJSON(resultsCacheKey, 604800, () =>
+            fetchDataGolfDirect(`/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
+          );
+          const players = raw.event_stats || raw.results || raw.data || [];
+          return { event: evt, players };
+        } catch (e) {
+          return { event: evt, players: [] };
+        }
+      }));
+      eventData.push(...batchData);
+      if (i + 3 < recentEvents.length) await new Promise(r => setTimeout(r, 400));
+    }
+
+    // Group player results newest-first (getRecentCompletedEvents returns newest first)
+    const playerMap = {};
+    eventData.forEach(({ event, players }) => {
+      players.forEach(p => {
+        if (!p.player_name) return;
+        if (!playerMap[p.player_name]) playerMap[p.player_name] = { dg_id: p.dg_id, country: p.country, events: [] };
+        playerMap[p.player_name].events.push({
+          event_name: event.event_name,
+          date: event.start_date,
+          sg_total: p.sg_total ?? null,
+          sg_ott:   p.sg_ott   ?? null,
+          sg_app:   p.sg_app   ?? null,
+          sg_arg:   p.sg_arg   ?? null,
+          sg_putt:  p.sg_putt  ?? null,
+          fin_text: p.fin_text || p.position || null,
+        });
+      });
+    });
+
+    const avg = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
+
+    const trends = Object.entries(playerMap).map(([name, { dg_id, country, events }]) => {
+      const result = { player_name: name, dg_id, country, events_count: events.length };
+      ['total', 'ott', 'app', 'arg', 'putt'].forEach(cat => {
+        const vals = events.map(e => e['sg_' + cat]).filter(v => v != null);
+        const l3 = avg(vals.slice(0, 3));
+        const prev = avg(vals.slice(3, 6));
+        result['recent_' + cat] = l3;
+        result['prior_' + cat]  = prev;
+        result['delta_' + cat]  = (l3 != null && prev != null) ? l3 - prev : null;
+      });
+      result.recent_results = events.slice(0, 5).map(e => ({
+        event_name: e.event_name, fin_text: e.fin_text, sg_total: e.sg_total
+      }));
+      return result;
+    }).filter(p => p.recent_total != null);
+
+    const payload = { trends, events_analyzed: recentEvents.length };
+    cache.set(cacheKey, payload, 3600);
+    res.json({ success: true, fromCache: false, ...payload });
+  } catch (e) {
+    console.error('Form trends error:', e);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // ============================================
 // HISTORICAL BETTING ODDS
 // ============================================

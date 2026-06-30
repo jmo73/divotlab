@@ -2137,16 +2137,6 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     <!-- Course Profile Card -->
     <div class="cp-card" id="cpCard" style="display:none;"></div>
 
-    <div class="picks-card-wrap" id="picksCardWrap" style="display:none;">
-      <div class="picks-card-header">
-        <span class="picks-card-badge">This Week's Card</span>
-        <span class="picks-card-tourney" id="picksCardTourney"></span>
-      </div>
-      <div class="card-body" id="picksBody">
-        <div class="picks-grid" id="picksGrid"></div>
-      </div>
-    </div>
-
     <div class="ov-quick-grid">
       <div class="dl-card">
         <div class="ov-section-label">Top Field Fits</div>
@@ -2404,7 +2394,7 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     <div class="sec-header">
       <div class="sec-header-left">
         <h2 class="sec-title">Form Trends</h2>
-        <p class="sec-sub">L12 vs L24 SG — who's heating up or cooling down this week's field</p>
+        <p class="sec-sub">Last 3 vs prior 3 events — who's heating up or cooling down this week's field</p>
       </div>
       <div class="sec-header-actions">
         <select class="cf-sort-sel" id="trendsCatSel" onchange="renderTrendsTab()">
@@ -2418,7 +2408,7 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     </div>
     <div class="trends-table-wrap">
       <div class="trends-table-head">
-        <span>#</span><span>Player</span><span>L24</span><span>L12</span><span>Δ Trend</span><span>Direction</span>
+        <span>#</span><span>Player</span><span>Prior (L4–6)</span><span>Recent (L3)</span><span>Δ Trend</span><span>Direction</span>
       </div>
       <div id="trendsBody"><div class="drawer-loading">Loading form data…</div></div>
     </div>
@@ -2587,7 +2577,7 @@ function switchNav(navId){
   var tabId=NAV_TO_TAB[navId];
   if(tabId) switchTab(tabId, null);
   if(navId==='rankings') renderRankingsTab();
-  if(navId==='trends' && courseFitData) renderTrendsTab();
+  if(navId==='trends') loadFormTrends();
   if(navId==='model') renderModelTab();
   if(navId==='weather') loadWeatherTab();
 }
@@ -2622,7 +2612,7 @@ function refreshThemeColors(){
   switch(currentTabId){
     case 'overview': renderOverview(); break;
     case 'coursefit': if(courseFitData) renderCourseFit(courseFitData); break;
-    case 'trends': if(courseFitData) renderTrendsTab(); break;
+    case 'trends': loadFormTrends(); break;
     case 'model': renderModelTab(); break;
     case 'value': if(valueBetsData) renderValueFinder(valueBetsData, currentVfFilter); renderVfFreshness(); break;
     case 'live': if(liveStatsCache) renderLiveTable(liveStatsCache, livePredCache); break;
@@ -2631,7 +2621,6 @@ function refreshThemeColors(){
     case 'dfs': if(dfsData[dfsSite]) renderDfs(); break;
     case 'rankings': renderRankingsTab(); break;
   }
-  if(proPicksData) renderPicksCard(proPicksData);
   // Re-render open drawer decomp panel (inline colors depend on theme via tc())
   if(drawerPlayer){
     var decompSec = document.getElementById('drawerDecompSection');
@@ -2999,7 +2988,7 @@ async function loadAllData(){
   updateCourseFitOdds();       // patches odds cells without re-rendering, computes dlsScore
   renderOverview();
   // Pre-render new tabs so they're instant on first navigation
-  if(courseFitData) renderTrendsTab();
+  loadFormTrends();
   if(valueBetsData && valueBetsData.length) renderModelTab();
   captureOddsSnapshot();       // snapshot current odds for line movement tracking
   vfSlowTimer = setTimeout(pollOddsRefresh, 10*60*1000);     // full odds refetch
@@ -4125,46 +4114,79 @@ function renderRankingsTab(){
 }
 
 // ── FORM TRENDS TAB ───────────────────────────────────────────────────────────
+var formTrendsCache = null;
+
+async function loadFormTrends(){
+  if(formTrendsCache) { renderTrendsTab(); return; }
+  var body = document.getElementById('trendsBody');
+  if(body) body.innerHTML = '<div class="drawer-loading">Loading form data…</div>';
+  try {
+    var res = await fetch(API+'/api/form-trends');
+    var d = await res.json();
+    if(d.success && d.trends && d.trends.length){
+      formTrendsCache = d.trends;
+    } else {
+      formTrendsCache = [];
+    }
+  } catch(e){ formTrendsCache = []; }
+  renderTrendsTab();
+}
+
 function renderTrendsTab(){
   var body = document.getElementById('trendsBody');
-  if(!body || !courseFitData || !courseFitData.field) return;
+  if(!body) return;
+
+  if(!formTrendsCache){
+    loadFormTrends();
+    return;
+  }
 
   var cat = (document.getElementById('trendsCatSel')||{}).value || 'total';
-  var l24Key = cat==='total' ? 'sg_total' : 'sg_'+cat;
-  var l12Key = l24Key+'_l12';
+  var recentKey = 'recent_' + cat;
+  var priorKey  = 'prior_'  + cat;
+  var deltaKey  = 'delta_'  + cat;
 
-  var players = courseFitData.field.filter(function(p){
-    return p[l24Key]!=null && p[l12Key]!=null;
+  // Build field name set for filtering to this week's field
+  var fieldNames = new Set();
+  if(courseFitData && courseFitData.field){
+    courseFitData.field.forEach(function(p){ fieldNames.add(p.player_name); });
+  }
+
+  var players = formTrendsCache.filter(function(p){
+    // Show all if field not yet loaded; otherwise filter to this week
+    return (!fieldNames.size || fieldNames.has(p.player_name)) && p[recentKey] != null;
   });
 
   players.sort(function(a,b){
-    var da = (a[l12Key]||0)-(a[l24Key]||0);
-    var db = (b[l12Key]||0)-(b[l24Key]||0);
-    return db - da;
+    return (b[deltaKey]||0) - (a[deltaKey]||0);
   });
 
   if(!players.length){
-    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;line-height:1.6;">Form trends unavailable this week.<br><span style="font-size:12px;opacity:.55;">DataGolf\'s standard skill ratings are a single 24-round rolling average — L12 breakdowns require the historical rounds data plan. Trends will appear once that data is available.</span></div>';
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;line-height:1.6;">No form trend data available for this category.</div>';
     return;
   }
 
   body.innerHTML = players.map(function(p, i){
-    var l24 = p[l24Key]; var l12 = p[l12Key];
-    var delta = l12 - l24;
-    var dir = delta > 0.05 ? 'rising' : delta < -0.05 ? 'falling' : 'flat';
-    var arrow = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
-    var l24Cls = l24>0.05?'pos':l24<-0.05?'neg':'zero';
-    var l12Cls = l12>0.05?'pos':l12<-0.05?'neg':'zero';
-    var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    var recent = p[recentKey];
+    var prior  = p[priorKey];
+    var delta  = p[deltaKey];
+    var dir    = delta != null ? (delta > 0.1 ? 'rising' : delta < -0.1 ? 'falling' : 'flat') : 'flat';
+    var arrow  = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
+    var recentCls = recent==null?'zero':recent>0.1?'pos':recent<-0.1?'neg':'zero';
+    var priorCls  = prior==null?'zero':prior>0.1?'pos':prior<-0.1?'neg':'zero';
+    var deltaCls  = delta==null?'zero':delta>0.1?'pos':delta<-0.1?'neg':'zero';
+    var safeName  = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    var country   = p.country || '';
+    function sgFmt(v){ return v==null?'—':(v>0?'+':'')+v.toFixed(2); }
     return '<div class="trend-row" onclick="openPlayerDrawer(\''+safeName+'\')">'
       +'<div class="trend-num">'+(i+1)+'</div>'
       +'<div class="trend-player">'+pAvatarHtml(p.player_name,28)+'<div>'
         +'<div class="trend-name">'+pFmtName(p.player_name)+'</div>'
-        +(p.country?'<div class="trend-country">'+p.country+'</div>':'')
+        +(country?'<div class="trend-country">'+country+'</div>':'')
       +'</div></div>'
-      +'<div class="trend-val '+l24Cls+'">'+(l24>0?'+':'')+l24.toFixed(2)+'</div>'
-      +'<div class="trend-val '+l12Cls+'">'+(l12>0?'+':'')+l12.toFixed(2)+'</div>'
-      +'<div class="trend-delta '+dir+'">'+(delta>0?'+':'')+delta.toFixed(2)+'</div>'
+      +'<div class="trend-val '+priorCls+'">'+sgFmt(prior)+'</div>'
+      +'<div class="trend-val '+recentCls+'">'+sgFmt(recent)+'</div>'
+      +'<div class="trend-delta '+deltaCls+'">'+sgFmt(delta)+'</div>'
       +'<div class="trend-dir"><span class="trend-arrow">'+arrow+'</span><span class="trend-badge '+dir+'">'+dir+'</span></div>'
     +'</div>';
   }).join('');
@@ -5635,8 +5657,8 @@ async function loadRecentLeaderboards(){
       if(!d || !d.success || !d.data) return;
 
       var raw = d.data;
-      // DataGolf returns results in an array — try multiple field paths
-      var results = raw.results || raw.event_results || (Array.isArray(raw) ? raw : []);
+      // DataGolf returns results under event_stats (primary field name)
+      var results = raw.event_stats || raw.results || raw.event_results || (Array.isArray(raw) ? raw : []);
       if(!results.length) return;
 
       // Sort by finishing position (numerical, CUT/WD at end)
@@ -5827,54 +5849,9 @@ async function loadProPicks(){
 }
 
 function renderPicksCard(d){
-  if(!d||!d.picks||!d.picks.length){
-    document.getElementById('picksCardWrap').style.display='none';
-    return;
-  }
-  var tourney = d.tournament+(d.week_of?' · '+d.week_of:'');
-  document.getElementById('picksCardTourney').textContent = tourney;
-
-  var html = '';
-  d.picks.forEach(function(p){
-    if(p.section) html += '<div class="pick-section-label">'+p.section+'</div>';
-    var resultClass = p.result==='win'?'win':p.result==='loss'?'loss':'';
-    var resultBadge = p.result==='win'
-      ?'<span class="pick-result-badge pick-result-win">WIN</span>'
-      :p.result==='loss'
-      ?'<span class="pick-result-badge pick-result-loss">LOSS</span>'
-      :'<span class="pick-result-badge pick-result-pending">PENDING</span>';
-    var confCls = (p.confidence||'medium').toLowerCase();
-    html += '<div class="pick-card '+resultClass+'">'
-      +resultBadge
-      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'
-        +pAvatarHtml(p.player,40)
-        +'<div class="pick-player" style="margin:0;">'+pFmtName(p.player)+'</div>'
-      +'</div>'
-      +'<div class="pick-meta">'
-        +'<span class="pick-bet-badge">'+p.bet_type+'</span>'
-        +(p.bet_detail?'<span style="font-size:11px;color:'+tc(0.4)+';">'+p.bet_detail+'</span>':'')
-        +'<span class="pick-odds">'+p.odds+'</span>'
-        +'<span class="pick-book">'+p.book+'</span>'
-      +'</div>'
-      +'<span class="pick-confidence '+confCls+'">'+p.confidence+'</span>'
-      +(p.reasoning?'<div class="pick-reasoning">'+p.reasoning+'</div>':'')
-    +'</div>';
-  });
-
-  document.getElementById('picksGrid').innerHTML = html;
-  var wrap = document.getElementById('picksCardWrap');
-  wrap.style.display='block';
-  renderOverview();
-}
-
-function togglePicksCard(){
-  var wrap = document.getElementById('picksCardWrap');
-  var body = document.getElementById('picksBody');
-  var chev = document.getElementById('picksChevron');
-  if(!wrap||!body||!chev) return;
-  var collapsed = body.classList.toggle('hidden');
-  wrap.classList.toggle('collapsed', collapsed);
-  chev.classList.toggle('up', collapsed);
+  // Card removed from UI; just update the data store so pick names
+  // remain available for leaderboard/matchup highlighting
+  if(d) proPicksData = d;
 }
 
 
