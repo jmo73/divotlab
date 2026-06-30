@@ -1294,11 +1294,11 @@ app.get('/api/historical-event-results', async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
-// FORM TRENDS: 0-100 form score over last 6 events, sorted by current hotness
+// FORM TRENDS: 0-100 form score over last 3 appearances; 6-slot aligned timeline for display
 // Form score per event: winner=100, last place=0, CUT/WD=0 (normalized to field size)
-// Reuses same cached event results as /api/model-accuracy — no extra DG requests if accuracy already ran
+// recent_results is 6 fixed slots aligned to the 6 most recent events so boxes line up across players
 app.get('/api/form-trends', async (req, res) => {
-  const cacheKey = 'form-trends-2026v3';
+  const cacheKey = 'form-trends-2026v4';
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1306,6 +1306,7 @@ app.get('/api/form-trends', async (req, res) => {
     const recentEvents = await getRecentCompletedEvents(10);
     if (!recentEvents.length) return res.json({ success: true, fromCache: false, trends: [], events_analyzed: 0 });
 
+    // Fetch event results in batches of 3 (rate limit: 45 req/min)
     const eventData = [];
     for (let i = 0; i < recentEvents.length; i += 3) {
       const batch = recentEvents.slice(i, i + 3);
@@ -1316,7 +1317,6 @@ app.get('/api/form-trends', async (req, res) => {
             fetchDataGolfDirect(`/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
           );
           const players = raw.event_stats || raw.results || raw.data || [];
-          // fieldSize = players who actually finished (made cut), minimum 10
           const finishers = players.filter(p => parseFinish(p.fin_text || p.position) < 999);
           const fieldSize = Math.max(finishers.length, 10);
           return { event: evt, players, fieldSize };
@@ -1328,7 +1328,19 @@ app.get('/api/form-trends', async (req, res) => {
       if (i + 3 < recentEvents.length) await new Promise(r => setTimeout(r, 400));
     }
 
-    // Group player results newest-first (getRecentCompletedEvents returns newest first)
+    // Load DG world rankings — reuses 24hr cache from /api/dg-rankings if already fetched
+    const dgRankByName = {};
+    try {
+      const rankRaw = await getCachedJSON('dg-rankings', 86400, () =>
+        fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`)
+      );
+      const rankList = Array.isArray(rankRaw) ? rankRaw : (rankRaw.rankings || rankRaw.data || []);
+      rankList.forEach(r => {
+        if (r.player_name) dgRankByName[r.player_name] = r.datagolf_rank || r.dg_rank || r.rank || null;
+      });
+    } catch (e) { /* rankings optional — DG Rank sort will be unavailable */ }
+
+    // Group player results — store event_id so we can do slot-aligned display
     const playerMap = {};
     eventData.forEach(({ event, players, fieldSize }) => {
       players.forEach(p => {
@@ -1336,70 +1348,79 @@ app.get('/api/form-trends', async (req, res) => {
         if (!playerMap[p.player_name]) playerMap[p.player_name] = { dg_id: p.dg_id, country: p.country, events: [] };
         const pos = parseFinish(p.fin_text || p.position);
         const madeCut = pos < 999;
-
-        // Form score: winner = 100, last place = 0, CUT/WD = 0
-        // Uses (fieldSize - pos) / (fieldSize - 1) so winner always scores 100
         const formScore = madeCut
           ? Math.round(Math.max(0, (fieldSize - pos) / Math.max(fieldSize - 1, 1) * 100))
           : 0;
-
-        // fin_text cleanup: DataGolf sometimes gives numeric position instead of text
         let finText = p.fin_text || '';
         if (!finText && madeCut) finText = pos === 1 ? '1' : 'T' + pos;
         if (!finText) finText = 'CUT';
-
         playerMap[p.player_name].events.push({
+          event_id:   event.event_id,
           event_name: event.event_name,
-          fin_text: finText,
+          fin_text:   finText,
           pos,
           form_score: formScore,
-          made_cut: madeCut,
+          made_cut:   madeCut,
         });
       });
     });
 
     const avg = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
 
+    // 6 display slots aligned to the 6 most recent events (eventData[0]=newest)
+    const top6 = eventData.slice(0, 6);
+
     const trends = Object.entries(playerMap).map(([name, { dg_id, country, events }]) => {
-      // events are newest-first
-      const l3 = events.slice(0, 3);
+      // events[] are newest-first; l3 = player's 3 most recent appearances (form score window)
+      const l3    = events.slice(0, 3);
       const prior = events.slice(3, 6);
 
-      // Form score average includes CUT events as 0 — accurately reflects recent form
-      const l3Score   = avg(l3.map(e => e.form_score));
+      const l3Score    = avg(l3.map(e => e.form_score));
       const priorScore = avg(prior.map(e => e.form_score));
       const deltaScore = (l3Score != null && priorScore != null) ? Math.round(l3Score - priorScore) : null;
 
-      // Avg finish position among made-cut events only (for display context)
-      const l3CutPos = l3.filter(e => e.made_cut).map(e => e.pos);
-      const l3AvgPos = l3CutPos.length ? Math.round(avg(l3CutPos)) : null;
+      const l3CutPos   = l3.filter(e => e.made_cut).map(e => e.pos);
+      const l3AvgPos   = l3CutPos.length ? Math.round(avg(l3CutPos)) : null;
       const l3CutsMade = l3.filter(e => e.made_cut).length;
-      const l3Top5 = l3.filter(e => e.made_cut && e.pos <= 5).length;
-      const l3Top10 = l3.filter(e => e.made_cut && e.pos <= 10).length;
-      const l3Wins = l3.filter(e => e.pos === 1).length;
+      const l3Top5     = l3.filter(e => e.made_cut && e.pos <= 5).length;
+      const l3Top10    = l3.filter(e => e.made_cut && e.pos <= 10).length;
+      const l3Wins     = l3.filter(e => e.pos === 1).length;
+
+      // Slot-aware display: 6 fixed positions matching the 6 most recent event slots.
+      // played:false = player wasn't in that event. This ensures boxes line up across all players.
+      const eventById = {};
+      events.forEach(e => { eventById[e.event_id] = e; });
+      const recent_results = top6.map(({ event }) => {
+        const r = eventById[event.event_id];
+        if (!r) return { played: false, fin_text: null, made_cut: false, form_score: null };
+        return { played: true, fin_text: r.fin_text, made_cut: r.made_cut, form_score: r.form_score };
+      });
+
+      // All-6 cut stats across the 6 event slots (for the sub-line denominator)
+      const all6Played      = recent_results.filter(r => r.played);
+      const all6CutsMade    = all6Played.filter(r => r.made_cut).length;
+      const all6EventsCount = all6Played.length;
 
       return {
-        player_name: name,
+        player_name:       name,
         dg_id,
+        dg_rank:           dgRankByName[name] || null,
         country,
-        l3_score:   l3Score   != null ? Math.round(l3Score)   : null,
-        prior_score: priorScore != null ? Math.round(priorScore) : null,
-        delta_score: deltaScore,
-        l3_avg_pos: l3AvgPos,        // avg finish among made-cut starts in last 3
-        l3_cuts_made: l3CutsMade,    // 0-3
-        l3_events_count: l3.length,  // actual events played in this window (may be < 3)
-        l3_top5: l3Top5,
-        l3_top10: l3Top10,
-        l3_wins: l3Wins,
-        recent_results: events.slice(0, 6).map(e => ({
-          fin_text: e.fin_text,
-          made_cut: e.made_cut,
-          form_score: e.form_score,
-        })),
+        l3_score:          l3Score   != null ? Math.round(l3Score)   : null,
+        prior_score:       priorScore != null ? Math.round(priorScore) : null,
+        delta_score:       deltaScore,
+        l3_avg_pos:        l3AvgPos,
+        l3_cuts_made:      l3CutsMade,
+        l3_events_count:   l3.length,
+        l3_top5,
+        l3_top10,
+        l3_wins,
+        all6_cuts_made:    all6CutsMade,
+        all6_events_count: all6EventsCount,
+        recent_results,    // always 6 slots; slot order: index 0 = most recent event
       };
     }).filter(p => p.l3_score != null);
 
-    // Sort by l3_score descending (hottest first)
     trends.sort((a, b) => (b.l3_score || 0) - (a.l3_score || 0));
 
     const payload = { trends, events_analyzed: recentEvents.length };
