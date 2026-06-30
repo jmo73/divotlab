@@ -657,6 +657,131 @@ app.get('/api/pre-tournament-archive', async (req, res) => {
   }
 });
 
+// ENDPOINT: DataGolf Rankings (OWGR + DG rank + primary tour)
+app.get('/api/dg-rankings', async (req, res) => {
+  try {
+    const result = await fetchDataGolf(
+      `/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`,
+      'dg-rankings',
+      86400 // 24hr — updated weekly by DataGolf
+    );
+
+    const raw = result.data || {};
+    // DataGolf response: { rankings: [...] } — each entry has datagolf_rank, owgr, player_name
+    const rankings = (Array.isArray(raw) ? raw : null) || raw.rankings || [];
+    console.log(`DG rankings: ${rankings.length} players, sample:`, rankings[0] ? JSON.stringify(rankings[0]).slice(0, 120) : 'none');
+    const mapped = rankings.map(r => ({
+      player_name:  r.player_name,
+      dg_id:        r.dg_id,
+      dg_rank:      r.datagolf_rank || r.dg_rank || r.rank || null,
+      owgr:         r.owgr || r.owgr_rank || r.world_rank || null,
+      primary_tour: r.primary_tour || '',
+      country:      r.country || ''
+    }));
+
+    res.json({ success: true, fromCache: result.fromCache, rankings: mapped });
+  } catch (error) {
+    console.error('DG rankings error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ENDPOINT: FedEx Cup standings + season earnings (via ESPN unofficial API, 4hr cache)
+app.get('/api/fedex-standings', async (req, res) => {
+  const CACHE_KEY = 'fedex-standings';
+  const cached = cache.get(CACHE_KEY);
+  if (cached) return res.json({ ...cached, fromCache: true });
+
+  try {
+    // Fetch OWGR + FedEx/earnings from ESPN in parallel
+    // ESPN OWGR: raw.rankings.athletes[] — each has displayName, ranks.current.rank, statistics[]
+    // ESPN FedEx: raw.standings.entries[] (if that URL works) — earnings + fedex points
+    const [owgrRaw, fedexRaw] = await Promise.allSettled([
+      fetch('https://site.api.espn.com/apis/site/v2/sports/golf/pga/rankings',
+        { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json()),
+      fetch('https://site.api.espn.com/apis/site/v2/sports/golf/pga/standings',
+        { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json()).catch(() => null)
+    ]);
+
+    const owgrData = owgrRaw.status === 'fulfilled' ? owgrRaw.value : null;
+    const fedexData = fedexRaw.status === 'fulfilled' ? fedexRaw.value : null;
+
+    if (owgrData) {
+      console.log('ESPN OWGR top-level keys:', Object.keys(owgrData));
+      if (owgrData.rankings) console.log('ESPN OWGR rankings sub-keys:', Object.keys(owgrData.rankings));
+    }
+    if (fedexData) {
+      console.log('ESPN FedEx top-level keys:', Object.keys(fedexData));
+    }
+
+    // Parse OWGR athletes → map by name → rank
+    const owgrEntries = (owgrData && owgrData.rankings && owgrData.rankings.athletes)
+      || (owgrData && owgrData.rankings && owgrData.rankings.entries)
+      || (owgrData && Array.isArray(owgrData.rankings) ? owgrData.rankings : null)
+      || [];
+    console.log('ESPN OWGR entries:', owgrEntries.length, owgrEntries[0] ? Object.keys(owgrEntries[0]) : 'empty');
+
+    // Parse FedEx/earnings from secondary endpoint
+    const fedexEntries = (fedexData && fedexData.standings && fedexData.standings.entries)
+      || (fedexData && fedexData.rankings && fedexData.rankings.athletes)
+      || (fedexData && fedexData.rankings && fedexData.rankings.entries)
+      || (fedexData && Array.isArray(fedexData.entries) ? fedexData.entries : null)
+      || [];
+    console.log('ESPN FedEx entries:', fedexEntries.length);
+
+    function extractStats(e) {
+      const stats = {};
+      (e.statistics || e.stats || []).forEach(s => { stats[s.name] = s.value; });
+      return stats;
+    }
+    function extractName(e) {
+      return (e.athlete && (e.athlete.displayName || e.athlete.fullName))
+        || e.displayName || e.fullName || '';
+    }
+    function extractRank(e, i) {
+      return (e.ranks && e.ranks.current && e.ranks.current.rank)
+        || e.currentRank || e.rank || (e.current && e.current.rank) || (i + 1);
+    }
+
+    // Build FedEx map (by display name) for earnings/points lookup
+    const fedexByName = {};
+    fedexEntries.forEach((e, i) => {
+      const nm = extractName(e); if (!nm) return;
+      const st = extractStats(e);
+      fedexByName[nm] = {
+        fedex_points: Math.round(st.fedexPoints || st.fedexCupPoints || st.points || 0) || null,
+        earnings:     Math.round(st.earnings || st.yearEarnings || st.money || 0) || null,
+        events:       Math.round(st.events || st.eventsPlayed || 0) || null,
+        wins:         Math.round(st.wins || 0),
+      };
+    });
+
+    // Build final standings from OWGR athletes, merging in FedEx data where available
+    const standings = owgrEntries.map((e, i) => {
+      const nm = extractName(e); if (!nm) return null;
+      const st = extractStats(e);
+      const fx = fedexByName[nm] || {};
+      return {
+        player_name:  nm,
+        rank:         extractRank(e, i),
+        fedex_points: fx.fedex_points ?? (Math.round(st.fedexPoints || st.fedexCupPoints || 0) || null),
+        earnings:     fx.earnings ?? (Math.round(st.earnings || 0) || null),
+        events:       fx.events ?? (Math.round(st.events || 0) || null),
+        wins:         fx.wins ?? 0,
+      };
+    }).filter(Boolean);
+
+    if (!standings.length) throw new Error('ESPN returned empty standings after parsing');
+
+    const result = { success: true, source: 'espn', standings };
+    cache.set(CACHE_KEY, result, 4 * 3600);
+    return res.json(result);
+  } catch (error) {
+    console.error('FedEx standings error:', error.message);
+    return res.json({ success: false, standings: [], error: error.message });
+  }
+});
+
 // ENDPOINT: Player Skill Decompositions
 app.get('/api/player-decompositions', async (req, res) => {
   try {
@@ -976,12 +1101,18 @@ app.get('/api/course-fit', async (req, res) => {
         am:          fp.am || 0,
         rawScore:    blended,
         fitScore:    null, // filled after normalization
-        // L24 skill breakdown (displayed in UI)
+        // L24 skill breakdown (long-term baseline)
         sg_ott:      l24 ? (l24.sg_ott  != null ? +l24.sg_ott.toFixed(3)  : null) : null,
         sg_app:      l24 ? (l24.sg_app  != null ? +l24.sg_app.toFixed(3)  : null) : null,
         sg_arg:      l24 ? (l24.sg_arg  != null ? +l24.sg_arg.toFixed(3)  : null) : null,
         sg_putt:     l24 ? (l24.sg_putt != null ? +l24.sg_putt.toFixed(3) : null) : null,
         sg_total:    l24 ? (l24.sg_total != null ? +l24.sg_total.toFixed(3): null) : null,
+        // L12 recent form (for trend arrows — rising/falling vs L24 baseline)
+        sg_ott_l12:   l12 ? (l12.sg_ott   != null ? +l12.sg_ott.toFixed(3)   : null) : null,
+        sg_app_l12:   l12 ? (l12.sg_app   != null ? +l12.sg_app.toFixed(3)   : null) : null,
+        sg_arg_l12:   l12 ? (l12.sg_arg   != null ? +l12.sg_arg.toFixed(3)   : null) : null,
+        sg_putt_l12:  l12 ? (l12.sg_putt  != null ? +l12.sg_putt.toFixed(3)  : null) : null,
+        sg_total_l12: l12 ? (l12.sg_total != null ? +l12.sg_total.toFixed(3) : null) : null,
         // Form info
         form_blended: formApplied,
         has_full_data: !!(l24 && l24.sg_ott != null && l24.sg_app != null && l24.sg_arg != null && l24.sg_putt != null)
