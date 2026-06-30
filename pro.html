@@ -1787,6 +1787,7 @@ html[data-theme="light"] .rnk-val.bold{ color:#1A1916; }
 .trend-badge-item.top10{ color:var(--green-light); background:rgba(91,191,133,0.09); }
 .trend-badge-item.mc   { color:rgba(245,244,240,0.55); background:rgba(255,255,255,0.05); }
 .trend-badge-item.cut  { color:rgba(245,244,240,0.25); background:rgba(255,255,255,0.03); }
+.trend-badge-item.empty{ color:rgba(245,244,240,0.1);  background:rgba(255,255,255,0.015); border:1px dashed rgba(255,255,255,0.07); }
 .trend-score-cell{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
 .trend-score-num{ font-family:var(--mono); font-size:18px; font-weight:700; line-height:1; }
 .trend-score-delta{ font-family:var(--mono); font-size:10px; font-weight:600; }
@@ -1812,7 +1813,8 @@ html[data-theme="light"] .trends-table-head span{ color:rgba(28,27,24,0.3); }
 html[data-theme="light"] .trend-row{ border-bottom-color:rgba(28,27,24,0.05); }
 html[data-theme="light"] .trend-row:hover{ background:rgba(28,27,24,0.02); }
 html[data-theme="light"] .trend-badge-item.mc{ color:rgba(28,27,24,0.5); background:rgba(28,27,24,0.06); }
-html[data-theme="light"] .trend-badge-item.cut{ color:rgba(28,27,24,0.3); background:rgba(28,27,24,0.03); }
+html[data-theme="light"] .trend-badge-item.cut  { color:rgba(28,27,24,0.3); background:rgba(28,27,24,0.03); }
+html[data-theme="light"] .trend-badge-item.empty{ color:rgba(28,27,24,0.15); background:rgba(28,27,24,0.02); border-color:rgba(28,27,24,0.1); }
 html[data-theme="light"] .trend-sub{ color:rgba(28,27,24,0.35); }
 html[data-theme="light"] .trend-num{ color:rgba(28,27,24,0.3); }
 html[data-theme="light"] .trend-name{ color:#1A1916; }
@@ -2422,6 +2424,7 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
       <button class="trends-sort-btn active" onclick="setTrendsSort('score',this)">Form Score</button>
       <button class="trends-sort-btn" onclick="setTrendsSort('avgpos',this)">Avg Finish</button>
       <button class="trends-sort-btn" onclick="setTrendsSort('rising',this)">Most Improved</button>
+      <button class="trends-sort-btn" onclick="setTrendsSort('dgrank',this)">DG Rank</button>
     </div>
     <div class="trends-table-wrap">
       <div class="trends-table-head">
@@ -4198,6 +4201,15 @@ function renderTrendsTab(){
       if(b.delta_score == null) return -1;
       return b.delta_score - a.delta_score;
     });
+  } else if(formTrendsSortMode === 'dgrank'){
+    // DG world rank asc — build rank map from courseFitData (field players only)
+    var dgRankMap = {};
+    if(courseFitData && courseFitData.field){
+      courseFitData.field.forEach(function(q){ dgRankMap[q.player_name] = q.dg_rank || 9999; });
+    }
+    players.sort(function(a, b){
+      return (dgRankMap[a.player_name] || 9999) - (dgRankMap[b.player_name] || 9999);
+    });
   }
   // 'score': already sorted by server
 
@@ -4222,26 +4234,29 @@ function renderTrendsTab(){
     return '#E06B6B';
   }
 
-  // Thin separator between last-3 and prior-3 result badges
-  var sepHtml = '<span style="opacity:0.18;font-size:9px;margin:0 1px;font-family:var(--mono);">|</span>';
-
   body.innerHTML = players.map(function(p, i){
     var score = p.l3_score;
     var delta = p.delta_score;
-    // actual events in l3 window — may be < 3 if player is new or missed events
     var n = (p.l3_events_count != null) ? p.l3_events_count : 3;
     var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
 
-    // Separate last-3 from prior-3 with a thin divider
-    var results = p.recent_results || [];
-    var last3Badges = results.slice(0,3).map(resultBadge).join('');
-    var prior3Badges = results.slice(3,6).map(resultBadge).join('');
-    var badges = last3Badges + (prior3Badges ? sepHtml + prior3Badges : '');
+    // 6-slot timeline: oldest on left, newest on right.
+    // Empty "—" boxes fill slots for events the player wasn't in.
+    var results = (p.recent_results || []).slice(0, 6);
+    var emptySlots = 6 - results.length;
+    var allBadges = [];
+    for(var j = 0; j < emptySlots; j++){
+      allBadges.push('<span class="trend-badge-item empty">—</span>');
+    }
+    // results[0] is most recent — reverse so newest is on the right
+    results.slice().reverse().forEach(function(r){ allBadges.push(resultBadge(r)); });
+    var badges = allBadges.join('');
 
-    // Sub-line: "3/3 starts · avg T8 · 2 top-10s"
+    // Sub-line: "1/3 cuts · avg T4 · 1 top-10"
+    // "cuts" = made-cut events, making the cut rate explicit
     var sub = '';
     if(p.l3_cuts_made != null){
-      var parts = [p.l3_cuts_made+'/'+n+' starts'];
+      var parts = [p.l3_cuts_made+'/'+n+' cuts'];
       if(p.l3_avg_pos != null) parts.push('avg T'+p.l3_avg_pos);
       if(p.l3_top10 > 0) parts.push(p.l3_top10+(p.l3_top10===1?' top-10':' top-10s'));
       sub = parts.join(' · ');
