@@ -697,11 +697,16 @@ app.get('/api/fedex-standings', async (req, res) => {
     // Fetch OWGR + FedEx/earnings from ESPN in parallel
     // ESPN OWGR: raw.rankings.athletes[] — each has displayName, ranks.current.rank, statistics[]
     // ESPN FedEx: raw.standings.entries[] (if that URL works) — earnings + fedex points
+    // Try multiple FedEx Cup sources in parallel with ESPN OWGR
     const [owgrRaw, fedexRaw] = await Promise.allSettled([
       fetch('https://site.api.espn.com/apis/site/v2/sports/golf/pga/rankings',
         { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json()),
-      fetch('https://site.api.espn.com/apis/site/v2/sports/golf/pga/standings',
-        { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json()).catch(() => null)
+      // Try ESPN FedEx-specific endpoint, then PGA Tour stats page as fallback
+      fetch('https://site.api.espn.com/apis/site/v2/sports/golf/fedexcup/standings',
+        { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json())
+        .catch(() => fetch('https://site.api.espn.com/apis/site/v2/sports/golf/pga/standings',
+          { headers: { 'User-Agent': 'Mozilla/5.0' } }).then(r => r.json()))
+        .catch(() => null)
     ]);
 
     const owgrData = owgrRaw.status === 'fulfilled' ? owgrRaw.value : null;
