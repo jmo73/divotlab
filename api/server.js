@@ -1298,7 +1298,7 @@ app.get('/api/historical-event-results', async (req, res) => {
 // Form score per event: winner=100, last place=0, CUT/WD=0 (normalized to field size)
 // recent_results is 6 fixed slots aligned to the 6 most recent events so boxes line up across players
 app.get('/api/form-trends', async (req, res) => {
-  const cacheKey = 'form-trends-2026v5';
+  const cacheKey = 'form-trends-2026v6';
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1396,9 +1396,9 @@ app.get('/api/form-trends', async (req, res) => {
         l3_avg_pos:        l3AvgPos,
         l3_cuts_made:      l3CutsMade,
         l3_events_count:   l3.length,
-        l3_top5,
-        l3_top10,
-        l3_wins,
+        l3_top5:           l3Top5,
+        l3_top10:          l3Top10,
+        l3_wins:           l3Wins,
         all6_cuts_made:    all6CutsMade,
         all6_events_count: all6EventsCount,
         recent_results,    // always 6 slots; slot order: index 0 = most recent event
