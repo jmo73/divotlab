@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-06-22",
+  "last_updated": "2026-06-30",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 59,
+    "total_picks": 64,
     "total_hits": 24,
-    "hit_rate_pct": 40.7,
-    "events_tracked": 14,
+    "hit_rate_pct": 37.5,
+    "events_tracked": 15,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
-      "top_5":   { "picks": 9,  "hits": 3 },
-      "top_10":  { "picks": 24, "hits": 11 },
+      "top_5":   { "picks": 12, "hits": 3 },
+      "top_10":  { "picks": 26, "hits": 11 },
       "top_20":  { "picks": 12, "hits": 4 },
       "matchup": { "picks": 13, "hits": 6 }
     },
     "units": {
-      "wagered":      59.0,
+      "wagered":      64.0,
       "returned":     85.15,
-      "profit_loss":  26.15,
-      "roi_pct":      44.3
+      "profit_loss":  21.15,
+      "roi_pct":      33.1
     }
   },
 
@@ -160,6 +160,24 @@
       ],
       "sleepers": [
         { "player": "Cauley, Bud", "bet": "Top 5", "odds": 1800, "book": "DraftKings", "result": "loss", "note": "Finished T56 (+10). Not counted in totals." }
+      ]
+    },
+    {
+      "event": "Travelers Championship",
+      "date": "2026-06-30",
+      "picks_count": 5,
+      "hits_count": 0,
+      "net_units": -5.00,
+      "notes": "0 for 5. Main card was approach-heavy; Hovland won primarily via OTT (+1.02/rd) and ARG (+0.50/rd) while barely contributing via approach (+0.17/rd). Straka finished last (72nd, +10) — approach avg -1.49/rd for event, extreme negative vs. pre-tournament profile. Henley T12 was two spots outside Top 5. Model approach weight (28%) pulled picks in wrong direction for this week's conditions. Shorter-price plays (bonus, not in main totals): Spaun Top 20 +160 WIN (T7), Cantlay Top 10 +300 LOSS (T14), Si Woo Kim Top 10 +260 LOSS (T44).",
+      "picks": [
+        { "player": "Rai, Aaron",       "bet": "Top 5",  "book": "DraftKings", "odds": 1000, "type": "top_5",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T30 (-11). SG: App -0.31/rd for event" },
+        { "player": "Henley, Russell",  "bet": "Top 5",  "book": "DraftKings", "odds": 660,  "type": "top_5",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T12 (-15). Two spots outside the number" },
+        { "player": "Straka, Sepp",     "bet": "Top 10", "book": "FanDuel",    "odds": 900,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished 72nd (+10). Last in field. App -1.49/rd" },
+        { "player": "Fleetwood, Tommy", "bet": "Top 10", "book": "FanDuel",    "odds": 175,  "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T14 (-14). One spot outside Top 10 cutoff" },
+        { "player": "Kitayama, Kurt",   "bet": "Top 5",  "book": "FanDuel",    "odds": 1000, "type": "top_5",  "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T25 (-12)" }
+      ],
+      "sleepers": [
+        { "player": "Rai, Aaron", "bet": "Outright Win", "odds": 5500, "book": "DraftKings", "result": "loss", "note": "Finished T30. Not counted in totals." }
       ]
     }
   ]

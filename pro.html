@@ -11,19 +11,31 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@formkit/auto-animate@latest/index.umd.js"></script>
 <style>
 :root{
-  --black:#0A0A0A;--black-mid:#111110;--black-card:#161614;--black-card2:#1C1C19;
-  --white:#FAFAFA;--green:#1B4D3E;--green-light:#5BBF85;--blue-mid:#5A8FA8;
+  /* ── BRAND PALETTE ── */
+  --black:#0C0B09;--black-mid:#131210;--black-card:#191714;--black-card2:#201E1A;
+  --white:#F5F4F0;--green:#1B4D3E;--green-light:#5BBF85;--blue-mid:#5A8FA8;
   --gold:#C9A84C;--red:#D94848;--border:rgba(255,255,255,0.07);
+  /* ── TYPOGRAPHY ── */
   --display:'Cormorant Garamond',Georgia,serif;
   --body:'DM Sans','Helvetica Neue',sans-serif;
-  --mono:'Roboto Mono','Courier New',monospace;
-  /* Spacing scale */
+  --mono:'JetBrains Mono','Courier New',monospace;
+  /* ── SPACING ── */
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
-  /* Type scale */
+  /* ── TYPE SCALE ── */
   --text-hero:clamp(32px,4vw,52px);--text-h2:clamp(20px,2.2vw,28px);--text-h3:16px;--text-body:14px;--text-small:12px;--text-micro:10px;
+  /* ── LAYOUT ── */
+  --nav-h:64px;--sidebar-w:224px;
+  /* ── ELEVATION ── */
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.35),0 2px 8px rgba(0,0,0,0.2);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.4),0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg:0 12px 40px rgba(0,0,0,0.5),0 4px 12px rgba(0,0,0,0.3);
+  /* ── TRANSITIONS ── */
+  --ease-out:cubic-bezier(0.22,1,0.36,1);
+  --ease-in-out:cubic-bezier(0.4,0,0.2,1);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -310,6 +322,8 @@ html[data-theme="light"] .cfhp-none{color:rgba(28,27,24,0.3);}
 .drawer-close{position:absolute;top:var(--space-4);right:var(--space-4);background:none;border:none;font-size:28px;line-height:1;color:rgba(250,250,250,0.4);cursor:pointer;transition:color .15s;}
 .drawer-close:hover{color:rgba(250,250,250,0.8);}
 .drawer-content{padding:var(--space-7) var(--space-5) var(--space-6);}
+.drawer-avatar-header{ display:flex;align-items:center;gap:14px;margin-bottom:16px; }
+.drawer-avatar-header .p-avatar{ flex-shrink:0; }
 .drawer-name{font-family:var(--display);font-size:var(--text-h2);font-weight:600;font-style:italic;color:var(--white);line-height:1.1;}
 .drawer-meta{font-family:var(--mono);font-size:var(--text-micro);color:rgba(250,250,250,0.28);letter-spacing:0.08em;margin-top:4px;}
 .drawer-scores{display:flex;gap:var(--space-5);margin:var(--space-5) 0 var(--space-6);padding-bottom:var(--space-5);border-bottom:1px solid var(--border);}
@@ -364,13 +378,22 @@ html[data-theme="light"] .vf-live-tag{background:rgba(27,77,62,0.08);color:#1B4D
 .vf-filter:hover{color:rgba(250,250,250,0.75);}
 .vf-filter.active{background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.28);color:var(--gold);}
 .vf-table{background:var(--black-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:580px;}
-.vf-head{display:grid;grid-template-columns:1fr 90px 90px 90px 90px 90px;padding:11px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.vf-head{display:grid;grid-template-columns:1fr 90px 90px 90px 90px 90px;padding:11px 20px;border-bottom:1px solid var(--border);background:var(--black-card);position:sticky;top:0;z-index:2;}
+/* Scrollable value-finder table */
+#vfTable{max-height:72vh;overflow-y:auto;border-radius:12px;}
+#vfTable::-webkit-scrollbar{width:5px;}
+#vfTable::-webkit-scrollbar-track{background:transparent;}
+#vfTable::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
+#vfTable::-webkit-scrollbar-thumb:hover{background:rgba(91,191,133,0.35);}
+html[data-theme="light"] #vfTable::-webkit-scrollbar-thumb{background:rgba(28,27,24,0.15);}
+html[data-theme="light"] #vfTable::-webkit-scrollbar-thumb:hover{background:rgba(27,77,62,0.3);}
 .vf-th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.28);}
 .vf-row{display:grid;grid-template-columns:1fr 90px 90px 90px 90px 90px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background .15s;cursor:pointer;}
 .vf-row:hover{background:rgba(255,255,255,0.02);}
 .vf-row:last-child{border-bottom:none;}
 .vf-row.high{background:rgba(91,191,133,0.04);}
 .vf-player{font-size:14px;font-weight:600;color:rgba(250,250,250,0.9);}
+.vf-player-cell{display:flex;align-items:center;gap:10px;}
 .vf-bet-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;padding:2px 7px;border-radius:3px;margin-left:6px;}
 .bet-top5{background:rgba(91,191,133,0.12);color:var(--green-light);}
 .bet-top10{background:rgba(90,143,168,0.12);color:var(--blue-mid);}
@@ -412,12 +435,12 @@ html[data-theme="light"] .vf-live-tag{background:rgba(27,77,62,0.08);color:#1B4D
 /* ── DISCLAIMER ── */
 .pro-disclaimer{max-width:1200px;margin:0 auto;padding:0 40px 32px;font-size:11px;color:rgba(250,250,250,0.18);line-height:1.7;}
 
-html[data-theme="light"] body{background:#F5F4F0;color:#1C1B18;}
+html[data-theme="light"] body{background:#EDECE8;color:#1A1916;}
 /* Re-tone bright accent vars for light backgrounds — anything using var(--green-light/gold/red/blue-mid) directly inherits these darker, readable equivalents */
 html[data-theme="light"]{--green-light:#1E8A4A;--gold:#8A6F09;--red:#C0392B;--blue-mid:#2C5F7C;}
 /* #playerCard stays dark in both themes — restore bright values inside it */
 html[data-theme="light"] #playerCard{--green-light:#5BBF85;--gold:#C9A84C;--red:#D94848;--blue-mid:#5A8FA8;}
-html[data-theme="light"] nav{background:rgba(245,244,240,0.92)!important;border-bottom-color:rgba(28,27,24,0.08)!important;}
+html[data-theme="light"] nav{background:rgba(255,255,255,0.96)!important;border-bottom-color:rgba(28,27,24,0.07)!important;}
 html[data-theme="light"] .nav-logo svg{color:#1C1B18!important;}
 html[data-theme="light"] .nav-wordmark{color:#1C1B18!important;}
 html[data-theme="light"] .nav-links a{color:rgba(28,27,24,0.6)!important;}
@@ -554,7 +577,7 @@ html[data-theme="light"] .picks-card-tourney{color:rgba(28,27,24,0.5);}
 html[data-theme="light"] .pick-card{background:#F5F4F0;border-color:rgba(28,27,24,0.08);}
 
 /* Overview */
-html[data-theme="light"] .dl-card{background:#FFFFFF;border-color:rgba(28,27,24,0.1);}
+html[data-theme="light"] .dl-card{background:#FFFFFF;border-color:rgba(28,27,24,0.07);box-shadow:0 1px 4px rgba(0,0,0,0.05),0 4px 16px rgba(0,0,0,0.04);}
 html[data-theme="light"] .ov-hero-meta{color:rgba(28,27,24,0.45);}
 html[data-theme="light"] .ov-section-label{color:rgba(28,27,24,0.5);}
 html[data-theme="light"] .ov-quick-row{border-bottom-color:rgba(28,27,24,0.06);}
@@ -1120,6 +1143,770 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
   .live-row>div:nth-child(13){display:none !important;}
   .live-note{display:none;}
 }
+
+/* ═══════════════════════════════════════════════
+   PRO LAYOUT — SIDEBAR + MAIN
+   ═══════════════════════════════════════════════ */
+body{ --nav-h:64px; }
+#proApp{ padding-top:var(--nav-h); }
+
+/* Hide the old top nav strips from inside the app — sidebar replaces them */
+.tourney-head,.weights-strip,.pro-tabs,.pro-subtabs{ display:none !important; }
+
+.pro-layout{
+  display:grid;
+  grid-template-columns:var(--sidebar-w) 1fr;
+  min-height:calc(100vh - var(--nav-h));
+}
+
+/* ── SIDEBAR ── */
+.pro-sidebar{
+  position:sticky;
+  top:var(--nav-h);
+  height:calc(100vh - var(--nav-h));
+  overflow-y:auto;
+  overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  border-right:1px solid rgba(255,255,255,0.06);
+  background:var(--black-mid);
+  scrollbar-width:none;
+  flex-shrink:0;
+}
+.pro-sidebar::-webkit-scrollbar{ display:none; }
+
+.psb-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px 10px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  flex-shrink:0;
+}
+.psb-brand svg{ width:20px;height:20px;color:var(--white);flex-shrink:0; }
+.psb-pro-badge{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--gold);
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.22);
+  padding:3px 8px;
+  border-radius:4px;
+}
+
+/* Tournament context block */
+.psb-tourney{
+  padding:10px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  flex-shrink:0;
+}
+.psb-tourney-label{
+  font-family:var(--mono);
+  font-size:8px;
+  font-weight:600;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:4px;
+  opacity:.8;
+}
+.psb-tourney-name{
+  font-family:var(--display);
+  font-size:15px;
+  font-weight:500;
+  font-style:italic;
+  color:var(--white);
+  line-height:1.2;
+  margin-bottom:8px;
+}
+.psb-weights{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:4px 10px;
+}
+.psb-w-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.psb-w-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.psb-w-text{
+  font-family:var(--mono);
+  font-size:9px;
+  color:rgba(245,244,240,0.45);
+  letter-spacing:0.03em;
+}
+html[data-theme="light"] .psb-w-text{ color:rgba(28,27,24,0.5); }
+/* psb-chips removed — chips section no longer shown in sidebar */
+.psb-chip{
+  font-family:var(--mono);
+  font-size:8px;
+  font-weight:600;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:4px;
+}
+.psb-chip-gold{ color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2); }
+.psb-chip-blue{ color:var(--blue-mid);background:rgba(90,143,168,0.08);border:1px solid rgba(90,143,168,0.18); }
+.psb-chip-green{ color:var(--green-light);background:rgba(91,191,133,0.08);border:1px solid rgba(91,191,133,0.18); }
+
+/* Nav items */
+.psb-nav{
+  flex:0 0 auto;
+  padding:6px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+}
+.psb-nav-section{
+  font-family:var(--mono);
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:rgba(245,244,240,0.22);
+  padding:8px 8px 2px;
+}
+.psb-nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:7px 10px;
+  border-radius:7px;
+  border:none;
+  background:none;
+  color:rgba(245,244,240,0.45);
+  font-family:var(--body);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.15s var(--ease-out);
+  width:100%;
+  text-align:left;
+  position:relative;
+}
+.psb-nav-item svg{ width:15px;height:15px;flex-shrink:0;opacity:.7; }
+.psb-nav-item .psb-live-indicator{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green-light);
+  flex-shrink:0;
+  box-shadow:0 0 0 2px rgba(91,191,133,0.2);
+  animation:livepulse 2s infinite;
+}
+.psb-nav-item:hover{
+  background:rgba(255,255,255,0.05);
+  color:var(--white);
+}
+.psb-nav-item.active{
+  background:rgba(201,168,76,0.08);
+  color:var(--white);
+  font-weight:600;
+}
+.psb-nav-item.active::before{
+  content:'';
+  position:absolute;
+  left:0;top:20%;bottom:20%;
+  width:2.5px;
+  background:var(--gold);
+  border-radius:0 2px 2px 0;
+}
+.psb-nav-item.active svg{ opacity:1; }
+
+/* Sidebar footer — account */
+.psb-footer{
+  padding:10px 16px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  margin-top:auto;
+  flex-shrink:0;
+}
+.psb-user-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+}
+.psb-user-email{
+  font-family:var(--mono);
+  font-size:10px;
+  color:rgba(245,244,240,0.32);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  min-width:0;
+  flex:1;
+}
+.psb-trial-chip{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  background:rgba(91,191,133,0.1);
+  color:var(--green-light);
+  border:1px solid rgba(91,191,133,0.25);
+  padding:2px 8px;
+  border-radius:3px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.psb-partner-chip{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  background:rgba(201,168,76,0.08);
+  color:var(--gold);
+  border:1px solid rgba(201,168,76,0.2);
+  padding:2px 8px;
+  border-radius:3px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.psb-signout{
+  background:none;
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:5px;
+  padding:5px 12px;
+  font-family:var(--mono);
+  font-size:10px;
+  font-weight:500;
+  color:rgba(245,244,240,0.32);
+  cursor:pointer;
+  transition:all 0.15s;
+  width:100%;
+  letter-spacing:0.05em;
+}
+.psb-signout:hover{
+  border-color:rgba(255,255,255,0.22);
+  color:rgba(245,244,240,0.7);
+}
+
+/* ── PRO MAIN CONTENT ── */
+.pro-main{
+  min-height:calc(100vh - var(--nav-h));
+  overflow-x:hidden;
+}
+.pro-main .tab-content{
+  display:none;
+  max-width:1200px;
+  margin:0 auto;
+  padding:32px 40px 80px;
+}
+.pro-main .tab-content.active{ display:block; }
+
+/* ── SECTION HEADINGS (new pattern inside tabs) ── */
+.pro-tab-title{
+  font-family:var(--display);
+  font-size:clamp(22px,2.5vw,34px);
+  font-weight:500;
+  font-style:italic;
+  letter-spacing:-0.01em;
+  color:var(--white);
+  line-height:1.1;
+  margin-bottom:4px;
+}
+.pro-tab-sub{
+  font-family:var(--mono);
+  font-size:10px;
+  color:rgba(245,244,240,0.3);
+  letter-spacing:0.08em;
+  margin-bottom:24px;
+}
+
+/* ── PLAYER AVATAR (used in table rows) ── */
+.p-avatar{
+  width:36px;height:36px;
+  border-radius:50%;
+  overflow:hidden;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.p-avatar img{ width:100%;height:100%;object-fit:cover; }
+.p-avatar-init{
+  font-family:var(--body);
+  font-size:11px;
+  font-weight:600;
+  color:rgba(245,244,240,0.4);
+  letter-spacing:0;
+}
+html[data-theme="light"] .p-avatar{
+  background:rgba(28,27,24,0.06);
+  border-color:rgba(28,27,24,0.1);
+}
+html[data-theme="light"] .p-avatar-init{ color:rgba(28,27,24,0.4); }
+
+/* ── BOTTOM NAV (mobile only) ── */
+.pro-bnav{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:210;
+  height:58px;
+  background:rgba(13,12,10,0.96);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-top:1px solid rgba(255,255,255,0.07);
+  align-items:center;
+  justify-content:space-around;
+  padding:0 8px;
+}
+.bnav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:6px 10px;
+  border:none;
+  background:none;
+  color:rgba(245,244,240,0.4);
+  cursor:pointer;
+  border-radius:8px;
+  transition:color 0.15s;
+  font-family:var(--body);
+  min-width:52px;
+}
+.bnav-item svg{ width:18px;height:18px; }
+.bnav-item span{ font-size:10px;font-weight:500;letter-spacing:0.02em; }
+.bnav-item.active{ color:var(--gold); }
+.bnav-more-drawer{
+  display:none;
+  position:fixed;
+  bottom:58px;left:0;right:0;
+  background:rgba(19,18,16,0.98);
+  backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.07);
+  z-index:209;
+  padding:8px 16px 12px;
+  flex-direction:column;
+  gap:2px;
+}
+.bnav-more-drawer.open{ display:flex; }
+.bnav-more-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 8px;
+  border:none;background:none;
+  color:rgba(245,244,240,0.7);
+  font-family:var(--body);font-size:14px;font-weight:500;
+  cursor:pointer;border-radius:8px;width:100%;text-align:left;
+  transition:background 0.12s;
+}
+.bnav-more-item:hover{ background:rgba(255,255,255,0.05); }
+.bnav-more-item svg{ width:16px;height:16px;color:rgba(245,244,240,0.4); }
+
+/* ── IMPROVED DARK BODY/CARDS ── */
+body{ background:#0C0B09; }
+.dl-card{ background:#191714; border-color:rgba(255,255,255,0.07); }
+.cf-table-wrap{ background:#191714; }
+.vf-table{ background:#191714; }
+.live-table-wrap{ background:#191714; }
+.mu-table-wrap{ background:#191714; }
+.dfs-table-wrap{ background:#191714; }
+.pick-card{ background:#201E1A; }
+.picks-card-wrap{ background:#191714; }
+.acc-stat,.acc-calib-wrap,.tr-event-card,.tr-type-item,.dfs-builder-card,.dfs-stack-card{ background:#191714; }
+
+/* ── LIGHT MODE SIDEBAR + LAYOUT ── */
+html[data-theme="light"] .pro-sidebar{
+  background:#FFFFFF;
+  border-right-color:rgba(28,27,24,0.07);
+  box-shadow:2px 0 16px rgba(0,0,0,0.04);
+}
+html[data-theme="light"] .psb-tourney-name{ color:#1A1916; }
+html[data-theme="light"] .psb-brand svg{ color:#1A1916; }
+html[data-theme="light"] .psb-tourney-label{ opacity:1;color:#8A6F09; }
+html[data-theme="light"] .psb-pro-badge{ color:#8A6F09;background:rgba(138,111,9,0.08);border-color:rgba(138,111,9,0.2); }
+html[data-theme="light"] .psb-nav-item{ color:rgba(28,27,24,0.5); }
+html[data-theme="light"] .psb-nav-item:hover{ background:rgba(28,27,24,0.04);color:#1A1916; }
+html[data-theme="light"] .psb-nav-item.active{ background:rgba(138,111,9,0.07);color:#1A1916; }
+html[data-theme="light"] .psb-nav-section{ color:rgba(28,27,24,0.28); }
+html[data-theme="light"] .psb-user-email{ color:rgba(28,27,24,0.38); }
+html[data-theme="light"] .psb-signout{ border-color:rgba(28,27,24,0.12);color:rgba(28,27,24,0.38); }
+html[data-theme="light"] .psb-signout:hover{ border-color:rgba(28,27,24,0.3);color:rgba(28,27,24,0.65); }
+html[data-theme="light"] .pro-bnav{ background:rgba(255,255,255,0.97);border-top-color:rgba(28,27,24,0.07);box-shadow:0 -1px 12px rgba(0,0,0,0.04); }
+html[data-theme="light"] .bnav-item{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .bnav-item.active{ color:#8A6F09; }
+html[data-theme="light"] body{ background:#EDECE8; }
+html[data-theme="light"] .pro-main{ background:#EDECE8; }
+html[data-theme="light"] .cf-table-wrap{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03); }
+html[data-theme="light"] .vf-table{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03); }
+html[data-theme="light"] .mu-table-wrap{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03); }
+html[data-theme="light"] .live-table-wrap{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03); }
+html[data-theme="light"] .picks-card-wrap{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.03); }
+html[data-theme="light"] .ov-record-strip{ background:#fff;border-color:rgba(28,27,24,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+html[data-theme="light"] .cp-card{ background:linear-gradient(135deg,rgba(201,168,76,0.05) 0%,rgba(27,77,62,0.04) 100%);border-color:rgba(201,168,76,0.18);box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+
+/* ── MOBILE LAYOUT (sidebar hidden, bottom nav shown) ── */
+@media(max-width:900px){
+  .pro-layout{ grid-template-columns:1fr; }
+  .pro-sidebar{ display:none !important; }
+  .pro-bnav{ display:flex; }
+  .pro-main .tab-content{ padding:20px 14px 80px; }
+  .pro-main .tab-content.active{ display:block; }
+  .pro-disclaimer{ padding:0 14px 24px; }
+}
+
+/* ── CF TABLE with avatar column ── */
+@media(min-width:901px){
+  .cf-table-head{ grid-template-columns:44px 44px 1fr 88px 240px 100px 88px !important; }
+  .cf-row{ grid-template-columns:44px 44px 1fr 88px 240px 100px 88px !important; }
+}
+/* Hide avatar column header on mobile */
+@media(max-width:900px){ .cf-table-head .cf-th:nth-child(2){ display:none; } }
+
+/* ── SECTION HEADER PATTERN (each tab) ── */
+.sec-header{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  margin-bottom:24px; gap:16px; flex-wrap:wrap;
+  border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:20px;
+}
+.sec-header-left{ min-width:0; }
+.sec-title{
+  font-family:var(--display); font-size:clamp(24px,3vw,38px);
+  font-weight:600; font-style:italic; letter-spacing:-0.01em;
+  color:var(--white); line-height:1.1; margin:0 0 6px;
+}
+.sec-sub{
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:0.09em; text-transform:uppercase;
+  color:rgba(245,244,240,0.3); margin:0;
+}
+.sec-header-actions{ display:flex; gap:8px; align-items:center; flex-shrink:0; }
+
+/* ── SECTION HEADER SELECT (sort/filter dropdowns) ── */
+.cf-sort-sel{
+  appearance:none; -webkit-appearance:none;
+  background-color:rgba(255,255,255,0.05);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(245%2C244%2C240%2C0.35)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 8px center;
+  border:1px solid rgba(255,255,255,0.1); border-radius:6px;
+  color:var(--white); font-family:var(--mono); font-size:10px;
+  font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+  padding:6px 28px 6px 10px; cursor:pointer; outline:none;
+  transition:border-color .15s, background-color .15s;
+}
+.cf-sort-sel:hover{ border-color:rgba(255,255,255,0.2); }
+.cf-sort-sel:focus{ border-color:var(--gold); }
+.cf-sort-sel option{ background:#1A1916; color:#FAFAFA; }
+html[data-theme="light"] .cf-sort-sel{
+  background-color:rgba(28,27,24,0.05);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(28%2C27%2C24%2C0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color:rgba(28,27,24,0.15); color:#1A1916;
+}
+html[data-theme="light"] .cf-sort-sel option{ background:#fff; color:#1A1916; }
+html[data-theme="light"] .cf-sort-sel:hover{ border-color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .cf-sort-sel:focus{ border-color:#8A6F09; }
+
+html[data-theme="light"] .sec-header{ border-bottom-color:rgba(28,27,24,0.1); }
+html[data-theme="light"] .sec-title{ color:#1A1916; }
+html[data-theme="light"] .sec-sub{ color:rgba(28,27,24,0.4); }
+
+/* ── WEATHER TAB ── */
+.wx-current{ padding:20px 20px 12px; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:20px; }
+.wx-city{ font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,244,240,0.28); margin-bottom:8px; }
+.wx-now{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+.wx-temp{ font-family:var(--mono); font-size:42px; font-weight:700; color:var(--white); line-height:1; }
+.wx-cond{ font-size:15px; color:rgba(245,244,240,0.5); }
+.wx-wind{ font-family:var(--mono); font-size:12px; color:rgba(245,244,240,0.3); }
+.wx-section-label{ font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,244,240,0.25); padding:0 20px 10px; }
+.wx-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:0 20px 24px; }
+@media(max-width:600px){ .wx-grid{ grid-template-columns:repeat(2,1fr); } }
+.wx-day-card{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:16px 14px; }
+.wx-day-header{ display:flex; flex-direction:column; gap:2px; margin-bottom:12px; }
+.wx-day-round{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
+.wx-day-name{ font-size:18px; font-weight:700; color:var(--white); line-height:1.1; }
+.wx-day-date{ font-family:var(--mono); font-size:10px; color:rgba(245,244,240,0.32); margin-top:2px; }
+.wx-day-cond{ font-size:12px; line-height:1.4; margin-bottom:10px; min-height:34px; }
+.wx-day-temps{ font-family:var(--mono); font-size:16px; font-weight:700; color:var(--white); margin-bottom:5px; }
+.wx-day-rain{ font-family:var(--mono); font-size:11px; color:#5A8FA8; }
+.wx-day-wind{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); margin-top:3px; }
+.wx-note{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.18); padding:4px 20px 20px; }
+html[data-theme="light"] .wx-current{ border-bottom-color:rgba(28,27,24,0.08); }
+html[data-theme="light"] .wx-city{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .wx-temp{ color:#1A1916; }
+html[data-theme="light"] .wx-cond{ color:rgba(28,27,24,0.5); }
+html[data-theme="light"] .wx-wind{ color:rgba(28,27,24,0.35); }
+html[data-theme="light"] .wx-section-label{ color:rgba(28,27,24,0.25); }
+html[data-theme="light"] .wx-day-card{ background:rgba(0,0,0,0.03); border-color:rgba(0,0,0,0.08); }
+html[data-theme="light"] .wx-day-name{ color:#1A1916; }
+html[data-theme="light"] .wx-day-date{ color:rgba(28,27,24,0.35); }
+html[data-theme="light"] .wx-day-temps{ color:#1A1916; }
+html[data-theme="light"] .wx-note{ color:rgba(28,27,24,0.2); }
+/* vf-neg: dim color for negative-edge bets in Value Finder */
+.vf-cell.vf-neg{ color:rgba(250,250,250,0.3); }
+html[data-theme="light"] .vf-cell.vf-neg{ color:rgba(28,27,24,0.3); }
+
+/* ── COURSE PROFILE CARD (overview) ── */
+.cp-card{
+  background:linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(27,77,62,0.08) 100%);
+  border:1px solid rgba(201,168,76,0.15); border-radius:12px;
+  padding:20px 24px; margin-bottom:28px;
+}
+.cp-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:12px; }
+.cp-title{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); opacity:.8; }
+.cp-demand-label{
+  font-family:var(--display); font-size:15px; font-weight:500; font-style:italic;
+  color:rgba(245,244,240,0.75); line-height:1.4; margin-bottom:14px;
+}
+.cp-stacked-bar{ display:flex; height:8px; border-radius:4px; overflow:hidden; gap:2px; margin-bottom:14px; }
+.cp-stacked-seg{ transition:width 0.6s var(--ease-out); min-width:4px; }
+.cp-weight-pills{ display:flex; gap:10px 22px; flex-wrap:wrap; }
+.cp-weight-pill{ display:flex; align-items:center; gap:6px; }
+.cp-weight-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.cp-weight-name{ font-family:var(--mono); font-size:9px; letter-spacing:0.07em; text-transform:uppercase; color:rgba(245,244,240,0.45); }
+.cp-weight-pct{ font-family:var(--mono); font-size:11px; font-weight:700; color:rgba(245,244,240,0.82); }
+.cp-badge{
+  font-family:var(--mono); font-size:8px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  padding:3px 9px; border-radius:3px; white-space:nowrap;
+}
+.cp-badge-matched{ color:var(--green-light); background:rgba(91,191,133,0.1); border:1px solid rgba(91,191,133,0.2); }
+.cp-badge-default{ color:rgba(245,244,240,0.35); background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); }
+html[data-theme="light"] .cp-demand-label{ color:rgba(28,27,24,0.65); }
+html[data-theme="light"] .cp-weight-name{ color:rgba(28,27,24,0.5); }
+html[data-theme="light"] .cp-weight-pct{ color:rgba(28,27,24,0.85); }
+html[data-theme="light"] .cp-title{ color:#8A6F09; }
+
+/* ── OVERVIEW QUICK ROWS with headshots ── */
+.ov-quick-row{ display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.ov-quick-row:last-child{ border-bottom:none; }
+.ov-quick-row-info{ flex:1; min-width:0; }
+html[data-theme="light"] .ov-quick-row{ border-bottom-color:rgba(28,27,24,0.07); }
+
+/* ── FADE BOARD (Value Finder — Plays to Avoid) ── */
+.fb-section{ margin-top:32px; }
+.fb-header{
+  display:flex; align-items:center; gap:10px; margin-bottom:12px;
+  padding-bottom:12px; border-bottom:1px solid rgba(217,72,72,0.15);
+}
+.fb-title{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:rgba(217,72,72,0.6); }
+.fb-note{ font-family:var(--body); font-size:11px; color:rgba(245,244,240,0.3); }
+.fb-row{
+  display:grid; grid-template-columns:1fr 90px 90px 100px; gap:0;
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  align-items:center;
+}
+.fb-player{ display:flex; align-items:center; gap:8px; }
+.fb-player-name{ font-size:13px; font-weight:500; color:rgba(245,244,240,0.75); }
+.fb-player-mkt{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); margin-top:2px; }
+.fb-odds{ font-family:var(--mono); font-size:13px; font-weight:600; color:rgba(245,244,240,0.55); }
+.fb-edge{ font-family:var(--mono); font-size:13px; font-weight:600; color:var(--red); }
+.fb-why{ font-family:var(--body); font-size:11px; color:rgba(245,244,240,0.3); }
+html[data-theme="light"] .fb-title{ color:rgba(192,57,43,0.7); }
+html[data-theme="light"] .fb-player-name{ color:rgba(28,27,24,0.75); }
+html[data-theme="light"] .fb-player-mkt,.fb-why,.fb-odds{ color:rgba(28,27,24,0.45); }
+html[data-theme="light"] .fb-row{ border-bottom-color:rgba(28,27,24,0.07); }
+
+/* ── PLAYERS TAB ── */
+.players-search-wrap{ position:relative; margin-bottom:22px; }
+.players-search-input{
+  width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+  border-radius:8px; padding:11px 16px 11px 42px; font-family:var(--body); font-size:14px;
+  color:var(--white); outline:none; transition:border-color .2s;
+}
+.players-search-input:focus{ border-color:rgba(201,168,76,0.4); }
+.players-search-input::placeholder{ color:rgba(245,244,240,0.28); }
+.players-search-icon{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:rgba(245,244,240,0.28); pointer-events:none; }
+.players-search-icon svg{ width:16px; height:16px; display:block; }
+.players-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
+.players-card{
+  display:flex; align-items:center; gap:12px; background:var(--black-card);
+  border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:12px 14px;
+  cursor:pointer; transition:background .15s,border-color .15s,transform .12s;
+}
+.players-card:hover{ background:var(--black-card2); border-color:rgba(201,168,76,0.28); transform:translateY(-1px); }
+.players-card-info{ flex:1; min-width:0; }
+.players-card-name{ font-size:13px; font-weight:600; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.players-card-country{ font-family:var(--mono); font-size:10px; color:rgba(245,244,240,0.32); margin-top:2px; }
+.players-card-score{ font-family:var(--mono); font-size:16px; font-weight:700; flex-shrink:0; }
+html[data-theme="light"] .players-search-input{ background:#fff; border-color:rgba(28,27,24,0.12); color:#1A1916; }
+html[data-theme="light"] .players-search-input::placeholder{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .players-search-icon{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .players-card{ background:#fff; border-color:rgba(28,27,24,0.09); }
+html[data-theme="light"] .players-card:hover{ background:#F9F8F5; border-color:rgba(138,111,9,0.28); }
+html[data-theme="light"] .players-card-name{ color:#1A1916; }
+html[data-theme="light"] .players-card-country{ color:rgba(28,27,24,0.4); }
+
+/* ── TOUR RANKINGS TAB ── */
+.rnk-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.rnk-table-head{ display:grid; grid-template-columns:36px 1fr 48px 60px 60px 60px 60px 60px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.rnk-table-head span{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,244,240,0.25); text-align:right; }
+.rnk-table-head span:nth-child(2){ text-align:left; }
+.rnk-row{ display:grid; grid-template-columns:36px 1fr 48px 60px 60px 60px 60px 60px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
+.rnk-row:last-child{ border-bottom:none; }
+.rnk-row:hover{ background:rgba(255,255,255,0.03); }
+.rnk-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); display:flex; align-items:center; }
+.rnk-player{ display:flex; align-items:center; gap:10px; }
+.rnk-name{ font-size:13px; font-weight:600; color:var(--white); }
+.rnk-country{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); }
+.rnk-val{ font-family:var(--mono); font-size:12px; font-weight:600; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
+.rnk-val.pos{ color:var(--green-light); }
+.rnk-val.neg{ color:#E06B6B; }
+.rnk-val.zero{ color:rgba(245,244,240,0.3); }
+.rnk-val.bold{ color:var(--white); font-size:13px; }
+html[data-theme="light"] .rnk-table-wrap{ background:#fff; border-color:rgba(28,27,24,0.08); }
+html[data-theme="light"] .rnk-table-head{ border-bottom-color:rgba(28,27,24,0.07); }
+html[data-theme="light"] .rnk-table-head span{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .rnk-row{ border-bottom-color:rgba(28,27,24,0.05); }
+html[data-theme="light"] .rnk-row:hover{ background:rgba(28,27,24,0.02); }
+html[data-theme="light"] .rnk-num{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .rnk-name{ color:#1A1916; }
+html[data-theme="light"] .rnk-country{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .rnk-val.zero{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .rnk-val.bold{ color:#1A1916; }
+
+/* ── FORM TRENDS TAB ── */
+.trends-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.trends-table-head{ display:grid; grid-template-columns:36px 1fr 72px 72px 80px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.trends-table-head span{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,244,240,0.25); text-align:right; }
+.trends-table-head span:nth-child(2){ text-align:left; }
+.trend-row{ display:grid; grid-template-columns:36px 1fr 72px 72px 80px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
+.trend-row:last-child{ border-bottom:none; }
+.trend-row:hover{ background:rgba(255,255,255,0.03); }
+.trend-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); display:flex; align-items:center; }
+.trend-player{ display:flex; align-items:center; gap:10px; }
+.trend-name{ font-size:13px; font-weight:600; color:var(--white); }
+.trend-country{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); }
+.trend-val{ font-family:var(--mono); font-size:12px; font-weight:600; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
+.trend-val.pos{ color:var(--green-light); }
+.trend-val.neg{ color:#E06B6B; }
+.trend-val.zero{ color:rgba(245,244,240,0.3); }
+.trend-delta{ font-family:var(--mono); font-size:12px; font-weight:700; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
+.trend-delta.up{ color:var(--green-light); }
+.trend-delta.down{ color:#E06B6B; }
+.trend-delta.flat{ color:rgba(245,244,240,0.3); }
+.trend-dir{ display:flex; align-items:center; justify-content:flex-end; gap:6px; }
+.trend-arrow{ font-size:14px; line-height:1; }
+.trend-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; }
+.trend-badge.rising{ color:var(--green-light); background:rgba(91,191,133,0.1); }
+.trend-badge.falling{ color:#E06B6B; background:rgba(224,107,107,0.1); }
+.trend-badge.flat{ color:rgba(245,244,240,0.3); background:rgba(255,255,255,0.04); }
+html[data-theme="light"] .trends-table-wrap{ background:#fff; border-color:rgba(28,27,24,0.08); }
+html[data-theme="light"] .trends-table-head{ border-bottom-color:rgba(28,27,24,0.07); }
+html[data-theme="light"] .trends-table-head span{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .trend-row{ border-bottom-color:rgba(28,27,24,0.05); }
+html[data-theme="light"] .trend-row:hover{ background:rgba(28,27,24,0.02); }
+html[data-theme="light"] .trend-num{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .trend-name{ color:#1A1916; }
+html[data-theme="light"] .trend-country{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .trend-val.zero{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .trend-delta.flat{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .trend-badge.flat{ color:rgba(28,27,24,0.35); background:rgba(28,27,24,0.05); }
+
+/* ── MODEL PROBABILITIES TAB ── */
+.model-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.model-table-head{ display:grid; grid-template-columns:36px 1fr 70px 70px 70px 70px 56px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.model-table-head span{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,244,240,0.25); text-align:right; }
+.model-table-head span:nth-child(2){ text-align:left; }
+.model-row{ display:grid; grid-template-columns:36px 1fr 70px 70px 70px 70px 56px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
+.model-row:last-child{ border-bottom:none; }
+.model-row:hover{ background:rgba(255,255,255,0.03); }
+.model-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); display:flex; align-items:center; }
+.model-player{ display:flex; align-items:center; gap:10px; }
+.model-name{ font-size:13px; font-weight:600; color:var(--white); }
+.model-country{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); }
+.model-prob{ font-family:var(--mono); font-size:12px; font-weight:600; text-align:right; display:flex; align-items:center; justify-content:flex-end; color:rgba(245,244,240,0.6); }
+.model-prob.hi{ color:var(--green-light); }
+.model-prob.sort-col{ color:var(--white); font-size:13px; }
+.model-fit{ font-family:var(--mono); font-size:12px; font-weight:600; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
+html[data-theme="light"] .model-table-wrap{ background:#fff; border-color:rgba(28,27,24,0.08); }
+html[data-theme="light"] .model-table-head{ border-bottom-color:rgba(28,27,24,0.07); }
+html[data-theme="light"] .model-table-head span{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .model-row{ border-bottom-color:rgba(28,27,24,0.05); }
+html[data-theme="light"] .model-row:hover{ background:rgba(28,27,24,0.02); }
+html[data-theme="light"] .model-num{ color:rgba(28,27,24,0.3); }
+html[data-theme="light"] .model-name{ color:#1A1916; }
+html[data-theme="light"] .model-country{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .model-prob{ color:rgba(28,27,24,0.5); }
+html[data-theme="light"] .model-prob.sort-col{ color:#1A1916; }
+
+/* ── SKILL DECOMPOSITION PANEL (player drawer) ── */
+.decomp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 0; }
+.decomp-cell{ background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:12px 14px; }
+.decomp-cell-lbl{ font-family:var(--mono); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(245,244,240,0.35); margin-bottom:6px; }
+.decomp-cell-val{ font-family:var(--mono); font-size:20px; font-weight:700; line-height:1; }
+.decomp-cell-val.pos{ color:var(--green-light); }
+.decomp-cell-val.neg{ color:#E06B6B; }
+.decomp-cell-val.zero{ color:rgba(245,244,240,0.38); }
+.decomp-cell-bar{ margin-top:8px; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+.decomp-cell-fill-pos{ height:100%; border-radius:2px; background:var(--green-light); }
+.decomp-cell-fill-neg{ height:100%; border-radius:2px; background:#E06B6B; }
+html[data-theme="light"] .decomp-cell{ background:rgba(28,27,24,0.02); border-color:rgba(28,27,24,0.07); }
+html[data-theme="light"] .decomp-cell-lbl{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .decomp-cell-val.zero{ color:rgba(28,27,24,0.35); }
+html[data-theme="light"] .decomp-cell-bar{ background:rgba(28,27,24,0.08); }
+
+/* ── APPROACH SKILL PANEL (player drawer) ── */
+.appr-panel{ padding:16px 0; }
+.appr-title{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,244,240,0.3); margin-bottom:14px; }
+.appr-dist-row{ display:grid; grid-template-columns:52px 1fr 48px; gap:8px; align-items:center; margin-bottom:8px; }
+.appr-dist-lbl{ font-family:var(--mono); font-size:10px; color:rgba(245,244,240,0.4); }
+.appr-dist-track{ height:6px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
+.appr-dist-fill-pos{ height:100%; border-radius:3px; background:var(--green-light); }
+.appr-dist-fill-neg{ height:100%; border-radius:3px; background:var(--red); }
+.appr-dist-val{ font-family:var(--mono); font-size:11px; font-weight:600; text-align:right; }
+.appr-dist-val.pos{ color:var(--green-light); }
+.appr-dist-val.neg{ color:var(--red); }
+.appr-dist-val.zero{ color:rgba(245,244,240,0.3); }
+.appr-course-badge{
+  display:inline-flex; align-items:center; gap:5px; margin-bottom:16px;
+  font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--gold); background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.15);
+  padding:3px 10px; border-radius:4px;
+}
+html[data-theme="light"] .appr-title{ color:rgba(28,27,24,0.4); }
+html[data-theme="light"] .appr-dist-track{ background:rgba(28,27,24,0.09); }
+html[data-theme="light"] .appr-dist-lbl{ color:rgba(28,27,24,0.4); }
+
+/* ── PROFILE MATCH INDICATORS (CF rows) ── */
+.pm-dots{ display:flex; gap:3px; align-items:center; margin-top:3px; }
+.pm-dot{ width:6px; height:6px; border-radius:50%; }
+.pm-dot-hi{ background:var(--green-light); }
+.pm-dot-lo{ background:rgba(217,72,72,0.7); }
+.pm-dot-mid{ background:rgba(245,244,240,0.2); }
+
+/* ── MOBILE BOTTOM NAV BACKDROP ── */
+.bnav-backdrop{
+  display:none; position:fixed; inset:0; z-index:208;
+  background:rgba(0,0,0,0.4);
+}
+.bnav-backdrop.open{ display:block; }
+
+/* ── LIVE TAB EMPTY STATE ── */
+.live-empty{
+  text-align:center; padding:64px 24px;
+  font-family:var(--mono); font-size:12px; letter-spacing:0.06em;
+  color:rgba(245,244,240,0.25);
+}
+.live-empty svg{ display:block; margin:0 auto 16px; opacity:.2; }
+
+/* ── PICK CARD RESULT BADGES ── */
+.pick-result-win{ color:var(--green-light); font-weight:700; }
+.pick-result-loss{ color:var(--red); }
+
+/* ── OV QUICK GRID improvements ── */
+.ov-quick-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px; }
+@media(max-width:900px){ .ov-quick-grid{ grid-template-columns:1fr; } }
+.ov-section-label{
+  font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.14em;
+  text-transform:uppercase; color:rgba(245,244,240,0.3); margin-bottom:14px;
+}
+html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
+
+/* ── CF PROFILE MATCH column on desktop ── */
+.cf-match-col{ display:flex; flex-direction:column; align-items:flex-start; justify-content:center; }
 </style>
 </head>
 <body>
@@ -1259,53 +2046,96 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 
 <!-- PRO APP -->
 <div id="proApp">
-  <!-- Tournament header -->
-  <div class="tourney-head">
-    <div class="tourney-inner">
-      <div>
-        <div class="tourney-label">Divot Lab Pro · Analytics</div>
-        <div class="tourney-name" id="appTourneyName">Loading…</div>
-      </div>
-      <div class="tourney-chips" id="appChips"></div>
-      <div class="user-chip">
-        <span id="appUserEmail"></span>
-        <span class="trial-chip" id="trialChip" style="display:none;"></span>
-        <button class="signout-btn" onclick="signOut()">Sign out</button>
-      </div>
-    </div>
-  </div>
-  <div class="weights-strip">
-    <div class="weights-inner" id="weightsRow">
-      <span class="w-label">Course weights:</span>
-    </div>
-  </div>
 
-  <!-- Top-level Nav -->
-  <div class="pro-tabs">
-    <button class="pro-tab active" data-section="overview" onclick="switchSection('overview',this)">Overview</button>
-    <button class="pro-tab" data-section="analysis" onclick="switchSection('analysis',this)">Analysis</button>
-    <button class="pro-tab" data-section="betting" onclick="switchSection('betting',this)">Betting</button>
-    <button class="pro-tab" data-section="dfs" onclick="switchSection('dfs',this)">DFS</button>
-    <button class="pro-tab" data-section="track" onclick="switchSection('track',this)">Track Record</button>
-  </div>
-  <div class="pro-subtabs" id="subtabsAnalysis" style="display:none;">
-    <button class="pro-subtab active" data-tab="coursefit" onclick="switchTab('coursefit',this)">Course Fit</button>
-    <button class="pro-subtab" data-tab="live" onclick="switchTab('live',this)">Live</button>
-  </div>
-  <div class="pro-subtabs" id="subtabsBetting" style="display:none;">
-    <button class="pro-subtab active" data-tab="value" onclick="switchTab('value',this)">Outrights</button>
-    <button class="pro-subtab" data-tab="matchup" onclick="switchTab('matchup',this)">Matchups</button>
-  </div>
+  <!-- Pro layout: sidebar + main -->
+  <div class="pro-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="pro-sidebar" id="proSidebar">
+
+    <div class="psb-tourney" id="sbTourneyBlock">
+      <div class="psb-tourney-label">This Week</div>
+      <div class="psb-tourney-name" id="appTourneyName">Loading…</div>
+      <div class="psb-weights" id="weightsRow"></div>
+    </div>
+
+    <div class="psb-nav">
+      <button class="psb-nav-item active" data-nav="overview" onclick="switchNav('overview')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Overview
+      </button>
+      <div class="psb-nav-section">This Event</div>
+      <button class="psb-nav-item" data-nav="coursefit" onclick="switchNav('coursefit')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12 L5 7 L9 9 L13 4 L15 6"/><circle cx="5" cy="7" r="1" fill="currentColor"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="13" cy="4" r="1" fill="currentColor"/></svg>
+        Course Fit
+      </button>
+      <button class="psb-nav-item" data-nav="trends" onclick="switchNav('trends')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 11 L5 7 L9 9.5 L15 3"/><path d="M12 3h3v3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Form Trends
+      </button>
+      <button class="psb-nav-item" data-nav="weather" onclick="switchNav('weather')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M8 1v1M8 11v1M2 6h1M13 6h1M3.7 3.7l.7.7M11.6 3.7l-.7.7" stroke-linecap="round"/><path d="M5 13a4 4 0 006 0" stroke-linecap="round"/></svg>
+        Weather
+      </button>
+      <button class="psb-nav-item" data-nav="model" onclick="switchNav('model')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>
+        Model Probs
+      </button>
+      <div class="psb-nav-section">Betting</div>
+      <button class="psb-nav-item" data-nav="value" onclick="switchNav('value')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v14M5 4h4.5a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4H10"/></svg>
+        Outrights
+      </button>
+      <button class="psb-nav-item" data-nav="matchup" onclick="switchNav('matchup')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="8" r="3"/><circle cx="12" cy="8" r="3"/><path d="M7 8h2" stroke-dasharray="1 1"/></svg>
+        Matchups
+      </button>
+      <button class="psb-nav-item" data-nav="dfs" onclick="switchNav('dfs')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M5 3v10M11 3v10M1 8h14"/></svg>
+        DFS
+      </button>
+      <div class="psb-nav-section">Performance</div>
+      <button class="psb-nav-item" data-nav="live" onclick="switchNav('live')">
+        <span class="psb-live-indicator"></span>
+        Live
+      </button>
+      <div class="psb-nav-section">Players</div>
+      <button class="psb-nav-item" data-nav="rankings" onclick="switchNav('rankings')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M12 8c2 0 3 1.5 3 3.5" stroke-linecap="round"/></svg>
+        Tour Rankings
+      </button>
+      <div class="psb-nav-section">Record</div>
+      <button class="psb-nav-item" data-nav="track" onclick="switchNav('track')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 L5 8 L8 10 L12 5 L14 7"/><path d="M14 3h-3v3" stroke-linecap="round"/></svg>
+        Track Record
+      </button>
+    </div>
+
+    <div class="psb-footer">
+      <div class="psb-user-row">
+        <span class="psb-user-email" id="appUserEmail"></span>
+        <span class="psb-trial-chip" id="trialChip" style="display:none;"></span>
+      </div>
+      <button class="psb-signout" onclick="signOut()">Sign out</button>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="pro-main">
 
   <!-- Tab 0: Overview -->
   <div class="tab-content active" id="tab-overview">
     <div class="ov-hero">
-      <div class="ov-hero-label">This Week</div>
+      <div class="ov-hero-label">Divot Lab Pro · This Week</div>
       <div class="ov-hero-name" id="ovTourneyName">Loading…</div>
       <div class="ov-hero-meta" id="ovHeroMeta"></div>
     </div>
 
     <div class="ov-record-strip" id="ovRecordStrip"></div>
+
+    <!-- Course Profile Card -->
+    <div class="cp-card" id="cpCard" style="display:none;"></div>
 
     <div class="picks-card-wrap" id="picksCardWrap" style="display:none;">
       <div class="picks-card-header">
@@ -1319,65 +2149,98 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 
     <div class="ov-quick-grid">
       <div class="dl-card">
-        <div class="ov-section-label">Top Course-Fit Picks</div>
+        <div class="ov-section-label">Top Field Fits</div>
         <div class="ov-quick-list" id="ovFitList"></div>
-        <span class="ov-quick-cta" onclick="goToSection('analysis')">View Full Analysis →</span>
+        <span class="ov-quick-cta" onclick="switchNav('coursefit')">Full Rankings →</span>
       </div>
       <div class="dl-card">
         <div class="ov-section-label">Best Value Plays</div>
         <div class="ov-quick-list" id="ovValueList"></div>
-        <span class="ov-quick-cta" onclick="goToSection('betting')">View All Value Bets →</span>
+        <span class="ov-quick-cta" onclick="switchNav('value')">Outrights →</span>
       </div>
       <div class="dl-card">
-        <div class="ov-section-label">Divot Lab Score Leaders</div>
+        <div class="ov-section-label">DL Score Leaders</div>
         <div class="ov-quick-list" id="ovDlsList"></div>
-        <span class="ov-quick-cta" onclick="goToSection('analysis')">View Full Analysis →</span>
+        <span class="ov-quick-cta" onclick="switchNav('coursefit')">Full Rankings →</span>
       </div>
     </div>
   </div>
 
-  <!-- Tab 1: Course Fit -->
+  <!-- Tab 1: Field (Course Fit) -->
   <div class="tab-content" id="tab-coursefit">
-    <div class="cf-search-wrap" id="cfSearchWrap" style="display:none;margin-bottom:14px;">
-      <div class="cf-search-inner">
-        <svg class="cf-search-icon" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input type="text" id="cfSearch" class="cf-search-input" placeholder="Search players…" oninput="filterCF(this.value)" autocomplete="off" spellcheck="false">
-        <button class="cf-search-clear" id="cfSearchClear" onclick="clearCFSearch()" style="display:none;">×</button>
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Field</h2>
+        <p class="sec-sub" id="cfTabSub">Field ranked by SG profile alignment with course demands</p>
       </div>
-      <span class="cf-search-count" id="cfSearchCount"></span>
+      <div class="sec-header-actions">
+        <div class="cf-search-wrap" id="cfSearchWrap" style="display:none;margin:0;">
+          <div class="cf-search-inner">
+            <svg class="cf-search-icon" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" id="cfSearch" class="cf-search-input" placeholder="Search players…" oninput="filterCF(this.value)" autocomplete="off" spellcheck="false">
+            <button class="cf-search-clear" id="cfSearchClear" onclick="clearCFSearch()" style="display:none;">×</button>
+          </div>
+          <span class="cf-search-count" id="cfSearchCount"></span>
+        </div>
+      </div>
     </div>
     <div id="cfLoading" class="loading-msg"><div class="spin"></div><br>Loading course-fit rankings…</div>
     <div id="cfTable" style="display:none;"></div>
   </div>
 
-  <!-- Tab 2: Value Finder -->
+  <!-- Tab 2: Outrights (Value Finder) -->
   <div class="tab-content" id="tab-value">
-    <div class="vf-toolbar">
-      <div class="vf-filters">
-        <button class="vf-filter active" onclick="filterValue('all',this)">All Markets</button>
-        <button class="vf-filter" onclick="filterValue('top5',this)">Top 5</button>
-        <button class="vf-filter" onclick="filterValue('top10',this)">Top 10</button>
-        <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
-        <button class="vf-filter" onclick="filterValue('win',this)">Outright</button>
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Outrights</h2>
+        <p class="sec-sub">All odds · DataGolf model edge vs. sportsbook lines · + = value, − = avoid</p>
       </div>
-      <label class="vf-toggle">
+      <div class="sec-header-actions">
+        <div class="vf-toolbar" style="border:none;padding:0;margin:0;background:none;">
+          <div class="vf-filters">
+            <button class="vf-filter active" onclick="filterValue('all',this)">All</button>
+            <button class="vf-filter" onclick="filterValue('top5',this)">Top 5</button>
+            <button class="vf-filter" onclick="filterValue('top10',this)">Top 10</button>
+            <button class="vf-filter" onclick="filterValue('top20',this)">Top 20</button>
+            <button class="vf-filter" onclick="filterValue('win',this)">Win</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap;">
+      <div class="vf-freshness" id="vfFreshness"></div>
+      <label class="vf-toggle" style="flex-shrink:0;">
         <input type="checkbox" id="hideLongshotsToggle" checked onchange="renderValueFinder(valueBetsData,currentVfFilter)">
         Hide longshots (&gt;+1000)
       </label>
     </div>
-    <div class="vf-freshness" id="vfFreshness"></div>
     <div id="vfLoading" class="loading-msg"><div class="spin"></div><br>Loading value data…</div>
     <div id="vfTable" style="display:none;"></div>
+    <!-- Fade Board -->
+    <div class="fb-section" id="fadeBoard" style="display:none;">
+      <div class="fb-header">
+        <span class="fb-title">Plays to Consider Avoiding</span>
+        <span class="fb-note">Market significantly overpricing these bets vs. DataGolf model</span>
+      </div>
+      <div id="fadeBoardRows"></div>
+    </div>
   </div>
 
   <!-- Tab 4: Live -->
   <div class="tab-content" id="tab-live">
-    <div class="ov-section-label">Live Tournament Stats</div>
-    <div class="live-status">
-      <div class="live-dot" id="liveDot" style="display:none;"></div>
-      <span class="live-updated" id="liveUpdated">Loading…</span>
-      <button class="live-refresh-btn" onclick="loadLiveData(true)">Refresh</button>
-      <span class="live-note">Auto-refreshes every 90s during rounds</span>
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title" id="liveSectionTitle">Live Stats</h2>
+        <p class="sec-sub" id="liveTabSub">Strokes gained by round · Win% overlay from DataGolf in-play model</p>
+      </div>
+      <div class="sec-header-actions">
+        <div class="live-status" style="border:none;padding:0;background:none;gap:8px;">
+          <span id="liveFinalBadge" style="display:none;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(91,191,133,0.12);color:var(--green-light);border:1px solid rgba(91,191,133,0.3);border-radius:5px;padding:3px 9px;">FINAL</span>
+          <div class="live-dot" id="liveDot" style="display:none;"></div>
+          <span class="live-updated" id="liveUpdated"></span>
+          <button class="live-refresh-btn" onclick="loadLiveData(true)">Refresh</button>
+        </div>
+      </div>
     </div>
     <div id="liveLoading" class="loading-msg"><div class="spin"></div><br>Loading live data…</div>
     <div id="liveTable" style="display:none;"></div>
@@ -1385,12 +2248,20 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 
   <!-- Tab 5: Matchup Market -->
   <div class="tab-content" id="tab-matchup">
-    <div class="mu-toolbar">
-      <div class="mu-market-btns">
-        <button class="mu-market-btn active" onclick="switchMuMarket('tournament_matchups',this)">Tournament</button>
-        <button class="mu-market-btn" onclick="switchMuMarket('round_matchups',this)">Round</button>
-        <button class="mu-market-btn" onclick="switchMuMarket('3_balls',this)">3-Ball</button>
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Matchups</h2>
+        <p class="sec-sub">DataGolf model edge vs. posted book lines</p>
       </div>
+      <div class="sec-header-actions">
+        <div class="mu-market-btns">
+          <button class="mu-market-btn active" onclick="switchMuMarket('tournament_matchups',this)">Tournament</button>
+          <button class="mu-market-btn" onclick="switchMuMarket('round_matchups',this)">Round</button>
+          <button class="mu-market-btn" onclick="switchMuMarket('3_balls',this)">3-Ball</button>
+        </div>
+      </div>
+    </div>
+    <div class="mu-toolbar" style="border:none;padding:0 0 8px;background:none;">
       <span class="mu-note">Model edge vs. live book lines · 30-min refresh</span>
     </div>
     <div class="mu-legend">
@@ -1403,16 +2274,28 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 
   <!-- Tab 6: Track Record -->
   <div class="tab-content" id="tab-accuracy">
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Track Record</h2>
+        <p class="sec-sub">2026 season picks + DataGolf model calibration</p>
+      </div>
+    </div>
 
     <div class="tr-section">
-      <div class="ov-section-label">Lab Picks Record — 2026 Season</div>
+      <div class="ov-section-label" style="margin-bottom:16px;">Lab Picks — 2026 Season</div>
       <div id="lpLoading" class="loading-msg"><div class="spin"></div><br>Loading Lab Picks record…</div>
       <div id="lpContent" style="display:none;"></div>
     </div>
 
-    <div class="tr-section">
-      <div class="ov-section-label">DataGolf Model Calibration</div>
-      <div class="tr-note">How well DataGolf's pre-tournament model predicts finishes, across the most recently completed PGA Tour events. This measures the underlying model — a separate dataset from the Lab Picks record above, which tracks our actual published picks.</div>
+    <div class="tr-section" style="margin-top:40px;">
+      <div class="ov-section-label" style="margin-bottom:16px;">Recent Leaderboards</div>
+      <div id="recentLbLoading" class="loading-msg"><div class="spin"></div><br>Loading recent results…</div>
+      <div id="recentLbContent" style="display:none;"></div>
+    </div>
+
+    <div class="tr-section" style="margin-top:40px;">
+      <div class="ov-section-label" style="margin-bottom:8px;">DataGolf Model Calibration</div>
+      <div class="tr-note">How well DataGolf's pre-tournament model predicts finishes across recent PGA Tour events. This measures the underlying predictive model — separate from our own published picks above.</div>
       <div id="accLoading" class="loading-msg"><div class="spin"></div><br>Loading model accuracy data…</div>
       <div id="accContent" style="display:none;"></div>
     </div>
@@ -1421,23 +2304,33 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
 
   <!-- Tab 7: DFS -->
   <div class="tab-content" id="tab-dfs">
-    <div class="dfs-toolbar">
-      <div class="dfs-site-btns">
-        <button class="dfs-site-btn active" onclick="switchDfsSite('draftkings',this)">DraftKings</button>
-        <button class="dfs-site-btn" onclick="switchDfsSite('fanduel',this)">FanDuel</button>
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">DFS Projections</h2>
+        <p class="sec-sub">DataGolf fantasy projections + course-fit composite signal</p>
       </div>
-      <div class="dfs-mode-btns">
-        <button class="dfs-mode-btn active" onclick="switchDfsMode('all',this)">All</button>
-        <button class="dfs-mode-btn" onclick="switchDfsMode('cash',this)">Cash</button>
-        <button class="dfs-mode-btn" onclick="switchDfsMode('gpp',this)">GPP</button>
-        <button class="dfs-mode-btn" onclick="switchDfsMode('value',this)">Value</button>
+      <div class="sec-header-actions">
+        <div class="dfs-toolbar" style="border:none;padding:0;background:none;gap:8px;">
+          <div class="dfs-site-btns">
+            <button class="dfs-site-btn active" onclick="switchDfsSite('draftkings',this)">DraftKings</button>
+            <button class="dfs-site-btn" onclick="switchDfsSite('fanduel',this)">FanDuel</button>
+          </div>
+          <div class="dfs-mode-btns">
+            <button class="dfs-mode-btn active" onclick="switchDfsMode('all',this)">All</button>
+            <button class="dfs-mode-btn" onclick="switchDfsMode('cash',this)">Cash</button>
+            <button class="dfs-mode-btn" onclick="switchDfsMode('gpp',this)">GPP</button>
+            <button class="dfs-mode-btn" onclick="switchDfsMode('value',this)">Value</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div class="dfs-legend" style="margin:0;">
+        <span class="dfs-legend-item"><span class="dfs-sig-dot strong"></span>Strong</span>
+        <span class="dfs-legend-item"><span class="dfs-sig-dot gpp"></span>GPP</span>
+        <span class="dfs-legend-item"><span class="dfs-sig-dot value"></span>Value</span>
       </div>
       <span class="dfs-updated" id="dfsUpdated"></span>
-    </div>
-    <div class="dfs-legend">
-      <span class="dfs-legend-item"><span class="dfs-sig-dot strong"></span>Strong — high proj pts + course fit + value</span>
-      <span class="dfs-legend-item"><span class="dfs-sig-dot gpp"></span>GPP — low ownership + high ceiling</span>
-      <span class="dfs-legend-item"><span class="dfs-sig-dot value"></span>Value — underpriced salary</span>
     </div>
     <!-- Stacks -->
     <div id="dfsStacks" style="display:none;margin-bottom:16px;"></div>
@@ -1472,10 +2365,143 @@ html[data-theme="light"] .dfs-builder-meta{color:rgba(28,27,24,0.45);}
     <div id="dfsTable" style="display:none;"></div>
   </div>
 
+  <!-- Tab 8: Tour Rankings (all PGA Tour players via skill-ratings) -->
+  <div class="tab-content" id="tab-rankings">
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Tour Rankings</h2>
+        <p class="sec-sub" id="rankingsTabSub">All PGA Tour players · SG skill ratings (L24)</p>
+      </div>
+      <div class="sec-header-actions">
+        <select class="cf-sort-sel" id="rankingsSortSel" onchange="renderRankingsTab()">
+          <option value="sg_total">Total SG</option>
+          <option value="sg_app">Approach</option>
+          <option value="sg_ott">Off-the-Tee</option>
+          <option value="sg_putt">Putting</option>
+          <option value="sg_arg">Around Green</option>
+          <option value="dg_rank">DG Rank</option>
+          <option value="fedex_points">FedEx Pts</option>
+          <option value="earnings">Earnings</option>
+        </select>
+      </div>
+    </div>
+    <div class="players-search-wrap">
+      <div class="players-search-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10 L14 14" stroke-linecap="round"/></svg>
+      </div>
+      <input type="text" class="players-search-input" id="rankingsSearch" placeholder="Search by name…" oninput="renderRankingsTab()" autocomplete="off">
+    </div>
+    <div class="rnk-table-wrap" id="rnkTableWrap">
+      <div class="rnk-table-head" id="rankingsHead">
+        <span>#</span><span>Player</span><span>DG Rank</span><span>Total</span><span>App</span><span>OTT</span><span>Putt</span><span>ARG</span>
+      </div>
+      <div id="rankingsBody"><div class="drawer-loading">Loading tour rankings…</div></div>
+    </div>
+  </div>
+
+  <!-- Tab 9: Form Trends -->
+  <div class="tab-content" id="tab-trends">
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Form Trends</h2>
+        <p class="sec-sub">L12 vs L24 SG — who's heating up or cooling down this week's field</p>
+      </div>
+      <div class="sec-header-actions">
+        <select class="cf-sort-sel" id="trendsCatSel" onchange="renderTrendsTab()">
+          <option value="total">Overall</option>
+          <option value="app">Approach</option>
+          <option value="ott">Off-the-Tee</option>
+          <option value="putt">Putting</option>
+          <option value="arg">Around Green</option>
+        </select>
+      </div>
+    </div>
+    <div class="trends-table-wrap">
+      <div class="trends-table-head">
+        <span>#</span><span>Player</span><span>L24</span><span>L12</span><span>Δ Trend</span><span>Direction</span>
+      </div>
+      <div id="trendsBody"><div class="drawer-loading">Loading form data…</div></div>
+    </div>
+  </div>
+
+  <!-- Tab 10: Model Probabilities -->
+  <div class="tab-content" id="tab-model">
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Model Probabilities</h2>
+        <p class="sec-sub">DataGolf pre-tournament finish probabilities for this week's field</p>
+      </div>
+      <div class="sec-header-actions">
+        <select class="cf-sort-sel" id="modelSortSel" onchange="renderModelTab()">
+          <option value="win">Win %</option>
+          <option value="top_5">Top 5 %</option>
+          <option value="top_10">Top 10 %</option>
+          <option value="top_20">Top 20 %</option>
+        </select>
+      </div>
+    </div>
+    <div class="model-table-wrap">
+      <div class="model-table-head">
+        <span>#</span><span>Player</span><span>Win</span><span>Top 5</span><span>Top 10</span><span>Top 20</span><span>Fit</span>
+      </div>
+      <div id="modelBody"><div class="drawer-loading">Loading probabilities…</div></div>
+    </div>
+  </div>
+
+  <!-- Tab: Weather -->
+  <div class="tab-content" id="tab-weather">
+    <div class="sec-header">
+      <div class="sec-header-left">
+        <h2 class="sec-title">Tournament Weather</h2>
+        <p class="sec-sub" id="weatherTabSub">4-day forecast · tournament week</p>
+      </div>
+    </div>
+    <div id="weatherBody"><div class="drawer-loading">Loading weather…</div></div>
+  </div>
+
   <div class="pro-disclaimer">
     <strong style="color:rgba(250,250,250,0.25);">Gambling Disclaimer:</strong> Lab Picks is for entertainment and informational purposes only. Nothing here constitutes financial advice or a guarantee of any outcome. Sports betting involves risk — never wager more than you can afford to lose. If gambling is a problem, call 1-800-GAMBLER.
   </div>
-</div>
+
+  </main><!-- /pro-main -->
+  </div><!-- /pro-layout -->
+
+  <!-- ── MOBILE BOTTOM NAV ── -->
+  <nav class="pro-bnav" id="proBottomNav">
+    <button class="bnav-item active" data-nav="overview" onclick="switchNav('overview')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="bnav-item" data-nav="coursefit" onclick="switchNav('coursefit')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12 L5 7 L9 9 L13 4 L15 6"/><circle cx="5" cy="7" r="1" fill="currentColor"/></svg>
+      Field
+    </button>
+    <button class="bnav-item" data-nav="value" onclick="switchNav('value')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v14M5 4h4.5a2 2 0 0 1 0 4H5a2 2 0 0 0 0 4H10"/></svg>
+      Odds
+    </button>
+    <button class="bnav-item" data-nav="live" onclick="switchNav('live')">
+      <span class="psb-live-indicator"></span>
+      Live
+    </button>
+    <button class="bnav-item" data-nav="__more" onclick="toggleBnavMore()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="3" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="13" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
+      More
+    </button>
+  </nav>
+  <!-- mobile more drawer -->
+  <div class="bnav-backdrop" id="bnavBackdrop" onclick="closeBnavMore()"></div>
+  <div class="bnav-more-drawer" id="bnavMoreDrawer">
+    <button class="bnav-more-item" data-nav="trends" onclick="switchNav('trends');closeBnavMore()">Form Trends</button>
+    <button class="bnav-more-item" data-nav="weather" onclick="switchNav('weather');closeBnavMore()">Weather</button>
+    <button class="bnav-more-item" data-nav="model" onclick="switchNav('model');closeBnavMore()">Model Probs</button>
+    <button class="bnav-more-item" data-nav="matchup" onclick="switchNav('matchup');closeBnavMore()">Matchups</button>
+    <button class="bnav-more-item" data-nav="dfs" onclick="switchNav('dfs');closeBnavMore()">DFS</button>
+    <button class="bnav-more-item" data-nav="rankings" onclick="switchNav('rankings');closeBnavMore()">Tour Rankings</button>
+    <button class="bnav-more-item" data-nav="track" onclick="switchNav('track');closeBnavMore()">Track Record</button>
+  </div>
+
+</div><!-- /proApp -->
 
 <script>
 var API = 'https://divotlab-api.vercel.app'; // sandbox: always use prod API (local API lacks BEEHIIV_PRO_PUB_ID)
@@ -1493,6 +2519,7 @@ var muCache = {};
 var muSort = {col:'edge', dir:-1};
 var accDataLoaded = false;
 var lpRecordLoaded = false;
+var recentLbLoaded = false;
 var dfsData = {};
 var dfsSite = 'draftkings';
 var dfsMode = 'all';
@@ -1502,6 +2529,8 @@ var dfsExcluded = new Set();
 var dfsLineup = [];
 var dfsPlayerMap = {}; // dg_id → enriched player object, for click handler lookup
 var courseHistoryData = null;   // null=not loaded, object=loaded
+var approachSkillCache = null;  // null=not loaded, false=fetch failed, object=loaded
+var playerDecompCache = null;   // null=not loaded, false=fetch failed, object=loaded
 var drawerPlayer = null;        // currently open player-drawer player object
 var recentResultsCache = {};    // dg_id → array of recent event results
 var oddsSnapshot = {};          // {player_market: amOdds} captured on first load
@@ -1513,6 +2542,66 @@ var vfOddsUpdatedAt = null;     // Date.now() of last full odds refresh (Value F
 var vfFastTimer = null;         // ~90s loop: re-merges live model probs only
 var vfSlowTimer = null;         // ~10min loop: full odds refetch
 var muRefreshTimer = null;      // ~10min loop: matchup odds refetch while tab active
+
+// ── PLAYER HEADSHOTS ─────────────────────────────────────────────────────────
+function pFmtName(n){if(!n)return '';var p=n.split(', ');return p.length>1?p[1]+' '+p[0]:n;}
+function pInitials(n){var f=pFmtName(n);var w=f.trim().split(' ');return(w[0]?w[0][0]:'')+(w[w.length-1]&&w.length>1?w[w.length-1][0]:'');}
+function pHeadshotFile(playerName){
+  if(!playerName)return null;
+  var parts=playerName.split(', ');var last=parts[0]||'';var full=pFmtName(playerName);
+  var specials={'Si Woo Kim':'siwookim','S.H. Kim':'shkim','Tom Kim':'kim','Michael Kim':'michaelkim','Chan Kim':'chankim',
+    'Cameron Young':'young','Carson Young':'carsonyoung','Cam Davis':'camdavis','Jason Day':'day',
+    'K.H. Lee':'khlee','Min Woo Lee':'lee','S.T. Lee':'stlee','Dan Brown':'danbrown',
+    'Nicolai Højgaard':'nhojgaard','Nicolai Hojgaard':'nhojgaard','Rasmus Højgaard':'rhojgaard','Rasmus Hojgaard':'rhojgaard',
+    'Adam Scott':'scott','Ben Griffin':'griffin','Lanto Griffin':'lantogriffin',
+    'Parker Coody':'parkercoody','Pierceson Coody':'coody','Davis Thompson':'thompson','Michael Thompson':'mthompson',
+    'Taylor Moore':'moore','Taylor Montgomery':'montgomery','Justin Thomas':'thomas','Justin Rose':'rose','Justin Lower':'lower',
+    'Ludvig Åberg':'aberg','Ludvig Aberg':'aberg','Patrick Rodgers':'rodgers','Brendon Todd':'todd',
+    'Danny Walker':'dannywalker','Matt Wallace':'wallace','Kevin Yu':'yu','Dylan Wu':'wu',
+    'J.J. Spaun':'spaun','J.T. Poston':'poston','C.T. Pan':'ctpan','A.J. Ewart':'ewart',
+    'Nick Taylor':'taylor','Frankie Capan III':'capan','Cameron Smith':'camsmith','Dustin Johnson':'djohnson',
+    'Patrick Reed':'reed','Shane McCarthy':'shanemccarthy'};
+  if(specials[full])return specials[full];
+  return last.toLowerCase().replace(/[^a-z]/g,'');
+}
+function pAvatarHtml(playerName, size){
+  size=size||36;
+  var file=pHeadshotFile(playerName);
+  var initials=pInitials(playerName);
+  var img=file?'<img src="/assets/images/headshots/'+file+'.png" alt="" class="p-avatar-img" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">':'';
+  var fallbackStyle=file?'display:none;':'display:flex;';
+  return '<div class="p-avatar" style="width:'+size+'px;height:'+size+'px;">'+img+'<div class="p-avatar-init" style="'+fallbackStyle+'">'+initials+'</div></div>';
+}
+
+// ── SIDEBAR NAV ───────────────────────────────────────────────────────────────
+var NAV_TO_TAB = {overview:'overview',coursefit:'coursefit',trends:'trends',weather:'weather',model:'model',value:'value',matchup:'matchup',dfs:'dfs',live:'live',rankings:'rankings',track:'accuracy'};
+function switchNav(navId){
+  // Update sidebar items
+  document.querySelectorAll('.psb-nav-item').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-nav')===navId);
+  });
+  // Update mobile bottom nav items
+  document.querySelectorAll('.bnav-item').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-nav')===navId);
+  });
+  var tabId=NAV_TO_TAB[navId];
+  if(tabId) switchTab(tabId, null);
+  if(navId==='rankings') renderRankingsTab();
+  if(navId==='trends' && courseFitData) renderTrendsTab();
+  if(navId==='model') renderModelTab();
+  if(navId==='weather') loadWeatherTab();
+}
+function toggleBnavMore(){
+  var drawer=document.getElementById('bnavMoreDrawer');
+  var backdrop=document.getElementById('bnavBackdrop');
+  var isOpen=drawer.classList.toggle('open');
+  if(backdrop) backdrop.classList.toggle('open',isOpen);
+}
+function closeBnavMore(){
+  document.getElementById('bnavMoreDrawer').classList.remove('open');
+  var backdrop=document.getElementById('bnavBackdrop');
+  if(backdrop) backdrop.classList.remove('open');
+}
 
 function isLightTheme(){ return document.documentElement.getAttribute('data-theme')==='light'; }
 // Theme-aware replacement for inline rgba(250,250,250,X) text colors
@@ -1533,13 +2622,21 @@ function refreshThemeColors(){
   switch(currentTabId){
     case 'overview': renderOverview(); break;
     case 'coursefit': if(courseFitData) renderCourseFit(courseFitData); break;
+    case 'trends': if(courseFitData) renderTrendsTab(); break;
+    case 'model': renderModelTab(); break;
     case 'value': if(valueBetsData) renderValueFinder(valueBetsData, currentVfFilter); renderVfFreshness(); break;
     case 'live': if(liveStatsCache) renderLiveTable(liveStatsCache, livePredCache); break;
     case 'matchup': if(muCache[muMarket]) renderMatchups(muCache[muMarket], muMarket); break;
     case 'accuracy': if(accuracyDataCache) renderAccuracy(accuracyDataCache); break;
     case 'dfs': if(dfsData[dfsSite]) renderDfs(); break;
+    case 'rankings': renderRankingsTab(); break;
   }
   if(proPicksData) renderPicksCard(proPicksData);
+  // Re-render open drawer decomp panel (inline colors depend on theme via tc())
+  if(drawerPlayer){
+    var decompSec = document.getElementById('drawerDecompSection');
+    if(decompSec && playerDecompCache) decompSec.innerHTML = '<div class="drawer-section-label">Skill Decomposition</div>'+buildDecompPanel(drawerPlayer.player_name, drawerPlayer.dg_id);
+  }
   // Re-render an open drawer compare result so its inline theme-aware colors update
   var drawerCompareResult = document.getElementById('drawerCompareResult');
   if(drawerCompareResult && drawerCompareResult.classList.contains('show') && drawerPlayer){
@@ -1849,8 +2946,8 @@ function switchSection(sectionId, btn){
 }
 
 function goToSection(sectionId){
-  var btn = document.querySelector('.pro-tabs .pro-tab[data-section="'+sectionId+'"]');
-  switchSection(sectionId, btn);
+  var navMap = {overview:'overview',analysis:'coursefit',betting:'value',dfs:'dfs',track:'track'};
+  if(navMap[sectionId]) switchNav(navMap[sectionId]);
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
@@ -1885,6 +2982,9 @@ function switchTab(id, btn){
   if(id==='accuracy' && !lpRecordLoaded){
     loadLabPicksRecord();
   }
+  if(id==='accuracy' && !recentLbLoaded){
+    loadRecentLeaderboards();
+  }
   if(id==='dfs' && !dfsData[dfsSite]){
     loadDfsData(dfsSite);
   }
@@ -1898,10 +2998,16 @@ async function loadAllData(){
   await loadValueData();       // builds top10OddsMap as side effect
   updateCourseFitOdds();       // patches odds cells without re-rendering, computes dlsScore
   renderOverview();
+  // Pre-render new tabs so they're instant on first navigation
+  if(courseFitData) renderTrendsTab();
+  if(valueBetsData && valueBetsData.length) renderModelTab();
   captureOddsSnapshot();       // snapshot current odds for line movement tracking
   vfSlowTimer = setTimeout(pollOddsRefresh, 10*60*1000);     // full odds refetch
   vfFastTimer = setTimeout(pollLiveProbsRefresh, 90*1000);   // live in-play prob refresh
-  loadCourseHistory();         // pre-fetch course history in background
+  loadCourseHistory();            // pre-fetch course history in background
+  loadApproachSkill();            // pre-fetch approach distance data (24hr cache)
+  loadPlayerDecompositions();     // pre-fetch skill decompositions (6hr cache)
+  loadTourRankings();             // pre-fetch all PGA Tour player SG ratings (24hr cache)
 }
 
 async function loadCourseFit(){
@@ -1920,7 +3026,32 @@ async function loadCourseFit(){
 
 // True once a round is underway — pre-tournament baseline probs are stale at that point.
 function isLiveRound(){
-  return !!(courseFitData && courseFitData.tournament && courseFitData.tournament.current_round > 0);
+  if(!courseFitData || !courseFitData.tournament) return false;
+  var t = courseFitData.tournament;
+  if(!t.current_round) return false;
+  if(t.event_completed) return false;
+  // If live prob map shows exactly one player with ~100% win and >85% with ~0%,
+  // the tournament is over — fall back to pre-tournament probs instead
+  var mapKeys = Object.keys(liveProbMap);
+  if(mapKeys.length > 20){
+    var zeroWin = 0, fullWin = 0;
+    mapKeys.forEach(function(k){
+      var p = liveProbMap[k];
+      if(p && p.win < 0.1) zeroWin++;
+      if(p && p.win > 99) fullWin++;
+    });
+    if(fullWin >= 1 && zeroWin / mapKeys.length > 0.85) return false;
+  }
+  // Check liveStatsCache: if >85% of active players show thru=F, round is complete
+  if(liveStatsCache){
+    var rows = liveStatsCache.live_stats || liveStatsCache.data || (Array.isArray(liveStatsCache) ? liveStatsCache : []);
+    if(rows.length > 10){
+      var active = rows.filter(function(r){ return r.current_pos!=='WD'&&r.current_pos!=='DQ'; });
+      var done = rows.filter(function(r){ var th=String(r.thru||''); return th==='F'||th==='18'; }).length;
+      if(active.length > 0 && done / active.length > 0.85) return false;
+    }
+  }
+  return true;
 }
 
 // /preds/in-play (60s server cache) — live win/top5/10/20 probabilities per player,
@@ -1945,10 +3076,22 @@ function computeEdgeFields(bet){
   var liveP = liveProbMap[bet.player];
   var dgProb, liveModel;
   if(isLiveRound() && liveP && liveP[bet.market]!=null){
-    dgProb = liveP[bet.market]/100;
-    liveModel = true;
+    var candidateProb = liveP[bet.market]/100;
+    // DataGolf uses 1.0% as a floor value for non-contending players (not a real signal).
+    // Only use live data if > 1.5% so we don't show -97% edge on effectively-eliminated players.
+    if(candidateProb > 0.015){
+      dgProb = candidateProb;
+      liveModel = true;
+    } else {
+      var preP = preTournamentProbMap[bet.player];
+      dgProb = (preP && preP[bet.market]!=null) ? preP[bet.market] : (bet.dgOdds ? 1/bet.dgOdds : 0.01);
+      liveModel = false;
+    }
   } else {
-    dgProb = 1/bet.dgOdds;
+    // Use pre-tournament DataGolf probabilities (from /api/pre-tournament?odds_format=percent)
+    // These are more stable and accurate than deriving from baseline_history_fit decimal odds
+    var preP = preTournamentProbMap[bet.player];
+    dgProb = (preP && preP[bet.market]!=null) ? preP[bet.market] : (bet.dgOdds ? 1/bet.dgOdds : 0.01);
     liveModel = false;
   }
   var edge = (dgProb*bet.bestOdds)-1;
@@ -1983,9 +3126,26 @@ async function loadValueData(){
     var oddsPromise = Promise.all(markets.map(function(m){
       return fetch(API+'/api/betting-odds?tour=pga&market='+m+'&odds_format=decimal').then(function(r){return r.json();});
     }));
+    var pretournPromise = fetch(API+'/api/pre-tournament?odds_format=percent').then(function(r){return r.json();}).catch(function(){return null;});
     var livePromise = isLiveRound() ? fetchLiveProbMap() : Promise.resolve();
     var results = await oddsPromise;
+    var pretournD = await pretournPromise;
     await livePromise;
+
+    // Build pre-tournament probability map (DataGolf percent → decimal 0-1)
+    preTournamentProbMap = {};
+    if(pretournD && pretournD.success && pretournD.data){
+      var preds = pretournD.data.baseline_history_fit || pretournD.data.predictions || [];
+      preds.forEach(function(p){
+        if(!p.player_name) return;
+        preTournamentProbMap[p.player_name] = {
+          win:    p.win    != null ? p.win    : null,
+          top_5:  p.top_5  != null ? p.top_5  : null,
+          top_10: p.top_10 != null ? p.top_10 : null,
+          top_20: p.top_20 != null ? p.top_20 : null
+        };
+      });
+    }
     var bets = [];
     results.forEach(function(r,i){
       if(!r.success||!r.data||!r.data.odds) return;
@@ -2016,6 +3176,7 @@ async function loadValueData(){
     vfOddsUpdatedAt = Date.now();
     renderValueFinder(bets, currentVfFilter);
     renderVfFreshness();
+    if(currentTabId === 'model') renderModelTab();
   } catch(e){
     document.getElementById('vfLoading').innerHTML='<div style="color:'+tc(0.3)+';font-size:13px;">Could not load value data.</div>';
   }
@@ -2160,20 +3321,32 @@ function openPlayerDrawer(playerName){
 
   var compareOpts = '<option value="">Compare with…</option>'+sortedPlayerNames.filter(function(n){return n!==playerName;}).map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('');
 
-  var html = '<div class="drawer-name">'+playerName+'</div>'
-    +'<div class="drawer-meta">'+(p.country?p.country+' · ':'')+'Rank #'+rank+(odds?' · Top 10 '+fmtAm(odds.am)+' ('+odds.book.toUpperCase()+')':'')+'</div>'
+  var fmtPlayerDisplay = pFmtName(playerName);
+  var html = '<div class="drawer-avatar-header">'
+      +pAvatarHtml(playerName,52)
+      +'<div>'
+        +'<div class="drawer-name">'+fmtPlayerDisplay+'</div>'
+        +'<div class="drawer-meta">'+(p.country?p.country+' · ':'')+'Fit Rank #'+rank+(odds?' · Top 10 '+fmtAm(odds.am)+' ('+odds.book.toUpperCase()+')':'')+'</div>'
+      +'</div>'
+    +'</div>'
     +'<div class="drawer-scores">'
       +'<div class="drawer-score-box"><div class="drawer-score-val'+(p.fitScore==null?' dim':'')+'">'+(p.fitScore!=null?p.fitScore:'—')+'</div><div class="drawer-score-lbl">Course Fit</div></div>'
       +'<div class="drawer-score-box"><div class="drawer-score-val dls'+(dls==null?' dim':'')+'">'+(dls!=null?dls:'—')+'</div><div class="drawer-score-lbl">DL Score</div></div>'
     +'</div>'
     +'<div class="drawer-section"><div class="drawer-section-label">SG Breakdown</div>'+sgHTML+'</div>'
+    +'<div class="drawer-section" id="drawerDecompSection"><div class="drawer-section-label">Skill Decomposition</div>'
+      +(playerDecompCache !== null ? buildDecompPanel(playerName, p.dg_id) : '<div class="drawer-loading">Loading…</div>')
+    +'</div>'
+    +'<div class="drawer-section" id="drawerApproachSection"><div class="drawer-section-label">Approach by Distance</div>'
+      +(approachSkillCache !== null ? buildApproachPanel(playerName, p.dg_id) : '<div class="drawer-loading">Loading…</div>')
+    +'</div>'
     +'<div class="drawer-section" id="drawerRecentSection"><div class="drawer-section-label">Recent Results</div>'
       +(recentResultsCache[p.dg_id] ? buildRecentResultsPanel(recentResultsCache[p.dg_id]) : '<div class="drawer-loading">Loading…</div>')
     +'</div>'
     +'<div class="drawer-section" id="drawerHistorySection"><div class="drawer-section-label">Course History</div>'
       +(courseHistoryData ? buildCourseHistoryPanel(playerName) : '<div class="drawer-loading">Loading…</div>')
     +'</div>'
-    +'<div class="drawer-section"><div class="drawer-section-label">Compare</div>'
+    +'<div class="drawer-section"><div class="drawer-section-label">Head-to-Head Compare</div>'
       +'<div class="drawer-compare-row">'
         +'<select id="drawerCompareSelect">'+compareOpts+'</select>'
         +'<button class="drawer-compare-btn" onclick="runDrawerCompare()">Compare →</button>'
@@ -2184,6 +3357,26 @@ function openPlayerDrawer(playerName){
   document.getElementById('drawerContent').innerHTML = html;
   document.getElementById('playerDrawerOverlay').classList.add('show');
   document.getElementById('playerDrawer').classList.add('show');
+
+  // Skill decompositions — load once, then patch drawer
+  if(playerDecompCache === null){
+    loadPlayerDecompositions().then(function(){
+      if(drawerPlayer && drawerPlayer.player_name===playerName){
+        var sec = document.getElementById('drawerDecompSection');
+        if(sec) sec.innerHTML = '<div class="drawer-section-label">Skill Decomposition</div>'+buildDecompPanel(playerName, p.dg_id);
+      }
+    });
+  }
+
+  // Approach skill — load once, then patch drawer
+  if(approachSkillCache === null){
+    loadApproachSkill().then(function(){
+      if(drawerPlayer && drawerPlayer.player_name===playerName){
+        var sec = document.getElementById('drawerApproachSection');
+        if(sec) sec.innerHTML = '<div class="drawer-section-label">Approach by Distance</div>'+buildApproachPanel(playerName, p.dg_id);
+      }
+    });
+  }
 
   if(courseHistoryData===null){
     loadCourseHistory().then(function(){
@@ -2244,24 +3437,183 @@ function closePlayerDrawer(){
   drawerPlayer = null;
 }
 
+// ── APPROACH SKILL ────────────────────────────────────────────────────────────
+var APPR_BUCKETS = [
+  {k:'50_75',  lbl:'50–75y'},
+  {k:'75_100', lbl:'75–100y'},
+  {k:'100_125',lbl:'100–125y'},
+  {k:'125_150',lbl:'125–150y'},
+  {k:'150_175',lbl:'150–175y'},
+  {k:'175_200',lbl:'175–200y'},
+  {k:'200plus',lbl:'200+y'}
+];
+// Also support alternate key formats DataGolf might use
+var APPR_ALT_KEYS = {
+  '50_75':['sg_50_75','sg50_75','50-75'],
+  '75_100':['sg_75_100','sg75_100','75-100'],
+  '100_125':['sg_100_125','sg100_125','100-125'],
+  '125_150':['sg_125_150','sg125_150','125-150'],
+  '150_175':['sg_150_175','sg150_175','150-175'],
+  '175_200':['sg_175_200','sg175_200','175-200'],
+  '200plus':['sg_200plus','sg_200_plus','sg200plus','200+','200plus']
+};
+
+function getApprVal(playerRow, bucketKey){
+  if(playerRow == null) return null;
+  // Try primary key
+  if(playerRow[bucketKey] != null) return playerRow[bucketKey];
+  // Try alternates
+  var alts = APPR_ALT_KEYS[bucketKey] || [];
+  for(var i=0;i<alts.length;i++){
+    if(playerRow[alts[i]] != null) return playerRow[alts[i]];
+  }
+  // Try nested sg object
+  if(playerRow.sg && playerRow.sg[bucketKey] != null) return playerRow.sg[bucketKey];
+  return null;
+}
+
+async function loadApproachSkill(){
+  if(approachSkillCache !== null) return;
+  try {
+    var res = await fetch(API+'/api/approach-skill?period=l24');
+    var d = await res.json();
+    if(!d.success) throw new Error('no data');
+    var players = (d.data && d.data.players) || d.data || [];
+    if(!Array.isArray(players) || !players.length) throw new Error('empty');
+    // Index by player_name for O(1) lookup
+    var idx = {};
+    players.forEach(function(p){
+      if(p.player_name) idx[p.player_name] = p;
+      if(p.dg_id) idx['id:'+p.dg_id] = p;
+    });
+    approachSkillCache = idx;
+  } catch(e){
+    approachSkillCache = false; // failed — skip section
+  }
+}
+
+function buildApproachPanel(playerName, dgId){
+  if(!approachSkillCache) return '<div class="drawer-recent-empty">Approach data unavailable.</div>';
+  var row = approachSkillCache[playerName] || (dgId ? approachSkillCache['id:'+dgId] : null);
+  if(!row) return '<div class="drawer-recent-empty">No approach data for this player.</div>';
+
+  // Find best bucket for course context label
+  var cw = courseFitData && courseFitData.course_weights;
+  var primaryDist = '150–175y'; // default guess
+  // (We could derive this from course yardage if available — using a static label for now)
+
+  var vals = APPR_BUCKETS.map(function(b){ return {lbl:b.lbl, v:getApprVal(row,b.k)}; }).filter(function(b){return b.v!=null;});
+  if(!vals.length) return '<div class="drawer-recent-empty">No distance data available.</div>';
+
+  var maxAbs = Math.max.apply(null, vals.map(function(b){return Math.abs(b.v);}));
+  maxAbs = Math.max(maxAbs, 0.5); // min scale
+
+  var html = '<div class="appr-panel">'
+    +'<div class="appr-title">SG Approach by Distance (L24)</div>'
+    +vals.map(function(b){
+      var pct = Math.abs(b.v)/maxAbs*100;
+      var cls = b.v > 0.05 ? 'pos' : b.v < -0.05 ? 'neg' : 'zero';
+      var fillClass = b.v > 0 ? 'appr-dist-fill-pos' : 'appr-dist-fill-neg';
+      var f = fmtSG(b.v);
+      return '<div class="appr-dist-row">'
+        +'<div class="appr-dist-lbl">'+b.lbl+'</div>'
+        +'<div class="appr-dist-track"><div class="'+fillClass+'" style="width:'+pct.toFixed(1)+'%;"></div></div>'
+        +'<div class="appr-dist-val '+cls+'">'+f.s+'</div>'
+      +'</div>';
+    }).join('')
+  +'</div>';
+  return html;
+}
+
+// ── PLAYER SKILL DECOMPOSITIONS (drawer) ──────────────────────────────────────
+async function loadPlayerDecompositions(){
+  if(playerDecompCache !== null) return;
+  try {
+    var res = await fetch(API+'/api/player-decompositions');
+    var d = await res.json();
+    if(!d.success || !d.data) throw new Error('bad response');
+    var players = Array.isArray(d.data) ? d.data : (d.data.players || []);
+    var idx = {};
+    players.forEach(function(p){
+      if(p.player_name) idx[p.player_name] = p;
+      if(p.dg_id) idx['id:'+p.dg_id] = p;
+    });
+    playerDecompCache = idx;
+  } catch(e){
+    playerDecompCache = false;
+  }
+}
+
+var DECOMP_SKILLS = [
+  {k:'driving', lbl:'Driving'},
+  {k:'irons',   lbl:'Irons'},
+  {k:'wedges',  lbl:'Wedges'},
+  {k:'putting', lbl:'Putting'}
+];
+// DataGolf may use alternate key names — try multiple candidates
+function getDecompVal(row, key){
+  var candidates = {
+    driving: ['driving','drive','sg_driving','sg_ott','ott'],
+    irons:   ['irons','iron_play','iron','sg_iron','sg_app','approach'],
+    wedges:  ['wedges','wedge','around_green','arg','sg_arg','short_game'],
+    putting: ['putting','putt','sg_putting','sg_putt']
+  };
+  var keys = candidates[key] || [key];
+  for(var i=0;i<keys.length;i++){
+    if(row[keys[i]] != null) return row[keys[i]];
+  }
+  return null;
+}
+
+function buildDecompPanel(playerName, dgId){
+  if(!playerDecompCache) return '<div class="drawer-recent-empty">Skill data unavailable.</div>';
+  var row = playerDecompCache[playerName] || (dgId ? playerDecompCache['id:'+dgId] : null);
+  if(!row) return '<div class="drawer-recent-empty">No skill data for this player.</div>';
+
+  var vals = DECOMP_SKILLS.map(function(s){ return {lbl:s.lbl, v:getDecompVal(row, s.k)}; });
+  var allNull = vals.every(function(v){ return v.v == null; });
+  if(allNull) return '<div class="drawer-recent-empty">Skill decomposition data not available.</div>';
+
+  var maxAbs = Math.max.apply(null, vals.filter(function(v){return v.v!=null;}).map(function(v){return Math.abs(v.v);}));
+  maxAbs = Math.max(maxAbs, 0.5);
+
+  return '<div class="decomp-grid">'
+    +vals.map(function(v){
+      if(v.v == null) return '<div class="decomp-cell"><div class="decomp-cell-lbl">'+v.lbl+'</div><div class="decomp-cell-val zero">—</div></div>';
+      var cls = v.v > 0.05 ? 'pos' : v.v < -0.05 ? 'neg' : 'zero';
+      var pct = Math.abs(v.v)/maxAbs*100;
+      var fillCls = v.v >= 0 ? 'decomp-cell-fill-pos' : 'decomp-cell-fill-neg';
+      var sign = v.v > 0 ? '+' : '';
+      return '<div class="decomp-cell">'
+        +'<div class="decomp-cell-lbl">'+v.lbl+'</div>'
+        +'<div class="decomp-cell-val '+cls+'">'+sign+v.v.toFixed(2)+'</div>'
+        +'<div class="decomp-cell-bar"><div class="'+fillCls+'" style="width:'+pct.toFixed(1)+'%;"></div></div>'
+      +'</div>';
+    }).join('')
+  +'</div>';
+}
+
 // ── TOURNEY HEADER ────────────────────────────────────────────────────────────
 function renderTourneyHeader(d){
-  document.getElementById('appTourneyName').textContent = d.tournament.event_name || 'Current Tournament';
-  var chips = document.getElementById('appChips');
-  chips.innerHTML =
-    '<span class="t-chip chip-g">'+(d.tournament.field_size||'—')+' players</span>'+
-    '<span class="t-chip '+(d.course_weights.matched?'chip-gold':'chip-b')+'">'+
-      (d.course_weights.matched?'Venue profile matched':'Default weights')+'</span>'+
-    '<span class="t-chip chip-b">'+(d.meta&&d.meta.form_blended?'65% Skill + 35% Form':'Skill only')+'</span>';
+  var tourneyName = d.tournament.event_name || 'Current Tournament';
+  document.getElementById('appTourneyName').textContent = tourneyName;
 
+  // Update CF tab subtitle with tournament name
+  var cfSub = document.getElementById('cfTabSub');
+  if(cfSub && tourneyName) cfSub.textContent = tourneyName+' · Full field ranked by course-fit score';
+
+  // Sidebar weights — CSS classes only (no inline tc() calls, so theme toggle works)
   var wr = document.getElementById('weightsRow');
-  var cats=[{k:'app',n:'Approach',c:'#5BBF85'},{k:'ott',n:'OTT',c:'#5A8FA8'},{k:'arg',n:'ARG',c:'#C9A84C'},{k:'putt',n:'Putting',c:tc(0.4)}];
-  var html='<span class="w-label">Course weights:</span>';
-  cats.forEach(function(cat){
-    var pct=Math.round((d.course_weights[cat.k]||0)*100);
-    html+='<div class="w-item"><span class="w-name">'+cat.n+'</span><div class="w-bar-outer"><div class="w-bar-fill" style="width:'+pct+'%;background:'+cat.c+'"></div></div><span class="w-pct">'+pct+'%</span></div>';
-  });
-  wr.innerHTML=html;
+  if(!wr) return;
+  var cats=[{k:'app',n:'App',c:'#5BBF85'},{k:'putt',n:'Putt',c:'#8B97A0'},{k:'ott',n:'OTT',c:'#5A8FA8'},{k:'arg',n:'ARG',c:'#C9A84C'}];
+  cats.sort(function(a,b){ return (d.course_weights[b.k]||0)-(d.course_weights[a.k]||0); });
+  wr.innerHTML = cats.map(function(cat){
+    var pct = Math.round((d.course_weights[cat.k]||0)*100);
+    return '<div class="psb-w-pill">'
+      +'<div class="psb-w-dot" style="background:'+cat.c+';"></div>'
+      +'<span class="psb-w-text">'+cat.n+' '+pct+'%</span>'
+    +'</div>';
+  }).join('');
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
@@ -2269,45 +3621,81 @@ var MARKET_LABELS = {top_5:'Top 5', top_10:'Top 10', top_20:'Top 20', win:'Win'}
 function renderOverview(){
   if(!courseFitData) return;
   var t = courseFitData.tournament||{};
+  var cw = courseFitData.course_weights||{};
   document.getElementById('ovTourneyName').textContent = t.event_name || 'Current Tournament';
 
   var metaParts = [];
   if(proPicksData && proPicksData.week_of) metaParts.push(proPicksData.week_of);
+  if(t.course) metaParts.push(t.course);
   if(t.field_size) metaParts.push(t.field_size+' players');
-  metaParts.push(courseFitData.course_weights&&courseFitData.course_weights.matched ? 'Venue profile matched' : 'Default weights');
+  if(t.purse) metaParts.push('$'+Number(t.purse).toLocaleString());
   document.getElementById('ovHeroMeta').innerHTML = metaParts.map(function(m){ return '<span>'+m+'</span>'; }).join('<span class="ov-meta-dot">·</span>');
 
+  // Course Profile Card
+  renderCourseProfile(cw, t);
+
+  // Top Fits with headshots
   var fitList = document.getElementById('ovFitList');
   if(courseFitData.field && courseFitData.field.length){
     var topFit = courseFitData.field.filter(function(p){ return p.fitScore!=null; })
       .sort(function(a,b){ return b.fitScore-a.fitScore; }).slice(0,5);
     fitList.innerHTML = topFit.map(function(p){
-      return '<div class="ov-quick-row"><span class="ov-quick-player">'+p.player_name+'</span>'
-        +'<span class="ov-quick-val" style="color:'+tcSG(p.fitScore-50,1)+'">'+p.fitScore+'</span></div>';
+      return '<div class="ov-quick-row">'
+        +pAvatarHtml(p.player_name,30)
+        +'<div class="ov-quick-row-info">'
+          +'<div class="ov-quick-player">'+pFmtName(p.player_name)+'</div>'
+          +(p.country?'<div class="ov-quick-sub">'+p.country+'</div>':'')
+        +'</div>'
+        +'<span class="ov-quick-val" style="color:'+tcSG(p.fitScore-50,1)+';font-family:var(--mono);font-size:15px;font-weight:700;">'+p.fitScore+'</span>'
+      +'</div>';
     }).join('');
   } else {
     fitList.innerHTML = '<div class="ov-quick-row"><span class="ov-quick-sub">Loading…</span></div>';
   }
 
+  // Best Value Plays with headshots
   var valList = document.getElementById('ovValueList');
   if(valueBetsData && valueBetsData.length){
-    var topValue = valueBetsData.slice(0,5);
+    // Only bets with odds < +2000 and positive edge; cap at 3 over +1000
+    var eligible = valueBetsData.filter(function(b){ return b.edgePct>=0 && b.amOdds<2000; });
+    var under1k = eligible.filter(function(b){ return b.amOdds<=1000; });
+    var over1k  = eligible.filter(function(b){ return b.amOdds>1000; }).slice(0,3);
+    var topValue = under1k.concat(over1k).slice(0,5);
+    if(!topValue.length) topValue = valueBetsData.filter(function(b){ return b.amOdds<2000; }).slice(0,3);
     valList.innerHTML = topValue.map(function(b){
-      return '<div class="ov-quick-row"><span class="ov-quick-player">'+b.player+'<span class="ov-quick-sub">'+(MARKET_LABELS[b.market]||b.market)+'</span></span>'
-        +'<span class="ov-quick-val" style="color:'+tcSG(b.edge,1)+'">'+fmtAm(b.amOdds)+' · +'+b.edgePct+'%</span></div>';
+      var edgeColor = b.edgePct>0 ? 'var(--green-light)' : tc(0.4);
+      return '<div class="ov-quick-row">'
+        +pAvatarHtml(b.player,30)
+        +'<div class="ov-quick-row-info">'
+          +'<div class="ov-quick-player">'+pFmtName(b.player)+'</div>'
+          +'<div class="ov-quick-sub">'+(MARKET_LABELS[b.market]||b.market)+' · '+b.bestBook.toUpperCase()+'</div>'
+        +'</div>'
+        +'<div style="text-align:right;flex-shrink:0;">'
+          +'<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold);">'+fmtAm(b.amOdds)+'</div>'
+          +'<div style="font-family:var(--mono);font-size:10px;color:'+edgeColor+';">'+(b.edgePct>=0?'+':'')+b.edgePct+'%</div>'
+        +'</div>'
+      +'</div>';
     }).join('');
   } else {
-    valList.innerHTML = '<div class="ov-quick-row"><span class="ov-quick-sub">Loading…</span></div>';
+    valList.innerHTML = '<div class="ov-quick-row"><span class="ov-quick-sub">Loading odds data…</span></div>';
   }
 
+  // DL Score Leaders with headshots
   var dlsList = document.getElementById('ovDlsList');
   if(courseFitData.field && courseFitData.field.length){
     var topDls = courseFitData.field.filter(function(p){ return p.dlsScore!=null; })
       .sort(function(a,b){ return b.dlsScore-a.dlsScore; }).slice(0,5);
     if(topDls.length){
       dlsList.innerHTML = topDls.map(function(p){
-        return '<div class="ov-quick-row"><span class="ov-quick-player">'+p.player_name+'</span>'
-          +'<span class="ov-quick-val" style="color:'+tcSG(p.dlsScore-50,1)+'">'+p.dlsScore+'</span></div>';
+        var dlsColor = p.dlsScore>=80?'var(--green-light)':p.dlsScore>=65?'var(--gold)':tc(0.7);
+        return '<div class="ov-quick-row">'
+          +pAvatarHtml(p.player_name,30)
+          +'<div class="ov-quick-row-info">'
+            +'<div class="ov-quick-player">'+pFmtName(p.player_name)+'</div>'
+            +'<div class="ov-quick-sub">Fit '+p.fitScore+(p.country?' · '+p.country:'')+'</div>'
+          +'</div>'
+          +'<span style="font-family:var(--mono);font-size:15px;font-weight:700;color:'+dlsColor+';flex-shrink:0;">'+p.dlsScore+'</span>'
+        +'</div>';
       }).join('');
     } else {
       dlsList.innerHTML = '<div class="ov-quick-row"><span class="ov-quick-sub">Available once odds load…</span></div>';
@@ -2315,6 +3703,545 @@ function renderOverview(){
   } else {
     dlsList.innerHTML = '<div class="ov-quick-row"><span class="ov-quick-sub">Loading…</span></div>';
   }
+}
+
+// Course Profile Card — builds a mini course-demand breakdown with plain-English description
+function renderCourseProfile(cw, tournament){
+  var card = document.getElementById('cpCard');
+  if(!card) return;
+  if(!cw || (!cw.app && !cw.ott)) { card.style.display='none'; return; }
+
+  var cats = [
+    {k:'app',n:'Approach',color:'#5BBF85'},
+    {k:'putt',n:'Putting',color:'#8B97A0'},
+    {k:'ott',n:'Off Tee',color:'#5A8FA8'},
+    {k:'arg',n:'Arg. Green',color:'#C9A84C'}
+  ];
+  // Sort descending by pct to show most important first
+  cats.sort(function(a,b){ return (cw[b.k]||0)-(cw[a.k]||0); });
+
+  // Demand label: plain-English description based on dominant category
+  var top = cats[0];
+  var demandMap = {
+    app:'A ball-striking track — elite approach play is the biggest differentiator.',
+    putt:'A putting-heavy course — players who can drain it from distance have a clear edge.',
+    ott:'Length matters here. Off-the-tee dominance opens up birdie chances.',
+    arg:'A scrambling test — sharp around-the-green play separates the field.'
+  };
+  var demand = demandMap[top.k] || 'A balanced course-fit profile.';
+  var matchedBadge = cw.matched
+    ? '<span class="cp-badge cp-badge-matched">Venue profile matched</span>'
+    : '<span class="cp-badge cp-badge-default">Default weights</span>';
+
+  // Stacked bar: one bar split into 4 colored segments, proportional to weights
+  var stackedBar = '<div class="cp-stacked-bar">'
+    + cats.map(function(c){
+        var pct = Math.round((cw[c.k]||0)*100);
+        return '<div class="cp-stacked-seg" style="width:'+pct+'%;background:'+c.color+';flex-shrink:0;"></div>';
+      }).join('')
+    + '</div>';
+
+  // Pill labels: dot + name + %
+  var pillsHtml = '<div class="cp-weight-pills">'
+    + cats.map(function(c){
+        var pct = Math.round((cw[c.k]||0)*100);
+        return '<div class="cp-weight-pill">'
+          +'<div class="cp-weight-dot" style="background:'+c.color+';"></div>'
+          +'<span class="cp-weight-name">'+c.n+'</span>'
+          +'<span class="cp-weight-pct">'+pct+'%</span>'
+        +'</div>';
+      }).join('')
+    + '</div>';
+
+  card.innerHTML =
+    '<div class="cp-header">'
+      +'<span class="cp-title">Course Profile'+(tournament&&tournament.course?' · '+tournament.course:'')+'</span>'
+      +matchedBadge
+    +'</div>'
+    +'<p class="cp-demand-label">'+demand+'</p>'
+    +stackedBar
+    +pillsHtml;
+  card.style.display='block';
+}
+
+// ── PLAYERS TAB ──────────────────────────────────────────────────────────────
+// renderPlayersTab / filterPlayersTab removed — replaced by renderRankingsTab
+
+// ── WEATHER ──────────────────────────────────────────────────────────────────
+var VENUE_COORDS = {
+  'travelers':       {lat:41.689, lon:-72.640, city:'Cromwell, CT'},
+  'memorial':        {lat:40.081, lon:-83.102, city:'Dublin, OH'},
+  'rbc canadian':    {lat:43.903, lon:-80.022, city:'Caledon, ON'},
+  'us open':         {lat:40.882, lon:-72.388, city:'Southampton, NY'},
+  'pga championship':{lat:40.501, lon:-79.805, city:'Oakmont, PA'},
+  'masters':         {lat:33.502, lon:-82.021, city:'Augusta, GA'},
+  'the players':     {lat:30.201, lon:-81.401, city:'Ponte Vedra, FL'},
+  'arnold palmer':   {lat:28.482, lon:-81.501, city:'Bay Hill, FL'},
+  'genesis':         {lat:34.052, lon:-118.493, city:'Pacific Palisades, CA'},
+  'waste management':{lat:33.437, lon:-111.847, city:'Scottsdale, AZ'},
+  'phoenix open':    {lat:33.437, lon:-111.847, city:'Scottsdale, AZ'},
+  'farmers insurance':{lat:32.902, lon:-117.183, city:'Torrey Pines, CA'},
+  'zurich':          {lat:29.951, lon:-90.072, city:'New Orleans, LA'},
+  'valspar':         {lat:28.071, lon:-82.716, city:'Palm Harbor, FL'},
+  'texas open':      {lat:29.425, lon:-98.495, city:'San Antonio, TX'},
+  'charles schwab':  {lat:32.777, lon:-97.301, city:'Fort Worth, TX'},
+  'colonial':        {lat:32.777, lon:-97.301, city:'Fort Worth, TX'},
+  'fedex st. jude':  {lat:35.150, lon:-90.049, city:'Memphis, TN'},
+  'bmw championship':{lat:41.878, lon:-87.630, city:'Chicago, IL'},
+  'tour championship':{lat:33.749, lon:-84.388, city:'Atlanta, GA'},
+  'wyndham':         {lat:36.073, lon:-79.792, city:'Greensboro, NC'},
+  'rocket mortgage': {lat:42.331, lon:-83.046, city:'Detroit, MI'},
+  'john deere':      {lat:41.524, lon:-90.578, city:'Silvis, IL'},
+  'the sentry':      {lat:20.878, lon:-156.683, city:'Maui, HI'},
+  'sony open':       {lat:21.307, lon:-157.858, city:'Honolulu, HI'},
+  'american express':{lat:33.629, lon:-116.402, city:'La Quinta, CA'},
+  'pebble beach':    {lat:36.569, lon:-121.949, city:'Pebble Beach, CA'},
+  'honda classic':   {lat:26.854, lon:-80.082, city:'Palm Beach Gardens, FL'},
+  'cognizant':       {lat:26.854, lon:-80.082, city:'Palm Beach Gardens, FL'},
+  'truist':          {lat:35.227, lon:-80.843, city:'Charlotte, NC'},
+  'wells fargo':     {lat:35.227, lon:-80.843, city:'Charlotte, NC'},
+  'fortinet':        {lat:38.298, lon:-122.338, city:'Napa, CA'},
+  'sanderson farms': {lat:32.299, lon:-90.185, city:'Jackson, MS'},
+  'shriners':        {lat:36.170, lon:-115.140, city:'Las Vegas, NV'},
+  'workday':         {lat:39.490, lon:-83.812, city:'Beavercreek, OH'},
+  'valero':          {lat:29.425, lon:-98.495, city:'San Antonio, TX'},
+  'cj cup':          {lat:35.665, lon:-83.530, city:'TPC Twin Cities, MN'},
+  'mexico open':     {lat:19.433, lon:-99.133, city:'Mexico City, MX'},
+  'barracuda':       {lat:39.330, lon:-120.193, city:'Truckee, CA'},
+  'corales':         {lat:18.486, lon:-69.931, city:'Punta Cana, DR'},
+};
+var WMO_COND = {
+  0:'Clear',1:'Mainly clear',2:'Part. cloudy',3:'Overcast',
+  45:'Foggy',48:'Icy fog',51:'Lt drizzle',53:'Drizzle',55:'Hvy drizzle',
+  61:'Lt rain',63:'Rain',65:'Hvy rain',71:'Lt snow',73:'Snow',75:'Hvy snow',
+  80:'Showers',81:'Rain showers',82:'Hvy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
+};
+
+function getVenueCoords(tournamentName){
+  if(!tournamentName) return null;
+  var lower = tournamentName.toLowerCase();
+  var keys = Object.keys(VENUE_COORDS);
+  for(var i=0;i<keys.length;i++){ if(lower.includes(keys[i])) return VENUE_COORDS[keys[i]]; }
+  return null;
+}
+
+async function loadWeatherTab(){
+  var body = document.getElementById('weatherBody');
+  if(!body) return;
+  if(weatherData && weatherCoords){ renderWeatherContent(weatherData, weatherCoords); return; }
+  var tourneyName = (document.getElementById('appTourneyName')||{}).textContent || '';
+  var coords = getVenueCoords(tourneyName);
+  if(!coords){
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">Venue location not in database for "'+tourneyName+'" — check back after course fit loads.</div>';
+    return;
+  }
+  try {
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude='+coords.lat+'&longitude='+coords.lon
+      +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max'
+      +'&current=temperature_2m,weather_code,wind_speed_10m'
+      +'&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=10&past_days=7';
+    var res = await fetch(url);
+    var data = await res.json();
+    weatherData = data;
+    weatherCoords = coords;
+    renderWeatherContent(data, coords);
+  } catch(e){
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">Could not load weather data.</div>';
+  }
+}
+
+function renderWeatherContent(data, coords){
+  var body = document.getElementById('weatherBody');
+  if(!body) return;
+
+  // Tournament dates: always show the current/upcoming tournament week's Thu-Sun,
+  // based on today's date (not proPicksData.published which may be stale).
+  // Mon/Tue/Wed → upcoming Thursday; Thu/Fri/Sat/Sun → this week's Thursday.
+  var today = new Date(); today.setHours(12,0,0,0);
+  var dow = today.getDay(); // 0=Sun, 1=Mon, ..., 4=Thu, 5=Fri, 6=Sat
+  var daysToThursday = (dow === 0) ? -3 : (4 - dow);
+  var thursday = new Date(today.getTime() + daysToThursday * 24 * 3600 * 1000);
+  var tournDates = [];
+  for(var ri=0; ri<4; ri++){
+    tournDates.push(new Date(thursday.getTime() + ri * 24 * 3600 * 1000));
+  }
+
+  var DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var MON_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // Current conditions
+  var curTemp = Math.round(data.current.temperature_2m);
+  var curCond = WMO_COND[data.current.weather_code] || '';
+  var curWind = data.current.wind_speed_10m ? Math.round(data.current.wind_speed_10m)+' mph' : '';
+
+  // Build date → daily index map
+  var times  = data.daily.time || [];
+  var codes  = data.daily.weather_code || [];
+  var maxT   = data.daily.temperature_2m_max || [];
+  var minT   = data.daily.temperature_2m_min || [];
+  var rain   = data.daily.precipitation_probability_max || [];
+  var wind   = data.daily.wind_speed_10m_max || [];
+  var dateIdx = {};
+  times.forEach(function(t,i){ dateIdx[t]=i; });
+
+  // Build round cards — match each tournament day to a daily forecast index
+  var rounds = tournDates.map(function(d,ri){
+    var yyyy = d.getFullYear(), mm=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0');
+    var key = yyyy+'-'+mm+'-'+dd;
+    return { round:'R'+(ri+1), dayName:DAY_NAMES[d.getDay()], dateLabel:MON_NAMES[d.getMonth()]+' '+d.getDate(), idx:dateIdx[key]!=null?dateIdx[key]:-1 };
+  });
+
+  function condColor(code){
+    if(code===0||code===1) return 'var(--gold)';
+    if(code<=3) return tc(0.55);
+    return '#5A8FA8';
+  }
+
+  var html = '<div class="wx-current">'
+    +'<div class="wx-city">'+coords.city+'</div>'
+    +'<div class="wx-now">'
+      +'<span class="wx-temp">'+curTemp+'°F</span>'
+      +'<span class="wx-cond">'+curCond+'</span>'
+      +(curWind?'<span class="wx-wind">'+curWind+' now</span>':'')
+    +'</div>'
+  +'</div>';
+
+  html += '<div class="wx-section-label">Tournament Forecast</div>';
+  html += '<div class="wx-grid">';
+  rounds.forEach(function(r){
+    var i = r.idx;
+    var has = i>=0 && i<times.length;
+    var code = has ? (codes[i]||0) : null;
+    var cond = code!=null ? (WMO_COND[code]||'') : 'Forecast unavailable';
+    var cc = code!=null ? condColor(code) : tc(0.3);
+    var hi = has ? Math.round(maxT[i]) : null;
+    var lo = has ? Math.round(minT[i]) : null;
+    var rn = has ? rain[i] : null;
+    var wd = has ? Math.round(wind[i]) : null;
+    html += '<div class="wx-day-card">'
+      +'<div class="wx-day-header">'
+        +'<span class="wx-day-round">'+r.round+'</span>'
+        +'<span class="wx-day-name">'+r.dayName+'</span>'
+        +'<span class="wx-day-date">'+r.dateLabel+'</span>'
+      +'</div>'
+      +'<div class="wx-day-cond" style="color:'+cc+';">'+cond+'</div>'
+      +(hi!=null?'<div class="wx-day-temps">'+hi+'° / '+lo+'°</div>':'<div class="wx-day-temps">—</div>')
+      +(rn!=null&&rn>5?'<div class="wx-day-rain">'+rn+'% rain</div>':'')
+      +(wd!=null?'<div class="wx-day-wind">'+wd+' mph wind</div>':'')
+    +'</div>';
+  });
+  html += '</div>';
+  html += '<div class="wx-note">Forecast via Open-Meteo · updated each visit · times local to venue</div>';
+
+  // Update subtitle with city
+  var sub = document.getElementById('weatherTabSub');
+  if(sub) sub.textContent = coords.city+' · 4-day tournament forecast';
+
+  body.innerHTML = html;
+}
+
+// ── TOUR RANKINGS TAB ─────────────────────────────────────────────────────────
+var rankingsData = null; // null=not loaded, false=failed, array=loaded
+var preTournamentProbMap = {}; // player_name → {win, top_5, top_10, top_20} as decimal probabilities (0–1); DataGolf returns these as decimals regardless of odds_format
+var weatherData = null;   // cached Open-Meteo response
+var weatherCoords = null; // cached venue coords used for weather fetch
+
+async function loadTourRankings(){
+  if(rankingsData !== null) return;
+  try {
+    var settled = await Promise.allSettled([
+      fetch(API+'/api/skill-ratings?display=value&pga_only=true').then(function(r){return r.json();}),
+      fetch(API+'/api/dg-rankings').then(function(r){return r.json();}),
+      fetch(API+'/api/fedex-standings').then(function(r){return r.json();})
+    ]);
+    var skillD = settled[0].status==='fulfilled' ? settled[0].value : null;
+    var owgrD  = settled[1].status==='fulfilled' ? settled[1].value : {success:false, rankings:[]};
+    var fedexD = settled[2].status==='fulfilled' ? settled[2].value : {success:false, standings:[]};
+    console.log('[Rankings] dg-rankings:', owgrD.success, 'count:', (owgrD.rankings||[]).length, 'sample:', (owgrD.rankings||[])[0]);
+    console.log('[Rankings] fedex-standings:', fedexD.success, 'count:', (fedexD.standings||[]).length, 'sample:', (fedexD.standings||[])[0]);
+    if(!skillD || !skillD.success) throw new Error((skillD&&skillD.error)||'Skill ratings unavailable');
+    var players = (skillD.data && (skillD.data.skill_ratings || skillD.data.players)) || [];
+
+    // DG Rank + OWGR lookup by player_name (DataGolf format)
+    var owgrMap = {};
+    var dgRankMap = {};
+    if(owgrD.success && Array.isArray(owgrD.rankings)){
+      owgrD.rankings.forEach(function(r){
+        if(!r.player_name) return;
+        owgrMap[r.player_name] = r.owgr || null;
+        dgRankMap[r.player_name] = r.dg_rank || null;
+      });
+    }
+
+    // FedEx lookup — ESPN uses "First Last" format; DataGolf uses "Last, First"
+    // Build both forward and reversed lookups for best match rate
+    var fedexMap = {};
+    if(fedexD.success && Array.isArray(fedexD.standings)){
+      fedexD.standings.forEach(function(s){
+        if(!s.player_name) return;
+        // store by ESPN display name
+        fedexMap[s.player_name] = s;
+        // also store by "Last, First" → "First Last" inversion
+        var parts = s.player_name.split(', ');
+        if(parts.length===2) fedexMap[parts[1]+' '+parts[0]] = s;
+      });
+    }
+    function dgToEspnName(dgName){
+      // DataGolf: "Last, First" → try "First Last" for ESPN lookup
+      var parts = dgName.split(', ');
+      return parts.length===2 ? parts[1]+' '+parts[0] : dgName;
+    }
+
+    rankingsData = players.filter(function(p){ return p.player_name; }).map(function(p){
+      var espnName = dgToEspnName(p.player_name);
+      var fedex = fedexMap[espnName] || fedexMap[p.player_name] || null;
+      // OWGR: try DataGolf first (owgrMap), fall back to ESPN rank from fedex-standings
+      var owgr = owgrMap[p.player_name] || null;
+      if(!owgr && fedex && fedex.rank > 0) owgr = fedex.rank;
+      return Object.assign({}, p, {
+        dg_rank:      dgRankMap[p.player_name] || null,
+        owgr:         owgr,
+        fedex_points: fedex ? fedex.fedex_points : null,
+        earnings:     fedex ? fedex.earnings     : null,
+        events:       fedex ? fedex.events       : null,
+        wins:         fedex ? fedex.wins         : null,
+      });
+    });
+  } catch(e){
+    rankingsData = false;
+  }
+  renderRankingsTab();
+}
+
+function renderRankingsTab(){
+  var body = document.getElementById('rankingsBody');
+  if(!body) return;
+
+  if(rankingsData === null){
+    loadTourRankings();
+    return;
+  }
+  if(rankingsData === false){
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">Could not load tour rankings.</div>';
+    return;
+  }
+
+  var q = ((document.getElementById('rankingsSearch')||{}).value||'').toLowerCase().trim();
+  var sortKey = (document.getElementById('rankingsSortSel')||{}).value || 'sg_total';
+  // "Rankings mode" shows DG Rank + FedEx + Earnings; "SG mode" shows the full SG breakdown
+  var rankingsMode = sortKey==='dg_rank' || sortKey==='owgr' || sortKey==='fedex_points' || sortKey==='earnings';
+  var sortAsc = sortKey==='dg_rank' || sortKey==='owgr'; // lower rank = better; everything else higher = better
+
+  var players = rankingsData.slice().filter(function(p){
+    if(!q) return true;
+    return p.player_name.toLowerCase().includes(q);
+  }).filter(function(p){ return p[sortKey]!=null; });
+
+  // If filtering removes too many players, fall back to all with a graceful empty check
+  if(!players.length){
+    // If sort key has no data, show all players sorted by sg_total
+    players = rankingsData.slice().filter(function(p){
+      if(!q) return true;
+      return p.player_name.toLowerCase().includes(q);
+    });
+    if(sortKey==='fedex_points' || sortKey==='earnings'){
+      body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">FedEx Cup data unavailable — ESPN API may be unreachable.</div>';
+      return;
+    }
+    if(sortKey==='dg_rank'){
+      body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">DG Rank data unavailable — check back shortly.</div>';
+      return;
+    }
+  }
+
+  players.sort(function(a,b){
+    var av = a[sortKey]; var bv = b[sortKey];
+    if(av==null && bv==null) return 0;
+    if(av==null) return 1;
+    if(bv==null) return -1;
+    return sortAsc ? av - bv : bv - av;
+  });
+
+  var SORT_LABELS = {dg_rank:'DG Rank',owgr:'OWGR',fedex_points:'FedEx Points',earnings:'Earnings',sg_total:'SG Total',sg_app:'SG App',sg_ott:'SG OTT',sg_putt:'SG Putt',sg_arg:'SG ARG'};
+  var sub = document.getElementById('rankingsTabSub');
+  if(sub) sub.textContent = players.length+' players · sorted by '+(SORT_LABELS[sortKey]||sortKey);
+
+  // Helpers
+  function sgClass(v, isSortCol){
+    if(v==null) return 'rnk-val zero';
+    return 'rnk-val '+(v>0.05?'pos':v<-0.05?'neg':'zero')+(isSortCol?' bold':'');
+  }
+  function sgFmt(v){ return v==null?'—':(v>0?'+':'')+v.toFixed(2); }
+  function rnkFmt(v){ return v==null?'—':'#'+v; }
+  function ptsFmt(v){ return v==null?'—':Number(v).toLocaleString(); }
+  function earnFmt(v){ return v==null?'—':'$'+(v>=1000000?(v/1000000).toFixed(2)+'M':(v>=1000?(v/1000).toFixed(0)+'k':v)); }
+  function boldCls(isSortCol){ return 'rnk-val'+(isSortCol?' bold':''); }
+
+  var head = document.getElementById('rankingsHead');
+  var wrap = document.getElementById('rnkTableWrap');
+
+  if(rankingsMode){
+    // Rankings view: DG Rank | FedEx Pts | Earnings | Events
+    var gridCols = '36px 1fr 60px 72px 80px 52px';
+    if(head) head.innerHTML = '<span>#</span><span>Player</span><span>DG Rank</span><span>FedEx Pts</span><span>Earnings</span><span>Events</span>';
+    if(wrap) wrap.style.setProperty('--rnk-cols', gridCols);
+    if(head) head.style.gridTemplateColumns = gridCols;
+    body.innerHTML = players.map(function(p, i){
+      var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+      return '<div class="rnk-row" style="grid-template-columns:'+gridCols+';" onclick="openPlayerDrawer(\''+safeName+'\')">'
+        +'<div class="rnk-num">'+(i+1)+'</div>'
+        +'<div class="rnk-player">'+pAvatarHtml(p.player_name,28)+'<div>'
+          +'<div class="rnk-name">'+pFmtName(p.player_name)+'</div>'
+          +(p.country?'<div class="rnk-country">'+p.country+'</div>':'')
+        +'</div></div>'
+        +'<div class="'+boldCls(sortKey==='dg_rank')+'">'+rnkFmt(p.dg_rank)+'</div>'
+        +'<div class="'+boldCls(sortKey==='fedex_points')+'">'+ptsFmt(p.fedex_points)+'</div>'
+        +'<div class="'+boldCls(sortKey==='earnings')+'">'+earnFmt(p.earnings)+'</div>'
+        +'<div class="rnk-val">'+ptsFmt(p.events)+'</div>'
+      +'</div>';
+    }).join('');
+  } else {
+    // SG view (default): DG Rank | Total SG | App | OTT | Putt | ARG
+    var sgGrid = '36px 1fr 56px 60px 60px 60px 60px 60px';
+    if(head) head.innerHTML = '<span>#</span><span>Player</span><span>DG Rank</span><span>Total</span><span>App</span><span>OTT</span><span>Putt</span><span>ARG</span>';
+    if(head) head.style.gridTemplateColumns = sgGrid;
+    body.innerHTML = players.map(function(p, i){
+      var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+      return '<div class="rnk-row" style="grid-template-columns:'+sgGrid+';" onclick="openPlayerDrawer(\''+safeName+'\')">'
+        +'<div class="rnk-num">'+(i+1)+'</div>'
+        +'<div class="rnk-player">'+pAvatarHtml(p.player_name,28)+'<div>'
+          +'<div class="rnk-name">'+pFmtName(p.player_name)+'</div>'
+          +(p.country?'<div class="rnk-country">'+p.country+'</div>':'')
+        +'</div></div>'
+        +'<div class="rnk-val">'+rnkFmt(p.dg_rank)+'</div>'
+        +'<div class="'+sgClass(p.sg_total, sortKey==='sg_total')+'">'+sgFmt(p.sg_total)+'</div>'
+        +'<div class="'+sgClass(p.sg_app,   sortKey==='sg_app')  +'">'+sgFmt(p.sg_app)+'</div>'
+        +'<div class="'+sgClass(p.sg_ott,   sortKey==='sg_ott')  +'">'+sgFmt(p.sg_ott)+'</div>'
+        +'<div class="'+sgClass(p.sg_putt,  sortKey==='sg_putt') +'">'+sgFmt(p.sg_putt)+'</div>'
+        +'<div class="'+sgClass(p.sg_arg,   sortKey==='sg_arg')  +'">'+sgFmt(p.sg_arg)+'</div>'
+      +'</div>';
+    }).join('');
+  }
+}
+
+// ── FORM TRENDS TAB ───────────────────────────────────────────────────────────
+function renderTrendsTab(){
+  var body = document.getElementById('trendsBody');
+  if(!body || !courseFitData || !courseFitData.field) return;
+
+  var cat = (document.getElementById('trendsCatSel')||{}).value || 'total';
+  var l24Key = cat==='total' ? 'sg_total' : 'sg_'+cat;
+  var l12Key = l24Key+'_l12';
+
+  var players = courseFitData.field.filter(function(p){
+    return p[l24Key]!=null && p[l12Key]!=null;
+  });
+
+  players.sort(function(a,b){
+    var da = (a[l12Key]||0)-(a[l24Key]||0);
+    var db = (b[l12Key]||0)-(b[l24Key]||0);
+    return db - da;
+  });
+
+  if(!players.length){
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;line-height:1.6;">Form trends unavailable this week.<br><span style="font-size:12px;opacity:.55;">DataGolf\'s standard skill ratings are a single 24-round rolling average — L12 breakdowns require the historical rounds data plan. Trends will appear once that data is available.</span></div>';
+    return;
+  }
+
+  body.innerHTML = players.map(function(p, i){
+    var l24 = p[l24Key]; var l12 = p[l12Key];
+    var delta = l12 - l24;
+    var dir = delta > 0.05 ? 'rising' : delta < -0.05 ? 'falling' : 'flat';
+    var arrow = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
+    var l24Cls = l24>0.05?'pos':l24<-0.05?'neg':'zero';
+    var l12Cls = l12>0.05?'pos':l12<-0.05?'neg':'zero';
+    var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return '<div class="trend-row" onclick="openPlayerDrawer(\''+safeName+'\')">'
+      +'<div class="trend-num">'+(i+1)+'</div>'
+      +'<div class="trend-player">'+pAvatarHtml(p.player_name,28)+'<div>'
+        +'<div class="trend-name">'+pFmtName(p.player_name)+'</div>'
+        +(p.country?'<div class="trend-country">'+p.country+'</div>':'')
+      +'</div></div>'
+      +'<div class="trend-val '+l24Cls+'">'+(l24>0?'+':'')+l24.toFixed(2)+'</div>'
+      +'<div class="trend-val '+l12Cls+'">'+(l12>0?'+':'')+l12.toFixed(2)+'</div>'
+      +'<div class="trend-delta '+dir+'">'+(delta>0?'+':'')+delta.toFixed(2)+'</div>'
+      +'<div class="trend-dir"><span class="trend-arrow">'+arrow+'</span><span class="trend-badge '+dir+'">'+dir+'</span></div>'
+    +'</div>';
+  }).join('');
+}
+
+// ── MODEL PROBABILITIES TAB ───────────────────────────────────────────────────
+function renderModelTab(){
+  var body = document.getElementById('modelBody');
+  if(!body) return;
+
+  var sortMkt = (document.getElementById('modelSortSel')||{}).value || 'win';
+
+  var fitMap = {};
+  var countryMap = {};
+  if(courseFitData && courseFitData.field){
+    courseFitData.field.forEach(function(p){
+      fitMap[p.player_name] = p.fitScore;
+      countryMap[p.player_name] = p.country||'';
+    });
+  }
+  var hasField = Object.keys(fitMap).length > 0;
+
+  var players = [];
+
+  if(Object.keys(preTournamentProbMap).length > 0){
+    // Primary source: pre-tournament endpoint (/api/pre-tournament?odds_format=percent)
+    // More complete and accurate than deriving from betting baseline_history_fit
+    Object.keys(preTournamentProbMap).forEach(function(name){
+      if(hasField && !(name in fitMap)) return; // filter to this week's field if loaded
+      var probs = preTournamentProbMap[name];
+      if(probs[sortMkt] == null) return;
+      players.push({
+        player: name,
+        win:    probs.win,
+        top_5:  probs.top_5,
+        top_10: probs.top_10,
+        top_20: probs.top_20,
+        fit:    fitMap[name] != null ? fitMap[name] : null,
+        country: countryMap[name] || ''
+      });
+    });
+  } else if(valueBetsData && valueBetsData.length){
+    // Fallback: derive from betting odds data (less accurate, may be stale during tournament)
+    var playerMap = {};
+    valueBetsData.forEach(function(bet){
+      if(!bet.player || !(bet.player in fitMap)) return;
+      if(!playerMap[bet.player]) playerMap[bet.player] = {player:bet.player, fit:fitMap[bet.player]||null, country:countryMap[bet.player]||''};
+      var prob = bet.dgProb != null ? bet.dgProb : (bet.dgOdds ? 1/bet.dgOdds : null);
+      if(prob != null) playerMap[bet.player][bet.market] = prob;
+    });
+    Object.values(playerMap).forEach(function(p){ if(p[sortMkt]!=null) players.push(p); });
+  } else {
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">Loading model data…</div>';
+    return;
+  }
+
+  players.sort(function(a,b){ return (b[sortMkt]||0)-(a[sortMkt]||0); });
+
+  function probFmt(v){ return v==null?'—':(v*100).toFixed(1)+'%'; }
+  function probCls(v, isSortCol){ if(v==null) return 'model-prob'; return 'model-prob'+(isSortCol?' sort-col':'')+(v>0.15?' hi':''); }
+  function fitColor(v){ return v==null?tc(0.3):v>=75?'var(--green-light)':v>=60?'var(--gold)':tc(0.45); }
+
+  body.innerHTML = players.map(function(p, i){
+    var safeName = p.player.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return '<div class="model-row" onclick="openPlayerDrawer(\''+safeName+'\')">'
+      +'<div class="model-num">'+(i+1)+'</div>'
+      +'<div class="model-player">'+pAvatarHtml(p.player,28)+'<div>'
+        +'<div class="model-name">'+pFmtName(p.player)+'</div>'
+        +(p.country?'<div class="model-country">'+p.country+'</div>':'')
+      +'</div></div>'
+      +'<div class="'+probCls(p.win,   sortMkt==='win')   +'">'+probFmt(p.win)+'</div>'
+      +'<div class="'+probCls(p.top_5, sortMkt==='top_5') +'">'+probFmt(p.top_5)+'</div>'
+      +'<div class="'+probCls(p.top_10,sortMkt==='top_10')+'">'+probFmt(p.top_10)+'</div>'
+      +'<div class="'+probCls(p.top_20,sortMkt==='top_20')+'">'+probFmt(p.top_20)+'</div>'
+      +'<div class="model-fit" style="color:'+fitColor(p.fit)+';font-family:var(--mono);font-size:12px;font-weight:600;text-align:right;display:flex;align-items:center;justify-content:flex-end;">'+(p.fit!=null?p.fit:'—')+'</div>'
+    +'</div>';
+  }).join('');
 }
 
 function loadSeasonRecord(){
@@ -2476,6 +4403,7 @@ function renderCourseFit(d){
   var html = '<div class="cf-table-wrap">'
     +'<div class="cf-table-head">'
     +'<span class="cf-th">#</span>'
+    +'<span class="cf-th"></span>'
     +'<span class="cf-th">Player</span>'
     +'<span class="cf-th cf-th-sort'+cfSortCls('fit')+'" onclick="sortCF(\'fit\')" style="cursor:pointer;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what historically wins at this venue. 100 = best fit in the field. Derived from historical top-10 SG patterns, blending 24-month skill with 12-month recent form.')+' <span class="sort-arrow">'+cfSortArrow('fit')+'</span></span>'
     +'<span class="cf-th" style="cursor:default;">'+tip('SG Breakdown','<strong>Strokes Gained per Category</strong>App = Approach &nbsp;·&nbsp; OTT = Off the Tee &nbsp;·&nbsp; ARG = Around Green &nbsp;·&nbsp; Putt = Putting<br><br>24-month rolling average blended with recent form. Click App / OTT / ARG / Putt labels below to sort by that category.')+'&nbsp;'
@@ -2499,6 +4427,7 @@ function renderCourseFit(d){
 
     html += '<div class="cf-row'+(i<3?' top3':'')+'" data-player="'+p.player_name+'">'+
       '<div class="cf-rank '+rc+'">'+(i+1)+'</div>'+
+      pAvatarHtml(p.player_name, 32)+
       '<div><div class="cf-player">'+p.player_name+'</div>'+(p.country?'<div class="cf-country">'+p.country+'</div>':'')+'</div>'+
       '<div class="cf-score '+scoreCls+'">'+score+'</div>'+
       '<div class="cf-bars">'+sgBarHTML('App',p.sg_app)+sgBarHTML('OTT',p.sg_ott)+sgBarHTML('ARG',p.sg_arg)+sgBarHTML('Putt',p.sg_putt)+'</div>'+
@@ -2608,10 +4537,8 @@ function renderValueFinder(bets, market){
     if(market==='win') return b.market==='win';
     return true;
   })).filter(function(b){
-    // Hide very long odds (implied prob < 6.25%, i.e. > +1500 American)
-    // Hide longshots: decimal odds > 11.0 = American +1000
     if(hideLong && b.bestOdds > 11.0) return false;
-    return b.edge > 0;
+    return true; // show all bets sorted by edge; positive = value, negative = fade
   });
 
   // Apply sort
@@ -2659,7 +4586,7 @@ function renderValueFinder(bets, market){
     +'<div class="vf-head">'
     +'<span class="vf-th">Player</span>'
     +'<span class="vf-th '+(vfSort.col==='odds'?'sorted':'')+'" onclick="sortVF(\'odds\')" style="white-space:nowrap;">'+tip('Odds','<strong>Best Available Odds</strong>American odds for this bet type from the best book across DraftKings, FanDuel, BetMGM, Pinnacle, Bet365, and Caesars. +400 = bet $100 to win $400. –150 = bet $150 to win $100.<br><br>Reflects pre-round lines — always verify at the book before betting.',false,arrow('odds'))+'</span>'
-    +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf model probability × best odds) – 1. Positive = the model thinks this bet is underpriced. A 15% edge means 15% more expected value than fair odds.',false,arrow('edge'))+'</span>'
+    +'<span class="vf-th '+(vfSort.col==='edge'?'sorted':'')+'" onclick="sortVF(\'edge\')" style="white-space:nowrap;">'+tip('Edge %','<strong>Model Edge</strong>(DataGolf probability × best odds) − 1. <strong>+ = value</strong> (model likes this bet vs. the price). <strong>− = fade</strong> (market is overpricing this outcome). Sorted highest to lowest.',false,arrow('edge'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='prob'?'sorted':'')+'" onclick="sortVF(\'prob\')" style="white-space:nowrap;">'+tip('Hit Prob','<strong>Probability This Bet Hits</strong>DataGolf model\'s probability this specific outcome occurs (e.g., top-10 finish). NOT an outright win probability — a top-20 bet showing 60% means 60% chance of finishing top 20.',false,arrow('prob'))+'</span>'
     +'<span class="vf-th '+(vfSort.col==='fit'?'sorted':'')+'" onclick="sortVF(\'fit\')" style="white-space:nowrap;">'+tip('Fit','<strong>Course-Fit Score (0–100)</strong>How well this player\'s strokes gained profile matches what wins at this venue. High fit + high edge = strongest signal.',false,arrow('fit'))+'</span>'
     +'<span class="vf-th" style="white-space:nowrap;">'+tip('Best Book','<strong>Best Sportsbook</strong>Book offering the highest odds for this bet at page load time. Always verify before placing.',true)+'</span>'
@@ -2668,7 +4595,7 @@ function renderValueFinder(bets, market){
 
   filtered.forEach(function(b){
     var amStr = fmtAm(b.amOdds);
-    var edgeCls = b.edgePct>=15?'green':b.edgePct>=8?'gold':'';
+    var edgeCls = b.edgePct>=15?'green':b.edgePct>=8?'gold':b.edgePct<0?'vf-neg':'';
     var fitScore = cfMap[b.player]!=null?cfMap[b.player]:'—';
     var highFit = typeof fitScore==='number'&&fitScore>=70;
     var highEdge = b.edgePct>=8;
@@ -2677,12 +4604,14 @@ function renderValueFinder(bets, market){
     else if(highFit||highEdge){ signal='Watch'; sigCls='conf-moderate'; }
     else { signal='—'; sigCls=''; }
     var probStr = b.dgProbPct ? b.dgProbPct.toFixed(1)+'%' : '—';
-    var liveTag = b.liveModel ? '<span class="vf-live-tag">live</span>' : '';
+    // Only show LIVE tag when hit prob is meaningful (≥3%). Below that threshold the model
+    // is showing a floor value for an out-of-contention player — it's noise, not signal.
+    var liveTag = (b.liveModel && b.dgProbPct >= 3) ? '<span class="vf-live-tag">live</span>' : '';
 
     html += '<div class="vf-row'+(highFit&&highEdge?' high':'')+'" data-player="'+b.player+'">'+
-      '<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div>'+
+      '<div class="vf-player-cell">'+pAvatarHtml(b.player,28)+'<div><span class="vf-player">'+b.player+'</span><span class="vf-bet-badge '+marketBadge[b.market]+'">'+marketLabels[b.market]+'</span></div></div>'+
       '<div class="vf-cell gold" data-label="Odds">'+amStr+moveBadge(b.player,b.market)+'</div>'+
-      '<div class="vf-cell '+(edgeCls?edgeCls:'')+'" data-label="Edge %">+'+(b.edgePct>=0?b.edgePct.toFixed(1):'—')+'%</div>'+
+      '<div class="vf-cell '+(edgeCls?edgeCls:'')+'" data-label="Edge %">'+(b.edgePct>=0?'+':'')+b.edgePct.toFixed(1)+'%</div>'+
       '<div class="vf-cell" data-label="Hit Prob">'+probStr+liveTag+'</div>'+
       '<div class="vf-cell" data-label="Fit">'+fitScore+'</div>'+
       '<div class="vf-cell" data-label="Best Book">'+b.bestBook.toUpperCase()+'</div>'+
@@ -2698,6 +4627,46 @@ function renderValueFinder(bets, market){
 
   document.getElementById('vfTable').innerHTML=html;
   document.getElementById('vfTable').style.display='block';
+
+  // Render Fade Board below main table
+  renderFadeBoard(filtered);
+}
+
+// ── FADE BOARD — Plays to Consider Avoiding ───────────────────────────────────
+function renderFadeBoard(currentBets){
+  var fbSection = document.getElementById('fadeBoard');
+  var fbRows = document.getElementById('fadeBoardRows');
+  if(!fbSection || !fbRows || !valueBetsData || !valueBetsData.length) return;
+
+  // Candidates: positive-odds bets with meaningful negative edge (market overpricing vs. model)
+  // Exclude "not contending" bets — when live hit prob is < 5%, the player is already out of it.
+  // That's not a market-mispricing signal; it's just a live position signal.
+  var hideLongs = document.getElementById('hideLongshotsToggle') && document.getElementById('hideLongshotsToggle').checked;
+  var fades = valueBetsData.filter(function(b){
+    if(hideLongs && b.amOdds > 1000) return false;
+    if(b.liveModel && b.dgProbPct < 5) return false; // player not contending — not a useful fade
+    return b.edgePct < -8 && b.amOdds > 0;
+  }).slice().sort(function(a,b){ return a.edgePct - b.edgePct; }).slice(0,5);
+
+  if(!fades.length){ fbSection.style.display='none'; return; }
+
+  var mktLabel = {top_5:'Top 5',top_10:'Top 10',top_20:'Top 20',win:'Win'};
+  fbRows.innerHTML = fades.map(function(b){
+    return '<div class="fb-row">'
+      +'<div class="fb-player">'
+        +pAvatarHtml(b.player,28)
+        +'<div>'
+          +'<div class="fb-player-name">'+pFmtName(b.player)+'</div>'
+          +'<div class="fb-player-mkt">'+(mktLabel[b.market]||b.market)+' · '+b.bestBook.toUpperCase()+'</div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="fb-odds">'+fmtAm(b.amOdds)+'</div>'
+      +'<div class="fb-edge">'+b.edgePct.toFixed(1)+'%</div>'
+      +'<div class="fb-why">Model implies '+(b.dgProbPct?b.dgProbPct.toFixed(1)+'%':'—')+' — market asking '+(b.amOdds>0?Math.round(100/(b.amOdds+100)*100)+'%':'—')+'</div>'
+    +'</div>';
+  }).join('');
+
+  fbSection.style.display='block';
 }
 
 // ── PLAYER COMPARE (drawer) ──────────────────────────────────────────────────
@@ -3610,6 +5579,122 @@ function renderLabPicksRecord(d){
   contentEl.style.display='block';
 }
 
+async function loadRecentLeaderboards(){
+  recentLbLoaded = true;
+  var loadEl = document.getElementById('recentLbLoading');
+  var contentEl = document.getElementById('recentLbContent');
+  if(!loadEl || !contentEl) return;
+  try {
+    // 1. Fetch PGA schedule to get completed event IDs
+    var schedRes = await fetch(API+'/api/schedule?tour=pga&season=2026');
+    var schedD = await schedRes.json();
+    var schedule = (schedD.success && schedD.data && schedD.data.schedule)
+      || (schedD.data && Array.isArray(schedD.data) ? schedD.data : [])
+      || [];
+    console.log('[Leaderboards] schedule count:', schedule.length, 'sample:', schedule[0]);
+
+    // DataGolf schedule uses event_completed flag (1) or we fall back to date < today
+    var todayStr = new Date().toISOString().slice(0, 10);
+    var completed = schedule
+      .filter(function(e){
+        if(!e.event_id) return false;
+        // DataGolf uses event_completed:1 flag OR we compare date
+        if(e.event_completed === 1 || e.event_completed === true) return true;
+        if(e.status === 'completed' || e.status === 'past') return true;
+        return e.date && e.date < todayStr;
+      })
+      .sort(function(a, b){ return (b.date||'').localeCompare(a.date||''); })
+      .slice(0, 5);
+
+    if(!completed.length){
+      loadEl.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No completed events found for 2026 season.</div>';
+      return;
+    }
+
+    // 2. Fetch results for each event (parallel, allSettled for resilience)
+    var resultPromises = completed.map(function(e){
+      return fetch(API+'/api/historical-event-results?tour=pga&event_id='+encodeURIComponent(e.event_id)+'&year=2026')
+        .then(function(r){ return r.json(); })
+        .then(function(d){ return { event: e, data: d }; })
+        .catch(function(){ return { event: e, data: null }; });
+    });
+    var settled = await Promise.allSettled(resultPromises);
+
+    // 3. Build our season pick player names for highlighting
+    var pickNames = new Set();
+    if(proPicksData && proPicksData.picks){
+      proPicksData.picks.forEach(function(p){ if(p.player) pickNames.add(p.player); });
+    }
+
+    // 4. Render leaderboards
+    var html = '';
+    settled.forEach(function(s){
+      if(s.status !== 'fulfilled') return;
+      var e = s.value.event;
+      var d = s.value.data;
+      if(!d || !d.success || !d.data) return;
+
+      var raw = d.data;
+      // DataGolf returns results in an array — try multiple field paths
+      var results = raw.results || raw.event_results || (Array.isArray(raw) ? raw : []);
+      if(!results.length) return;
+
+      // Sort by finishing position (numerical, CUT/WD at end)
+      function finPos(r){
+        var f = String(r.fin_text||r.position||'999').replace(/[TtMm]/g,'');
+        if(f==='CUT'||f==='WD'||f==='DQ'||f==='MDF') return 999;
+        return parseInt(f)||999;
+      }
+      var sorted = results.slice().sort(function(a,b){ return finPos(a)-finPos(b); });
+      var top10 = sorted.slice(0, 10);
+
+      var eventName = raw.event_name || e.event_name || 'Tournament';
+      var eventDate = e.date ? new Date(e.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+
+      html += '<div class="tr-event-card" style="margin-bottom:16px;">'
+        +'<div class="tr-event-head" style="cursor:default;">'
+          +'<div class="tr-event-info">'
+            +'<div class="tr-event-name">'+eventName+'</div>'
+            +(eventDate?'<div class="tr-event-date">'+eventDate+'</div>':'')
+          +'</div>'
+        +'</div>'
+        +'<div style="padding:0;">';
+
+      top10.forEach(function(p, i){
+        var pos = String(p.fin_text||p.position||'—');
+        var pName = p.player_name || '';
+        var displayName = pName.split(',').reverse().join(' ').trim();
+        var score = p.total_score!=null ? (p.total_score<=0?''+p.total_score:'+'+p.total_score) : (p.score!=null?(p.score<=0?''+p.score:'+'+p.score):'—');
+        var sgTotal = p.sg_total!=null ? (p.sg_total>=0?'+':'')+Number(p.sg_total).toFixed(2) : null;
+        var isPick = pickNames.has(pName);
+
+        html += '<div class="rnk-row" style="grid-template-columns:36px 1fr 52px'+(sgTotal?' 56px':'')+';background:'+(isPick?'rgba(201,168,76,0.06)':'')+';" onclick="openPlayerDrawer(\''+pName.replace(/'/g,'&#39;').replace(/"/g,'&quot;')+'\')">'
+          +'<div class="rnk-num">'+pos+'</div>'
+          +'<div class="rnk-player" style="display:flex;align-items:center;gap:8px;">'
+            +pAvatarHtml(pName, 22)
+            +'<span class="rnk-name">'+displayName+(isPick?'<span class="live-pick-badge" style="margin-left:6px;font-size:8px;">PICK</span>':'')+'</span>'
+          +'</div>'
+          +'<div class="rnk-val" style="font-weight:700;font-family:var(--mono);color:'+(score.startsWith('-')||score==='E'?'var(--green-light)':score.startsWith('+')?tc(0.5):tc(0.4))+';">'+score+'</div>'
+          +(sgTotal?'<div class="rnk-val" style="font-family:var(--mono);font-size:11px;color:'+(Number(p.sg_total)>0?tc(0.6):tc(0.35))+';">'+sgTotal+'</div>':'')
+        +'</div>';
+      });
+
+      html += '</div></div>';
+    });
+
+    if(!html){
+      loadEl.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">Recent leaderboard data unavailable.</div>';
+      return;
+    }
+
+    loadEl.style.display = 'none';
+    contentEl.innerHTML = html;
+    contentEl.style.display = 'block';
+  } catch(e){
+    if(loadEl) loadEl.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;color:'+tc(0.35)+';">Could not load recent leaderboards.</div>';
+  }
+}
+
 async function loadAccuracyData(){
   var loadEl = document.getElementById('accLoading');
   var contentEl = document.getElementById('accContent');
@@ -3761,7 +5846,10 @@ function renderPicksCard(d){
     var confCls = (p.confidence||'medium').toLowerCase();
     html += '<div class="pick-card '+resultClass+'">'
       +resultBadge
-      +'<div class="pick-player">'+p.player+'</div>'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'
+        +pAvatarHtml(p.player,40)
+        +'<div class="pick-player" style="margin:0;">'+pFmtName(p.player)+'</div>'
+      +'</div>'
       +'<div class="pick-meta">'
         +'<span class="pick-bet-badge">'+p.bet_type+'</span>'
         +(p.bet_detail?'<span style="font-size:11px;color:'+tc(0.4)+';">'+p.bet_detail+'</span>':'')
@@ -3837,10 +5925,36 @@ function renderLiveTable(statsData, predData){
     rows = statsData.live_stats || statsData.data || (Array.isArray(statsData)?statsData:[]);
   }
 
-  // Update timestamp
+  // Show tournament name in title + subtitle
+  var liveTournName = (statsData&&statsData.event_name)
+    || (courseFitData&&courseFitData.tournament&&courseFitData.tournament.event_name)
+    || (proPicksData&&proPicksData.tournament) || '';
+  var liveTitleEl = document.getElementById('liveSectionTitle');
+  var liveSubEl   = document.getElementById('liveTabSub');
+  if(liveTournName){
+    if(liveTitleEl) liveTitleEl.textContent = liveTournName;
+    if(liveSubEl)   liveSubEl.textContent   = 'SG by round · Win% overlay from DataGolf in-play model';
+  }
+
+  // Detect if tournament is complete (>85% of active players finished)
+  var activeRows = rows.filter(function(r){ return r.current_pos!=='WD'&&r.current_pos!=='DQ'&&r.current_pos!=='MDF'; });
+  var finishedCount = rows.filter(function(r){
+    var th = String(r.thru||''); return th==='F'||th==='18';
+  }).length;
+  var isFinal = activeRows.length > 10 && finishedCount / activeRows.length > 0.85;
+
+  // Update status indicators
   var updated = statsData&&statsData.last_updated;
-  document.getElementById('liveUpdated').textContent = updated?'Updated: '+updated:'Ready';
-  document.getElementById('liveDot').style.display = rows.length?'block':'none';
+  var finalBadge = document.getElementById('liveFinalBadge');
+  if(isFinal){
+    if(finalBadge) finalBadge.style.display = 'inline-block';
+    document.getElementById('liveUpdated').textContent = 'Tournament complete';
+    document.getElementById('liveDot').style.display = 'none';
+  } else {
+    if(finalBadge) finalBadge.style.display = 'none';
+    document.getElementById('liveUpdated').textContent = updated?'Updated: '+updated:'Ready';
+    document.getElementById('liveDot').style.display = rows.length?'block':'none';
+  }
 
   if(!rows.length){
     loadEl.innerHTML='<div class="live-empty">'

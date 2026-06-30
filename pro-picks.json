@@ -11,8 +11,8 @@
       "book": "DraftKings",
       "reasoning": "Best edge on the board. DG fair +870, DK +1000 = 13.5% positive EV. Same mispricing appears in his Top 10 (+425 DK, +8.3% EV) and outright win (+5500 DK, +6.5% EV). Also the free pick this week.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "T30 (-11)"
     },
     {
       "player": "Russell Henley",
@@ -22,8 +22,8 @@
       "book": "DraftKings",
       "reasoning": "Only book above DG fair in the Top 5 market — DK +660 vs. fair +640 (+2.7% EV). Won the Schwab Challenge at Colonial this season, a near-identical course-fit profile (App-heavy, Putt-heavy). Ranks #27 in SG: Approach.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "T12 (-15)"
     },
     {
       "player": "Sepp Straka",
@@ -33,8 +33,8 @@
       "book": "FanDuel",
       "reasoning": "Best EV of any Top 10 bet on the board. DG fair +805, FD +900 = 10.5% positive EV. Same mispricing in Top 20 (FD +340, +7.6% EV). Ranks #25 in SG: Approach. Market consistently underrates him relative to the model.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "72nd (+10)"
     },
     {
       "player": "Tommy Fleetwood",
@@ -44,8 +44,8 @@
       "book": "FanDuel",
       "reasoning": "One of two players in the field on both the top-33 SG: Approach (#18) and top-32 SG: Putting (#25) lists. TPC River Highlands rewards both (App 28%, Putt 32%). Near-fair at +175 (DG fair +185); this is a course-fit conviction bet, not a market-edge bet.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "T14 (-14)"
     },
     {
       "player": "Kurt Kitayama",
@@ -55,8 +55,8 @@
       "book": "FanDuel",
       "reasoning": "Ranks #9 in SG: Approach in this field. DG fair +971, FD +1000 = 2.7% positive EV. Quietly solid season — had a Top 10 at the PGA Championship (+800, which hit). At the +1000 cap, the approach profile and mild model edge justify the inclusion.",
       "confidence": "Low",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "T25 (-12)"
     },
     {
       "player": "Si Woo Kim",
@@ -66,8 +66,8 @@
       "book": "Caesars",
       "reasoning": "Best EV in the shorter-price tier at 6.7%. DG fair +237, Caesars +260. Approach #6 in this field — same case as the longer-priced plays above, just a wider net at proportionally shorter odds.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null,
+      "result": "loss",
+      "result_detail": "T44 (-9)",
       "section": "Shorter-Price Plays"
     },
     {
@@ -78,8 +78,8 @@
       "book": "FanDuel",
       "reasoning": "Approach #8 in this field. DG fair +295, FD +300 = 1.2% positive EV. Slim edge but real course fit — 28% approach weight suits his profile. Missed the cut at the U.S. Open but consistent elsewhere this season.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "loss",
+      "result_detail": "T14 (-14)"
     },
     {
       "player": "J.J. Spaun",
@@ -89,8 +89,8 @@
       "book": "FanDuel",
       "reasoning": "Approach #2 in this field. DG fair +156, FD +160 = 1.4% positive EV. Wider net version of the Spaun case — he just needs a top-20 finish rather than a top-10. Lower variance entry on the same course-fit profile.",
       "confidence": "Medium",
-      "result": null,
-      "result_detail": null
+      "result": "win",
+      "result_detail": "T7 (-17)"
     }
   ]
 }
