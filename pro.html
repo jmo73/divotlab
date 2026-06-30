@@ -1794,11 +1794,18 @@ html[data-theme="light"] .rnk-val.bold{ color:#1A1916; }
 .trend-score-delta.dn{ color:#E06B6B; }
 .trend-score-delta.fl{ color:rgba(245,244,240,0.3); }
 .trend-dir{ display:flex; align-items:center; justify-content:flex-end; gap:6px; }
-.trend-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:3px 8px; border-radius:4px; }
-.trend-badge.hot   { color:var(--gold);       background:rgba(201,168,76,0.12);  }
-.trend-badge.rising{ color:var(--green-light); background:rgba(91,191,133,0.1); }
-.trend-badge.falling{ color:#E06B6B; background:rgba(224,107,107,0.1); }
-.trend-badge.flat  { color:rgba(245,244,240,0.3); background:rgba(255,255,255,0.04); }
+.trend-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:3px 8px; border-radius:4px; letter-spacing:.04em; }
+.trend-badge.peaking{ color:var(--gold);       background:rgba(201,168,76,0.2);   font-weight:800; }
+.trend-badge.hot    { color:var(--green-light); background:rgba(91,191,133,0.12); }
+.trend-badge.rising { color:var(--green-light); background:rgba(91,191,133,0.07); }
+.trend-badge.fading { color:#E06B6B; background:rgba(224,107,107,0.1); }
+.trend-badge.cold   { color:rgba(245,244,240,0.35); background:rgba(255,255,255,0.04); }
+.trend-badge.stable { color:rgba(245,244,240,0.25); background:rgba(255,255,255,0.03); }
+.trend-badge.flat   { color:rgba(245,244,240,0.3);  background:rgba(255,255,255,0.04); }
+.trends-sort-bar{ display:flex; gap:6px; margin-bottom:12px; }
+.trends-sort-btn{ font-family:var(--mono); font-size:10px; font-weight:700; padding:5px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:rgba(245,244,240,0.4); cursor:pointer; transition:.12s; letter-spacing:.05em; }
+.trends-sort-btn:hover{ background:rgba(255,255,255,0.05); color:var(--white); }
+.trends-sort-btn.active{ background:rgba(255,255,255,0.08); color:var(--white); border-color:rgba(255,255,255,0.2); }
 html[data-theme="light"] .trends-table-wrap{ background:#fff; border-color:rgba(28,27,24,0.08); }
 html[data-theme="light"] .trends-table-head{ border-bottom-color:rgba(28,27,24,0.07); }
 html[data-theme="light"] .trends-table-head span{ color:rgba(28,27,24,0.3); }
@@ -1812,7 +1819,12 @@ html[data-theme="light"] .trend-name{ color:#1A1916; }
 html[data-theme="light"] .trend-country{ color:rgba(28,27,24,0.4); }
 html[data-theme="light"] .trend-val.zero{ color:rgba(28,27,24,0.3); }
 html[data-theme="light"] .trend-delta.flat{ color:rgba(28,27,24,0.3); }
-html[data-theme="light"] .trend-badge.flat{ color:rgba(28,27,24,0.35); background:rgba(28,27,24,0.05); }
+html[data-theme="light"] .trend-badge.flat   { color:rgba(28,27,24,0.35); background:rgba(28,27,24,0.05); }
+html[data-theme="light"] .trend-badge.stable { color:rgba(28,27,24,0.3);  background:rgba(28,27,24,0.04); }
+html[data-theme="light"] .trend-badge.cold   { color:rgba(28,27,24,0.4);  background:rgba(28,27,24,0.05); }
+html[data-theme="light"] .trends-sort-btn{ border-color:rgba(28,27,24,0.12); color:rgba(28,27,24,0.45); }
+html[data-theme="light"] .trends-sort-btn:hover{ background:rgba(28,27,24,0.05); color:#1A1916; }
+html[data-theme="light"] .trends-sort-btn.active{ background:rgba(28,27,24,0.07); color:#1A1916; border-color:rgba(28,27,24,0.18); }
 
 /* ── MODEL PROBABILITIES TAB ── */
 .model-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
@@ -2281,15 +2293,15 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     </div>
 
     <div class="tr-section">
-      <div class="ov-section-label" style="margin-bottom:16px;">Lab Picks — 2026 Season</div>
-      <div id="lpLoading" class="loading-msg"><div class="spin"></div><br>Loading Lab Picks record…</div>
-      <div id="lpContent" style="display:none;"></div>
-    </div>
-
-    <div class="tr-section" style="margin-top:40px;">
       <div class="ov-section-label" style="margin-bottom:16px;">Recent Leaderboards</div>
       <div id="recentLbLoading" class="loading-msg"><div class="spin"></div><br>Loading recent results…</div>
       <div id="recentLbContent" style="display:none;"></div>
+    </div>
+
+    <div class="tr-section" style="margin-top:40px;">
+      <div class="ov-section-label" style="margin-bottom:16px;">Lab Picks — 2026 Season</div>
+      <div id="lpLoading" class="loading-msg"><div class="spin"></div><br>Loading Lab Picks record…</div>
+      <div id="lpContent" style="display:none;"></div>
     </div>
 
     <div class="tr-section" style="margin-top:40px;">
@@ -2403,8 +2415,13 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     <div class="sec-header">
       <div class="sec-header-left">
         <h2 class="sec-title">Form Trends</h2>
-        <p class="sec-sub">Form score 0–100 across last 3 events — winner=100, CUT=0. Sorted hottest first.</p>
+        <p class="sec-sub">Form score 0–100 across last 3 events — winner=100, CUT=0. Left badges = last 3, right = prior 3.</p>
       </div>
+    </div>
+    <div class="trends-sort-bar">
+      <button class="trends-sort-btn active" onclick="setTrendsSort('score',this)">Form Score</button>
+      <button class="trends-sort-btn" onclick="setTrendsSort('avgpos',this)">Avg Finish</button>
+      <button class="trends-sort-btn" onclick="setTrendsSort('rising',this)">Most Improved</button>
     </div>
     <div class="trends-table-wrap">
       <div class="trends-table-head">
@@ -4115,6 +4132,14 @@ function renderRankingsTab(){
 
 // ── FORM TRENDS TAB ───────────────────────────────────────────────────────────
 var formTrendsCache = null;
+var formTrendsSortMode = 'score';
+
+function setTrendsSort(mode, btn){
+  formTrendsSortMode = mode;
+  document.querySelectorAll('.trends-sort-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  renderTrendsTab();
+}
 
 async function loadFormTrends(){
   if(formTrendsCache) { renderTrendsTab(); return; }
@@ -4146,7 +4171,6 @@ function renderTrendsTab(){
     courseFitData.field.forEach(function(p){ fieldNames.add(p.player_name); });
   }
 
-  // Already sorted by l3_score desc (hottest first) from server; filter to field
   var players = formTrendsCache.filter(function(p){
     return !fieldNames.size || fieldNames.has(p.player_name);
   });
@@ -4155,6 +4179,27 @@ function renderTrendsTab(){
     body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No form trend data available.</div>';
     return;
   }
+
+  // Client-side sort (server pre-sorts by score desc; other modes re-sort here)
+  players = players.slice();
+  if(formTrendsSortMode === 'avgpos'){
+    // Avg finish asc (lower = better); players who missed all cuts go last
+    players.sort(function(a, b){
+      if(a.l3_avg_pos == null && b.l3_avg_pos == null) return 0;
+      if(a.l3_avg_pos == null) return 1;
+      if(b.l3_avg_pos == null) return -1;
+      return a.l3_avg_pos - b.l3_avg_pos;
+    });
+  } else if(formTrendsSortMode === 'rising'){
+    // Biggest delta desc, nulls last
+    players.sort(function(a, b){
+      if(a.delta_score == null && b.delta_score == null) return 0;
+      if(a.delta_score == null) return 1;
+      if(b.delta_score == null) return -1;
+      return b.delta_score - a.delta_score;
+    });
+  }
+  // 'score': already sorted by server
 
   function resultBadge(r){
     var ft = r.fin_text || '';
@@ -4168,34 +4213,56 @@ function renderTrendsTab(){
     return '<span class="trend-badge-item '+cls+'">'+label+'</span>';
   }
 
+  // Score color: gold for elite, green for solid, dim for middling, red for poor
   function scoreColor(v){
     if(v==null) return tc(0.3);
-    if(v>=65) return 'var(--green-light)';
-    if(v>=45) return 'var(--gold)';
-    if(v>=25) return tc(0.7);
+    if(v>=75) return 'var(--gold)';
+    if(v>=55) return 'var(--green-light)';
+    if(v>=35) return tc(0.65);
     return '#E06B6B';
   }
+
+  // Thin separator between last-3 and prior-3 result badges
+  var sepHtml = '<span style="opacity:0.18;font-size:9px;margin:0 1px;font-family:var(--mono);">|</span>';
 
   body.innerHTML = players.map(function(p, i){
     var score = p.l3_score;
     var delta = p.delta_score;
+    // actual events in l3 window — may be < 3 if player is new or missed events
+    var n = (p.l3_events_count != null) ? p.l3_events_count : 3;
     var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-    var badges = (p.recent_results||[]).slice(0,6).map(resultBadge).join('');
 
-    // sub-line: "avg T8 · 3/3 cuts" — only when we have the data
+    // Separate last-3 from prior-3 with a thin divider
+    var results = p.recent_results || [];
+    var last3Badges = results.slice(0,3).map(resultBadge).join('');
+    var prior3Badges = results.slice(3,6).map(resultBadge).join('');
+    var badges = last3Badges + (prior3Badges ? sepHtml + prior3Badges : '');
+
+    // Sub-line: "3/3 starts · avg T8 · 2 top-10s"
     var sub = '';
-    if(p.l3_avg_pos != null){
-      sub = 'avg T'+p.l3_avg_pos+' · '+p.l3_cuts_made+'/3 cuts';
-    } else if(p.l3_cuts_made === 0){
-      sub = '0/3 cuts — cold';
+    if(p.l3_cuts_made != null){
+      var parts = [p.l3_cuts_made+'/'+n+' starts'];
+      if(p.l3_avg_pos != null) parts.push('avg T'+p.l3_avg_pos);
+      if(p.l3_top10 > 0) parts.push(p.l3_top10+(p.l3_top10===1?' top-10':' top-10s'));
+      sub = parts.join(' · ');
     }
 
-    // Direction: hot if score ≥65, rising/falling based on delta, else flat
-    var dir, arrow;
-    if(score >= 65){            dir='hot';     arrow='🔥'; }
-    else if(delta >= 10){       dir='rising';  arrow='↑'; }
-    else if(delta <= -10){      dir='falling'; arrow='↓'; }
-    else{                       dir='flat';    arrow='→'; }
+    // Direction label — no emojis, text only
+    // Peaking: elite AND improving (score ≥78 + delta ≥0) — rare, ≈top 5%
+    // Hot: strong form (≥65) — top ~20%
+    // Rising: meaningful improvement from lower base (delta ≥15 + score ≥35)
+    // Fading: notable decline (delta ≤-15) — flag regardless of score
+    // Cold: missing cuts / poor form (score <25 OR 0 cuts in ≥2 starts)
+    // Stable: everything else
+    var dir;
+    if(score >= 78 && delta != null && delta >= 0)            { dir = 'peaking'; }
+    else if(score >= 65)                                       { dir = 'hot'; }
+    else if(delta != null && delta >= 15 && score >= 35)      { dir = 'rising'; }
+    else if(delta != null && delta <= -15)                     { dir = 'fading'; }
+    else if(score < 25 || (p.l3_cuts_made === 0 && n >= 2))   { dir = 'cold'; }
+    else                                                       { dir = 'stable'; }
+
+    var dirLabels = { peaking:'PEAKING', hot:'HOT', rising:'RISING', fading:'FADING', cold:'COLD', stable:'STABLE' };
 
     var deltaStr = delta==null?'—':(delta>=0?'+':'')+delta;
     var deltaCls = delta==null?'fl':delta>0?'up':delta<0?'dn':'fl';
@@ -4211,7 +4278,7 @@ function renderTrendsTab(){
         +'<div class="trend-score-num" style="color:'+scoreColor(score)+';">'+(score!=null?score:'—')+'</div>'
         +(delta!=null?'<div class="trend-score-delta '+deltaCls+'">'+deltaStr+' vs prior</div>':'')
       +'</div>'
-      +'<div class="trend-dir"><span class="trend-arrow">'+arrow+'</span><span class="trend-badge '+dir+'">'+dir+'</span></div>'
+      +'<div class="trend-dir"><span class="trend-badge '+dir+'">'+(dirLabels[dir]||dir)+'</span></div>'
     +'</div>';
   }).join('');
 }

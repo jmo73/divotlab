@@ -1298,7 +1298,7 @@ app.get('/api/historical-event-results', async (req, res) => {
 // Form score per event: winner=100, last place=0, CUT/WD=0 (normalized to field size)
 // Reuses same cached event results as /api/model-accuracy — no extra DG requests if accuracy already ran
 app.get('/api/form-trends', async (req, res) => {
-  const cacheKey = 'form-trends-2026v2';
+  const cacheKey = 'form-trends-2026v3';
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1374,6 +1374,9 @@ app.get('/api/form-trends', async (req, res) => {
       const l3CutPos = l3.filter(e => e.made_cut).map(e => e.pos);
       const l3AvgPos = l3CutPos.length ? Math.round(avg(l3CutPos)) : null;
       const l3CutsMade = l3.filter(e => e.made_cut).length;
+      const l3Top5 = l3.filter(e => e.made_cut && e.pos <= 5).length;
+      const l3Top10 = l3.filter(e => e.made_cut && e.pos <= 10).length;
+      const l3Wins = l3.filter(e => e.pos === 1).length;
 
       return {
         player_name: name,
@@ -1382,8 +1385,12 @@ app.get('/api/form-trends', async (req, res) => {
         l3_score:   l3Score   != null ? Math.round(l3Score)   : null,
         prior_score: priorScore != null ? Math.round(priorScore) : null,
         delta_score: deltaScore,
-        l3_avg_pos: l3AvgPos,   // avg finish among made-cut starts in last 3
-        l3_cuts_made: l3CutsMade, // 0-3
+        l3_avg_pos: l3AvgPos,        // avg finish among made-cut starts in last 3
+        l3_cuts_made: l3CutsMade,    // 0-3
+        l3_events_count: l3.length,  // actual events played in this window (may be < 3)
+        l3_top5: l3Top5,
+        l3_top10: l3Top10,
+        l3_wins: l3Wins,
         recent_results: events.slice(0, 6).map(e => ({
           fin_text: e.fin_text,
           made_cut: e.made_cut,
