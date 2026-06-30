@@ -1294,8 +1294,8 @@ app.get('/api/historical-event-results', async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
-// FORM TRENDS: compute L3 vs prior-3 SG averages from historical event data
-// Reuses the same cached event results as /api/model-accuracy (no extra DG requests if accuracy already ran)
+// FORM TRENDS: finish-position trend over last 6 events (L3 avg vs prior-3 avg)
+// Reuses same cached event results as /api/model-accuracy — no extra DG requests if accuracy already ran
 app.get('/api/form-trends', async (req, res) => {
   const cacheKey = 'form-trends-2026';
   const cached = cache.get(cacheKey);
@@ -1315,9 +1315,10 @@ app.get('/api/form-trends', async (req, res) => {
             fetchDataGolfDirect(`/historical-event-data/events?tour=pga&event_id=${evt.event_id}&year=2026&file_format=json&key=${DATAGOLF_API_KEY}`)
           );
           const players = raw.event_stats || raw.results || raw.data || [];
-          return { event: evt, players };
+          const fieldSize = players.filter(p => parseFinish(p.fin_text || p.position) < 999).length || players.length;
+          return { event: evt, players, fieldSize };
         } catch (e) {
-          return { event: evt, players: [] };
+          return { event: evt, players: [], fieldSize: 150 };
         }
       }));
       eventData.push(...batchData);
@@ -1326,19 +1327,20 @@ app.get('/api/form-trends', async (req, res) => {
 
     // Group player results newest-first (getRecentCompletedEvents returns newest first)
     const playerMap = {};
-    eventData.forEach(({ event, players }) => {
+    eventData.forEach(({ event, players, fieldSize }) => {
       players.forEach(p => {
         if (!p.player_name) return;
         if (!playerMap[p.player_name]) playerMap[p.player_name] = { dg_id: p.dg_id, country: p.country, events: [] };
+        const pos = parseFinish(p.fin_text || p.position);
+        const madeCut = pos < 999;
+        // Use percentile rank so events with different field sizes are comparable
+        const pctile = madeCut ? Math.round((pos / fieldSize) * 100) : null;
         playerMap[p.player_name].events.push({
           event_name: event.event_name,
-          date: event.start_date,
-          sg_total: p.sg_total ?? null,
-          sg_ott:   p.sg_ott   ?? null,
-          sg_app:   p.sg_app   ?? null,
-          sg_arg:   p.sg_arg   ?? null,
-          sg_putt:  p.sg_putt  ?? null,
-          fin_text: p.fin_text || p.position || null,
+          fin_text: p.fin_text || (pos < 999 ? 'T' + pos : 'CUT'),
+          pos,
+          pctile,
+          made_cut: madeCut,
         });
       });
     });
@@ -1346,20 +1348,26 @@ app.get('/api/form-trends', async (req, res) => {
     const avg = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
 
     const trends = Object.entries(playerMap).map(([name, { dg_id, country, events }]) => {
-      const result = { player_name: name, dg_id, country, events_count: events.length };
-      ['total', 'ott', 'app', 'arg', 'putt'].forEach(cat => {
-        const vals = events.map(e => e['sg_' + cat]).filter(v => v != null);
-        const l3 = avg(vals.slice(0, 3));
-        const prev = avg(vals.slice(3, 6));
-        result['recent_' + cat] = l3;
-        result['prior_' + cat]  = prev;
-        result['delta_' + cat]  = (l3 != null && prev != null) ? l3 - prev : null;
-      });
-      result.recent_results = events.slice(0, 5).map(e => ({
-        event_name: e.event_name, fin_text: e.fin_text, sg_total: e.sg_total
-      }));
-      return result;
-    }).filter(p => p.recent_total != null);
+      // events are newest-first; only use made-cut events for averages
+      const cutEvents = events.filter(e => e.made_cut);
+      const l3vals  = cutEvents.slice(0, 3).map(e => e.pctile).filter(v => v != null);
+      const prevvals = cutEvents.slice(3, 6).map(e => e.pctile).filter(v => v != null);
+      const l3avg  = avg(l3vals);
+      const prevAvg = avg(prevvals);
+      // delta: negative = improving (lower percentile rank = better finish)
+      const delta = (l3avg != null && prevAvg != null) ? l3avg - prevAvg : null;
+
+      return {
+        player_name: name,
+        dg_id,
+        country,
+        events_count: events.length,
+        l3_pctile: l3avg,      // avg of last 3 (lower = better, e.g. 5 = top 5%)
+        prior_pctile: prevAvg,
+        delta_pctile: delta,   // negative = improving
+        recent_results: events.slice(0, 6).map(e => ({ fin_text: e.fin_text, made_cut: e.made_cut })),
+      };
+    }).filter(p => p.l3_pctile != null);
 
     const payload = { trends, events_analyzed: recentEvents.length };
     cache.set(cacheKey, payload, 3600);

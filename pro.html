@@ -1769,10 +1769,10 @@ html[data-theme="light"] .rnk-val.bold{ color:#1A1916; }
 
 /* ── FORM TRENDS TAB ── */
 .trends-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-.trends-table-head{ display:grid; grid-template-columns:36px 1fr 72px 72px 80px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.trends-table-head{ display:grid; grid-template-columns:36px 1fr auto 84px 84px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
 .trends-table-head span{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,244,240,0.25); text-align:right; }
 .trends-table-head span:nth-child(2){ text-align:left; }
-.trend-row{ display:grid; grid-template-columns:36px 1fr 72px 72px 80px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
+.trend-row{ display:grid; grid-template-columns:36px 1fr auto 84px 84px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
 .trend-row:last-child{ border-bottom:none; }
 .trend-row:hover{ background:rgba(255,255,255,0.03); }
 .trend-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); display:flex; align-items:center; }
@@ -2394,21 +2394,12 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     <div class="sec-header">
       <div class="sec-header-left">
         <h2 class="sec-title">Form Trends</h2>
-        <p class="sec-sub">Last 3 vs prior 3 events — who's heating up or cooling down this week's field</p>
-      </div>
-      <div class="sec-header-actions">
-        <select class="cf-sort-sel" id="trendsCatSel" onchange="renderTrendsTab()">
-          <option value="total">Overall</option>
-          <option value="app">Approach</option>
-          <option value="ott">Off-the-Tee</option>
-          <option value="putt">Putting</option>
-          <option value="arg">Around Green</option>
-        </select>
+        <p class="sec-sub">Finish position trend across last 6 events — sorted by biggest improvement</p>
       </div>
     </div>
     <div class="trends-table-wrap">
-      <div class="trends-table-head">
-        <span>#</span><span>Player</span><span>Prior (L4–6)</span><span>Recent (L3)</span><span>Δ Trend</span><span>Direction</span>
+      <div class="trends-table-head" style="grid-template-columns:36px 1fr auto 84px 84px 100px;">
+        <span>#</span><span>Player</span><span>Last 5 Results</span><span>Avg L3</span><span>Avg Prior</span><span>Direction</span>
       </div>
       <div id="trendsBody"><div class="drawer-loading">Loading form data…</div></div>
     </div>
@@ -4141,52 +4132,58 @@ function renderTrendsTab(){
     return;
   }
 
-  var cat = (document.getElementById('trendsCatSel')||{}).value || 'total';
-  var recentKey = 'recent_' + cat;
-  var priorKey  = 'prior_'  + cat;
-  var deltaKey  = 'delta_'  + cat;
-
-  // Build field name set for filtering to this week's field
   var fieldNames = new Set();
   if(courseFitData && courseFitData.field){
     courseFitData.field.forEach(function(p){ fieldNames.add(p.player_name); });
   }
 
-  var players = formTrendsCache.filter(function(p){
-    // Show all if field not yet loaded; otherwise filter to this week
-    return (!fieldNames.size || fieldNames.has(p.player_name)) && p[recentKey] != null;
-  });
-
-  players.sort(function(a,b){
-    return (b[deltaKey]||0) - (a[deltaKey]||0);
-  });
+  // delta_pctile: negative = improving (lower percentile rank = better finish); sort best improvement first
+  var players = formTrendsCache
+    .filter(function(p){ return !fieldNames.size || fieldNames.has(p.player_name); })
+    .slice()
+    .sort(function(a,b){ return (a.delta_pctile||0) - (b.delta_pctile||0); }); // most negative first = most improved
 
   if(!players.length){
-    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;line-height:1.6;">No form trend data available for this category.</div>';
+    body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No form trend data available.</div>';
     return;
   }
 
+  function resultBadge(r){
+    var ft = r.fin_text || '';
+    var isCut = !r.made_cut;
+    var isWin = ft === '1';
+    var color = isWin ? 'var(--gold)' : isCut ? tc(0.3) : 'var(--green-light)';
+    var bg = isWin ? 'rgba(201,168,76,0.12)' : isCut ? 'rgba(255,255,255,0.04)' : 'rgba(91,191,133,0.08)';
+    return '<span style="display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;color:'+color+';background:'+bg+';letter-spacing:.03em;">'+ft+'</span>';
+  }
+
+  function posFmt(v){
+    if(v == null) return '—';
+    var n = Math.round(v);
+    return 'T'+n;
+  }
+
   body.innerHTML = players.map(function(p, i){
-    var recent = p[recentKey];
-    var prior  = p[priorKey];
-    var delta  = p[deltaKey];
-    var dir    = delta != null ? (delta > 0.1 ? 'rising' : delta < -0.1 ? 'falling' : 'flat') : 'flat';
-    var arrow  = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
-    var recentCls = recent==null?'zero':recent>0.1?'pos':recent<-0.1?'neg':'zero';
-    var priorCls  = prior==null?'zero':prior>0.1?'pos':prior<-0.1?'neg':'zero';
-    var deltaCls  = delta==null?'zero':delta>0.1?'pos':delta<-0.1?'neg':'zero';
-    var safeName  = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-    var country   = p.country || '';
-    function sgFmt(v){ return v==null?'—':(v>0?'+':'')+v.toFixed(2); }
-    return '<div class="trend-row" onclick="openPlayerDrawer(\''+safeName+'\')">'
+    var delta = p.delta_pctile;
+    // negative delta = improving, positive = worsening
+    var dir = delta == null ? 'flat' : delta < -5 ? 'rising' : delta > 5 ? 'falling' : 'flat';
+    var arrow = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
+    var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    var badges = (p.recent_results||[]).slice(0,5).map(resultBadge).join(' ');
+
+    // Convert percentile rank to approx finish position for display (lower pctile = better)
+    var l3Disp = posFmt(p.l3_pctile);
+    var priorDisp = posFmt(p.prior_pctile);
+
+    return '<div class="trend-row" style="grid-template-columns:36px 1fr auto 84px 84px 100px;" onclick="openPlayerDrawer(\''+safeName+'\')">'
       +'<div class="trend-num">'+(i+1)+'</div>'
-      +'<div class="trend-player">'+pAvatarHtml(p.player_name,28)+'<div>'
+      +'<div class="trend-player">'+pAvatarHtml(p.player_name,26)+'<div>'
         +'<div class="trend-name">'+pFmtName(p.player_name)+'</div>'
-        +(country?'<div class="trend-country">'+country+'</div>':'')
+        +(p.country?'<div class="trend-country">'+p.country+'</div>':'')
       +'</div></div>'
-      +'<div class="trend-val '+priorCls+'">'+sgFmt(prior)+'</div>'
-      +'<div class="trend-val '+recentCls+'">'+sgFmt(recent)+'</div>'
-      +'<div class="trend-delta '+deltaCls+'">'+sgFmt(delta)+'</div>'
+      +'<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding-right:12px;">'+badges+'</div>'
+      +'<div class="trend-val" style="font-family:var(--mono);font-size:12px;color:'+tc(0.5)+';">'+l3Disp+'</div>'
+      +'<div class="trend-val" style="font-family:var(--mono);font-size:12px;color:'+tc(0.35)+';">'+priorDisp+'</div>'
       +'<div class="trend-dir"><span class="trend-arrow">'+arrow+'</span><span class="trend-badge '+dir+'">'+dir+'</span></div>'
     +'</div>';
   }).join('');
@@ -5607,33 +5604,31 @@ async function loadRecentLeaderboards(){
   var contentEl = document.getElementById('recentLbContent');
   if(!loadEl || !contentEl) return;
   try {
-    // 1. Fetch PGA schedule to get completed event IDs
     var schedRes = await fetch(API+'/api/schedule?tour=pga&season=2026');
     var schedD = await schedRes.json();
     var schedule = (schedD.success && schedD.data && schedD.data.schedule)
       || (schedD.data && Array.isArray(schedD.data) ? schedD.data : [])
       || [];
-    console.log('[Leaderboards] schedule count:', schedule.length, 'sample:', schedule[0]);
 
-    // DataGolf schedule uses event_completed flag (1) or we fall back to date < today
     var todayStr = new Date().toISOString().slice(0, 10);
     var completed = schedule
       .filter(function(e){
         if(!e.event_id) return false;
-        // DataGolf uses event_completed:1 flag OR we compare date
-        if(e.event_completed === 1 || e.event_completed === true) return true;
-        if(e.status === 'completed' || e.status === 'past') return true;
-        return e.date && e.date < todayStr;
+        if(e.status === 'completed' || e.event_completed === 1 || e.event_completed === true) return true;
+        var d = e.start_date || e.date || '';
+        return d && d < todayStr;
       })
-      .sort(function(a, b){ return (b.date||'').localeCompare(a.date||''); })
+      .sort(function(a, b){
+        var ad = a.start_date||a.date||''; var bd = b.start_date||b.date||'';
+        return bd.localeCompare(ad);  // newest first
+      })
       .slice(0, 5);
 
     if(!completed.length){
-      loadEl.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No completed events found for 2026 season.</div>';
+      loadEl.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No completed events found.</div>';
       return;
     }
 
-    // 2. Fetch results for each event (parallel, allSettled for resilience)
     var resultPromises = completed.map(function(e){
       return fetch(API+'/api/historical-event-results?tour=pga&event_id='+encodeURIComponent(e.event_id)+'&year=2026')
         .then(function(r){ return r.json(); })
@@ -5642,13 +5637,26 @@ async function loadRecentLeaderboards(){
     });
     var settled = await Promise.allSettled(resultPromises);
 
-    // 3. Build our season pick player names for highlighting
     var pickNames = new Set();
     if(proPicksData && proPicksData.picks){
       proPicksData.picks.forEach(function(p){ if(p.player) pickNames.add(p.player); });
     }
 
-    // 4. Render leaderboards
+    function finPos(r){
+      var f = String(r.fin_text||r.position||'999').replace(/[TtMm]/g,'');
+      if(/^(CUT|WD|DQ|MDF|MC)$/i.test(f.trim())) return 999;
+      return parseInt(f)||999;
+    }
+    function scoreColor(v){
+      return v < 0 ? 'var(--green-light)' : v > 0 ? 'rgba(217,72,72,0.85)' : tc(0.6);
+    }
+    function scoreFmt(p){
+      var v = p.total ?? p.total_score ?? p.score ?? null;
+      if(v == null) return null;
+      v = Number(v);
+      return { text: v === 0 ? 'E' : (v < 0 ? ''+v : '+'+v), val: v };
+    }
+
     var html = '';
     settled.forEach(function(s){
       if(s.status !== 'fulfilled') return;
@@ -5657,47 +5665,56 @@ async function loadRecentLeaderboards(){
       if(!d || !d.success || !d.data) return;
 
       var raw = d.data;
-      // DataGolf returns results under event_stats (primary field name)
       var results = raw.event_stats || raw.results || raw.event_results || (Array.isArray(raw) ? raw : []);
       if(!results.length) return;
 
-      // Sort by finishing position (numerical, CUT/WD at end)
-      function finPos(r){
-        var f = String(r.fin_text||r.position||'999').replace(/[TtMm]/g,'');
-        if(f==='CUT'||f==='WD'||f==='DQ'||f==='MDF') return 999;
-        return parseInt(f)||999;
-      }
       var sorted = results.slice().sort(function(a,b){ return finPos(a)-finPos(b); });
       var top10 = sorted.slice(0, 10);
+      var winner = top10[0];
 
       var eventName = raw.event_name || e.event_name || 'Tournament';
-      var eventDate = e.date ? new Date(e.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+      var dateStr = '';
+      var dateVal = e.start_date || e.date || '';
+      if(dateVal) dateStr = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      var winnerName = winner ? pFmtName(winner.player_name||'') : '';
+      var winScore = winner ? scoreFmt(winner) : null;
 
-      html += '<div class="tr-event-card" style="margin-bottom:16px;">'
-        +'<div class="tr-event-head" style="cursor:default;">'
-          +'<div class="tr-event-info">'
-            +'<div class="tr-event-name">'+eventName+'</div>'
-            +(eventDate?'<div class="tr-event-date">'+eventDate+'</div>':'')
+      html += '<div style="background:var(--black-card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;">'
+        // Header
+        +'<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 12px;border-bottom:1px solid var(--border);">'
+          +'<div>'
+            +'<div style="font-size:14px;font-weight:600;color:var(--white);">'+eventName+'</div>'
+            +(dateStr?'<div style="font-size:11px;color:'+tc(0.35)+';margin-top:2px;font-family:var(--mono);letter-spacing:.03em;">'+dateStr+'</div>':'')
           +'</div>'
+          +(winnerName?'<div style="display:flex;align-items:center;gap:8px;">'
+            +'<div style="text-align:right;">'
+              +'<div style="font-size:11px;color:var(--gold);font-family:var(--mono);letter-spacing:.1em;font-weight:700;text-transform:uppercase;">Winner</div>'
+              +'<div style="font-size:13px;font-weight:600;color:var(--white);">'+winnerName+'</div>'
+            +'</div>'
+            +(winScore?'<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+scoreColor(winScore.val)+';min-width:36px;text-align:right;">'+winScore.text+'</div>':'')
+          +'</div>':'')
         +'</div>'
-        +'<div style="padding:0;">';
+        // 2-column grid of top 10
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px 0;">';
 
       top10.forEach(function(p, i){
         var pos = String(p.fin_text||p.position||'—');
         var pName = p.player_name || '';
-        var displayName = pName.split(',').reverse().join(' ').trim();
-        var score = p.total_score!=null ? (p.total_score<=0?''+p.total_score:'+'+p.total_score) : (p.score!=null?(p.score<=0?''+p.score:'+'+p.score):'—');
-        var sgTotal = p.sg_total!=null ? (p.sg_total>=0?'+':'')+Number(p.sg_total).toFixed(2) : null;
+        var displayName = pFmtName(pName);
+        var sc = scoreFmt(p);
         var isPick = pickNames.has(pName);
+        var isWin = i === 0;
+        var safeName = pName.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
 
-        html += '<div class="rnk-row" style="grid-template-columns:36px 1fr 52px'+(sgTotal?' 56px':'')+';background:'+(isPick?'rgba(201,168,76,0.06)':'')+';" onclick="openPlayerDrawer(\''+pName.replace(/'/g,'&#39;').replace(/"/g,'&quot;')+'\')">'
-          +'<div class="rnk-num">'+pos+'</div>'
-          +'<div class="rnk-player" style="display:flex;align-items:center;gap:8px;">'
-            +pAvatarHtml(pName, 22)
-            +'<span class="rnk-name">'+displayName+(isPick?'<span class="live-pick-badge" style="margin-left:6px;font-size:8px;">PICK</span>':'')+'</span>'
+        html += '<div style="display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:6px;padding:7px 16px;cursor:pointer;'
+          +(isPick?'background:rgba(201,168,76,0.05);':'')
+          +'" onclick="openPlayerDrawer(\''+safeName+'\')" onmouseenter="this.style.background=\''+(isPick?'rgba(201,168,76,0.09)':'rgba(255,255,255,0.025')+'\')" onmouseleave="this.style.background=\''+(isPick?'rgba(201,168,76,0.05)':'transparent')+'\'">  '
+          +'<div style="font-family:var(--mono);font-size:11px;color:'+tc(0.3)+';text-align:right;padding-right:2px;">'+pos+'</div>'
+          +'<div style="font-size:12px;font-weight:'+(isWin?'700':'500')+';color:'+(isWin?'var(--gold)':'var(--white)')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'
+            +displayName
+            +(isPick?'<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:5px;vertical-align:middle;"></span>':'')
           +'</div>'
-          +'<div class="rnk-val" style="font-weight:700;font-family:var(--mono);color:'+(score.startsWith('-')||score==='E'?'var(--green-light)':score.startsWith('+')?tc(0.5):tc(0.4))+';">'+score+'</div>'
-          +(sgTotal?'<div class="rnk-val" style="font-family:var(--mono);font-size:11px;color:'+(Number(p.sg_total)>0?tc(0.6):tc(0.35))+';">'+sgTotal+'</div>':'')
+          +'<div style="font-family:var(--mono);font-size:12px;font-weight:700;text-align:right;color:'+(sc?scoreColor(sc.val):tc(0.2))+';">'+(sc?sc.text:'—')+'</div>'
         +'</div>';
       });
 
