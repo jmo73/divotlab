@@ -1769,35 +1769,44 @@ html[data-theme="light"] .rnk-val.bold{ color:#1A1916; }
 
 /* ── FORM TRENDS TAB ── */
 .trends-table-wrap{ background:var(--black-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-.trends-table-head{ display:grid; grid-template-columns:36px 1fr auto 84px 84px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.trends-table-head{ display:grid; grid-template-columns:36px 1fr auto 116px 110px; gap:0; padding:10px 20px; border-bottom:1px solid rgba(255,255,255,0.06); }
 .trends-table-head span{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(245,244,240,0.25); text-align:right; }
 .trends-table-head span:nth-child(2){ text-align:left; }
-.trend-row{ display:grid; grid-template-columns:36px 1fr auto 84px 84px 100px; gap:0; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; }
+.trends-table-head span:nth-child(3){ text-align:left; }
+.trend-row{ display:grid; grid-template-columns:36px 1fr auto 116px 110px; gap:0; padding:11px 20px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background .12s; align-items:center; }
 .trend-row:last-child{ border-bottom:none; }
 .trend-row:hover{ background:rgba(255,255,255,0.03); }
-.trend-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); display:flex; align-items:center; }
+.trend-num{ font-family:var(--mono); font-size:11px; color:rgba(245,244,240,0.28); }
 .trend-player{ display:flex; align-items:center; gap:10px; }
 .trend-name{ font-size:13px; font-weight:600; color:var(--white); }
-.trend-country{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); }
-.trend-val{ font-family:var(--mono); font-size:12px; font-weight:600; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
-.trend-val.pos{ color:var(--green-light); }
-.trend-val.neg{ color:#E06B6B; }
-.trend-val.zero{ color:rgba(245,244,240,0.3); }
-.trend-delta{ font-family:var(--mono); font-size:12px; font-weight:700; text-align:right; display:flex; align-items:center; justify-content:flex-end; }
-.trend-delta.up{ color:var(--green-light); }
-.trend-delta.down{ color:#E06B6B; }
-.trend-delta.flat{ color:rgba(245,244,240,0.3); }
+.trend-sub{ font-family:var(--mono); font-size:9px; color:rgba(245,244,240,0.3); margin-top:2px; letter-spacing:.04em; }
+.trend-badges{ display:flex; gap:4px; align-items:center; flex-wrap:nowrap; }
+.trend-badge-item{ font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 5px; border-radius:4px; white-space:nowrap; }
+.trend-badge-item.win  { color:var(--gold);       background:rgba(201,168,76,0.15);  }
+.trend-badge-item.top5 { color:var(--green-light); background:rgba(91,191,133,0.15); }
+.trend-badge-item.top10{ color:var(--green-light); background:rgba(91,191,133,0.09); }
+.trend-badge-item.mc   { color:rgba(245,244,240,0.55); background:rgba(255,255,255,0.05); }
+.trend-badge-item.cut  { color:rgba(245,244,240,0.25); background:rgba(255,255,255,0.03); }
+.trend-score-cell{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.trend-score-num{ font-family:var(--mono); font-size:18px; font-weight:700; line-height:1; }
+.trend-score-delta{ font-family:var(--mono); font-size:10px; font-weight:600; }
+.trend-score-delta.up{ color:var(--green-light); }
+.trend-score-delta.dn{ color:#E06B6B; }
+.trend-score-delta.fl{ color:rgba(245,244,240,0.3); }
 .trend-dir{ display:flex; align-items:center; justify-content:flex-end; gap:6px; }
-.trend-arrow{ font-size:14px; line-height:1; }
-.trend-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; }
+.trend-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:3px 8px; border-radius:4px; }
+.trend-badge.hot   { color:var(--gold);       background:rgba(201,168,76,0.12);  }
 .trend-badge.rising{ color:var(--green-light); background:rgba(91,191,133,0.1); }
 .trend-badge.falling{ color:#E06B6B; background:rgba(224,107,107,0.1); }
-.trend-badge.flat{ color:rgba(245,244,240,0.3); background:rgba(255,255,255,0.04); }
+.trend-badge.flat  { color:rgba(245,244,240,0.3); background:rgba(255,255,255,0.04); }
 html[data-theme="light"] .trends-table-wrap{ background:#fff; border-color:rgba(28,27,24,0.08); }
 html[data-theme="light"] .trends-table-head{ border-bottom-color:rgba(28,27,24,0.07); }
 html[data-theme="light"] .trends-table-head span{ color:rgba(28,27,24,0.3); }
 html[data-theme="light"] .trend-row{ border-bottom-color:rgba(28,27,24,0.05); }
 html[data-theme="light"] .trend-row:hover{ background:rgba(28,27,24,0.02); }
+html[data-theme="light"] .trend-badge-item.mc{ color:rgba(28,27,24,0.5); background:rgba(28,27,24,0.06); }
+html[data-theme="light"] .trend-badge-item.cut{ color:rgba(28,27,24,0.3); background:rgba(28,27,24,0.03); }
+html[data-theme="light"] .trend-sub{ color:rgba(28,27,24,0.35); }
 html[data-theme="light"] .trend-num{ color:rgba(28,27,24,0.3); }
 html[data-theme="light"] .trend-name{ color:#1A1916; }
 html[data-theme="light"] .trend-country{ color:rgba(28,27,24,0.4); }
@@ -2394,12 +2403,12 @@ html[data-theme="light"] .ov-section-label{ color:rgba(28,27,24,0.4); }
     <div class="sec-header">
       <div class="sec-header-left">
         <h2 class="sec-title">Form Trends</h2>
-        <p class="sec-sub">Finish position trend across last 6 events — sorted by biggest improvement</p>
+        <p class="sec-sub">Form score 0–100 across last 3 events — winner=100, CUT=0. Sorted hottest first.</p>
       </div>
     </div>
     <div class="trends-table-wrap">
-      <div class="trends-table-head" style="grid-template-columns:36px 1fr auto 84px 84px 100px;">
-        <span>#</span><span>Player</span><span>Last 5 Results</span><span>Avg L3</span><span>Avg Prior</span><span>Direction</span>
+      <div class="trends-table-head">
+        <span>#</span><span>Player</span><span style="text-align:left;">Last 6 Results</span><span>Form Score</span><span>Trend</span>
       </div>
       <div id="trendsBody"><div class="drawer-loading">Loading form data…</div></div>
     </div>
@@ -4137,11 +4146,10 @@ function renderTrendsTab(){
     courseFitData.field.forEach(function(p){ fieldNames.add(p.player_name); });
   }
 
-  // delta_pctile: negative = improving (lower percentile rank = better finish); sort best improvement first
-  var players = formTrendsCache
-    .filter(function(p){ return !fieldNames.size || fieldNames.has(p.player_name); })
-    .slice()
-    .sort(function(a,b){ return (a.delta_pctile||0) - (b.delta_pctile||0); }); // most negative first = most improved
+  // Already sorted by l3_score desc (hottest first) from server; filter to field
+  var players = formTrendsCache.filter(function(p){
+    return !fieldNames.size || fieldNames.has(p.player_name);
+  });
 
   if(!players.length){
     body.innerHTML = '<div class="drawer-recent-empty" style="padding:20px;">No form trend data available.</div>';
@@ -4150,40 +4158,59 @@ function renderTrendsTab(){
 
   function resultBadge(r){
     var ft = r.fin_text || '';
-    var isCut = !r.made_cut;
-    var isWin = ft === '1';
-    var color = isWin ? 'var(--gold)' : isCut ? tc(0.3) : 'var(--green-light)';
-    var bg = isWin ? 'rgba(201,168,76,0.12)' : isCut ? 'rgba(255,255,255,0.04)' : 'rgba(91,191,133,0.08)';
-    return '<span style="display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;color:'+color+';background:'+bg+';letter-spacing:.03em;">'+ft+'</span>';
+    var pos = parseInt(ft.replace(/[TtMm]/g,'')) || 999;
+    var cls, label;
+    if(!r.made_cut){ cls='cut'; label='CUT'; }
+    else if(pos===1){ cls='win'; label='WIN'; }
+    else if(pos<=5){ cls='top5'; label='T'+pos; }
+    else if(pos<=10){ cls='top10'; label='T'+pos; }
+    else{ cls='mc'; label='T'+pos; }
+    return '<span class="trend-badge-item '+cls+'">'+label+'</span>';
   }
 
-  function posFmt(v){
-    if(v == null) return '—';
-    var n = Math.round(v);
-    return 'T'+n;
+  function scoreColor(v){
+    if(v==null) return tc(0.3);
+    if(v>=65) return 'var(--green-light)';
+    if(v>=45) return 'var(--gold)';
+    if(v>=25) return tc(0.7);
+    return '#E06B6B';
   }
 
   body.innerHTML = players.map(function(p, i){
-    var delta = p.delta_pctile;
-    // negative delta = improving, positive = worsening
-    var dir = delta == null ? 'flat' : delta < -5 ? 'rising' : delta > 5 ? 'falling' : 'flat';
-    var arrow = dir==='rising' ? '↑' : dir==='falling' ? '↓' : '→';
+    var score = p.l3_score;
+    var delta = p.delta_score;
     var safeName = p.player_name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-    var badges = (p.recent_results||[]).slice(0,5).map(resultBadge).join(' ');
+    var badges = (p.recent_results||[]).slice(0,6).map(resultBadge).join('');
 
-    // Convert percentile rank to approx finish position for display (lower pctile = better)
-    var l3Disp = posFmt(p.l3_pctile);
-    var priorDisp = posFmt(p.prior_pctile);
+    // sub-line: "avg T8 · 3/3 cuts" — only when we have the data
+    var sub = '';
+    if(p.l3_avg_pos != null){
+      sub = 'avg T'+p.l3_avg_pos+' · '+p.l3_cuts_made+'/3 cuts';
+    } else if(p.l3_cuts_made === 0){
+      sub = '0/3 cuts — cold';
+    }
 
-    return '<div class="trend-row" style="grid-template-columns:36px 1fr auto 84px 84px 100px;" onclick="openPlayerDrawer(\''+safeName+'\')">'
+    // Direction: hot if score ≥65, rising/falling based on delta, else flat
+    var dir, arrow;
+    if(score >= 65){            dir='hot';     arrow='🔥'; }
+    else if(delta >= 10){       dir='rising';  arrow='↑'; }
+    else if(delta <= -10){      dir='falling'; arrow='↓'; }
+    else{                       dir='flat';    arrow='→'; }
+
+    var deltaStr = delta==null?'—':(delta>=0?'+':'')+delta;
+    var deltaCls = delta==null?'fl':delta>0?'up':delta<0?'dn':'fl';
+
+    return '<div class="trend-row" onclick="openPlayerDrawer(\''+safeName+'\')">'
       +'<div class="trend-num">'+(i+1)+'</div>'
-      +'<div class="trend-player">'+pAvatarHtml(p.player_name,26)+'<div>'
+      +'<div class="trend-player">'+pAvatarHtml(p.player_name,28)+'<div>'
         +'<div class="trend-name">'+pFmtName(p.player_name)+'</div>'
-        +(p.country?'<div class="trend-country">'+p.country+'</div>':'')
+        +(sub?'<div class="trend-sub">'+sub+'</div>':'')
       +'</div></div>'
-      +'<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding-right:12px;">'+badges+'</div>'
-      +'<div class="trend-val" style="font-family:var(--mono);font-size:12px;color:'+tc(0.5)+';">'+l3Disp+'</div>'
-      +'<div class="trend-val" style="font-family:var(--mono);font-size:12px;color:'+tc(0.35)+';">'+priorDisp+'</div>'
+      +'<div class="trend-badges">'+badges+'</div>'
+      +'<div class="trend-score-cell">'
+        +'<div class="trend-score-num" style="color:'+scoreColor(score)+';">'+(score!=null?score:'—')+'</div>'
+        +(delta!=null?'<div class="trend-score-delta '+deltaCls+'">'+deltaStr+' vs prior</div>':'')
+      +'</div>'
       +'<div class="trend-dir"><span class="trend-arrow">'+arrow+'</span><span class="trend-badge '+dir+'">'+dir+'</span></div>'
     +'</div>';
   }).join('');
@@ -5679,45 +5706,55 @@ async function loadRecentLeaderboards(){
       var winnerName = winner ? pFmtName(winner.player_name||'') : '';
       var winScore = winner ? scoreFmt(winner) : null;
 
+      var winnerDgId = winner ? (winner.dg_id || null) : null;
+
       html += '<div style="background:var(--black-card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;">'
-        // Header
+        // Header with winner headshot
         +'<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 12px;border-bottom:1px solid var(--border);">'
           +'<div>'
             +'<div style="font-size:14px;font-weight:600;color:var(--white);">'+eventName+'</div>'
             +(dateStr?'<div style="font-size:11px;color:'+tc(0.35)+';margin-top:2px;font-family:var(--mono);letter-spacing:.03em;">'+dateStr+'</div>':'')
           +'</div>'
-          +(winnerName?'<div style="display:flex;align-items:center;gap:8px;">'
+          +(winner?'<div style="display:flex;align-items:center;gap:10px;">'
             +'<div style="text-align:right;">'
-              +'<div style="font-size:11px;color:var(--gold);font-family:var(--mono);letter-spacing:.1em;font-weight:700;text-transform:uppercase;">Winner</div>'
-              +'<div style="font-size:13px;font-weight:600;color:var(--white);">'+winnerName+'</div>'
+              +'<div style="font-size:10px;color:var(--gold);font-family:var(--mono);letter-spacing:.12em;font-weight:700;text-transform:uppercase;">Winner</div>'
+              +'<div style="font-size:13px;font-weight:700;color:var(--gold);">'+winnerName+'</div>'
+              +(winScore?'<div style="font-family:var(--mono);font-size:14px;font-weight:700;color:'+scoreColor(winScore.val)+';">'+winScore.text+'</div>':'')
             +'</div>'
-            +(winScore?'<div style="font-family:var(--mono);font-size:16px;font-weight:700;color:'+scoreColor(winScore.val)+';min-width:36px;text-align:right;">'+winScore.text+'</div>':'')
+            +pAvatarHtml(winner.player_name||'', 40)
           +'</div>':'')
         +'</div>'
-        // 2-column grid of top 10
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px 0;">';
+        // 2-column: left = positions 1-5, right = 6-10
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 0;">';
 
-      top10.forEach(function(p, i){
-        var pos = String(p.fin_text||p.position||'—');
-        var pName = p.player_name || '';
-        var displayName = pFmtName(pName);
-        var sc = scoreFmt(p);
-        var isPick = pickNames.has(pName);
-        var isWin = i === 0;
-        var safeName = pName.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+      var left5  = top10.slice(0, 5);
+      var right5 = top10.slice(5, 10);
 
-        html += '<div style="display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:6px;padding:7px 16px;cursor:pointer;'
-          +(isPick?'background:rgba(201,168,76,0.05);':'')
-          +'" onclick="openPlayerDrawer(\''+safeName+'\')" onmouseenter="this.style.background=\''+(isPick?'rgba(201,168,76,0.09)':'rgba(255,255,255,0.025')+'\')" onmouseleave="this.style.background=\''+(isPick?'rgba(201,168,76,0.05)':'transparent')+'\'">  '
-          +'<div style="font-family:var(--mono);font-size:11px;color:'+tc(0.3)+';text-align:right;padding-right:2px;">'+pos+'</div>'
-          +'<div style="font-size:12px;font-weight:'+(isWin?'700':'500')+';color:'+(isWin?'var(--gold)':'var(--white)')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'
-            +displayName
-            +(isPick?'<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:5px;vertical-align:middle;"></span>':'')
-          +'</div>'
-          +'<div style="font-family:var(--mono);font-size:12px;font-weight:700;text-align:right;color:'+(sc?scoreColor(sc.val):tc(0.2))+';">'+(sc?sc.text:'—')+'</div>'
-        +'</div>';
-      });
+      function renderCol(col, hasDivider){
+        var colHtml = '<div style="'+(hasDivider?'border-left:1px solid var(--border);':'')+'">';
+        col.forEach(function(p, i){
+          var pos = String(p.fin_text||p.position||'—');
+          var pName = p.player_name || '';
+          var displayName = pFmtName(pName);
+          var sc = scoreFmt(p);
+          var isPick = pickNames.has(pName);
+          var isWin = left5.indexOf(p) === 0;
+          var safeName = pName.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+          colHtml += '<div style="display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:6px;padding:7px 16px;cursor:pointer;transition:background .1s;'
+            +(isPick?'background:rgba(201,168,76,0.05);':'')
+            +'" onclick="openPlayerDrawer(\''+safeName+'\')">'
+            +'<div style="font-family:var(--mono);font-size:10px;color:'+tc(0.28)+';text-align:right;">'+pos+'</div>'
+            +'<div style="font-size:12px;font-weight:'+(isWin?'700':'500')+';color:'+(isWin?'var(--gold)':'var(--white)')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'
+              +displayName
+              +(isPick?'<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:5px;vertical-align:middle;margin-bottom:1px;"></span>':'')
+            +'</div>'
+            +'<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:'+(sc?scoreColor(sc.val):tc(0.18))+';">'+(sc?sc.text:'—')+'</div>'
+          +'</div>';
+        });
+        return colHtml + '</div>';
+      }
 
+      html += renderCol(left5, false) + renderCol(right5, true);
       html += '</div></div>';
     });
 
