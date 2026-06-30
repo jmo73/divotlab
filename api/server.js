@@ -1298,7 +1298,7 @@ app.get('/api/historical-event-results', async (req, res) => {
 // Form score per event: winner=100, last place=0, CUT/WD=0 (normalized to field size)
 // recent_results is 6 fixed slots aligned to the 6 most recent events so boxes line up across players
 app.get('/api/form-trends', async (req, res) => {
-  const cacheKey = 'form-trends-2026v7';
+  const cacheKey = 'form-trends-2026v8';
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1328,17 +1328,16 @@ app.get('/api/form-trends', async (req, res) => {
       if (i + 3 < recentEvents.length) await new Promise(r => setTimeout(r, 400));
     }
 
-    // DG world rankings — read from node-cache only (populated when Tour Rankings tab is loaded).
-    // No active fetch here to avoid adding an 11th DG API call on a cold start.
+    // DG world rankings — cached in KV (24hr TTL) so it survives cold starts
     const dgRankByName = {};
     try {
-      const rankCached = cache.get('dg-rankings');
-      if (rankCached) {
-        const rankList = Array.isArray(rankCached) ? rankCached : (rankCached.rankings || rankCached.data || []);
-        rankList.forEach(r => {
-          if (r.player_name) dgRankByName[r.player_name] = r.datagolf_rank || r.dg_rank || r.rank || null;
-        });
-      }
+      const rawRankings = await getCachedJSON('dg-rankings-kv', 86400, () =>
+        fetchDataGolfDirect(`/preds/get-dg-rankings?file_format=json&key=${DATAGOLF_API_KEY}`)
+      );
+      const rankList = (Array.isArray(rawRankings) ? rawRankings : null) || rawRankings.rankings || [];
+      rankList.forEach(r => {
+        if (r.player_name) dgRankByName[r.player_name] = r.datagolf_rank || r.dg_rank || r.rank || null;
+      });
     } catch (e) { /* rankings optional */ }
 
     // Group player results — tag each event with event_id for slot-aligned display
