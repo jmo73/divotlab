@@ -1298,7 +1298,7 @@ app.get('/api/historical-event-results', async (req, res) => {
 // Form score per event: winner=100, last place=0, CUT/WD=0 (normalized to field size)
 // recent_results is 6 fixed slots aligned to the 6 most recent events so boxes line up across players
 app.get('/api/form-trends', async (req, res) => {
-  const cacheKey = 'form-trends-2026v6';
+  const cacheKey = 'form-trends-2026v7';
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ success: true, fromCache: true, ...cached });
 
@@ -1341,7 +1341,7 @@ app.get('/api/form-trends', async (req, res) => {
       }
     } catch (e) { /* rankings optional */ }
 
-    // Group player results newest-first (eventData is newest-first from getRecentCompletedEvents)
+    // Group player results — tag each event with event_id for slot-aligned display
     const playerMap = {};
     eventData.forEach(({ event, players, fieldSize }) => {
       players.forEach(p => {
@@ -1355,13 +1355,17 @@ app.get('/api/form-trends', async (req, res) => {
         let finText = p.fin_text || '';
         if (!finText && madeCut) finText = pos === 1 ? '1' : 'T' + pos;
         if (!finText) finText = 'CUT';
-        playerMap[p.player_name].events.push({ fin_text: finText, pos, form_score: formScore, made_cut: madeCut });
+        playerMap[p.player_name].events.push({ event_id: event.event_id, fin_text: finText, pos, form_score: formScore, made_cut: madeCut });
       });
     });
 
     const avg = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
 
+    // 6 display slots aligned to the 6 most recent events (eventData[0] = most recent)
+    const top6 = eventData.slice(0, 6);
+
     const trends = Object.entries(playerMap).map(([name, { dg_id, country, events }]) => {
+      // l3 = player's 3 most recent APPEARANCES (form score window)
       const l3    = events.slice(0, 3);
       const prior = events.slice(3, 6);
 
@@ -1376,14 +1380,20 @@ app.get('/api/form-trends', async (req, res) => {
       const l3Top10    = l3.filter(e => e.made_cut && e.pos <= 10).length;
       const l3Wins     = l3.filter(e => e.pos === 1).length;
 
-      // recent_results: up to 6 results newest-first; client pads with empty boxes if < 6
-      const recent_results = events.slice(0, 6).map(e => ({
-        played: true, fin_text: e.fin_text, made_cut: e.made_cut, form_score: e.form_score
-      }));
+      // Slot-aware: 6 fixed slots matching the 6 most recent global events.
+      // played:false = player wasn't in that event field — renders as empty — box.
+      const eventById = {};
+      events.forEach(e => { eventById[e.event_id] = e; });
+      const recent_results = top6.map(({ event }) => {
+        const r = eventById[event.event_id];
+        if (!r) return { played: false, fin_text: null, made_cut: false, form_score: null };
+        return { played: true, fin_text: r.fin_text, made_cut: r.made_cut, form_score: r.form_score };
+      });
 
-      // All-6 cut stats for sub-line denominator
-      const all6CutsMade    = recent_results.filter(r => r.made_cut).length;
-      const all6EventsCount = recent_results.length;
+      // All-6 cut stats across played slots only (for the sub-line denominator)
+      const all6Played      = recent_results.filter(r => r.played);
+      const all6CutsMade    = all6Played.filter(r => r.made_cut).length;
+      const all6EventsCount = all6Played.length;
 
       return {
         player_name:       name,
