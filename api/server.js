@@ -3963,136 +3963,111 @@ app.post('/api/autopilot/telegram/webhook', async (req, res) => {
 });
 
 // GET /api/autopilot/content/tuesday-model
-// Cron: Tuesdays 19:00 UTC — generates model preview tweets and queues in KV for Telegram approval.
 app.get('/api/autopilot/content/tuesday-model', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/tuesday-model] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-tuesday-model.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/tuesday-model] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/thursday-course-stat
-// Cron: Thursdays 13:00 UTC — generates course-stat tweets and queues in KV for Telegram approval.
 app.get('/api/autopilot/content/thursday-course-stat', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/thursday-course-stat] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-thursday-course-stat.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/thursday-course-stat] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/monday-field
-// Cron: Mondays 13:00 UTC (GitHub Actions) — field preview tweets.
 app.get('/api/autopilot/content/monday-field', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/monday-field] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-monday-field.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/monday-field] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/wednesday-top10
-// Cron: Wednesdays 13:00 UTC (GitHub Actions) — top-10 targets tweet.
 app.get('/api/autopilot/content/wednesday-top10', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/wednesday-top10] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-wednesday-top10.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/wednesday-top10] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/friday-darkhorse
-// Cron: Fridays 13:00 UTC (GitHub Actions) — dark horse alert tweet.
 app.get('/api/autopilot/content/friday-darkhorse', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/friday-darkhorse] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-friday-darkhorse.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/friday-darkhorse] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/saturday-update
-// Cron: Saturdays 13:00 UTC (GitHub Actions) — updated model/live win probs tweet.
 app.get('/api/autopilot/content/saturday-update', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/saturday-update] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-saturday-update.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/saturday-update] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/sunday-contenders
-// Cron: Sundays 13:00 UTC (GitHub Actions) — final-round win probability leaders.
 app.get('/api/autopilot/content/sunday-contenders', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/sunday-contenders] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   try {
     const { run } = await import('./_autopilot/scripts/post-sunday-contenders.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/sunday-contenders] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
 // GET /api/autopilot/content/round-recap?round=1|2|3|4
-// Cron: Thu–Sun 00:00 UTC (8pm EDT) — post-round SG stat leaders.
 app.get('/api/autopilot/content/round-recap', requireCronSecret, async (req, res) => {
-  res.status(200).send('OK');
-  if (process.env.AUTOPILOT_ENABLED !== 'true') {
-    console.log('[autopilot/round-recap] AUTOPILOT_ENABLED is not true — skipping');
-    return;
-  }
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
   const round = req.query.round;
   if (!['1','2','3','4'].includes(round)) {
-    console.error('[autopilot/round-recap] Invalid round param:', round);
-    return;
+    return res.status(400).json({ error: 'Invalid round param' });
   }
   try {
     process.env.RECAP_ROUND = round;
     const { run } = await import('./_autopilot/scripts/post-round-recap.js');
     await run();
+    res.status(200).send('OK');
   } catch (err) {
     console.error('[autopilot/round-recap] Error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
