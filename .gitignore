@@ -19,3 +19,12 @@ twitter-templates.html
 twitter-weekly.html
 admin.html
 pro-sandbox.html
+
+.vercel
+
+# Autopilot test artifacts
+autopilot/test-output/
+autopilot/.env.local
+
+.vercel
+.env*.local

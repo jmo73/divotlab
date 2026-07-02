@@ -11,7 +11,10 @@
     },
     {
       "src": "server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60
+      }
     }
   ],
   "routes": [
@@ -22,6 +25,24 @@
     {
       "src": "/(.*)",
       "dest": "server.js"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/autopilot/cron?job=tournament",
+      "schedule": "*/30 * * * 4,5,6,0"
+    },
+    {
+      "path": "/api/autopilot/cron?job=evergreen",
+      "schedule": "0 14 * * 1,2,3"
+    },
+    {
+      "path": "/api/autopilot/content/tuesday-model",
+      "schedule": "0 19 * * 2"
+    },
+    {
+      "path": "/api/autopilot/content/thursday-course-stat",
+      "schedule": "0 18 * * 4"
     }
   ]
 }

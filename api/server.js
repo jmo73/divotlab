@@ -3900,5 +3900,98 @@ app.listen(PORT, () => {
 🏌️  PGA Tour filter: Uses primary_tour === "PGA"
   `);
 });
+// ============================================
+// AUTOPILOT — Cron + Telegram webhook
+// All heavy logic lives in autopilot/lib/*.ts (compiled to autopilot/dist/).
+// These routes are thin adapters: auth check → delegate → return 200.
+// ============================================
+
+// Verify Vercel Cron secret
+function requireCronSecret(req, res, next) {
+  const auth = req.headers['authorization'];
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
+
+// GET /api/autopilot/cron?job=tournament|evergreen
+// Called by Vercel Cron every 30 min (Thu–Sun) or daily Mon–Wed.
+app.get('/api/autopilot/cron', requireCronSecret, async (req, res) => {
+  // Return 200 immediately — Vercel Cron has a 30s timeout on the response,
+  // but we may take longer to generate images + call Claude. Fire async.
+  res.status(200).send('OK');
+
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/cron] AUTOPILOT_ENABLED is not true — skipping run');
+    return;
+  }
+
+  const jobType = req.query.job === 'evergreen' ? 'evergreen' : 'tournament';
+
+  try {
+    // Dynamic import so TypeScript module only loads when needed
+    const { runAutopilotCron } = await import('../autopilot/dist/lib/cronHandler.js');
+    await runAutopilotCron(jobType);
+  } catch (err) {
+    console.error('[autopilot/cron] Error:', err);
+  }
+});
+
+// POST /api/autopilot/telegram/webhook
+// Receives Telegram Bot API updates (button taps + text messages).
+// MUST always return 200 — Telegram disables webhooks that error repeatedly.
+app.post('/api/autopilot/telegram/webhook', async (req, res) => {
+  // Always return 200 first
+  res.status(200).send('OK');
+
+  const body = req.body;
+  const chatId = body?.message?.chat?.id || body?.callback_query?.message?.chat?.id;
+
+  if (String(chatId) !== process.env.TELEGRAM_CHAT_ID) {
+    // Not from our authorized chat — silently ignore
+    return;
+  }
+
+  try {
+    const { handleTelegramUpdate } = await import('../autopilot/dist/lib/telegramWebhook.js');
+    await handleTelegramUpdate(body);
+  } catch (err) {
+    console.error('[autopilot/telegram] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/tuesday-model
+// Cron: Tuesdays 19:00 UTC — generates model preview tweets and queues in KV for Telegram approval.
+app.get('/api/autopilot/content/tuesday-model', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/tuesday-model] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-tuesday-model.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/tuesday-model] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/thursday-course-stat
+// Cron: Thursdays 18:00 UTC — generates course-stat tweets and queues in KV for Telegram approval.
+app.get('/api/autopilot/content/thursday-course-stat', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/thursday-course-stat] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-thursday-course-stat.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/thursday-course-stat] Error:', err);
+  }
+});
+
 // test
 module.exports = app;// trigger

@@ -1,0 +1,1 @@
+{"version":3,"file":"instagram.d.ts","sourceRoot":"","sources":["../../lib/instagram.ts"],"names":[],"mappings":"AAAA;;;;;;;;GAQG;AAMH,MAAM,WAAW,mBAAmB;IAClC,MAAM,EAAE,MAAM,CAAA;IACd,OAAO,EAAE,MAAM,CAAA;CAChB;AAED;;;;GAIG;AACH,wBAAsB,eAAe,CACnC,OAAO,EAAE,MAAM,EACf,YAAY,EAAE,MAAM,GACnB,OAAO,CAAC,mBAAmB,CAAC,CAkD9B;AA0BD;;;;;;;;;GASG;AACH,wBAAgB,mBAAmB,IAAI,IAAI,CAO1C"}

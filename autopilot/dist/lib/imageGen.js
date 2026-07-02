@@ -1,0 +1,449 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.escapeXml = escapeXml;
+exports.scoreColor = scoreColor;
+exports.formatScore = formatScore;
+exports.formatSG = formatSG;
+exports.dgRatingToBarWidth = dgRatingToBarWidth;
+exports.fitScoreToBarWidth = fitScoreToBarWidth;
+exports.generateImage = generateImage;
+exports.extendForInstagram = extendForInstagram;
+exports.generatePhotoCard = generatePhotoCard;
+exports.leaderboardFields = leaderboardFields;
+exports.playerStatFields = playerStatFields;
+exports.modelPickFields = modelPickFields;
+exports.cutLineFields = cutLineFields;
+exports.evergreenFactFields = evergreenFactFields;
+exports.quoteInsightFields = quoteInsightFields;
+exports.comparisonFields = comparisonFields;
+exports.courseBreakdownFields = courseBreakdownFields;
+exports.weatherCardFields = weatherCardFields;
+exports.playerHeroFields = playerHeroFields;
+exports.pickResultFields = pickResultFields;
+exports.modelPicksFields = modelPicksFields;
+exports.cutAlertFields = cutAlertFields;
+exports.spotlightFields = spotlightFields;
+exports.courseProfileFields = courseProfileFields;
+exports.weatherFields = weatherFields;
+const promises_1 = __importDefault(require("fs/promises"));
+const path_1 = __importDefault(require("path"));
+const sharp_1 = __importDefault(require("sharp"));
+const TEMPLATES_DIR = path_1.default.join(__dirname, '..', 'templates');
+// ─── Font loading ─────────────────────────────────────────────────────────────
+// Sharp uses librsvg which does NOT fetch external URLs at render time.
+// We load fonts from Google Fonts once per process and embed as base64 data URIs.
+let fontStyleCache = null;
+async function getFontStyle() {
+    if (fontStyleCache)
+        return fontStyleCache;
+    const GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap';
+    try {
+        // Fetch the CSS (use a desktop user-agent to get woff2 URLs)
+        const cssRes = await fetch(GOOGLE_FONTS_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+        });
+        const css = await cssRes.text();
+        // Extract all woff2 src URLs
+        const urlPattern = /url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/g;
+        const fontUrls = [];
+        let match;
+        while ((match = urlPattern.exec(css)) !== null) {
+            fontUrls.push(match[1]);
+        }
+        // Download each font file and replace URL with base64 data URI
+        let embeddedCss = css;
+        await Promise.all(fontUrls.map(async (url) => {
+            try {
+                const fontRes = await fetch(url);
+                const buffer = await fontRes.arrayBuffer();
+                const b64 = Buffer.from(buffer).toString('base64');
+                const dataUri = `url(data:font/woff2;base64,${b64})`;
+                embeddedCss = embeddedCss.replaceAll(`url(${url})`, dataUri);
+            }
+            catch {
+                // Non-fatal: font may not render but SVG won't break
+            }
+        }));
+        fontStyleCache = embeddedCss;
+        return embeddedCss;
+    }
+    catch {
+        // Fallback: system fonts — numbers will still render, display font degrades gracefully
+        fontStyleCache = '';
+        return '';
+    }
+}
+// ─── XML escaping ─────────────────────────────────────────────────────────────
+function escapeXml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
+// ─── Score helpers ────────────────────────────────────────────────────────────
+function scoreColor(score) {
+    if (score < 0)
+        return '#5BBF85'; // under par — green
+    if (score === 0)
+        return '#FAFAFA'; // even par — white
+    return '#C9A84C'; // over par — gold
+}
+function formatScore(score) {
+    if (score === 0)
+        return 'E';
+    return score > 0 ? `+${score}` : `${score}`;
+}
+function formatSG(sg) {
+    return `${sg >= 0 ? '+' : ''}${sg.toFixed(1)}`;
+}
+// DG rating (0–180 scale) → bar width (0–180px)
+function dgRatingToBarWidth(rating) {
+    return Math.round(Math.min(180, Math.max(0, (rating / 180) * 180)));
+}
+// Course fit score (0–100) → bar width (0–280px for model-pick template)
+function fitScoreToBarWidth(fitScore) {
+    return Math.round(Math.min(280, Math.max(0, (fitScore / 100) * 280)));
+}
+// player-hero renders at 1080×1350 (Instagram 4:5); all others are 1080×1080
+const TEMPLATE_CANVAS = {
+    'player-hero': { width: 1080, height: 1350 },
+};
+// ─── Core render function ─────────────────────────────────────────────────────
+async function generateImage(templateId, fields) {
+    const templatePath = path_1.default.join(TEMPLATES_DIR, `${templateId}.svg`);
+    let svg = await promises_1.default.readFile(templatePath, 'utf-8');
+    // Inject embedded fonts
+    const fonts = await getFontStyle();
+    svg = svg.replace('{{FONTS}}', fonts);
+    // Replace all {{TOKEN}} placeholders
+    for (const [key, value] of Object.entries(fields)) {
+        svg = svg.replaceAll(`{{${key}}}`, escapeXml(value));
+    }
+    // Validate no unreplaced tokens remain
+    const unreplaced = svg.match(/\{\{[A-Z0-9_]+\}\}/g);
+    if (unreplaced) {
+        throw new Error(`Unreplaced SVG tokens in ${templateId}: ${unreplaced.join(', ')}`);
+    }
+    const canvas = TEMPLATE_CANVAS[templateId] ?? { width: 1080, height: 1080 };
+    return (0, sharp_1.default)(Buffer.from(svg))
+        .resize(canvas.width, canvas.height)
+        .png({ compressionLevel: 8 })
+        .toBuffer();
+}
+// ─── Instagram 4:5 extension ──────────────────────────────────────────────────
+// Adds a branded 270px footer strip below a 1080×1080 graphic → 1080×1350
+async function extendForInstagram(pngBuffer) {
+    const footerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="270">
+    <rect width="1080" height="270" fill="#0A0A0A"/>
+    <line x1="60" y1="44" x2="1020" y2="44" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <text x="540" y="108" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" letter-spacing="0.14em" fill="rgba(245,245,243,0.15)" text-anchor="middle">DIVOT LAB</text>
+    <text x="540" y="140" font-family="DM Sans,sans-serif" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.09)" text-anchor="middle">DIVOTLAB.COM</text>
+  </svg>`;
+    const footerPng = await (0, sharp_1.default)(Buffer.from(footerSvg)).resize(1080, 270).png().toBuffer();
+    return (0, sharp_1.default)({
+        create: { width: 1080, height: 1350, channels: 3, background: { r: 10, g: 10, b: 10 } }
+    })
+        .composite([
+        { input: pngBuffer, top: 0, left: 0 },
+        { input: footerPng, top: 1080, left: 0 }
+    ])
+        .png({ compressionLevel: 8 })
+        .toBuffer();
+}
+// ─── Photo card generator (player-hero, Instagram only) ───────────────────────
+// Composites a player photo into the top zone of the player-hero template.
+async function generatePhotoCard(fields, photoUrl) {
+    // Render base SVG (dark background + content zone in bottom half)
+    const basePng = await generateImage('player-hero', fields);
+    // Fetch and crop photo to top zone (1080×660)
+    const photoRes = await fetch(photoUrl);
+    if (!photoRes.ok)
+        throw new Error(`Photo fetch failed: ${photoRes.status} ${photoUrl}`);
+    const photoBuffer = Buffer.from(await photoRes.arrayBuffer());
+    const photoCropped = await (0, sharp_1.default)(photoBuffer)
+        .resize(1080, 660, { fit: 'cover', position: 'north' })
+        .png()
+        .toBuffer();
+    // Gradient overlay (transparent → opaque dark at bottom of photo zone)
+    const gradSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="660">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0"/>
+        <stop offset="55%" stop-color="#0A0A0A" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#0A0A0A" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+    <rect width="1080" height="660" fill="url(#g)"/>
+  </svg>`;
+    const gradPng = await (0, sharp_1.default)(Buffer.from(gradSvg)).png().toBuffer();
+    // Composite: base + photo (top) + gradient (over photo)
+    return (0, sharp_1.default)(basePng)
+        .composite([
+        { input: photoCropped, top: 0, left: 0 },
+        { input: gradPng, top: 0, left: 0 }
+    ])
+        .png({ compressionLevel: 8 })
+        .toBuffer();
+}
+// ─── Template field builders ──────────────────────────────────────────────────
+// One function per template — takes typed data, returns the fields Record<string, string>
+function leaderboardFields(data) {
+    const fields = {
+        EVENT_NAME: data.eventName,
+        COURSE_CONDITIONS: data.courseConditions,
+        ROUND_BADGE: data.roundBadge,
+        BADGE: data.roundBadge,
+        INSIGHT: data.insight,
+        FIELD_CONTEXT: data.fieldContext,
+    };
+    for (let i = 1; i <= 5; i++) {
+        const p = data.players[i - 1];
+        fields[`P${i}_NAME`] = p?.name ?? '—';
+        fields[`P${i}_SCORE`] = p != null ? formatScore(p.score) : '—';
+        fields[`P${i}_SCORE_COLOR`] = p != null ? scoreColor(p.score) : '#6B6B6B';
+        fields[`P${i}_RATING`] = p?.dgRating != null ? String(p.dgRating) : '—';
+        fields[`P${i}_DG_BAR_WIDTH`] = String(p?.dgRating != null ? dgRatingToBarWidth(p.dgRating) : 0);
+        fields[`P${i}_SG_TOTAL`] = p?.sgTotal != null ? `${formatSG(p.sgTotal)} SG` : '';
+        fields[`P${i}_SG_COLOR`] = p?.sgTotal != null && p.sgTotal > 0 ? 'rgba(91,191,133,0.55)' : 'rgba(245,245,243,0.28)';
+    }
+    return fields;
+}
+function playerStatFields(data) {
+    const fields = {
+        PLAYER_NAME: data.playerName,
+        CONTEXT_LINE: data.contextLine,
+        BADGE: data.badge,
+        BADGE_COLOR: data.badgeColor,
+        INSIGHT_LINE_1: data.insightLine1,
+        INSIGHT_LINE_2: data.insightLine2 ?? '',
+    };
+    for (let i = 1; i <= 4; i++) {
+        const s = data.stats[i - 1];
+        fields[`STAT${i}_LABEL`] = s?.label ?? '';
+        fields[`STAT${i}_VALUE`] = s?.value ?? '';
+    }
+    return fields;
+}
+function modelPickFields(data) {
+    const fields = {
+        EVENT_NAME: data.eventName,
+        CONDITIONS_SUMMARY: data.conditionsSummary,
+        DH_NAME: data.darkHorse.name,
+        DH_REASON: data.darkHorse.reason,
+    };
+    for (let i = 1; i <= 3; i++) {
+        const p = data.picks[i - 1];
+        fields[`P${i}_NAME`] = p?.name ?? '—';
+        fields[`P${i}_WIN_PCT`] = p?.winPct ?? '—';
+        fields[`P${i}_FIT_WIDTH`] = String(p != null ? fitScoreToBarWidth(p.fitScore) : 0);
+        fields[`P${i}_KEY_STRENGTH`] = p?.keyStrength ?? '';
+    }
+    return fields;
+}
+function cutLineFields(data) {
+    const fields = {
+        EVENT_NAME: data.eventName,
+        CUT_LINE: data.cutLine,
+    };
+    for (let i = 1; i <= 4; i++) {
+        const p = data.players[i - 1];
+        fields[`B${i}_NAME`] = p?.name ?? '—';
+        fields[`B${i}_SCORE`] = p != null ? formatScore(p.score) : '—';
+        fields[`B${i}_SCORE_COLOR`] = p != null ? scoreColor(p.score) : '#6B6B6B';
+        fields[`B${i}_HOLES`] = p != null ? String(p.holesPlayed) : '—';
+    }
+    return fields;
+}
+function evergreenFactFields(data) {
+    return {
+        TOPIC_BADGE: data.topicBadge,
+        HEADLINE: data.headline,
+        SUBHEAD: data.subhead,
+        MAIN_STAT: data.mainStat,
+        UNIT_LABEL: data.unitLabel,
+        SUPPORT_LINE_1: data.supportLines[0],
+        SUPPORT_LINE_2: data.supportLines[1] ?? '',
+        SUPPORT_LINE_3: data.supportLines[2] ?? '',
+    };
+}
+function quoteInsightFields(data) {
+    return {
+        BADGE: data.badge,
+        QUOTE_LINE_1: data.quoteLines[0],
+        QUOTE_LINE_2: data.quoteLines[1],
+        QUOTE_LINE_3: data.quoteLines[2] ?? '',
+        SOURCE_LINE: data.sourceLine,
+    };
+}
+function comparisonFields(data) {
+    const aBetter = data.playerA.score <= data.playerB.score;
+    return {
+        EVENT_ROUND: data.eventRound,
+        A_NAME: data.playerA.name,
+        A_SCORE: formatScore(data.playerA.score),
+        A_SCORE_COLOR: scoreColor(data.playerA.score),
+        A_POSITION: data.playerA.position,
+        A_SG_TOTAL: data.playerA.sgTotal,
+        A_SG_APPROACH: data.playerA.sgApproach,
+        A_DG_RATING: data.playerA.dgRating,
+        A_ACCENT_COLOR: aBetter ? '#5BBF85' : 'transparent',
+        B_NAME: data.playerB.name,
+        B_SCORE: formatScore(data.playerB.score),
+        B_SCORE_COLOR: scoreColor(data.playerB.score),
+        B_POSITION: data.playerB.position,
+        B_SG_TOTAL: data.playerB.sgTotal,
+        B_SG_APPROACH: data.playerB.sgApproach,
+        B_DG_RATING: data.playerB.dgRating,
+        B_ACCENT_COLOR: aBetter ? 'transparent' : '#5BBF85',
+        COMPARISON_ANGLE: data.comparisonAngle,
+    };
+}
+function courseBreakdownFields(data) {
+    return {
+        COURSE_NAME: data.courseName,
+        COURSE_META: data.courseMeta,
+        REWARDS_LABEL: data.rewardsLabel,
+        HIST_SCORING: data.histScoring,
+        FIELD_AVG: data.fieldAvg,
+        KEY_STAT: data.keyStat,
+        INSIGHT_LINE_1: data.insightLine1,
+        INSIGHT_LINE_2: data.insightLine2 ?? '',
+        HISTORICAL_HOOK: data.historicalHook,
+    };
+}
+function weatherCardFields(data) {
+    return {
+        EVENT_NAME: data.eventName,
+        ROUND_DATE: data.roundDate,
+        WIND_SPEED: data.windSpeed,
+        WIND_DIRECTION: data.windDirection,
+        TEMP_PRECIP: data.tempPrecip,
+        CONDITIONS_FLAG: data.conditionsFlag,
+        CONDITIONS_FLAG_COLOR: data.conditionsFlagColor,
+        SCORING_IMPACT: data.scoringImpact,
+        HISTORICAL_CONTEXT: data.historicalContext,
+    };
+}
+function playerHeroFields(data) {
+    return {
+        PLAYER_NAME: data.playerName,
+        SCORE: formatScore(data.score),
+        SCORE_COLOR: scoreColor(data.score),
+        TOURNAMENT: data.tournament,
+        POSITION: data.position,
+        SG_TOTAL: formatSG(data.sgTotal),
+        SG_APPROACH: formatSG(data.sgApproach),
+        SG_PUTTING: formatSG(data.sgPutting),
+    };
+}
+function pickResultFields(data) {
+    const colorMap = {
+        WIN: '#5BBF85',
+        LOSS: 'rgba(245,245,243,0.52)',
+        PUSH: '#C9A84C',
+    };
+    const bgMap = {
+        WIN: 'rgba(27,77,62,0.22)',
+        LOSS: 'rgba(90,143,168,0.07)',
+        PUSH: 'rgba(201,168,76,0.1)',
+    };
+    const color = colorMap[data.result];
+    return {
+        BADGE: 'Pick Result',
+        TOURNAMENT: data.tournament,
+        PLAYER_NAME: data.playerName,
+        BET_LINE: data.betLine,
+        RESULT: data.result,
+        RESULT_COLOR: color,
+        RESULT_BG: bgMap[data.result],
+        RESULT_DETAIL: data.resultDetail,
+        SEASON_RECORD: data.seasonRecord,
+        SEASON_UNITS: data.seasonUnits,
+        SEASON_ROI: data.seasonRoi,
+        INSIGHT: data.insight,
+    };
+}
+function modelPicksFields(data) {
+    const fields = {
+        BADGE: data.badge ?? 'Model Picks',
+        EVENT_NAME: data.eventName,
+        DH_NAME: data.darkHorse.name,
+        DH_REASON: data.darkHorse.reason,
+    };
+    for (let i = 1; i <= 3; i++) {
+        const p = data.picks[i - 1];
+        fields[`P${i}_NAME`] = p?.name ?? '—';
+        fields[`P${i}_WIN_PCT`] = p?.winPct ?? '—';
+        fields[`P${i}_FIT_WIDTH`] = String(p != null ? fitScoreToBarWidth(p.fitScore) : 0);
+        fields[`P${i}_KEY_STRENGTH`] = p?.keyStrength ?? '';
+    }
+    return fields;
+}
+function cutAlertFields(data) {
+    const fields = {
+        BADGE: 'Cut Alert',
+        EVENT_NAME: data.eventName,
+        CUT_LINE: data.cutLine,
+    };
+    for (let i = 1; i <= 4; i++) {
+        const p = data.players[i - 1];
+        fields[`B${i}_NAME`] = p?.name ?? '—';
+        fields[`B${i}_SCORE`] = p != null ? formatScore(p.score) : '—';
+        fields[`B${i}_SCORE_COLOR`] = p != null ? scoreColor(p.score) : '#6B6B6B';
+        fields[`B${i}_STATUS`] = p?.status ?? '—';
+        fields[`B${i}_STATUS_CLASS`] = p?.status === 'MADE' ? 'made' : 'missed';
+        fields[`B${i}_IS_PICK`] = p?.isPick ? 'is-pick' : '';
+    }
+    return fields;
+}
+function spotlightFields(data) {
+    const fields = {
+        BADGE: data.badge,
+        PLAYER_NAME: data.playerName,
+        CONTEXT: data.context,
+        HERO_LABEL: data.heroLabel,
+        HERO_VALUE: data.heroValue,
+        HERO_COLOR: data.heroColor,
+        HERO_SUB: data.heroSub,
+        INSIGHT: data.insight,
+    };
+    for (let i = 1; i <= 4; i++) {
+        const s = data.stats[i - 1];
+        fields[`STAT${i}_LABEL`] = s?.label ?? '';
+        fields[`STAT${i}_VALUE`] = s?.value ?? '';
+    }
+    return fields;
+}
+function courseProfileFields(data) {
+    return {
+        BADGE: data.badge ?? 'Course Profile',
+        COURSE_NAME: data.courseName,
+        COURSE_META: data.courseMeta,
+        REWARDS: data.rewards,
+        HIST_SCORING: data.histScoring,
+        FIELD_AVG: data.fieldAvg,
+        KEY_STAT: data.keyStat,
+        INSIGHT: data.insight,
+    };
+}
+function weatherFields(data) {
+    return {
+        BADGE: data.badge ?? 'Weather',
+        EVENT_NAME: data.eventName,
+        ROUND_DATE: data.roundDate,
+        WIND_SPEED: data.windSpeed,
+        WIND_ARROW_DEG: data.windArrowDeg,
+        WIND_DIR: data.windDir,
+        WIND_DIR_TEMP: data.windDirTemp,
+        CONDITIONS_FLAG: data.conditionsFlag,
+        CONDITIONS_COLOR: data.conditionsColor,
+        SCORING_IMPACT: data.scoringImpact,
+        HIST_CONTEXT: data.histContext,
+    };
+}
+//# sourceMappingURL=imageGen.js.map
