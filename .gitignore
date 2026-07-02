@@ -25,6 +25,8 @@ pro-sandbox.html
 # Autopilot test artifacts
 autopilot/test-output/
 autopilot/.env.local
+# Autopilot compiled output — deployed via api/autopilot/ instead
+autopilot/dist/
 
 .vercel
 .env*.local

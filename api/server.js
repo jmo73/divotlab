@@ -3931,7 +3931,7 @@ app.get('/api/autopilot/cron', requireCronSecret, async (req, res) => {
 
   try {
     // Dynamic import so TypeScript module only loads when needed
-    const { runAutopilotCron } = await import('../autopilot/dist/lib/cronHandler.js');
+    const { runAutopilotCron } = await import('./autopilot/lib/cronHandler.js');
     await runAutopilotCron(jobType);
   } catch (err) {
     console.error('[autopilot/cron] Error:', err);
@@ -3954,7 +3954,7 @@ app.post('/api/autopilot/telegram/webhook', async (req, res) => {
   }
 
   try {
-    const { handleTelegramUpdate } = await import('../autopilot/dist/lib/telegramWebhook.js');
+    const { handleTelegramUpdate } = await import('./autopilot/lib/telegramWebhook.js');
     await handleTelegramUpdate(body);
   } catch (err) {
     console.error('[autopilot/telegram] Error:', err);
@@ -3970,7 +3970,7 @@ app.get('/api/autopilot/content/tuesday-model', requireCronSecret, async (req, r
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-tuesday-model.js');
+    const { run } = await import('./autopilot/scripts/post-tuesday-model.js');
     await run();
   } catch (err) {
     console.error('[autopilot/tuesday-model] Error:', err);
@@ -3986,7 +3986,7 @@ app.get('/api/autopilot/content/thursday-course-stat', requireCronSecret, async 
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-thursday-course-stat.js');
+    const { run } = await import('./autopilot/scripts/post-thursday-course-stat.js');
     await run();
   } catch (err) {
     console.error('[autopilot/thursday-course-stat] Error:', err);
@@ -4002,7 +4002,7 @@ app.get('/api/autopilot/content/monday-field', requireCronSecret, async (req, re
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-monday-field.js');
+    const { run } = await import('./autopilot/scripts/post-monday-field.js');
     await run();
   } catch (err) {
     console.error('[autopilot/monday-field] Error:', err);
@@ -4018,7 +4018,7 @@ app.get('/api/autopilot/content/wednesday-top10', requireCronSecret, async (req,
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-wednesday-top10.js');
+    const { run } = await import('./autopilot/scripts/post-wednesday-top10.js');
     await run();
   } catch (err) {
     console.error('[autopilot/wednesday-top10] Error:', err);
@@ -4034,7 +4034,7 @@ app.get('/api/autopilot/content/friday-darkhorse', requireCronSecret, async (req
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-friday-darkhorse.js');
+    const { run } = await import('./autopilot/scripts/post-friday-darkhorse.js');
     await run();
   } catch (err) {
     console.error('[autopilot/friday-darkhorse] Error:', err);
@@ -4050,7 +4050,7 @@ app.get('/api/autopilot/content/saturday-update', requireCronSecret, async (req,
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-saturday-update.js');
+    const { run } = await import('./autopilot/scripts/post-saturday-update.js');
     await run();
   } catch (err) {
     console.error('[autopilot/saturday-update] Error:', err);
@@ -4066,7 +4066,7 @@ app.get('/api/autopilot/content/sunday-contenders', requireCronSecret, async (re
     return;
   }
   try {
-    const { run } = await import('../autopilot/dist/scripts/post-sunday-contenders.js');
+    const { run } = await import('./autopilot/scripts/post-sunday-contenders.js');
     await run();
   } catch (err) {
     console.error('[autopilot/sunday-contenders] Error:', err);
@@ -4088,7 +4088,7 @@ app.get('/api/autopilot/content/round-recap', requireCronSecret, async (req, res
   }
   try {
     process.env.RECAP_ROUND = round;
-    const { run } = await import('../autopilot/dist/scripts/post-round-recap.js');
+    const { run } = await import('./autopilot/scripts/post-round-recap.js');
     await run();
   } catch (err) {
     console.error('[autopilot/round-recap] Error:', err);
