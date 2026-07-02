@@ -54,20 +54,6 @@ function getCached(key) {
 function setCached(key, data, ttlMs) {
     _cache.set(key, { data, expiresAt: Date.now() + ttlMs });
 }
-// ─── Proxy fetch (routes through divotlab-api.vercel.app to share rate limits + cache) ──
-const PROXY_BASE = process.env.DIVOTLAB_API_URL ?? 'https://divotlab-api.vercel.app';
-async function proxyFetch(path, cacheTtlMs = 5 * 60 * 1000) {
-    const url = `${PROXY_BASE}${path}`;
-    const cached = getCached(url);
-    if (cached)
-        return cached;
-    const res = await fetch(url);
-    if (!res.ok)
-        throw new Error(`Proxy API error ${res.status} for ${path}`);
-    const data = (await res.json());
-    setCached(url, data, cacheTtlMs);
-    return data;
-}
 // ─── Core fetch ───────────────────────────────────────────────────────────────
 async function dg(path, params = {}, cacheTtlMs = 5 * 60 * 1000, retryCount = 0) {
     const qs = new URLSearchParams({ ...params, key: config_1.config.datagolf.apiKey, file_format: 'json' });
@@ -93,13 +79,9 @@ async function dg(path, params = {}, cacheTtlMs = 5 * 60 * 1000, retryCount = 0)
     return data;
 }
 // ─── Rankings ─────────────────────────────────────────────────────────────────
-/**
- * Full DG rankings. Routes through the Vercel proxy (24h cache).
- * Proxy endpoint: /api/rankings — returns { data: { rankings: [...] } }
- */
 async function getRankings() {
-    const resp = await proxyFetch('/api/rankings', 6 * 60 * 60 * 1000);
-    return (resp.data?.rankings ?? []).map(p => ({
+    const resp = await dg('/preds/get-dg-rankings', {}, 6 * 60 * 60 * 1000);
+    return (resp.rankings ?? []).map(p => ({
         ...p,
         dg_rating: p.dg_skill_estimate,
     }));
@@ -149,8 +131,7 @@ function classifyEventTier(eventName) {
 }
 async function getTournamentStatus() {
     try {
-        const resp = await proxyFetch('/api/live-stats?round=event', 2 * 60 * 1000);
-        const live = resp.data ?? {};
+        const live = await dg('/preds/live-tournament-stats', { round: 'event' }, 2 * 60 * 1000);
         const { event_name, event_id, course_name, current_round, round_status, tournament_over, lat, lng } = live;
         if (!event_name) {
             return { state: 'OFF', eventName: '', eventId: 0, round: 0, courseName: '', eventTier: 'standard' };
@@ -175,13 +156,8 @@ async function getTournamentStatus() {
     }
 }
 // ─── Live leaderboard ─────────────────────────────────────────────────────────
-/**
- * Live player stats. Routes through the Vercel proxy to share the cached response.
- * Proxy endpoint: /api/live-stats?round=event (wraps /preds/live-tournament-stats)
- */
 async function getLiveTournamentStats(round = 'event') {
-    const resp = await proxyFetch(`/api/live-stats?round=${round}&stats=sg_putt,sg_arg,sg_app,sg_ott,sg_total`, 90 * 1000);
-    const data = resp.data ?? {};
+    const data = await dg('/preds/live-tournament-stats', { stats: 'sg_putt,sg_arg,sg_app,sg_ott,sg_total', round, display: 'value' }, 90 * 1000);
     const nonLivIds = await getNonLivPlayerIds();
     const players = (data.players ?? [])
         .filter(p => nonLivIds.has(p.dg_id))
@@ -189,14 +165,8 @@ async function getLiveTournamentStats(round = 'event') {
     return { eventName: data.event_name ?? '', players };
 }
 // ─── In-play win probabilities ────────────────────────────────────────────────
-/**
- * Live win / top-5/10/20 / make-cut probabilities. Routes through the Vercel proxy.
- * Proxy endpoint: /api/live-tournament (wraps /preds/in-play)
- * Response structure: { data: { data: [...players], info: {...} } }
- */
 async function getInPlayProbabilities() {
-    const resp = await proxyFetch('/api/live-tournament', 90 * 1000);
-    const inner = resp.data;
+    const inner = await dg('/preds/in-play', { tour: 'pga', dead_heat: 'no', odds_format: 'percent' }, 90 * 1000);
     if (!inner?.data?.length)
         return null;
     const players = inner.data.map(p => ({
@@ -206,28 +176,165 @@ async function getInPlayProbabilities() {
     return { players, info: inner.info };
 }
 // ─── Pre-tournament predictions ───────────────────────────────────────────────
-/**
- * Pre-tournament win/top-X probabilities. Routes through the Vercel proxy.
- * Proxy endpoint: /api/pre-tournament (wraps /preds/pre-tournament, 6h cache)
- * Response: { success, fromCache, data: { baseline: [...], baseline_history_fit: [...] } }
- */
 async function getPreTournamentPredictions(model = 'baseline_history_fit') {
-    const resp = await proxyFetch('/api/pre-tournament?dead_heat=no', 6 * 60 * 60 * 1000);
-    const d = resp.data;
+    const d = await dg('/preds/pre-tournament', { tour: 'pga', dead_heat: 'no' }, 6 * 60 * 60 * 1000);
     const players = d?.[model] ?? d?.baseline ?? [];
     return players.sort((a, b) => b.win - a.win);
 }
-/**
- * Fetch course-fit scores via the divotlab-api proxy.
- * This already normalizes to 0–100 and sorts by fit rank.
- * Uses the proxy rather than DataGolf directly to avoid burning API quota.
- */
+const _COURSE_WEIGHTS = {
+    'masters tournament': { ott: 0.25, app: 0.32, arg: 0.25, putt: 0.18 },
+    'pga championship': { ott: 0.20, app: 0.36, arg: 0.24, putt: 0.20 },
+    'u.s. open': { ott: 0.18, app: 0.38, arg: 0.26, putt: 0.18 },
+    'the open championship': { ott: 0.30, app: 0.25, arg: 0.25, putt: 0.20 },
+    'the players championship': { ott: 0.15, app: 0.42, arg: 0.18, putt: 0.25 },
+    'genesis invitational': { ott: 0.22, app: 0.32, arg: 0.22, putt: 0.24 },
+    'arnold palmer invitational': { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24 },
+    'arnold palmer invitational presented by mastercard': { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24 },
+    'the memorial tournament': { ott: 0.25, app: 0.30, arg: 0.22, putt: 0.23 },
+    'the memorial tournament presented by workday': { ott: 0.25, app: 0.30, arg: 0.22, putt: 0.23 },
+    'american express': { ott: 0.20, app: 0.28, arg: 0.22, putt: 0.30 },
+    'at&t pebble beach pro-am': { ott: 0.20, app: 0.36, arg: 0.22, putt: 0.22 },
+    'barbasol championship': { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24 },
+    'barracuda championship': { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24 },
+    'bmw championship': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25 },
+    'byron nelson': { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26 },
+    'canadian open': { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24 },
+    'charles schwab challenge': { ott: 0.18, app: 0.35, arg: 0.23, putt: 0.24 },
+    'cognizant classic': { ott: 0.22, app: 0.28, arg: 0.20, putt: 0.30 },
+    'farmers insurance open': { ott: 0.30, app: 0.27, arg: 0.20, putt: 0.23 },
+    'fedex st. jude championship': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25 },
+    'genesis scottish open': { ott: 0.28, app: 0.26, arg: 0.24, putt: 0.22 },
+    'houston open': { ott: 0.27, app: 0.28, arg: 0.20, putt: 0.25 },
+    'john deere classic': { ott: 0.25, app: 0.27, arg: 0.20, putt: 0.28 },
+    'korn ferry challenge': { ott: 0.25, app: 0.27, arg: 0.22, putt: 0.26 },
+    'mexico open at vidanta': { ott: 0.27, app: 0.30, arg: 0.20, putt: 0.23 },
+    'puerto rico open': { ott: 0.25, app: 0.28, arg: 0.20, putt: 0.27 },
+    'rbc canadian open': { ott: 0.28, app: 0.28, arg: 0.20, putt: 0.24 },
+    'rbc heritage': { ott: 0.14, app: 0.38, arg: 0.26, putt: 0.22 },
+    'rocket mortgage classic': { ott: 0.24, app: 0.24, arg: 0.20, putt: 0.32 },
+    'rsm classic': { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26 },
+    'sanderson farms championship': { ott: 0.26, app: 0.28, arg: 0.20, putt: 0.26 },
+    'the sentry': { ott: 0.26, app: 0.26, arg: 0.24, putt: 0.24 },
+    "shriners children's open": { ott: 0.22, app: 0.27, arg: 0.20, putt: 0.31 },
+    'sony open in hawaii': { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26 },
+    'the tour championship': { ott: 0.25, app: 0.30, arg: 0.20, putt: 0.25 },
+    'travelers championship': { ott: 0.20, app: 0.28, arg: 0.20, putt: 0.32 },
+    'truist championship': { ott: 0.25, app: 0.35, arg: 0.20, putt: 0.20 },
+    'wells fargo championship': { ott: 0.25, app: 0.35, arg: 0.20, putt: 0.20 },
+    'wm phoenix open': { ott: 0.20, app: 0.36, arg: 0.20, putt: 0.24 },
+    'wyndham championship': { ott: 0.20, app: 0.28, arg: 0.22, putt: 0.30 },
+    'zozo championship': { ott: 0.22, app: 0.30, arg: 0.22, putt: 0.26 },
+    '3m open': { ott: 0.27, app: 0.27, arg: 0.20, putt: 0.26 },
+    '_default': { ott: 0.25, app: 0.25, arg: 0.25, putt: 0.25 },
+};
+function _getCourseWeights(eventName) {
+    const normalized = eventName.toLowerCase().trim();
+    if (_COURSE_WEIGHTS[normalized])
+        return { ..._COURSE_WEIGHTS[normalized], matched: true, match_name: eventName };
+    for (const [key, w] of Object.entries(_COURSE_WEIGHTS)) {
+        if (key === '_default')
+            continue;
+        if (normalized.includes(key) || key.includes(normalized))
+            return { ...w, matched: true, match_name: key };
+    }
+    return { ..._COURSE_WEIGHTS['_default'], matched: false, match_name: 'Default' };
+}
+function _computeRawFit(sg_ott, sg_app, sg_arg, sg_putt, w) {
+    if (sg_app == null)
+        return null;
+    return w.ott * (sg_ott ?? 0) + w.app * sg_app + w.arg * (sg_arg ?? 0) + w.putt * (sg_putt ?? 0);
+}
+function _blendForm(l24, l12) {
+    return l12 != null ? l24 * 0.65 + l12 * 0.35 : l24;
+}
+function _normalizeToField(players) {
+    const valid = players.filter(p => p.rawScore != null);
+    if (valid.length === 0)
+        return players.map(p => ({ ...p, fitScore: null }));
+    const min = Math.min(...valid.map(p => p.rawScore));
+    const max = Math.max(...valid.map(p => p.rawScore));
+    const range = max - min;
+    return players.map(p => ({
+        ...p,
+        fitScore: p.rawScore == null ? null : range > 0 ? Math.round((p.rawScore - min) / range * 100) : 50,
+    }));
+}
 async function getCourseFit() {
-    const apiBase = process.env.DIVOTLAB_API_URL ?? 'https://divotlab-api.vercel.app';
-    const res = await fetch(`${apiBase}/api/course-fit`);
-    if (!res.ok)
-        throw new Error(`course-fit API error ${res.status}`);
-    return res.json();
+    const [fieldRaw, l24Raw, l12Raw] = await Promise.all([
+        dg('/field-updates', { tour: 'pga' }, 60 * 60 * 1000),
+        dg('/preds/skill-ratings', { display: 'value' }, 6 * 60 * 60 * 1000),
+        dg('/preds/skill-ratings', { display: 'value', last_n_rounds: '12' }, 6 * 60 * 60 * 1000).catch(() => null),
+    ]);
+    const eventName = fieldRaw.event_name ?? '';
+    const weights = _getCourseWeights(eventName);
+    const field = fieldRaw.field ?? [];
+    const l24Map = new Map();
+    const l12Map = new Map();
+    (l24Raw.skill_ratings ?? l24Raw.players ?? []).forEach(p => l24Map.set(p.dg_id, p));
+    if (l12Raw) {
+        const l12Players = l12Raw.skill_ratings ?? l12Raw.players ?? [];
+        // Skip if DataGolf returned identical L24 data (ignored the period param)
+        const sample = l12Players.slice(0, 5);
+        const isDuplicate = sample.length > 0 && sample.every(p12 => {
+            const p24 = l24Map.get(p12.dg_id);
+            return p24 && p24.sg_total != null && p12.sg_total != null && Math.abs((p24.sg_total ?? 0) - (p12.sg_total ?? 0)) < 0.001;
+        });
+        if (!isDuplicate)
+            l12Players.forEach(p => l12Map.set(p.dg_id, p));
+    }
+    const withRaw = field.map(fp => {
+        const l24 = l24Map.get(fp.dg_id);
+        const l12 = l12Map.get(fp.dg_id);
+        const l24Score = l24 ? _computeRawFit(l24.sg_ott ?? null, l24.sg_app ?? null, l24.sg_arg ?? null, l24.sg_putt ?? null, weights) : null;
+        const l12Score = l12 ? _computeRawFit(l12.sg_ott ?? null, l12.sg_app ?? null, l12.sg_arg ?? null, l12.sg_putt ?? null, weights) : null;
+        const rawScore = l24Score != null ? _blendForm(l24Score, l12Score) : null;
+        return {
+            dg_id: fp.dg_id,
+            player_name: fp.player_name,
+            rawScore,
+            sg_ott: l24?.sg_ott != null ? +l24.sg_ott.toFixed(3) : undefined,
+            sg_app: l24?.sg_app != null ? +l24.sg_app.toFixed(3) : undefined,
+            sg_arg: l24?.sg_arg != null ? +l24.sg_arg.toFixed(3) : undefined,
+            sg_putt: l24?.sg_putt != null ? +l24.sg_putt.toFixed(3) : undefined,
+            sg_total: l24?.sg_total != null ? +l24.sg_total.toFixed(3) : undefined,
+        };
+    });
+    const nonLivIds = await getNonLivPlayerIds();
+    const normalized = _normalizeToField(withRaw)
+        .filter(p => nonLivIds.has(p.dg_id))
+        .sort((a, b) => {
+        if (b.fitScore != null && a.fitScore != null)
+            return b.fitScore - a.fitScore;
+        if (b.fitScore != null)
+            return 1;
+        if (a.fitScore != null)
+            return -1;
+        return 0;
+    })
+        .map((p, i) => ({
+        rank: i + 1,
+        dg_id: p.dg_id,
+        player_name: p.player_name,
+        fitScore: p.fitScore ?? 0,
+        percentile: p.fitScore != null ? Math.round(100 - (i / withRaw.length) * 100) : 0,
+        sg_ott: p.sg_ott,
+        sg_app: p.sg_app,
+        sg_arg: p.sg_arg,
+        sg_putt: p.sg_putt,
+        sg_total: p.sg_total,
+    }));
+    return {
+        success: true,
+        tournament: {
+            event_id: fieldRaw.event_id ?? 0,
+            event_name: eventName,
+            course: fieldRaw.course ?? fieldRaw.course_name ?? '',
+            field_size: field.length,
+            current_round: fieldRaw.current_round ?? 0,
+        },
+        course_weights: { ott: weights.ott, app: weights.app, arg: weights.arg, putt: weights.putt, matched: weights.matched, match_name: weights.match_name },
+        field: normalized,
+    };
 }
 /**
  * Joined model-picks data: pre-tournament predictions enriched with course-fit scores.

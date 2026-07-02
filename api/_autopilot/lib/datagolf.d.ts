@@ -133,10 +133,6 @@ export interface FieldUpdate {
     course: string;
     field: FieldUpdatePlayer[];
 }
-/**
- * Full DG rankings. Routes through the Vercel proxy (24h cache).
- * Proxy endpoint: /api/rankings — returns { data: { rankings: [...] } }
- */
 export declare function getRankings(): Promise<DGRankingPlayer[]>;
 export declare function getNonLivPlayerIds(): Promise<Set<number>>;
 /** Lookup a player's DG rating percentile within the given ranking set. */
@@ -171,28 +167,14 @@ export interface AutopilotTournamentStatus {
 }
 export declare function classifyEventTier(eventName: string): EventTier;
 export declare function getTournamentStatus(): Promise<AutopilotTournamentStatus>;
-/**
- * Live player stats. Routes through the Vercel proxy to share the cached response.
- * Proxy endpoint: /api/live-stats?round=event (wraps /preds/live-tournament-stats)
- */
 export declare function getLiveTournamentStats(round?: 'event' | '1' | '2' | '3' | '4'): Promise<{
     eventName: string;
     players: LiveTournamentPlayer[];
 }>;
-/**
- * Live win / top-5/10/20 / make-cut probabilities. Routes through the Vercel proxy.
- * Proxy endpoint: /api/live-tournament (wraps /preds/in-play)
- * Response structure: { data: { data: [...players], info: {...} } }
- */
 export declare function getInPlayProbabilities(): Promise<{
     players: InPlayProbabilities[];
     info: InPlayInfo;
 } | null>;
-/**
- * Pre-tournament win/top-X probabilities. Routes through the Vercel proxy.
- * Proxy endpoint: /api/pre-tournament (wraps /preds/pre-tournament, 6h cache)
- * Response: { success, fromCache, data: { baseline: [...], baseline_history_fit: [...] } }
- */
 export declare function getPreTournamentPredictions(model?: 'baseline' | 'baseline_history_fit'): Promise<PreTournamentPrediction[]>;
 export interface CourseFitPlayer {
     rank: number;
@@ -226,11 +208,6 @@ export interface CourseFitResponse {
     };
     field: CourseFitPlayer[];
 }
-/**
- * Fetch course-fit scores via the divotlab-api proxy.
- * This already normalizes to 0–100 and sorts by fit rank.
- * Uses the proxy rather than DataGolf directly to avoid burning API quota.
- */
 export declare function getCourseFit(): Promise<CourseFitResponse>;
 /**
  * Joined model-picks data: pre-tournament predictions enriched with course-fit scores.
