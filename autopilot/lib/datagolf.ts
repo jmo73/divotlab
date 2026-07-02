@@ -182,7 +182,6 @@ async function dg<T>(
   path: string,
   params: Record<string, string> = {},
   cacheTtlMs = 5 * 60 * 1000,
-  retryCount = 0
 ): Promise<T> {
   const qs = new URLSearchParams({ ...params, key: config.datagolf.apiKey, file_format: 'json' })
   const url = `${BASE_URL}${path}?${qs}`
@@ -191,15 +190,13 @@ async function dg<T>(
   const cached = getCached<T>(cacheKey)
   if (cached) return cached
 
-  const res = await fetch(url)
-
-  // Rate limit (429) or suspension (403 from DG).
-  // DataGolf suspends for exactly 5 minutes — wait 320s then retry once.
-  if ((res.status === 429 || res.status === 403) && retryCount < 1) {
-    const wait = 320 * 1000
-    console.warn(`[datagolf] Rate limit/suspension on ${path} — waiting ${wait / 1000}s (5-min DG window)...`)
-    await new Promise(r => setTimeout(r, wait))
-    return dg<T>(path, params, cacheTtlMs, retryCount + 1)
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 12000)
+  let res: Response
+  try {
+    res = await fetch(url, { signal: controller.signal })
+  } finally {
+    clearTimeout(timer)
   }
 
   if (!res.ok) {
