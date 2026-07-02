@@ -1,6 +1,12 @@
 import fs from 'fs/promises'
 import path from 'path'
-import sharp from 'sharp'
+// sharp is loaded lazily so this module can be imported on Vercel without native binaries
+type SharpStatic = typeof import('sharp')
+let _sharp: SharpStatic | null = null
+async function getSharp(): Promise<SharpStatic> {
+  if (!_sharp) _sharp = (await import('sharp')) as unknown as SharpStatic
+  return _sharp
+}
 import type { TemplateId } from './types'
 
 const TEMPLATES_DIR = path.join(__dirname, '..', 'templates')
@@ -125,6 +131,7 @@ export async function generateImage(
   }
 
   const canvas = TEMPLATE_CANVAS[templateId] ?? { width: 1080, height: 1080 }
+  const sharp = await getSharp()
   return sharp(Buffer.from(svg))
     .resize(canvas.width, canvas.height)
     .png({ compressionLevel: 8 })
@@ -141,6 +148,7 @@ export async function extendForInstagram(pngBuffer: Buffer): Promise<Buffer> {
     <text x="540" y="108" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" letter-spacing="0.14em" fill="rgba(245,245,243,0.15)" text-anchor="middle">DIVOT LAB</text>
     <text x="540" y="140" font-family="DM Sans,sans-serif" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.09)" text-anchor="middle">DIVOTLAB.COM</text>
   </svg>`
+  const sharp = await getSharp()
   const footerPng = await sharp(Buffer.from(footerSvg)).resize(1080, 270).png().toBuffer()
 
   return sharp({
@@ -168,6 +176,7 @@ export async function generatePhotoCard(
   const photoRes = await fetch(photoUrl)
   if (!photoRes.ok) throw new Error(`Photo fetch failed: ${photoRes.status} ${photoUrl}`)
   const photoBuffer = Buffer.from(await photoRes.arrayBuffer())
+  const sharp = await getSharp()
   const photoCropped = await sharp(photoBuffer)
     .resize(1080, 660, { fit: 'cover', position: 'north' })
     .png()

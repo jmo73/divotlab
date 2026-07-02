@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -30,7 +63,12 @@ exports.courseProfileFields = courseProfileFields;
 exports.weatherFields = weatherFields;
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
-const sharp_1 = __importDefault(require("sharp"));
+let _sharp = null;
+async function getSharp() {
+    if (!_sharp)
+        _sharp = (await Promise.resolve().then(() => __importStar(require('sharp'))));
+    return _sharp;
+}
 const TEMPLATES_DIR = path_1.default.join(__dirname, '..', 'templates');
 // ─── Font loading ─────────────────────────────────────────────────────────────
 // Sharp uses librsvg which does NOT fetch external URLs at render time.
@@ -130,7 +168,8 @@ async function generateImage(templateId, fields) {
         throw new Error(`Unreplaced SVG tokens in ${templateId}: ${unreplaced.join(', ')}`);
     }
     const canvas = TEMPLATE_CANVAS[templateId] ?? { width: 1080, height: 1080 };
-    return (0, sharp_1.default)(Buffer.from(svg))
+    const sharp = await getSharp();
+    return sharp(Buffer.from(svg))
         .resize(canvas.width, canvas.height)
         .png({ compressionLevel: 8 })
         .toBuffer();
@@ -144,8 +183,9 @@ async function extendForInstagram(pngBuffer) {
     <text x="540" y="108" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" letter-spacing="0.14em" fill="rgba(245,245,243,0.15)" text-anchor="middle">DIVOT LAB</text>
     <text x="540" y="140" font-family="DM Sans,sans-serif" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.09)" text-anchor="middle">DIVOTLAB.COM</text>
   </svg>`;
-    const footerPng = await (0, sharp_1.default)(Buffer.from(footerSvg)).resize(1080, 270).png().toBuffer();
-    return (0, sharp_1.default)({
+    const sharp = await getSharp();
+    const footerPng = await sharp(Buffer.from(footerSvg)).resize(1080, 270).png().toBuffer();
+    return sharp({
         create: { width: 1080, height: 1350, channels: 3, background: { r: 10, g: 10, b: 10 } }
     })
         .composite([
@@ -165,7 +205,8 @@ async function generatePhotoCard(fields, photoUrl) {
     if (!photoRes.ok)
         throw new Error(`Photo fetch failed: ${photoRes.status} ${photoUrl}`);
     const photoBuffer = Buffer.from(await photoRes.arrayBuffer());
-    const photoCropped = await (0, sharp_1.default)(photoBuffer)
+    const sharp = await getSharp();
+    const photoCropped = await sharp(photoBuffer)
         .resize(1080, 660, { fit: 'cover', position: 'north' })
         .png()
         .toBuffer();
@@ -180,9 +221,9 @@ async function generatePhotoCard(fields, photoUrl) {
     </defs>
     <rect width="1080" height="660" fill="url(#g)"/>
   </svg>`;
-    const gradPng = await (0, sharp_1.default)(Buffer.from(gradSvg)).png().toBuffer();
+    const gradPng = await sharp(Buffer.from(gradSvg)).png().toBuffer();
     // Composite: base + photo (top) + gradient (over photo)
-    return (0, sharp_1.default)(basePng)
+    return sharp(basePng)
         .composite([
         { input: photoCropped, top: 0, left: 0 },
         { input: gradPng, top: 0, left: 0 }
