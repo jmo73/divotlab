@@ -28,13 +28,12 @@
     }
   ],
   "crons": [
-    {
-      "path": "/api/autopilot/content/tuesday-model",
-      "schedule": "0 19 * * 2"
-    },
-    {
-      "path": "/api/autopilot/content/thursday-course-stat",
-      "schedule": "0 18 * * 4"
-    }
+    { "path": "/api/autopilot/content/monday-field",        "schedule": "0 13 * * 1" },
+    { "path": "/api/autopilot/content/tuesday-model",       "schedule": "0 13 * * 2" },
+    { "path": "/api/autopilot/content/wednesday-top10",     "schedule": "0 13 * * 3" },
+    { "path": "/api/autopilot/content/thursday-course-stat","schedule": "0 13 * * 4" },
+    { "path": "/api/autopilot/content/friday-darkhorse",    "schedule": "0 13 * * 5" },
+    { "path": "/api/autopilot/content/saturday-update",     "schedule": "0 13 * * 6" },
+    { "path": "/api/autopilot/content/sunday-contenders",   "schedule": "0 13 * * 0" }
   ]
 }

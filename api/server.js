@@ -3978,7 +3978,7 @@ app.get('/api/autopilot/content/tuesday-model', requireCronSecret, async (req, r
 });
 
 // GET /api/autopilot/content/thursday-course-stat
-// Cron: Thursdays 18:00 UTC — generates course-stat tweets and queues in KV for Telegram approval.
+// Cron: Thursdays 13:00 UTC — generates course-stat tweets and queues in KV for Telegram approval.
 app.get('/api/autopilot/content/thursday-course-stat', requireCronSecret, async (req, res) => {
   res.status(200).send('OK');
   if (process.env.AUTOPILOT_ENABLED !== 'true') {
@@ -3990,6 +3990,86 @@ app.get('/api/autopilot/content/thursday-course-stat', requireCronSecret, async 
     await run();
   } catch (err) {
     console.error('[autopilot/thursday-course-stat] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/monday-field
+// Cron: Mondays 13:00 UTC (GitHub Actions) — field preview tweets.
+app.get('/api/autopilot/content/monday-field', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/monday-field] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-monday-field.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/monday-field] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/wednesday-top10
+// Cron: Wednesdays 13:00 UTC (GitHub Actions) — top-10 targets tweet.
+app.get('/api/autopilot/content/wednesday-top10', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/wednesday-top10] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-wednesday-top10.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/wednesday-top10] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/friday-darkhorse
+// Cron: Fridays 13:00 UTC (GitHub Actions) — dark horse alert tweet.
+app.get('/api/autopilot/content/friday-darkhorse', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/friday-darkhorse] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-friday-darkhorse.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/friday-darkhorse] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/saturday-update
+// Cron: Saturdays 13:00 UTC (GitHub Actions) — updated model/live win probs tweet.
+app.get('/api/autopilot/content/saturday-update', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/saturday-update] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-saturday-update.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/saturday-update] Error:', err);
+  }
+});
+
+// GET /api/autopilot/content/sunday-contenders
+// Cron: Sundays 13:00 UTC (GitHub Actions) — final-round win probability leaders.
+app.get('/api/autopilot/content/sunday-contenders', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/sunday-contenders] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  try {
+    const { run } = await import('../autopilot/dist/scripts/post-sunday-contenders.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/sunday-contenders] Error:', err);
   }
 });
 

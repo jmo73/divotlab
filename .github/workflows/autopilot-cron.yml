@@ -1,0 +1,27 @@
+name: Autopilot Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      day:
+        description: 'Script to run'
+        required: true
+        type: choice
+        options:
+          - monday-field
+          - tuesday-model
+          - wednesday-top10
+          - thursday-course-stat
+          - friday-darkhorse
+          - saturday-update
+          - sunday-contenders
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger autopilot script
+        run: |
+          curl -sf -X GET \
+            "https://divotlab-api.vercel.app/api/autopilot/content/${{ github.event.inputs.day }}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
