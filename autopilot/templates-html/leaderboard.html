@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    /* Subtle green radial glow — top-left */
+    background:
+      radial-gradient(ellipse 80% 50% at 15% -5%, rgba(27,77,62,0.18) 0%, transparent 60%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* ── Background watermark ─────────────────────────────────────────────── */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: 680px;
+    height: 680px;
+    opacity: 0.028;
+    pointer-events: none;
+    color: #F5F5F3;
+  }
+
+  /* ── Header ─────────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+  }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+
+  .logo-wordmark span {
+    font-weight: 300;
+    opacity: 0.55;
+  }
+
+  /* Round label — dot + text */
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(91,191,133,0.9);
+    text-transform: uppercase;
+  }
+
+  .round-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #5BBF85;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Event name — Cormorant italic, large, gradient white→green ────────── */
+  .event-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 64px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    background: linear-gradient(100deg, rgba(245,245,243,0.92) 55%, rgba(91,191,133,0.65) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 28px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Table ─────────────────────────────────────────────────────────────── */
+  .table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 0 16px;
+    padding: 17px 0 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.4);
+    flex-shrink: 0;
+  }
+
+  .col-right-header { text-align: right; }
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 0 16px;
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+    min-height: 0;
+  }
+
+  /* Leader accent */
+  .player-row:first-child {
+    box-shadow: inset 3px 0 0 rgba(91,191,133,0.55);
+  }
+
+  .rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.38);
+    letter-spacing: 0.06em;
+    padding-left: 16px;
+    align-self: center;
+  }
+
+  .player-row:first-child .rank {
+    color: rgba(91,191,133,0.7);
+  }
+
+  .player-info {
+    align-self: center;
+  }
+
+  .player-info .name {
+    font-size: 44px;
+    font-weight: 600;
+    color: rgba(245,245,243,0.95);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .player-info .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.45);
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+  }
+
+  .score-col {
+    text-align: right;
+    align-self: center;
+  }
+
+  .score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 62px;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    display: block;
+  }
+
+  .sg-total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 400;
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+    display: block;
+  }
+
+  /* ── Insight ─────────────────────────────────────────────────────────────── */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 28px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .insight-bar {
+    width: 3px;
+    height: 48px;
+    background: #5BBF85;
+    flex-shrink: 0;
+    border-radius: 1px;
+  }
+
+  .insight-text {
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.65);
+    line-height: 1.6;
+    letter-spacing: 0.005em;
+  }
+
+  /* ── Footer ─────────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- Large background watermark of the actual logo mark -->
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label">
+    <div class="round-dot"></div>
+    {{BADGE}}
+  </div>
+</div>
+
+<div class="event-name">{{EVENT_NAME}}</div>
+
+<div class="table">
+  <div class="col-headers">
+    <span></span>
+    <span>PLAYER</span>
+    <span class="col-right-header">SCORE</span>
+  </div>
+  <div class="rows">
+
+    <div class="player-row">
+      <span class="rank">01</span>
+      <div class="player-info">
+        <div class="name">{{P1_NAME}}</div>
+        <div class="meta">DG {{P1_RATING}}</div>
+      </div>
+      <div class="score-col">
+        <span class="score" style="color:{{P1_SCORE_COLOR}}">{{P1_SCORE}}</span>
+        <span class="sg-total" style="color:{{P1_SG_COLOR}}">{{P1_SG_TOTAL}}</span>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <span class="rank">02</span>
+      <div class="player-info">
+        <div class="name">{{P2_NAME}}</div>
+        <div class="meta">DG {{P2_RATING}}</div>
+      </div>
+      <div class="score-col">
+        <span class="score" style="color:{{P2_SCORE_COLOR}}">{{P2_SCORE}}</span>
+        <span class="sg-total" style="color:{{P2_SG_COLOR}}">{{P2_SG_TOTAL}}</span>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <span class="rank">03</span>
+      <div class="player-info">
+        <div class="name">{{P3_NAME}}</div>
+        <div class="meta">DG {{P3_RATING}}</div>
+      </div>
+      <div class="score-col">
+        <span class="score" style="color:{{P3_SCORE_COLOR}}">{{P3_SCORE}}</span>
+        <span class="sg-total" style="color:{{P3_SG_COLOR}}">{{P3_SG_TOTAL}}</span>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <span class="rank">04</span>
+      <div class="player-info">
+        <div class="name">{{P4_NAME}}</div>
+        <div class="meta">DG {{P4_RATING}}</div>
+      </div>
+      <div class="score-col">
+        <span class="score" style="color:{{P4_SCORE_COLOR}}">{{P4_SCORE}}</span>
+        <span class="sg-total" style="color:{{P4_SG_COLOR}}">{{P4_SG_TOTAL}}</span>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <span class="rank">05</span>
+      <div class="player-info">
+        <div class="name">{{P5_NAME}}</div>
+        <div class="meta">DG {{P5_RATING}}</div>
+      </div>
+      <div class="score-col">
+        <span class="score" style="color:{{P5_SCORE_COLOR}}">{{P5_SCORE}}</span>
+        <span class="sg-total" style="color:{{P5_SG_COLOR}}">{{P5_SG_TOTAL}}</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="insight">
+  <div class="insight-bar"></div>
+  <div class="insight-text">{{INSIGHT}}</div>
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>

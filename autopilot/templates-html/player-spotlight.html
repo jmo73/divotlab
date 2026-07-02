@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 75% 50% at 90% -5%, rgba(27,77,62,0.22) 0%, transparent 58%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Watermark — centered vertically, right-bleeding */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    right: -60px;
+    left: auto;
+    transform: translateY(-50%);
+    width: 720px;
+    height: 720px;
+    opacity: 0.032;
+    pointer-events: none;
+    color: #F5F5F3;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 44px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(91,191,133,0.9);
+    text-transform: uppercase;
+  }
+  .round-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #5BBF85;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Player identity ──────────────────────────────────────────────────── */
+  .player-identity {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 32px;
+  }
+
+  /* Cormorant upright (not italic) — editorial but distinct from tournament names */
+  .player-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 86px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: -0.02em;
+    color: rgba(245,245,243,0.97);
+    line-height: 0.95;
+  }
+
+  .context {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.42);
+    margin-top: 18px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Hero stat ────────────────────────────────────────────────────────── */
+  .hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 36px 0;
+    position: relative;
+    z-index: 1;
+    min-height: 0;
+  }
+
+  .hero-label {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.38);
+    margin-bottom: 12px;
+  }
+
+  .hero-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 180px;
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.82;
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: rgba(245,245,243,0.42);
+    margin-top: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── Secondary stats ──────────────────────────────────────────────────── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .stat-item {
+    padding: 32px 24px 32px 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat-item:first-child { padding-left: 0; }
+  .stat-item:last-child { border-right: none; padding-right: 0; }
+  .stat-item:not(:first-child) { padding-left: 24px; }
+
+  .stat-label {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.35);
+    margin-bottom: 14px;
+  }
+
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 54px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    color: rgba(245,245,243,0.9);
+    line-height: 1;
+  }
+
+  /* ── Insight ──────────────────────────────────────────────────────────── */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 28px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .insight-bar {
+    width: 3px; height: 52px;
+    background: #5BBF85;
+    flex-shrink: 0;
+    border-radius: 1px;
+  }
+
+  .insight-text {
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.65);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label"><div class="round-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="player-identity">
+  <div class="player-name">{{PLAYER_NAME}}</div>
+  <div class="context">{{CONTEXT}}</div>
+</div>
+
+<div class="hero-section">
+  <div class="hero-label">{{HERO_LABEL}}</div>
+  <span class="hero-value" style="color:{{HERO_COLOR}}">{{HERO_VALUE}}</span>
+  <div class="hero-sub">{{HERO_SUB}}</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-item">
+    <div class="stat-label">{{STAT1_LABEL}}</div>
+    <div class="stat-value">{{STAT1_VALUE}}</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">{{STAT2_LABEL}}</div>
+    <div class="stat-value">{{STAT2_VALUE}}</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">{{STAT3_LABEL}}</div>
+    <div class="stat-value">{{STAT3_VALUE}}</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">{{STAT4_LABEL}}</div>
+    <div class="stat-value">{{STAT4_VALUE}}</div>
+  </div>
+</div>
+
+<div class="insight">
+  <div class="insight-bar"></div>
+  <div class="insight-text">{{INSIGHT}}</div>
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>

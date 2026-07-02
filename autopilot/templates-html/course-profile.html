@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 95% 105%, rgba(90,143,168,0.2) 0%, transparent 55%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    top: -100px;
+    left: -80px;
+    width: 700px;
+    height: 700px;
+    opacity: 0.025;
+    transform: rotate(-15deg);
+    pointer-events: none;
+    color: #5A8FA8;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(90,143,168,0.88);
+    text-transform: uppercase;
+  }
+  .round-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #5A8FA8;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Course name ──────────────────────────────────────────────────────── */
+  .course-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 68px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    padding-bottom: 6px;
+    background: linear-gradient(100deg, rgba(245,245,243,0.92) 45%, rgba(90,143,168,0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .course-meta {
+    font-size: 30px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.38);
+    margin-top: 14px;
+    margin-bottom: 36px;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── 2×2 Stat grid ────────────────────────────────────────────────────── */
+  .stat-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .grid-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 36px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .grid-cell:nth-child(2),
+  .grid-cell:nth-child(4) {
+    border-right: none;
+    padding-left: 40px;
+  }
+
+  .grid-cell:nth-child(3),
+  .grid-cell:nth-child(4) {
+    border-bottom: none;
+  }
+
+  .cell-label {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.32);
+    margin-bottom: 18px;
+  }
+
+  .cell-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: rgba(245,245,243,0.88);
+    line-height: 1.2;
+  }
+
+  .cell-rewards .cell-value {
+    color: #5A8FA8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .cell-keystat .cell-value {
+    color: #C9A84C;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+
+  /* ── Insight ──────────────────────────────────────────────────────────── */
+  .insight {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .insight-bar {
+    width: 3px; height: 52px;
+    background: #5A8FA8;
+    flex-shrink: 0;
+    border-radius: 1px;
+  }
+
+  .insight-text {
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.62);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label"><div class="round-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="course-name">{{COURSE_NAME}}</div>
+<div class="course-meta">{{COURSE_META}}</div>
+
+<div class="stat-grid">
+  <div class="grid-cell cell-rewards">
+    <div class="cell-label">Rewards</div>
+    <div class="cell-value">{{REWARDS}}</div>
+  </div>
+  <div class="grid-cell">
+    <div class="cell-label">Hist. Winning Score</div>
+    <div class="cell-value">{{HIST_SCORING}}</div>
+  </div>
+  <div class="grid-cell">
+    <div class="cell-label">Field Avg SG</div>
+    <div class="cell-value">{{FIELD_AVG}}</div>
+  </div>
+  <div class="grid-cell cell-keystat">
+    <div class="cell-label">Key Stat</div>
+    <div class="cell-value">{{KEY_STAT}}</div>
+  </div>
+</div>
+
+<div class="insight">
+  <div class="insight-bar"></div>
+  <div class="insight-text">{{INSIGHT}}</div>
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>

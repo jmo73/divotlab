@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 55% at 15% -5%, rgba(27,77,62,0.2) 0%, transparent 58%),
+      radial-gradient(ellipse 60% 40% at 90% 110%, rgba(90,143,168,0.08) 0%, transparent 50%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: 680px;
+    height: 680px;
+    opacity: 0.028;
+    pointer-events: none;
+    color: #F5F5F3;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 36px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(91,191,133,0.9);
+    text-transform: uppercase;
+  }
+  .round-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #5BBF85;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Event name ───────────────────────────────────────────────────────── */
+  .event-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 62px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    background: linear-gradient(100deg, rgba(245,245,243,0.92) 55%, rgba(91,191,133,0.65) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 32px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Pick list ────────────────────────────────────────────────────────── */
+  .picks-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pick-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    min-height: 0;
+  }
+
+  .pick-row:last-child { border-bottom: none; }
+
+  .pick-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .pick-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(91,191,133,0.55);
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .pick-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+    flex: 1;
+  }
+
+  .pick-win-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.55);
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+
+  /* Course fit bar */
+  .fit-bar-track {
+    height: 3px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 2px;
+    margin: 10px 0 8px;
+    overflow: visible;
+  }
+
+  .fit-bar-fill {
+    height: 3px;
+    background: linear-gradient(90deg, rgba(91,191,133,0.5) 0%, rgba(91,191,133,0.85) 100%);
+    border-radius: 2px;
+    width: {{P1_FIT_WIDTH}}px;
+  }
+
+  .pick-strength {
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(201,168,76,0.8);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Dark horse box ───────────────────────────────────────────────────── */
+  .dark-horse {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 22px 26px;
+    margin-top: 24px;
+    background: rgba(201,168,76,0.04);
+  }
+
+  .dh-label {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 10px;
+  }
+
+  .dh-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 52px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: -0.01em;
+    color: rgba(201,168,76,0.92);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .dh-reason {
+    font-size: 24px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.48);
+    line-height: 1.5;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label"><div class="round-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="event-name">{{EVENT_NAME}}</div>
+
+<div class="picks-list">
+
+  <div class="pick-row">
+    <div class="pick-top">
+      <span class="pick-num">01</span>
+      <span class="pick-name">{{P1_NAME}}</span>
+      <span class="pick-win-pct">{{P1_WIN_PCT}}</span>
+    </div>
+    <div class="fit-bar-track"><div class="fit-bar-fill" style="width:{{P1_FIT_WIDTH}}px"></div></div>
+    <div class="pick-strength">{{P1_KEY_STRENGTH}}</div>
+  </div>
+
+  <div class="pick-row">
+    <div class="pick-top">
+      <span class="pick-num">02</span>
+      <span class="pick-name">{{P2_NAME}}</span>
+      <span class="pick-win-pct">{{P2_WIN_PCT}}</span>
+    </div>
+    <div class="fit-bar-track"><div class="fit-bar-fill" style="width:{{P2_FIT_WIDTH}}px"></div></div>
+    <div class="pick-strength">{{P2_KEY_STRENGTH}}</div>
+  </div>
+
+  <div class="pick-row">
+    <div class="pick-top">
+      <span class="pick-num">03</span>
+      <span class="pick-name">{{P3_NAME}}</span>
+      <span class="pick-win-pct">{{P3_WIN_PCT}}</span>
+    </div>
+    <div class="fit-bar-track"><div class="fit-bar-fill" style="width:{{P3_FIT_WIDTH}}px"></div></div>
+    <div class="pick-strength">{{P3_KEY_STRENGTH}}</div>
+  </div>
+
+</div>
+
+<div class="dark-horse">
+  <div class="dh-label">Dark Horse</div>
+  <div class="dh-name">{{DH_NAME}}</div>
+  <div class="dh-reason">{{DH_REASON}}</div>
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>

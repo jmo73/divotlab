@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 85% 15%, rgba(201,168,76,0.1) 0%, transparent 55%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: 680px;
+    height: 680px;
+    opacity: 0.025;
+    pointer-events: none;
+    color: #C9A84C;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 36px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(201,168,76,0.88);
+    text-transform: uppercase;
+  }
+  .round-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #C9A84C;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Event name ───────────────────────────────────────────────────────── */
+  .event-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 58px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    color: rgba(245,245,243,0.78);
+    margin-bottom: 28px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Cut line hero ────────────────────────────────────────────────────── */
+  .cut-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 28px 0 32px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cut-hero-label {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.55);
+    margin-bottom: 6px;
+  }
+
+  .cut-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 160px;
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.85;
+    color: #C9A84C;
+    display: block;
+  }
+
+  .cut-unit {
+    font-size: 32px;
+    font-weight: 500;
+    color: rgba(201,168,76,0.45);
+    letter-spacing: 0.12em;
+    margin-top: 14px;
+    text-transform: uppercase;
+  }
+
+  /* ── Player rows ──────────────────────────────────────────────────────── */
+  .players-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255,255,255,0.09);
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 1fr 110px auto;
+    gap: 0 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.38);
+    flex-shrink: 0;
+  }
+  .col-right { text-align: right; }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 110px auto;
+    gap: 0 16px;
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+    min-height: 0;
+  }
+
+  .player-row:last-child { border-bottom: none; }
+
+  .player-name {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgba(245,245,243,0.93);
+    line-height: 1.1;
+  }
+
+  .player-name.is-pick { color: rgba(91,191,133,0.95); }
+  .player-name.is-pick::after {
+    content: ' ★';
+    font-size: 24px;
+    color: rgba(91,191,133,0.6);
+  }
+
+  .status-badge {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 3px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .status-badge.made {
+    background: rgba(27,77,62,0.45);
+    color: #5BBF85;
+  }
+
+  .status-badge.missed {
+    background: rgba(201,168,76,0.12);
+    color: rgba(201,168,76,0.75);
+  }
+
+  .player-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    text-align: right;
+    line-height: 1;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label"><div class="round-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="event-name">{{EVENT_NAME}}</div>
+
+<div class="cut-hero">
+  <div class="cut-hero-label">Cut Line</div>
+  <span class="cut-number">{{CUT_LINE}}</span>
+  <div class="cut-unit">to make weekend</div>
+</div>
+
+<div class="players-section">
+  <div class="col-headers">
+    <span>Player</span>
+    <span>Status</span>
+    <span class="col-right">Score</span>
+  </div>
+
+  <div class="player-row">
+    <span class="player-name {{B1_IS_PICK}}">{{B1_NAME}}</span>
+    <span class="status-badge {{B1_STATUS_CLASS}}">{{B1_STATUS}}</span>
+    <span class="player-score" style="color:{{B1_SCORE_COLOR}}">{{B1_SCORE}}</span>
+  </div>
+
+  <div class="player-row">
+    <span class="player-name {{B2_IS_PICK}}">{{B2_NAME}}</span>
+    <span class="status-badge {{B2_STATUS_CLASS}}">{{B2_STATUS}}</span>
+    <span class="player-score" style="color:{{B2_SCORE_COLOR}}">{{B2_SCORE}}</span>
+  </div>
+
+  <div class="player-row">
+    <span class="player-name {{B3_IS_PICK}}">{{B3_NAME}}</span>
+    <span class="status-badge {{B3_STATUS_CLASS}}">{{B3_STATUS}}</span>
+    <span class="player-score" style="color:{{B3_SCORE_COLOR}}">{{B3_SCORE}}</span>
+  </div>
+
+  <div class="player-row">
+    <span class="player-name {{B4_IS_PICK}}">{{B4_NAME}}</span>
+    <span class="status-badge {{B4_STATUS_CLASS}}">{{B4_STATUS}}</span>
+    <span class="player-score" style="color:{{B4_SCORE_COLOR}}">{{B4_SCORE}}</span>
+  </div>
+
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>

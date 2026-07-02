@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 10% -10%, rgba(201,168,76,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 40% at 90% 110%, rgba(27,77,62,0.15) 0%, transparent 50%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -46%);
+    width: 680px;
+    height: 680px;
+    opacity: 0.028;
+    pointer-events: none;
+    color: #F5F5F3;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 48px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .badge-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(201,168,76,0.9);
+    text-transform: uppercase;
+  }
+  .badge-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #C9A84C;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Event ── */
+  .event-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 42px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    color: rgba(245,245,243,0.42);
+    margin-bottom: 36px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Player name ── */
+  .player-block {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 32px;
+  }
+
+  .pick-label {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.65);
+    margin-bottom: 10px;
+  }
+
+  .player-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 82px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    background: linear-gradient(100deg, rgba(245,245,243,0.96) 50%, rgba(201,168,76,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Bet details ── */
+  .bet-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 36px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bet-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(245,245,243,0.88);
+  }
+
+  .bet-sep {
+    width: 1px;
+    height: 36px;
+    background: rgba(255,255,255,0.14);
+    flex-shrink: 0;
+  }
+
+  .odds {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 54px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #C9A84C;
+    line-height: 1;
+  }
+
+  .book-tag {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.32);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin-left: auto;
+  }
+
+  /* ── Confidence ── */
+  .confidence-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .conf-label {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.28);
+  }
+
+  .conf-badge {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 4px;
+  }
+  .conf-badge.high   { color: #5BBF85; background: rgba(91,191,133,0.1); border: 1px solid rgba(91,191,133,0.25); }
+  .conf-badge.medium { color: #C9A84C; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.22); }
+  .conf-badge.low    { color: rgba(245,245,243,0.45); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 40px 0;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Reasoning ── */
+  .reasoning-label {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,245,243,0.28);
+    margin-bottom: 14px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .reasoning {
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: rgba(245,245,243,0.72);
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-brand {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-transform: uppercase;
+  }
+
+  .footer-url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: rgba(201,168,76,0.55);
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#C9A84C">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="badge-label"><div class="badge-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="event-name">{{EVENT_NAME}}</div>
+
+<div class="player-block">
+  <div class="pick-label">This week's pick</div>
+  <div class="player-name">{{PLAYER_NAME}}</div>
+</div>
+
+<div class="bet-row">
+  <span class="bet-type">{{BET_TYPE}}</span>
+  <div class="bet-sep"></div>
+  <span class="odds">{{ODDS}}</span>
+  <span class="book-tag">{{BOOK}}</span>
+</div>
+
+<div class="confidence-row">
+  <span class="conf-label">Confidence</span>
+  <span class="conf-badge {{CONFIDENCE_CLASS}}">{{CONFIDENCE}}</span>
+</div>
+
+<div class="divider"></div>
+
+<div class="reasoning-label">Why</div>
+<div class="reasoning">{{REASONING}}</div>
+
+<div class="footer">
+  <span class="footer-brand">Divot Lab &middot; Free Pick</span>
+  <span class="footer-url">divotlab.com/picks</span>
+</div>
+
+</body>
+</html>

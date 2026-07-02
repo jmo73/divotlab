@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 45%, rgba(90,143,168,0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(90,143,168,0.1) 0%, transparent 50%),
+      #0A0A0A;
+  }
+
+  body {
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    font-family: 'DM Sans', -apple-system, Helvetica, sans-serif;
+    color: #F5F5F3;
+    padding: 60px 64px 52px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    opacity: 0.02;
+    pointer-events: none;
+    color: #5A8FA8;
+  }
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo { display: flex; align-items: center; gap: 13px; }
+
+  .logo-wordmark {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    color: rgba(245,245,243,0.95);
+    line-height: 1;
+  }
+  .logo-wordmark span { font-weight: 300; opacity: 0.55; }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(90,143,168,0.88);
+    text-transform: uppercase;
+  }
+  .round-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #5A8FA8;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  /* ── Event info ───────────────────────────────────────────────────────── */
+  .event-section {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-top: 44px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 36px;
+  }
+
+  .event-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 74px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    color: rgba(245,245,243,0.78);
+    line-height: 1.0;
+  }
+
+  .round-date {
+    font-size: 34px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.36);
+    margin-top: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Wind hero ────────────────────────────────────────────────────────── */
+  .wind-section {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 16px 0;
+    min-height: 0;
+    gap: 0;
+  }
+
+  .wind-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wind-label {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(90,143,168,0.55);
+    margin-bottom: 4px;
+  }
+
+  .wind-number {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 260px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -0.04em;
+    line-height: 0.82;
+    color: #5A8FA8;
+    display: block;
+  }
+
+  .wind-unit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 58px;
+    font-weight: 600;
+    color: rgba(90,143,168,0.6);
+    letter-spacing: 0.12em;
+    margin-top: 16px;
+  }
+
+  .wind-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    border-left: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .wind-arrow-svg {
+    width: 200px;
+    height: 200px;
+    color: #5A8FA8;
+    opacity: 0.8;
+  }
+
+  .wind-dir-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 46px;
+    font-weight: 600;
+    color: rgba(90,143,168,0.55);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ── Conditions ───────────────────────────────────────────────────────── */
+  .conditions-section {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 32px;
+  }
+
+  .conditions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 22px;
+  }
+
+  .conditions-flag {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .wind-dir-temp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.44);
+    letter-spacing: 0.03em;
+  }
+
+  .scoring-impact {
+    font-size: 30px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.62);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .hist-context {
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(245,245,243,0.34);
+    line-height: 1.5;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  .footer {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: rgba(245,245,243,0.28);
+    text-align: center;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<svg class="watermark" viewBox="0 0 72 72" fill="none">
+  <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".4"/>
+  <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+  <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+</svg>
+
+<div class="header">
+  <div class="logo">
+    <svg width="40" height="40" viewBox="0 0 72 72" fill="none" style="color:#5BBF85">
+      <line x1="4" y1="36.5" x2="68" y2="36.5" stroke="currentColor" stroke-width="3.2"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" fill="currentColor" fill-opacity=".18"/>
+      <path d="M10 36.5 C18 36.5,26 60.5,36 60.5 S54 36.5,62 36.5" stroke="currentColor" stroke-width="2.8" fill="none"/>
+      <circle cx="36" cy="20.5" r="9" fill="currentColor"/>
+    </svg>
+    <span class="logo-wordmark">DIVOT <span>LAB</span></span>
+  </div>
+  <div class="round-label"><div class="round-dot"></div>{{BADGE}}</div>
+</div>
+
+<div class="event-section">
+  <div class="event-name">{{EVENT_NAME}}</div>
+  <div class="round-date">{{ROUND_DATE}}</div>
+</div>
+
+<div class="wind-section">
+  <div class="wind-left">
+    <div class="wind-label">Peak Wind</div>
+    <span class="wind-number">{{WIND_SPEED}}</span>
+    <div class="wind-unit">MPH</div>
+  </div>
+  <div class="wind-right">
+    <svg class="wind-arrow-svg" viewBox="0 0 100 100" fill="none" style="transform: rotate({{WIND_ARROW_DEG}}deg)">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="3" stroke-opacity="0.28"/>
+      <!-- North needle — solid filled -->
+      <path d="M50 9 L64 52 L50 46 L36 52 Z" fill="currentColor"/>
+      <!-- South needle — dimmed -->
+      <path d="M50 91 L36 48 L50 54 L64 48 Z" fill="currentColor" fill-opacity="0.18"/>
+      <!-- Center pivot -->
+      <circle cx="50" cy="50" r="5" fill="currentColor" fill-opacity="0.45"/>
+    </svg>
+    <div class="wind-dir-label">{{WIND_DIR}}</div>
+  </div>
+</div>
+
+<div class="conditions-section">
+  <div class="conditions-row">
+    <span class="conditions-flag" style="color:{{CONDITIONS_COLOR}}">{{CONDITIONS_FLAG}}</span>
+    <span class="wind-dir-temp">{{WIND_DIR_TEMP}}</span>
+  </div>
+  <div class="scoring-impact">{{SCORING_IMPACT}}</div>
+  <div class="hist-context">{{HIST_CONTEXT}}</div>
+</div>
+
+<div class="footer">Divot Lab &middot; divotlab.com</div>
+
+</body>
+</html>
