@@ -11,7 +11,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = main;
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') });
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') });
+}
 const sdk_1 = __importDefault(require("@anthropic-ai/sdk"));
 const datagolf_1 = require("../lib/datagolf");
 const publisher_1 = require("../lib/publisher");

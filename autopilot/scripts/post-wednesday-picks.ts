@@ -6,7 +6,9 @@
  *   npx tsx scripts/post-wednesday-picks.ts
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+}
 
 import fs from 'fs'
 import path from 'path'

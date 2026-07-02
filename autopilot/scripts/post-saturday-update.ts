@@ -7,7 +7,9 @@
  *   npx tsx scripts/post-saturday-update.ts
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+}
 
 import Anthropic from '@anthropic-ai/sdk'
 import { getInPlayProbabilities, getPreTournamentPredictions, getCourseFit, formatPlayerName } from '../lib/datagolf'

@@ -51,7 +51,9 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tgNotify = tgNotify;
 exports.publish = publish;
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') });
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') });
+}
 const blob_1 = require("@vercel/blob");
 const kv_1 = require("./kv");
 // ─── Telegram helpers ─────────────────────────────────────────────────────────

@@ -15,7 +15,9 @@
  *   action = post_x_ig | post_x_image | post_x_text | skip
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+}
 
 import { put } from '@vercel/blob'
 import { kvSet } from './kv'
