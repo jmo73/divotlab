@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const crypto = require('crypto');
 
 const app = express();
+app.set('trust proxy', 1); // trust Vercel's load balancer for rate limiting
 const PORT = process.env.PORT || 3001;
 
 // CRITICAL: API key from environment variable — never hardcode
