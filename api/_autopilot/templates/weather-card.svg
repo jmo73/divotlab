@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs><style>{{FONTS}}</style></defs>
+  <rect width="1080" height="1080" fill="#0A0A0A"/>
+
+  <!-- Logo -->
+  <g transform="translate(60, 44)">
+    <line x1="0" y1="14" x2="28" y2="14" stroke="#FAFAFA" stroke-width="1.4"/>
+    <path d="M2 14 C6 14,10 24,14 24 S22 14,26 14" fill="rgba(250,250,250,0.12)" stroke="#FAFAFA" stroke-width="1.2"/>
+    <circle cx="14" cy="7" r="4" fill="#FAFAFA"/>
+    <text x="36" y="10" font-family="DM Sans" font-size="11" font-weight="600" letter-spacing="2" fill="#FAFAFA">DIVOT</text>
+    <text x="36" y="22" font-family="DM Sans" font-size="11" font-weight="300" letter-spacing="2" fill="rgba(250,250,250,0.4)">LAB</text>
+  </g>
+
+  <!-- Badge (hardcoded) -->
+  <rect x="848" y="30" width="172" height="28" rx="2" fill="none" stroke="rgba(90,143,168,0.3)" stroke-width="1"/>
+  <text x="934" y="49" font-family="DM Sans" font-size="10" font-weight="600" letter-spacing="0.12em" fill="rgba(90,143,168,0.7)" text-anchor="middle">CONDITIONS</text>
+
+  <!-- Header rule -->
+  <line x1="60" y1="82" x2="1020" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Event + date -->
+  <text x="60" y="132" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{EVENT_NAME}}</text>
+  <text x="60" y="160" font-family="DM Sans" font-size="14" font-weight="400" fill="rgba(245,245,243,0.35)">{{ROUND_DATE}}</text>
+
+  <!-- Section rule -->
+  <line x1="60" y1="192" x2="1020" y2="192" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- "WIND SPEED" label -->
+  <text x="60" y="238" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.28)">PEAK WIND</text>
+
+  <!-- Hero wind number — massive and dominant -->
+  <text x="54" y="440" font-family="Cormorant Garamond" font-size="220" font-weight="700" fill="#5A8FA8">{{WIND_SPEED}}</text>
+  <text x="60" y="488" font-family="DM Sans" font-size="18" font-weight="400" letter-spacing="0.1em" fill="rgba(90,143,168,0.6)">MPH</text>
+
+  <!-- Secondary conditions -->
+  <line x1="60" y1="524" x2="1020" y2="524" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="60" y="560" font-family="DM Sans" font-size="16" font-weight="400" fill="rgba(245,245,243,0.5)">{{WIND_DIRECTION}}</text>
+  <text x="400" y="560" font-family="DM Sans" font-size="16" font-weight="400" fill="rgba(245,245,243,0.35)">{{TEMP_PRECIP}}</text>
+
+  <!-- Conditions flag -->
+  <text x="60" y="614" font-family="DM Sans" font-size="22" font-weight="600" letter-spacing="0.06em" fill="{{CONDITIONS_FLAG_COLOR}}">{{CONDITIONS_FLAG}}</text>
+
+  <!-- Impact line -->
+  <text x="60" y="660" font-family="DM Sans" font-size="17" font-weight="400" fill="rgba(245,245,243,0.7)">{{SCORING_IMPACT}}</text>
+
+  <!-- Historical context -->
+  <text x="60" y="694" font-family="DM Sans" font-size="14" font-weight="400" fill="rgba(245,245,243,0.3)">{{HISTORICAL_CONTEXT}}</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="978" x2="1020" y2="978" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="540" y="1016" font-family="DM Sans" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.18)" text-anchor="middle">DIVOT LAB · DIVOTLAB.COM</text>
+</svg>

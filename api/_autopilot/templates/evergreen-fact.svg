@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs><style>{{FONTS}}</style></defs>
+  <rect width="1080" height="1080" fill="#0A0A0A"/>
+
+  <!-- Logo -->
+  <g transform="translate(60, 44)">
+    <line x1="0" y1="14" x2="28" y2="14" stroke="#FAFAFA" stroke-width="1.4"/>
+    <path d="M2 14 C6 14,10 24,14 24 S22 14,26 14" fill="rgba(250,250,250,0.12)" stroke="#FAFAFA" stroke-width="1.2"/>
+    <circle cx="14" cy="7" r="4" fill="#FAFAFA"/>
+    <text x="36" y="10" font-family="DM Sans" font-size="11" font-weight="600" letter-spacing="2" fill="#FAFAFA">DIVOT</text>
+    <text x="36" y="22" font-family="DM Sans" font-size="11" font-weight="300" letter-spacing="2" fill="rgba(250,250,250,0.4)">LAB</text>
+  </g>
+
+  <!-- Topic badge (variable text) -->
+  <rect x="848" y="30" width="172" height="28" rx="2" fill="none" stroke="rgba(90,143,168,0.3)" stroke-width="1"/>
+  <text x="934" y="49" font-family="DM Sans" font-size="10" font-weight="600" letter-spacing="0.12em" fill="rgba(90,143,168,0.8)" text-anchor="middle">{{TOPIC_BADGE}}</text>
+
+  <!-- Header rule -->
+  <line x1="60" y1="82" x2="1020" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Headline -->
+  <text x="60" y="158" font-family="DM Sans" font-size="28" font-weight="600" fill="#F5F5F3">{{HEADLINE}}</text>
+  <text x="60" y="192" font-family="DM Sans" font-size="16" font-weight="400" fill="rgba(245,245,243,0.38)">{{SUBHEAD}}</text>
+
+  <!-- Section rule -->
+  <line x1="60" y1="224" x2="1020" y2="224" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Hero stat — the centrepiece -->
+  <text x="60" y="420" font-family="JetBrains Mono" font-size="152" font-weight="400" fill="#5BBF85">{{MAIN_STAT}}</text>
+  <text x="60" y="468" font-family="DM Sans" font-size="18" font-weight="400" letter-spacing="0.06em" fill="rgba(245,245,243,0.45)">{{UNIT_LABEL}}</text>
+
+  <!-- Support lines -->
+  <line x1="60" y1="508" x2="1020" y2="508" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="60" y="556" font-family="DM Sans" font-size="18" font-weight="400" fill="rgba(245,245,243,0.75)">{{SUPPORT_LINE_1}}</text>
+  <text x="60" y="588" font-family="DM Sans" font-size="18" font-weight="400" fill="rgba(245,245,243,0.5)">{{SUPPORT_LINE_2}}</text>
+  <text x="60" y="620" font-family="DM Sans" font-size="18" font-weight="400" fill="rgba(245,245,243,0.35)">{{SUPPORT_LINE_3}}</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="978" x2="1020" y2="978" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="540" y="1016" font-family="DM Sans" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.18)" text-anchor="middle">DIVOT LAB · DIVOTLAB.COM</text>
+</svg>

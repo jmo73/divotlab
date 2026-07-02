@@ -10,7 +10,7 @@
     "test-enrichment": "tsx scripts/test-enrichment.ts",
     "test-captions": "tsx scripts/test-captions.ts",
     "seed-evergreen": "tsx scripts/seed-evergreen.ts",
-    "build": "tsc"
+    "build": "tsc && node -e \"const {cpSync}=require('fs');cpSync('./templates','../api/_autopilot/templates',{recursive:true,force:true});\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.26.0",

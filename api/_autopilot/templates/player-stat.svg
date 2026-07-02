@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs><style>{{FONTS}}</style></defs>
+  <rect width="1080" height="1080" fill="#0A0A0A"/>
+
+  <!-- Logo -->
+  <g transform="translate(60, 44)">
+    <line x1="0" y1="14" x2="28" y2="14" stroke="#FAFAFA" stroke-width="1.4"/>
+    <path d="M2 14 C6 14,10 24,14 24 S22 14,26 14" fill="rgba(250,250,250,0.12)" stroke="#FAFAFA" stroke-width="1.2"/>
+    <circle cx="14" cy="7" r="4" fill="#FAFAFA"/>
+    <text x="36" y="10" font-family="DM Sans" font-size="11" font-weight="600" letter-spacing="2" fill="#FAFAFA">DIVOT</text>
+    <text x="36" y="22" font-family="DM Sans" font-size="11" font-weight="300" letter-spacing="2" fill="rgba(250,250,250,0.4)">LAB</text>
+  </g>
+
+  <!-- Badge -->
+  <rect x="848" y="30" width="172" height="28" rx="2" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="934" y="49" font-family="DM Sans" font-size="10" font-weight="600" letter-spacing="0.12em" fill="rgba(245,245,243,0.4)" text-anchor="middle">{{BADGE}}</text>
+
+  <!-- Header rule -->
+  <line x1="60" y1="82" x2="1020" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Player name -->
+  <text x="60" y="158" font-family="DM Sans" font-size="42" font-weight="600" fill="#F5F5F3">{{PLAYER_NAME}}</text>
+  <text x="60" y="192" font-family="DM Sans" font-size="16" font-weight="400" fill="rgba(245,245,243,0.38)">{{CONTEXT_LINE}}</text>
+
+  <!-- Section divider -->
+  <line x1="60" y1="220" x2="1020" y2="220" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Stat block 1 (top-left) -->
+  <text x="60" y="270" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.3)">{{STAT1_LABEL}}</text>
+  <text x="60" y="360" font-family="JetBrains Mono" font-size="72" font-weight="400" fill="#5BBF85">{{STAT1_VALUE}}</text>
+  <line x1="60" y1="394" x2="490" y2="394" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Stat block 2 (top-right) -->
+  <text x="570" y="270" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.3)">{{STAT2_LABEL}}</text>
+  <text x="570" y="360" font-family="JetBrains Mono" font-size="72" font-weight="400" fill="#5BBF85">{{STAT2_VALUE}}</text>
+  <line x1="570" y1="394" x2="1020" y2="394" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Vertical center divider -->
+  <line x1="530" y1="244" x2="530" y2="394" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Stat block 3 (bottom-left) -->
+  <text x="60" y="450" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.3)">{{STAT3_LABEL}}</text>
+  <text x="60" y="540" font-family="JetBrains Mono" font-size="72" font-weight="400" fill="#5BBF85">{{STAT3_VALUE}}</text>
+  <line x1="60" y1="574" x2="490" y2="574" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Stat block 4 (bottom-right) -->
+  <text x="570" y="450" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.3)">{{STAT4_LABEL}}</text>
+  <text x="570" y="540" font-family="JetBrains Mono" font-size="72" font-weight="400" fill="#5BBF85">{{STAT4_VALUE}}</text>
+  <line x1="570" y1="574" x2="1020" y2="574" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Vertical center divider (bottom) -->
+  <line x1="530" y1="420" x2="530" y2="574" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Insight block -->
+  <text x="60" y="642" font-family="DM Sans" font-size="18" font-weight="500" fill="rgba(245,245,243,0.85)">{{INSIGHT_LINE_1}}</text>
+  <text x="60" y="668" font-family="DM Sans" font-size="18" font-weight="400" fill="rgba(245,245,243,0.5)">{{INSIGHT_LINE_2}}</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="978" x2="1020" y2="978" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="540" y="1016" font-family="DM Sans" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.18)" text-anchor="middle">DIVOT LAB · DIVOTLAB.COM</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs><style>{{FONTS}}</style></defs>
+  <rect width="1080" height="1080" fill="#0A0A0A"/>
+
+  <!-- Logo -->
+  <g transform="translate(60, 44)">
+    <line x1="0" y1="14" x2="28" y2="14" stroke="#FAFAFA" stroke-width="1.4"/>
+    <path d="M2 14 C6 14,10 24,14 24 S22 14,26 14" fill="rgba(250,250,250,0.12)" stroke="#FAFAFA" stroke-width="1.2"/>
+    <circle cx="14" cy="7" r="4" fill="#FAFAFA"/>
+    <text x="36" y="10" font-family="DM Sans" font-size="11" font-weight="600" letter-spacing="2" fill="#FAFAFA">DIVOT</text>
+    <text x="36" y="22" font-family="DM Sans" font-size="11" font-weight="300" letter-spacing="2" fill="rgba(250,250,250,0.4)">LAB</text>
+  </g>
+
+  <!-- Badge -->
+  <rect x="848" y="30" width="172" height="28" rx="2" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="934" y="49" font-family="DM Sans" font-size="10" font-weight="600" letter-spacing="0.12em" fill="rgba(245,245,243,0.4)" text-anchor="middle">{{BADGE}}</text>
+
+  <!-- Header rule -->
+  <line x1="60" y1="82" x2="1020" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Event info -->
+  <text x="60" y="132" font-family="DM Sans" font-size="26" font-weight="600" fill="#F5F5F3">{{EVENT_NAME}}</text>
+  <text x="60" y="160" font-family="DM Sans" font-size="14" font-weight="400" fill="rgba(245,245,243,0.35)">{{COURSE_CONDITIONS}}</text>
+
+  <!-- Column labels -->
+  <text x="92" y="200" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.1em" fill="rgba(245,245,243,0.25)">PLAYER</text>
+  <text x="1020" y="200" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.1em" fill="rgba(245,245,243,0.25)" text-anchor="end">SCORE</text>
+  <line x1="60" y1="214" x2="1020" y2="214" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Row 1 -->
+  <text x="60" y="262" font-family="DM Sans" font-size="11" font-weight="400" fill="rgba(245,245,243,0.18)">01</text>
+  <text x="92" y="262" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{P1_NAME}}</text>
+  <text x="92" y="284" font-family="DM Sans" font-size="12" font-weight="400" fill="rgba(245,245,243,0.28)">DG {{P1_RATING}}</text>
+  <text x="1020" y="264" font-family="JetBrains Mono" font-size="30" font-weight="400" fill="{{P1_SCORE_COLOR}}" text-anchor="end">{{P1_SCORE}}</text>
+  <line x1="60" y1="324" x2="1020" y2="324" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Row 2 -->
+  <text x="60" y="396" font-family="DM Sans" font-size="11" font-weight="400" fill="rgba(245,245,243,0.18)">02</text>
+  <text x="92" y="396" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{P2_NAME}}</text>
+  <text x="92" y="418" font-family="DM Sans" font-size="12" font-weight="400" fill="rgba(245,245,243,0.28)">DG {{P2_RATING}}</text>
+  <text x="1020" y="398" font-family="JetBrains Mono" font-size="30" font-weight="400" fill="{{P2_SCORE_COLOR}}" text-anchor="end">{{P2_SCORE}}</text>
+  <line x1="60" y1="458" x2="1020" y2="458" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Row 3 -->
+  <text x="60" y="530" font-family="DM Sans" font-size="11" font-weight="400" fill="rgba(245,245,243,0.18)">03</text>
+  <text x="92" y="530" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{P3_NAME}}</text>
+  <text x="92" y="552" font-family="DM Sans" font-size="12" font-weight="400" fill="rgba(245,245,243,0.28)">DG {{P3_RATING}}</text>
+  <text x="1020" y="532" font-family="JetBrains Mono" font-size="30" font-weight="400" fill="{{P3_SCORE_COLOR}}" text-anchor="end">{{P3_SCORE}}</text>
+  <line x1="60" y1="592" x2="1020" y2="592" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Row 4 -->
+  <text x="60" y="664" font-family="DM Sans" font-size="11" font-weight="400" fill="rgba(245,245,243,0.18)">04</text>
+  <text x="92" y="664" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{P4_NAME}}</text>
+  <text x="92" y="686" font-family="DM Sans" font-size="12" font-weight="400" fill="rgba(245,245,243,0.28)">DG {{P4_RATING}}</text>
+  <text x="1020" y="666" font-family="JetBrains Mono" font-size="30" font-weight="400" fill="{{P4_SCORE_COLOR}}" text-anchor="end">{{P4_SCORE}}</text>
+  <line x1="60" y1="726" x2="1020" y2="726" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Row 5 -->
+  <text x="60" y="798" font-family="DM Sans" font-size="11" font-weight="400" fill="rgba(245,245,243,0.18)">05</text>
+  <text x="92" y="798" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{P5_NAME}}</text>
+  <text x="92" y="820" font-family="DM Sans" font-size="12" font-weight="400" fill="rgba(245,245,243,0.28)">DG {{P5_RATING}}</text>
+  <text x="1020" y="800" font-family="JetBrains Mono" font-size="30" font-weight="400" fill="{{P5_SCORE_COLOR}}" text-anchor="end">{{P5_SCORE}}</text>
+  <line x1="60" y1="860" x2="1020" y2="860" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Insight block -->
+  <rect x="60" y="878" width="2" height="52" fill="#5BBF85" opacity="0.8"/>
+  <text x="80" y="902" font-family="DM Sans" font-size="16" font-weight="500" fill="rgba(245,245,243,0.8)">{{INSIGHT}}</text>
+  <text x="80" y="924" font-family="DM Sans" font-size="13" font-weight="400" fill="rgba(245,245,243,0.32)">{{FIELD_CONTEXT}}</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="978" x2="1020" y2="978" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="540" y="1016" font-family="DM Sans" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.18)" text-anchor="middle">DIVOT LAB · DIVOTLAB.COM</text>
+</svg>

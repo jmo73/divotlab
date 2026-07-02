@@ -1,7 +1,7 @@
 /**
  * Wednesday top-10 targets — model's highest-probability top-10 finishers
- * adjusted for course fit. One tweet with top 3 names + probabilities.
- * Pure API, fully auto-schedulable.
+ * adjusted for course fit. Posts a model-pick.svg graphic card to X + IG,
+ * with a separate tweet for text-only fallback.
  *
  * Run from /autopilot:
  *   npx tsx scripts/post-wednesday-top10.ts

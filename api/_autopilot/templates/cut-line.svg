@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs><style>{{FONTS}}</style></defs>
+  <rect width="1080" height="1080" fill="#0A0A0A"/>
+
+  <!-- Logo -->
+  <g transform="translate(60, 44)">
+    <line x1="0" y1="14" x2="28" y2="14" stroke="#FAFAFA" stroke-width="1.4"/>
+    <path d="M2 14 C6 14,10 24,14 24 S22 14,26 14" fill="rgba(250,250,250,0.12)" stroke="#FAFAFA" stroke-width="1.2"/>
+    <circle cx="14" cy="7" r="4" fill="#FAFAFA"/>
+    <text x="36" y="10" font-family="DM Sans" font-size="11" font-weight="600" letter-spacing="2" fill="#FAFAFA">DIVOT</text>
+    <text x="36" y="22" font-family="DM Sans" font-size="11" font-weight="300" letter-spacing="2" fill="rgba(250,250,250,0.4)">LAB</text>
+  </g>
+
+  <!-- Badge -->
+  <rect x="848" y="30" width="172" height="28" rx="2" fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+  <text x="934" y="49" font-family="DM Sans" font-size="10" font-weight="600" letter-spacing="0.12em" fill="rgba(201,168,76,0.7)" text-anchor="middle">CUT ALERT</text>
+
+  <!-- Header rule -->
+  <line x1="60" y1="82" x2="1020" y2="82" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Event -->
+  <text x="60" y="132" font-family="DM Sans" font-size="26" font-weight="600" fill="#F5F5F3">{{EVENT_NAME}}</text>
+
+  <!-- "CUTS AT" label -->
+  <text x="60" y="200" font-family="DM Sans" font-size="12" font-weight="500" letter-spacing="0.12em" fill="rgba(245,245,243,0.3)">THE PROJECTED CUT</text>
+
+  <!-- Hero cut line number -->
+  <text x="60" y="330" font-family="Cormorant Garamond" font-size="148" font-weight="700" fill="#C9A84C">{{CUT_LINE}}</text>
+
+  <!-- Divider below hero number -->
+  <line x1="60" y1="358" x2="1020" y2="358" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- Column labels -->
+  <text x="92" y="398" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.1em" fill="rgba(245,245,243,0.25)">ON THE BUBBLE</text>
+  <text x="840" y="398" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.1em" fill="rgba(245,245,243,0.25)">SCORE</text>
+  <text x="1020" y="398" font-family="DM Sans" font-size="10" font-weight="500" letter-spacing="0.1em" fill="rgba(245,245,243,0.25)" text-anchor="end">THRU</text>
+  <line x1="60" y1="412" x2="1020" y2="412" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- Bubble player 1 -->
+  <text x="92" y="462" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{B1_NAME}}</text>
+  <text x="840" y="462" font-family="JetBrains Mono" font-size="26" font-weight="400" fill="{{B1_SCORE_COLOR}}">{{B1_SCORE}}</text>
+  <text x="1020" y="462" font-family="JetBrains Mono" font-size="18" font-weight="400" fill="rgba(245,245,243,0.4)" text-anchor="end">{{B1_HOLES}}</text>
+  <line x1="60" y1="488" x2="1020" y2="488" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+  <!-- Bubble player 2 -->
+  <text x="92" y="538" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{B2_NAME}}</text>
+  <text x="840" y="538" font-family="JetBrains Mono" font-size="26" font-weight="400" fill="{{B2_SCORE_COLOR}}">{{B2_SCORE}}</text>
+  <text x="1020" y="538" font-family="JetBrains Mono" font-size="18" font-weight="400" fill="rgba(245,245,243,0.4)" text-anchor="end">{{B2_HOLES}}</text>
+  <line x1="60" y1="564" x2="1020" y2="564" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+  <!-- Bubble player 3 -->
+  <text x="92" y="614" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{B3_NAME}}</text>
+  <text x="840" y="614" font-family="JetBrains Mono" font-size="26" font-weight="400" fill="{{B3_SCORE_COLOR}}">{{B3_SCORE}}</text>
+  <text x="1020" y="614" font-family="JetBrains Mono" font-size="18" font-weight="400" fill="rgba(245,245,243,0.4)" text-anchor="end">{{B3_HOLES}}</text>
+  <line x1="60" y1="640" x2="1020" y2="640" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+  <!-- Bubble player 4 -->
+  <text x="92" y="690" font-family="DM Sans" font-size="22" font-weight="600" fill="#F5F5F3">{{B4_NAME}}</text>
+  <text x="840" y="690" font-family="JetBrains Mono" font-size="26" font-weight="400" fill="{{B4_SCORE_COLOR}}">{{B4_SCORE}}</text>
+  <text x="1020" y="690" font-family="JetBrains Mono" font-size="18" font-weight="400" fill="rgba(245,245,243,0.4)" text-anchor="end">{{B4_HOLES}}</text>
+  <line x1="60" y1="716" x2="1020" y2="716" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+  <!-- Footer -->
+  <line x1="60" y1="978" x2="1020" y2="978" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="540" y="1016" font-family="DM Sans" font-size="11" font-weight="400" letter-spacing="0.1em" fill="rgba(245,245,243,0.18)" text-anchor="middle">DIVOT LAB · DIVOTLAB.COM</text>
+</svg>
