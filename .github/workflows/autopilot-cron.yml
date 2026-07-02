@@ -1,6 +1,18 @@
-name: Autopilot Manual Trigger
+name: Autopilot Scheduled + Manual Trigger
 
 on:
+  schedule:
+    - cron: '0 13 * * 1'   # Monday 13:00 UTC (9am EDT) — field preview
+    - cron: '0 13 * * 2'   # Tuesday — model preview
+    - cron: '0 13 * * 3'   # Wednesday — top 10 targets
+    - cron: '0 13 * * 4'   # Thursday — course stat
+    - cron: '0 13 * * 5'   # Friday — dark horse
+    - cron: '0 13 * * 6'   # Saturday — live update
+    - cron: '0 13 * * 0'   # Sunday — contenders
+    - cron: '0 0 * * 5'    # Fri 00:00 UTC (Thu 8pm EDT) — R1 recap
+    - cron: '0 0 * * 6'    # Sat 00:00 UTC — R2 recap
+    - cron: '0 0 * * 0'    # Sun 00:00 UTC — R3 recap
+    - cron: '0 0 * * 1'    # Mon 00:00 UTC (Sun 8pm EDT) — R4 recap
   workflow_dispatch:
     inputs:
       day:
@@ -9,8 +21,10 @@ on:
         type: choice
         options:
           - monday-field
+          - monday-recap
           - tuesday-model
           - wednesday-top10
+          - wednesday-picks
           - thursday-course-stat
           - friday-darkhorse
           - saturday-update
@@ -24,18 +38,44 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve path
+      - name: Resolve script
         id: resolve
         run: |
-          case "${{ github.event.inputs.day }}" in
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SCRIPT="${{ github.event.inputs.day }}"
+          else
+            case "${{ github.event.schedule }}" in
+              "0 13 * * 1") SCRIPT="monday-field" ;;
+              "0 13 * * 2") SCRIPT="tuesday-model" ;;
+              "0 13 * * 3") SCRIPT="wednesday-top10" ;;
+              "0 13 * * 4") SCRIPT="thursday-course-stat" ;;
+              "0 13 * * 5") SCRIPT="friday-darkhorse" ;;
+              "0 13 * * 6") SCRIPT="saturday-update" ;;
+              "0 13 * * 0") SCRIPT="sunday-contenders" ;;
+              "0 0 * * 5")  SCRIPT="round-recap-r1" ;;
+              "0 0 * * 6")  SCRIPT="round-recap-r2" ;;
+              "0 0 * * 0")  SCRIPT="round-recap-r3" ;;
+              "0 0 * * 1")  SCRIPT="round-recap-r4" ;;
+              *)
+                echo "Unknown schedule: ${{ github.event.schedule }}"
+                exit 1
+                ;;
+            esac
+          fi
+          echo "script=$SCRIPT" >> $GITHUB_OUTPUT
+
+          # Resolve API path
+          case "$SCRIPT" in
             round-recap-r1) echo "path=round-recap?round=1" >> $GITHUB_OUTPUT ;;
             round-recap-r2) echo "path=round-recap?round=2" >> $GITHUB_OUTPUT ;;
             round-recap-r3) echo "path=round-recap?round=3" >> $GITHUB_OUTPUT ;;
             round-recap-r4) echo "path=round-recap?round=4" >> $GITHUB_OUTPUT ;;
-            *)              echo "path=${{ github.event.inputs.day }}" >> $GITHUB_OUTPUT ;;
+            *)              echo "path=$SCRIPT" >> $GITHUB_OUTPUT ;;
           esac
+
       - name: Trigger autopilot script
         run: |
+          echo "Running: ${{ steps.resolve.outputs.script }}"
           curl -sf -X GET \
             "https://divotlab-api.vercel.app/api/autopilot/content/${{ steps.resolve.outputs.path }}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
