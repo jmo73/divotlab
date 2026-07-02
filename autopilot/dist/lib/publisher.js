@@ -118,9 +118,23 @@ function hasIGCreds() {
 async function publish(opts) {
     const { pngBuf, tweet: baseTweet, igCaption, tgPreview, label, link } = opts;
     const postId = `pub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const tweet = link ? `${baseTweet}\n\n${link}` : baseTweet;
+    const raw = link ? `${baseTweet}\n\n${link}` : baseTweet;
+    const tweet = raw.length > 275 ? raw.slice(0, 274).replace(/\s\S+$/, '') + '…' : raw;
+    if (raw.length > 275)
+        console.warn(`[publisher] Tweet truncated: ${raw.length} → ${tweet.length} chars`);
+    // Enforce Instagram 5-hashtag max
+    let safeIgCaption = igCaption;
+    if (igCaption) {
+        const tags = igCaption.match(/#\w+/g) ?? [];
+        if (tags.length > 5) {
+            console.warn(`[publisher] IG caption has ${tags.length} hashtags — trimming to 5`);
+            let trimmed = igCaption;
+            tags.slice(5).forEach(t => { trimmed = trimmed.replace(t, '').replace(/\s{2,}/g, ' ').trim(); });
+            safeIgCaption = trimmed;
+        }
+    }
     const canX = hasXCreds();
-    const canIG = hasIGCreds() && !!igCaption && !!pngBuf;
+    const canIG = hasIGCreds() && !!safeIgCaption && !!pngBuf;
     console.log(`[publisher] ${label}`);
     console.log(`  X: ${canX ? '✓' : '✗ missing creds'}  |  IG: ${canIG ? '✓' : '✗'}`);
     // Upload JPEG to Blob now (webhook needs a URL to fetch from, not a buffer)
@@ -131,7 +145,7 @@ async function publish(opts) {
         console.log(`  ✓ JPEG uploaded: ${jpegBlobUrl}`);
     }
     // Store pending post in KV — 6-hour window to approve
-    const pending = { tweet, igCaption, jpegBlobUrl, label };
+    const pending = { tweet, igCaption: safeIgCaption, jpegBlobUrl, label };
     await (0, kv_1.kvSet)(`autopilot:pub:${postId}`, pending, 6 * 60 * 60);
     // Build Telegram buttons
     const buttons = [];
@@ -157,7 +171,7 @@ async function publish(opts) {
         divider,
         `<b>TWEET (${tweet.length}/280):</b>`,
         tweet,
-        ...(igCaption ? [`<b>INSTAGRAM:</b>`, igCaption] : []),
+        ...(safeIgCaption ? [`<b>INSTAGRAM:</b>`, safeIgCaption] : []),
     ].join('\n');
     if (pngBuf) {
         await tgSendPhoto(pngBuf, fullCaption, buttons);

@@ -1,0 +1,135 @@
+/**
+ * Post-round SG recap — highlights who had the best stats for the completed round.
+ * Pass round number as env var RECAP_ROUND=1|2|3|4, or auto-detect from day of week.
+ *
+ * Run from /autopilot:
+ *   RECAP_ROUND=1 npx tsx scripts/post-round-recap.ts
+ */
+
+require('dotenv').config({ path: require('path').join(__dirname, '../../.env.local') })
+
+import Anthropic from '@anthropic-ai/sdk'
+import { getLiveTournamentStats, formatPlayerName } from '../lib/datagolf'
+import { publish, tgNotify } from '../lib/publisher'
+
+const SYSTEM_PROMPT = `You are the caption writer for Divot Lab, a data-driven golf analytics brand.
+
+Rules:
+1. Lead with the most striking number — a dominant SG leader or a big gap from the field
+2. Tone: confident, specific, understated. "The Athletic" not ESPN
+3. No hype, no question hooks, no emojis, no exclamation points
+4. Twitter: under 220 chars, no hashtags
+5. Reference the round number and specific SG categories — this is a stat recap, not hype
+
+Return JSON only: { "tweet": "..." }`
+
+interface RoundLeaders {
+  sgTotal:  { name: string; val: string }
+  sgApp:    { name: string; val: string }
+  sgPutt:   { name: string; val: string }
+  sgOtt:    { name: string; val: string }
+  sgArg:    { name: string; val: string }
+}
+
+function fmt(v: number | undefined): string {
+  if (v == null) return 'N/A'
+  return (v >= 0 ? '+' : '') + v.toFixed(2)
+}
+
+function dayOfWeekRound(): '1' | '2' | '3' | '4' {
+  // UTC day: 4=Thu(R1), 5=Fri(R2), 6=Sat(R3), 0=Sun(R4)
+  const d = new Date().getUTCDay()
+  if (d === 4) return '1'
+  if (d === 5) return '2'
+  if (d === 6) return '3'
+  return '4'
+}
+
+async function generateTweet(eventName: string, round: string, leaders: RoundLeaders): Promise<string> {
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+
+  const data = [
+    `Event: ${eventName} — Round ${round} recap`,
+    `SG: Total leader:  ${leaders.sgTotal.name} ${leaders.sgTotal.val}/rd`,
+    `SG: Approach leader: ${leaders.sgApp.name} ${leaders.sgApp.val}/rd`,
+    `SG: Putting leader:  ${leaders.sgPutt.name} ${leaders.sgPutt.val}/rd`,
+    `SG: Off-Tee leader:  ${leaders.sgOtt.name} ${leaders.sgOtt.val}/rd`,
+    `SG: Arg leader:      ${leaders.sgArg.name} ${leaders.sgArg.val}/rd`,
+    `Focus on the most impressive stat or a player who dominated multiple categories.`,
+  ].join('\n')
+
+  const msg = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 300,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: data }],
+  })
+
+  const raw = msg.content[0].type === 'text' ? msg.content[0].text : '{}'
+  const match = raw.match(/\{[\s\S]*\}/)
+  if (!match) throw new Error('No JSON from Claude')
+  return (JSON.parse(match[0]) as { tweet?: string }).tweet ?? ''
+}
+
+async function main() {
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error('Missing ANTHROPIC_API_KEY')
+
+  const round = (process.env.RECAP_ROUND as '1' | '2' | '3' | '4') ?? dayOfWeekRound()
+  console.log(`Fetching R${round} stats...`)
+
+  const { eventName, players } = await getLiveTournamentStats(round)
+
+  if (!players.length) throw new Error(`No player data for R${round} — tournament may not have started yet`)
+
+  const withStats = players.filter(p => p.sg_total != null)
+  if (withStats.length < 5) throw new Error(`Insufficient R${round} SG data (${withStats.length} players)`)
+
+  const top = (key: keyof typeof withStats[0]) =>
+    [...withStats]
+      .filter(p => p[key] != null)
+      .sort((a, b) => (b[key] as number) - (a[key] as number))[0]
+
+  const leaders: RoundLeaders = {
+    sgTotal: { name: formatPlayerName(top('sg_total').player_name), val: fmt(top('sg_total').sg_total) },
+    sgApp:   { name: formatPlayerName(top('sg_app').player_name),   val: fmt(top('sg_app').sg_app)   },
+    sgPutt:  { name: formatPlayerName(top('sg_putt').player_name),  val: fmt(top('sg_putt').sg_putt)  },
+    sgOtt:   { name: formatPlayerName(top('sg_ott').player_name),   val: fmt(top('sg_ott').sg_ott)   },
+    sgArg:   { name: formatPlayerName(top('sg_arg').player_name),   val: fmt(top('sg_arg').sg_arg)   },
+  }
+
+  console.log(`✓ ${eventName} — R${round} leaders:`)
+  console.log(`  Total: ${leaders.sgTotal.name} ${leaders.sgTotal.val}`)
+  console.log(`  App:   ${leaders.sgApp.name} ${leaders.sgApp.val}`)
+  console.log(`  Putt:  ${leaders.sgPutt.name} ${leaders.sgPutt.val}`)
+  console.log(`  OTT:   ${leaders.sgOtt.name} ${leaders.sgOtt.val}`)
+  console.log(`  ARG:   ${leaders.sgArg.name} ${leaders.sgArg.val}`)
+
+  console.log('\nGenerating tweet...')
+  const tweet = await generateTweet(eventName, round, leaders)
+  console.log(`Tweet (${tweet.length}): ${tweet}`)
+
+  const tgPreview = [
+    `<b>${eventName} — R${round} SG Recap</b>`,
+    `Total: <b>${leaders.sgTotal.name}</b> ${leaders.sgTotal.val}`,
+    `App:   ${leaders.sgApp.name} ${leaders.sgApp.val}`,
+    `Putt:  ${leaders.sgPutt.name} ${leaders.sgPutt.val}`,
+    `OTT:   ${leaders.sgOtt.name} ${leaders.sgOtt.val}`,
+    `ARG:   ${leaders.sgArg.name} ${leaders.sgArg.val}`,
+  ].join('\n')
+
+  await publish({
+    tweet,
+    tgPreview,
+    label: `R${round} SG Recap · ${eventName}`,
+  })
+}
+
+export { main as run }
+
+if (require.main === module) {
+  main().catch(async err => {
+    console.error('✗', (err as Error).message)
+    await tgNotify(`❌ post-round-recap R failed:\n<code>${(err as Error).message}</code>`).catch(() => {})
+    process.exit(1)
+  })
+}

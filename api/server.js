@@ -4073,5 +4073,27 @@ app.get('/api/autopilot/content/sunday-contenders', requireCronSecret, async (re
   }
 });
 
+// GET /api/autopilot/content/round-recap?round=1|2|3|4
+// Cron: Thu–Sun 00:00 UTC (8pm EDT) — post-round SG stat leaders.
+app.get('/api/autopilot/content/round-recap', requireCronSecret, async (req, res) => {
+  res.status(200).send('OK');
+  if (process.env.AUTOPILOT_ENABLED !== 'true') {
+    console.log('[autopilot/round-recap] AUTOPILOT_ENABLED is not true — skipping');
+    return;
+  }
+  const round = req.query.round;
+  if (!['1','2','3','4'].includes(round)) {
+    console.error('[autopilot/round-recap] Invalid round param:', round);
+    return;
+  }
+  try {
+    process.env.RECAP_ROUND = round;
+    const { run } = await import('../autopilot/dist/scripts/post-round-recap.js');
+    await run();
+  } catch (err) {
+    console.error('[autopilot/round-recap] Error:', err);
+  }
+});
+
 // test
 module.exports = app;// trigger

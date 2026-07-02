@@ -15,13 +15,27 @@ on:
           - friday-darkhorse
           - saturday-update
           - sunday-contenders
+          - round-recap-r1
+          - round-recap-r2
+          - round-recap-r3
+          - round-recap-r4
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve path
+        id: resolve
+        run: |
+          case "${{ github.event.inputs.day }}" in
+            round-recap-r1) echo "path=round-recap?round=1" >> $GITHUB_OUTPUT ;;
+            round-recap-r2) echo "path=round-recap?round=2" >> $GITHUB_OUTPUT ;;
+            round-recap-r3) echo "path=round-recap?round=3" >> $GITHUB_OUTPUT ;;
+            round-recap-r4) echo "path=round-recap?round=4" >> $GITHUB_OUTPUT ;;
+            *)              echo "path=${{ github.event.inputs.day }}" >> $GITHUB_OUTPUT ;;
+          esac
       - name: Trigger autopilot script
         run: |
           curl -sf -X GET \
-            "https://divotlab-api.vercel.app/api/autopilot/content/${{ github.event.inputs.day }}" \
+            "https://divotlab-api.vercel.app/api/autopilot/content/${{ steps.resolve.outputs.path }}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
