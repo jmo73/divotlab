@@ -4,7 +4,6 @@
  * On approval: PNG → JPEG → X post + IG post → DB update → Telegram confirmation.
  */
 
-import sharp from 'sharp'
 import { put, del } from '@vercel/blob'
 import { config } from './config'
 import { generateImage, extendForInstagram } from './imageGen'
@@ -340,7 +339,8 @@ export async function firePosting(postId: string): Promise<void> {
     : await extendForInstagram(pngBuffer)
 
   // Convert to JPEG for Instagram
-  const jpegBuffer = await sharp(igPngBuffer)
+  const sharpLib = (await import('sharp')).default
+  const jpegBuffer = await sharpLib(igPngBuffer)
     .jpeg({ quality: 92 })
     .toBuffer()
 
