@@ -4110,5 +4110,83 @@ app.get('/api/autopilot/content/live-mover', requireCronSecret, async (req, res)
   }
 });
 
+// GET /api/autopilot/content/monday-form-check
+app.get('/api/autopilot/content/monday-form-check', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-monday-form-check.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/monday-form-check] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/tuesday-approach-ranges
+app.get('/api/autopilot/content/tuesday-approach-ranges', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-tuesday-approach-ranges.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/tuesday-approach-ranges] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/thursday-sg-leaders
+app.get('/api/autopilot/content/thursday-sg-leaders', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-thursday-sg-leaders.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/thursday-sg-leaders] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/evergreen-rankings
+app.get('/api/autopilot/content/evergreen-rankings', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-evergreen-rankings.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/evergreen-rankings] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/evergreen-form-leaders
+app.get('/api/autopilot/content/evergreen-form-leaders', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-evergreen-form-leaders.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/evergreen-form-leaders] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/evergreen-stat-leaders
+app.get('/api/autopilot/content/evergreen-stat-leaders', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-evergreen-stat-leaders.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/evergreen-stat-leaders] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // test
 module.exports = app;// trigger

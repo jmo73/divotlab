@@ -2,22 +2,31 @@ name: Autopilot Scheduled + Manual Trigger
 
 on:
   schedule:
-    - cron: '0 13 * * 1'   # Monday 13:00 UTC (9am EDT) — field preview
-    - cron: '0 13 * * 2'   # Tuesday 13:00 UTC — model preview
-    - cron: '0 17 * * 2'   # Tuesday 17:00 UTC (1pm EDT) — fade of the week
-    - cron: '0 13 * * 3'   # Wednesday 13:00 UTC — top 10 targets
-    - cron: '0 17 * * 3'   # Wednesday 17:00 UTC (1pm EDT) — betting edge alert
-    - cron: '0 13 * * 4'   # Thursday 13:00 UTC — course stat
-    - cron: '0 19 * * 4'   # Thursday 19:00 UTC (3pm EDT) — live mover R1
-    - cron: '0 13 * * 5'   # Friday 13:00 UTC — dark horse
-    - cron: '0 13 * * 6'   # Saturday 13:00 UTC — live update
-    - cron: '0 19 * * 6'   # Saturday 19:00 UTC (3pm EDT) — live mover R3
-    - cron: '0 13 * * 0'   # Sunday 13:00 UTC — contenders
-    - cron: '0 19 * * 0'   # Sunday 19:00 UTC (3pm EDT) — live mover R4
-    - cron: '0 0 * * 5'    # Fri 00:00 UTC (Thu 8pm EDT) — R1 recap
-    - cron: '0 0 * * 6'    # Sat 00:00 UTC — R2 recap
-    - cron: '0 0 * * 0'    # Sun 00:00 UTC — R3 recap
-    - cron: '0 0 * * 1'    # Mon 00:00 UTC (Sun 8pm EDT) — R4 recap
+    # ── Tournament-week content ────────────────────────────────────────────────
+    - cron: '0 13 * * 1'   # Mon  13:00 UTC (9am EDT)  — field preview
+    - cron: '0 15 * * 1'   # Mon  15:00 UTC (11am EDT) — form check (dominant stat trend)
+    - cron: '0 13 * * 2'   # Tue  13:00 UTC (9am EDT)  — model preview
+    - cron: '0 17 * * 2'   # Tue  17:00 UTC (1pm EDT)  — fade of the week
+    - cron: '0 19 * * 2'   # Tue  19:00 UTC (3pm EDT)  — approach distance ranges
+    - cron: '0 13 * * 3'   # Wed  13:00 UTC (9am EDT)  — top 10 targets
+    - cron: '0 17 * * 3'   # Wed  17:00 UTC (1pm EDT)  — betting edge alert
+    - cron: '0 13 * * 4'   # Thu  13:00 UTC (9am EDT)  — course stat
+    - cron: '0 15 * * 4'   # Thu  15:00 UTC (11am EDT) — SG category leaders
+    - cron: '0 19 * * 4'   # Thu  19:00 UTC (3pm EDT)  — live mover R1
+    - cron: '0 13 * * 5'   # Fri  13:00 UTC (9am EDT)  — dark horse
+    - cron: '0 13 * * 6'   # Sat  13:00 UTC (9am EDT)  — live update
+    - cron: '0 19 * * 6'   # Sat  19:00 UTC (3pm EDT)  — live mover R3
+    - cron: '0 13 * * 0'   # Sun  13:00 UTC (9am EDT)  — contenders
+    - cron: '0 19 * * 0'   # Sun  19:00 UTC (3pm EDT)  — live mover R4
+    # ── Round recaps (fires post-round, graceful skip on off-weeks) ────────────
+    - cron: '0 0 * * 5'    # Fri  00:00 UTC (Thu 8pm EDT) — R1 recap
+    - cron: '0 0 * * 6'    # Sat  00:00 UTC             — R2 recap
+    - cron: '0 0 * * 0'    # Sun  00:00 UTC             — R3 recap
+    - cron: '0 0 * * 1'    # Mon  00:00 UTC (Sun 8pm EDT) — R4 recap
+    # ── Evergreen (always fire — no active tournament needed) ─────────────────
+    - cron: '0 20 * * 1'   # Mon  20:00 UTC (4pm EDT)  — DG vs OWGR divergence
+    - cron: '0 20 * * 3'   # Wed  20:00 UTC (4pm EDT)  — in-form leaders
+    - cron: '0 17 * * 5'   # Fri  17:00 UTC (1pm EDT)  — SG stat leaders (rotating angle)
   workflow_dispatch:
     inputs:
       day:
@@ -27,16 +36,22 @@ on:
         options:
           - monday-field
           - monday-recap
+          - monday-form-check
           - tuesday-model
           - tuesday-fade
+          - tuesday-approach-ranges
           - wednesday-top10
           - wednesday-edge
           - wednesday-picks
           - thursday-course-stat
+          - thursday-sg-leaders
           - friday-darkhorse
           - saturday-update
           - sunday-contenders
           - live-mover
+          - evergreen-rankings
+          - evergreen-form-leaders
+          - evergreen-stat-leaders
           - round-recap-r1
           - round-recap-r2
           - round-recap-r3
@@ -54,11 +69,14 @@ jobs:
           else
             case "${{ github.event.schedule }}" in
               "0 13 * * 1") SCRIPT="monday-field" ;;
+              "0 15 * * 1") SCRIPT="monday-form-check" ;;
               "0 13 * * 2") SCRIPT="tuesday-model" ;;
               "0 17 * * 2") SCRIPT="tuesday-fade" ;;
+              "0 19 * * 2") SCRIPT="tuesday-approach-ranges" ;;
               "0 13 * * 3") SCRIPT="wednesday-top10" ;;
               "0 17 * * 3") SCRIPT="wednesday-edge" ;;
               "0 13 * * 4") SCRIPT="thursday-course-stat" ;;
+              "0 15 * * 4") SCRIPT="thursday-sg-leaders" ;;
               "0 19 * * 4") SCRIPT="live-mover" ;;
               "0 13 * * 5") SCRIPT="friday-darkhorse" ;;
               "0 13 * * 6") SCRIPT="saturday-update" ;;
@@ -69,6 +87,9 @@ jobs:
               "0 0 * * 6")  SCRIPT="round-recap-r2" ;;
               "0 0 * * 0")  SCRIPT="round-recap-r3" ;;
               "0 0 * * 1")  SCRIPT="round-recap-r4" ;;
+              "0 20 * * 1") SCRIPT="evergreen-rankings" ;;
+              "0 20 * * 3") SCRIPT="evergreen-form-leaders" ;;
+              "0 17 * * 5") SCRIPT="evergreen-stat-leaders" ;;
               *)
                 echo "Unknown schedule: ${{ github.event.schedule }}"
                 exit 1
