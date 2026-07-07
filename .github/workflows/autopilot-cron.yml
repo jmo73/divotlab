@@ -3,12 +3,17 @@ name: Autopilot Scheduled + Manual Trigger
 on:
   schedule:
     - cron: '0 13 * * 1'   # Monday 13:00 UTC (9am EDT) — field preview
-    - cron: '0 13 * * 2'   # Tuesday — model preview
-    - cron: '0 13 * * 3'   # Wednesday — top 10 targets
-    - cron: '0 13 * * 4'   # Thursday — course stat
-    - cron: '0 13 * * 5'   # Friday — dark horse
-    - cron: '0 13 * * 6'   # Saturday — live update
-    - cron: '0 13 * * 0'   # Sunday — contenders
+    - cron: '0 13 * * 2'   # Tuesday 13:00 UTC — model preview
+    - cron: '0 17 * * 2'   # Tuesday 17:00 UTC (1pm EDT) — fade of the week
+    - cron: '0 13 * * 3'   # Wednesday 13:00 UTC — top 10 targets
+    - cron: '0 17 * * 3'   # Wednesday 17:00 UTC (1pm EDT) — betting edge alert
+    - cron: '0 13 * * 4'   # Thursday 13:00 UTC — course stat
+    - cron: '0 19 * * 4'   # Thursday 19:00 UTC (3pm EDT) — live mover R1
+    - cron: '0 13 * * 5'   # Friday 13:00 UTC — dark horse
+    - cron: '0 13 * * 6'   # Saturday 13:00 UTC — live update
+    - cron: '0 19 * * 6'   # Saturday 19:00 UTC (3pm EDT) — live mover R3
+    - cron: '0 13 * * 0'   # Sunday 13:00 UTC — contenders
+    - cron: '0 19 * * 0'   # Sunday 19:00 UTC (3pm EDT) — live mover R4
     - cron: '0 0 * * 5'    # Fri 00:00 UTC (Thu 8pm EDT) — R1 recap
     - cron: '0 0 * * 6'    # Sat 00:00 UTC — R2 recap
     - cron: '0 0 * * 0'    # Sun 00:00 UTC — R3 recap
@@ -23,12 +28,15 @@ on:
           - monday-field
           - monday-recap
           - tuesday-model
+          - tuesday-fade
           - wednesday-top10
+          - wednesday-edge
           - wednesday-picks
           - thursday-course-stat
           - friday-darkhorse
           - saturday-update
           - sunday-contenders
+          - live-mover
           - round-recap-r1
           - round-recap-r2
           - round-recap-r3
@@ -47,11 +55,16 @@ jobs:
             case "${{ github.event.schedule }}" in
               "0 13 * * 1") SCRIPT="monday-field" ;;
               "0 13 * * 2") SCRIPT="tuesday-model" ;;
+              "0 17 * * 2") SCRIPT="tuesday-fade" ;;
               "0 13 * * 3") SCRIPT="wednesday-top10" ;;
+              "0 17 * * 3") SCRIPT="wednesday-edge" ;;
               "0 13 * * 4") SCRIPT="thursday-course-stat" ;;
+              "0 19 * * 4") SCRIPT="live-mover" ;;
               "0 13 * * 5") SCRIPT="friday-darkhorse" ;;
               "0 13 * * 6") SCRIPT="saturday-update" ;;
+              "0 19 * * 6") SCRIPT="live-mover" ;;
               "0 13 * * 0") SCRIPT="sunday-contenders" ;;
+              "0 19 * * 0") SCRIPT="live-mover" ;;
               "0 0 * * 5")  SCRIPT="round-recap-r1" ;;
               "0 0 * * 6")  SCRIPT="round-recap-r2" ;;
               "0 0 * * 0")  SCRIPT="round-recap-r3" ;;

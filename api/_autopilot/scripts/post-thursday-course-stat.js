@@ -59,6 +59,10 @@ async function main() {
         throw new Error('Missing ANTHROPIC_API_KEY');
     console.log('Fetching data...');
     const [cfData, candidates] = await Promise.all([(0, datagolf_1.getCourseFit)(), (0, datagolf_1.getModelPickCandidates)()]);
+    if (cfData.field.length < 50) {
+        console.log('[skip] No active tournament field — skipping this run');
+        return;
+    }
     const eventName = cfData.tournament?.event_name ?? 'This Week';
     const course = cfData.tournament?.course ?? '';
     const weights = cfData.course_weights;

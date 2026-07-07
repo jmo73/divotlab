@@ -81,10 +81,16 @@ async function main() {
 
   const { eventName, players } = await getLiveTournamentStats(round)
 
-  if (!players.length) throw new Error(`No player data for R${round} — tournament may not have started yet`)
+  if (!players.length) {
+    console.log(`[skip] No R${round} player data — tournament not active or not started yet`)
+    return
+  }
 
   const withStats = players.filter(p => p.sg_total != null)
-  if (withStats.length < 5) throw new Error(`Insufficient R${round} SG data (${withStats.length} players)`)
+  if (withStats.length < 5) {
+    console.log(`[skip] Insufficient R${round} SG data (${withStats.length} players) — round likely not in progress`)
+    return
+  }
 
   const top = (key: keyof typeof withStats[0]) =>
     [...withStats]

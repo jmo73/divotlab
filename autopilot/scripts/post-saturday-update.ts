@@ -85,6 +85,10 @@ async function main() {
       getPreTournamentPredictions('baseline_history_fit'),
       getCourseFit(),
     ])
+    if (cfData.field.length < 50) {
+      console.log('[skip] No active tournament field — skipping this run')
+      return
+    }
     eventName = cfData.tournament?.event_name ?? 'This Week'
     top3 = preds.slice(0, 3).map(p => ({
       name:   formatPlayerName(p.player_name),

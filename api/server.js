@@ -4071,5 +4071,44 @@ app.get('/api/autopilot/content/round-recap', requireCronSecret, async (req, res
   }
 });
 
+// GET /api/autopilot/content/tuesday-fade
+app.get('/api/autopilot/content/tuesday-fade', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-tuesday-fade.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/tuesday-fade] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/wednesday-edge
+app.get('/api/autopilot/content/wednesday-edge', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-wednesday-edge.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/wednesday-edge] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/autopilot/content/live-mover
+app.get('/api/autopilot/content/live-mover', requireCronSecret, async (req, res) => {
+  if (process.env.AUTOPILOT_ENABLED !== 'true') return res.status(200).send('OK (disabled)');
+  try {
+    const { run } = await import('./_autopilot/scripts/post-live-mover.js');
+    await run();
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[autopilot/live-mover] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // test
 module.exports = app;// trigger

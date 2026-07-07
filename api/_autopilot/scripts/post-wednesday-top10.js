@@ -64,6 +64,10 @@ async function main() {
         (0, datagolf_1.getPreTournamentPredictions)('baseline_history_fit'),
         (0, datagolf_1.getCourseFit)(),
     ]);
+    if (cfData.field.length < 50) {
+        console.log('[skip] No active tournament field — skipping this run');
+        return;
+    }
     const eventName = cfData.tournament?.event_name ?? 'This Week';
     const course = cfData.tournament?.course ?? '';
     const weights = cfData.course_weights;
