@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-06-30",
+  "last_updated": "2026-07-06",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 64,
+    "total_picks": 69,
     "total_hits": 24,
-    "hit_rate_pct": 37.5,
-    "events_tracked": 15,
+    "hit_rate_pct": 34.8,
+    "events_tracked": 16,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
       "top_5":   { "picks": 12, "hits": 3 },
-      "top_10":  { "picks": 26, "hits": 11 },
-      "top_20":  { "picks": 12, "hits": 4 },
+      "top_10":  { "picks": 28, "hits": 11 },
+      "top_20":  { "picks": 15, "hits": 4 },
       "matchup": { "picks": 13, "hits": 6 }
     },
     "units": {
-      "wagered":      64.0,
+      "wagered":      69.0,
       "returned":     85.15,
-      "profit_loss":  21.15,
-      "roi_pct":      33.1
+      "profit_loss":  16.15,
+      "roi_pct":      23.4
     }
   },
 
@@ -178,6 +178,24 @@
       ],
       "sleepers": [
         { "player": "Rai, Aaron", "bet": "Outright Win", "odds": 5500, "book": "DraftKings", "result": "loss", "note": "Finished T30. Not counted in totals." }
+      ]
+    },
+    {
+      "event": "John Deere Classic",
+      "date": "2026-07-06",
+      "picks_count": 5,
+      "hits_count": 0,
+      "net_units": -5.00,
+      "notes": "0 for 5. Gotterup won at -20; top-20 cutline was -14, top-10 cutline was -18. Best finish was Cole at T39 (-10), still four shots short of the top-20 line. Finau (best EV at +2.0%) lost -0.94 on approach and -1.03 ARG for the event, finishing T58. Koivun missed the cut. Poston and Cole were disclosed as market-agreement plays (negative model EV) at the time of publication.",
+      "picks": [
+        { "player": "Finau, Tony",     "bet": "Top 10", "book": "FanDuel/Bet365", "odds": 700, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T58 (-7). App -0.94, ARG -1.03 for event." },
+        { "player": "Poston, J.T.",    "bet": "Top 10", "book": "FanDuel",        "odds": 340, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T51 (-8). Market-agreement play; DG fair +418." },
+        { "player": "McGreevy, Max",   "bet": "Top 20", "book": "Bet365",         "odds": 333, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T51 (-8). App +1.15 but OTT -0.55 was drag." },
+        { "player": "Cole, Eric",      "bet": "Top 20", "book": "FanDuel",        "odds": 200, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T39 (-10). Best finish of card; 4 shots short of top-20 cutline." },
+        { "player": "Koivun, Jackson", "bet": "Top 20", "book": "FanDuel",        "odds": 175, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+1). Near model-fair pick (-0.3% EV)." }
+      ],
+      "sleepers": [
+        { "player": "Novak, Andrew", "bet": "Top 5", "odds": 1050, "book": "BetMGM", "result": "loss", "note": "Missed cut (+1). Not counted in totals." }
       ]
     }
   ]

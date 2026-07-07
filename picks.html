@@ -135,22 +135,6 @@ nav.menu-open .nav-hamburger span:nth-child(3){transform:translateY(-7px) rotate
 .price-pill.free{color:var(--green-light);border-color:rgba(91,191,133,0.25);background:rgba(91,191,133,0.07);}
 .price-pill.pro{color:var(--gold);border-color:rgba(201,168,76,0.25);background:rgba(201,168,76,0.07);}
 
-/* ── RECENT RESULTS ── */
-.results-section{padding:80px 32px;max-width:780px;margin:0 auto;}
-.results-section h2{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:500;letter-spacing:-0.02em;margin-bottom:8px;}
-.results-desc{font-size:14px;color:rgba(250,250,250,0.35);margin-bottom:36px;line-height:1.6;}
-.results-list{display:flex;flex-direction:column;gap:10px;}
-.result-row{background:var(--black-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;}
-.result-event{font-size:11px;font-family:var(--mono);color:rgba(250,250,250,0.25);letter-spacing:0.08em;margin-bottom:4px;}
-.result-pick{font-size:14px;font-weight:600;color:rgba(250,250,250,0.85);}
-.result-pick span{font-weight:400;color:rgba(250,250,250,0.4);font-size:13px;}
-.result-odds{font-family:var(--mono);font-size:13px;color:rgba(250,250,250,0.35);text-align:right;}
-.result-pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;white-space:nowrap;}
-.pill-win{background:rgba(91,191,133,0.1);color:var(--green-light);border:1px solid rgba(91,191,133,0.2);}
-.pill-loss{background:rgba(255,255,255,0.04);color:rgba(250,250,250,0.28);border:1px solid rgba(255,255,255,0.07);}
-.pill-pending{background:rgba(201,168,76,0.07);color:rgba(201,168,76,0.45);border:1px solid rgba(201,168,76,0.15);}
-.results-loading{text-align:center;padding:40px;color:rgba(250,250,250,0.25);font-family:var(--mono);font-size:13px;}
-
 /* ── HOW IT WORKS ── */
 .how-section{background:var(--black-mid);border-top:1px solid var(--border);padding:72px 32px;}
 .how-inner{max-width:780px;margin:0 auto;}
@@ -184,7 +168,7 @@ footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.06);paddi
   .record-inner{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
   .record-stat:nth-child(3){grid-column:1/-1;border-top:1px solid rgba(255,255,255,0.06);}
   .record-stat:nth-child(3)::before{display:none;}
-  .pick-section,.results-section,.how-inner{padding-left:20px;padding-right:20px;}
+  .pick-section,.how-inner{padding-left:20px;padding-right:20px;}
   .signup-section{padding:56px 20px;}
   .signup-form{flex-direction:column;}
   .how-grid{grid-template-columns:1fr;}
@@ -299,16 +283,6 @@ footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.06);paddi
       <a href="/pro" style="display:inline-block;background:none;border:1.5px solid #5BBF85;color:#5BBF85;border-radius:8px;padding:11px 28px;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:0.02em;transition:background .2s;" onmouseover="this.style.background='rgba(91,191,133,0.08)'" onmouseout="this.style.background='none'">Try Pro free for 14 days →</a>
       <p style="font-size:11px;color:rgba(250,250,250,0.2);margin-top:8px;">No credit card needed.</p>
     </div>
-  </div>
-</section>
-
-<!-- RECENT RESULTS -->
-<section class="results-section">
-  <div class="section-eyebrow">Pick History</div>
-  <h2>Recent results.</h2>
-  <p class="results-desc">All picks published before tee time. Results updated after final scores post each week.</p>
-  <div class="results-list" id="resultsList">
-    <div class="results-loading">Loading results...</div>
   </div>
 </section>
 
@@ -455,40 +429,6 @@ footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.06);paddi
     .catch(function(){
       document.getElementById('pick-player').textContent = 'Pick drops Wednesday';
       document.getElementById('pick-reasoning').textContent = 'The free pick for this tournament week will be posted here on Wednesday morning before tee times.';
-    });
-
-  // ── RECENT RESULTS ────────────────────────────────────────────────────────
-  fetch('/lab-notes/lab-picks/season-tracker.json')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var weeks = (d.weekly_picks || []).slice().reverse();
-      var list = document.getElementById('resultsList');
-      if(!weeks.length){ list.innerHTML = '<div class="results-loading">No results yet this season.</div>'; return; }
-
-      list.innerHTML = weeks.map(function(week){
-        var picks = (week.picks || []).filter(function(p){ return p.result !== 'void'; });
-        if(!picks.length) return '';
-        var eventHeader = '<div style="padding:6px 0 4px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,250,250,0.2);">' + week.event + '</div>';
-        return eventHeader + picks.map(function(pick){
-          var pillClass = pick.result === 'win' ? 'pill-win' : pick.result === 'loss' ? 'pill-loss' : 'pill-pending';
-          var pillText = pick.result === 'win' ? '✓ Hit' : pick.result === 'loss' ? '✗ Miss' : '⏳ Pending';
-          var oddsVal = pick.odds;
-          var oddsStr = typeof oddsVal === 'number' ? (oddsVal > 0 ? '+' + oddsVal : '' + oddsVal) : (oddsVal || '');
-          var betLabel = pick.bet || pick.type || '';
-          var resultNote = pick.note ? ' · ' + pick.note : '';
-          return '<div class="result-row">' +
-            '<div>' +
-              '<div class="result-pick">' + pick.player + ' <span>· ' + betLabel + '</span></div>' +
-              (pick.note ? '<div style="font-size:11px;color:rgba(250,250,250,0.25);margin-top:3px;">' + pick.note + '</div>' : '') +
-            '</div>' +
-            '<div class="result-odds">' + oddsStr + '<br><span style="font-size:10px;color:rgba(250,250,250,0.2);">' + (pick.book || '') + '</span></div>' +
-            '<div class="result-pill ' + pillClass + '">' + pillText + '</div>' +
-          '</div>';
-        }).join('');
-      }).join('');
-    })
-    .catch(function(){
-      document.getElementById('resultsList').innerHTML = '<div class="results-loading">Results unavailable.</div>';
     });
 
   // ── EMAIL SIGNUP ─────────────────────────────────────────────────────────
