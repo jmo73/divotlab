@@ -1,26 +1,26 @@
 {
   "season": "2026",
-  "last_updated": "2026-07-06",
+  "last_updated": "2026-07-13",
   "tracking_started": "January 2026",
   "notes": "Mock baseline covers Jan–Apr 2026 (events 1–6). Displayed as 13/24 hits, +6.4u in Cadillac issue. Real tracked picks begin with Cadillac Championship (event 7). Jake Knapp Truist withdrawal (sprained thumb) voided — not counted in totals.",
 
   "totals": {
-    "total_picks": 69,
-    "total_hits": 24,
-    "hit_rate_pct": 34.8,
-    "events_tracked": 16,
+    "total_picks": 74,
+    "total_hits": 25,
+    "hit_rate_pct": 33.8,
+    "events_tracked": 17,
     "by_type": {
       "win":     { "picks": 0,  "hits": 0 },
       "top_5":   { "picks": 12, "hits": 3 },
-      "top_10":  { "picks": 28, "hits": 11 },
-      "top_20":  { "picks": 15, "hits": 4 },
+      "top_10":  { "picks": 31, "hits": 12 },
+      "top_20":  { "picks": 17, "hits": 4 },
       "matchup": { "picks": 13, "hits": 6 }
     },
     "units": {
-      "wagered":      69.0,
-      "returned":     85.15,
-      "profit_loss":  16.15,
-      "roi_pct":      23.4
+      "wagered":      74.0,
+      "returned":     90.85,
+      "profit_loss":  16.85,
+      "roi_pct":      22.8
     }
   },
 
@@ -196,6 +196,24 @@
       ],
       "sleepers": [
         { "player": "Novak, Andrew", "bet": "Top 5", "odds": 1050, "book": "BetMGM", "result": "loss", "note": "Missed cut (+1). Not counted in totals." }
+      ]
+    },
+    {
+      "event": "Genesis Scottish Open",
+      "date": "2026-07-08",
+      "picks_count": 5,
+      "hits_count": 1,
+      "net_units": 0.70,
+      "notes": "1 for 5. Lee Min Woo finished T2 at -15 (+4.70u at Bet365 +470). Gotterup T11 (defended but one spot outside top 10), Fleetwood T13, Schauffele CUT, Lowry CUT. Tom Kim won at -17 (+3.97 SG:Total for event, +2.16 App, +0.91 Putt).",
+      "picks": [
+        { "player": "Gotterup, Chris",    "bet": "Top 10", "book": "FanDuel", "odds": 300, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T11 (-10). One spot outside top 10." },
+        { "player": "Schauffele, Xander", "bet": "Top 20", "book": "FanDuel", "odds": 125, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (+3)." },
+        { "player": "Fleetwood, Tommy",   "bet": "Top 10", "book": "FanDuel", "odds": 250, "type": "top_10", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Finished T13 (-9). Two spots outside top 10." },
+        { "player": "Lowry, Shane",       "bet": "Top 20", "book": "FanDuel", "odds": 300, "type": "top_20", "units": 1.0, "result": "loss", "profit": -1.00, "note": "Missed cut (E)." },
+        { "player": "Lee, Min Woo",       "bet": "Top 10", "book": "Bet365",  "odds": 470, "type": "top_10", "units": 1.0, "result": "win",  "profit":  4.70, "note": "Finished T2 (-15). +4.70u win. Saved the week." }
+      ],
+      "sleepers": [
+        { "player": "Lowry, Shane", "bet": "Outright Win", "odds": 3000, "book": "Bet365", "result": "loss", "note": "Missed cut. Not counted in totals." }
       ]
     }
   ]
